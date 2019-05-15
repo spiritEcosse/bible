@@ -1,6 +1,6 @@
 #include <QtTest>
 #include <QCoreApplication>
-#include "JlCompress.h"
+#include <quazip/JlCompress.h>
 
 #include "../src/DownloadManager.h"
 #include "../src/ModulesModel.h"

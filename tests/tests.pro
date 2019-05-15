@@ -20,15 +20,4 @@ HEADERS += $$PROJECT_HEADERS
 SOURCES += $$PROJECT_SOURCES \
     tst_tests.cpp
 
-unix {
-    LIBS += -L$$(QUAZIP_CODE) -lz
-}
-
-win32 {
-    LIBS += -L$$(ZLIB_CODE) -lzdll
-}
-
-INCLUDEPATH += $$(QUAZIP_CODE)
-HEADERS += $$(QUAZIP_CODE)/*.h
-SOURCES += $$(QUAZIP_CODE)/*.cpp
-SOURCES += $$(QUAZIP_CODE)/*.c
+LIBS += -lquazip5

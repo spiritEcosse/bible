@@ -14,7 +14,7 @@
 #include <QRegularExpression>
 #include <qmath.h>
 #include <QDebug>
-#include "JlCompress.h"
+#include <quazip/JlCompress.h>
 
 #include "DownloadManager.h"
 #include "LocaleDesc.h"
