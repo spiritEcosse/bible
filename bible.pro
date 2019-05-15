@@ -90,7 +90,9 @@ SOURCES += src/dbmanager.cpp \
     src/commentsmodel.cpp \
     src/LocaleDesc.cpp \
     src/ModulesModel.cpp \
-    src/DownloadManager.cpp
+    src/DownloadManager.cpp \
+    src/TextProgressBar.cpp \
+    src/ModulesGroupModel.cpp
 
 HEADERS += \
     src/dbmanager.h \
@@ -105,4 +107,8 @@ HEADERS += \
     src/commentsmodel.h \
     src/LocaleDesc.h \
     src/ModulesModel.h \
-    src/DownloadManager.h
+    src/DownloadManager.h \
+    src/TextProgressBar.h \
+    src/ModulesGroupModel.h
+
+LIBS += -lquazip

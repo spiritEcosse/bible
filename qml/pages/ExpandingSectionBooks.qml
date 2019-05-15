@@ -217,7 +217,8 @@ ExpandingSectionPatch {
                                                                         "book": expandingSection.model.currentBook,
                                                                         "chapter": expandingSection.model.currentChapter,
                                                                         "verse": index + 1,
-                                                                        "marker": link
+                                                                        "marker": link,
+                                                                        "historyModel": historyModel
                                                                     })
                                                     }
                                                     textFormat: Text.StyledText

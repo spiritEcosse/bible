@@ -1,58 +1,42 @@
 #ifndef MODULESMODEL_H
 #define MODULESMODEL_H
 
-#include <QJsonValue>
 #include <QSqlTableModel>
 #include <QSqlRecord>
 #include <QSqlQuery>
 #include <QSqlError>
-#include <QFile>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonArray>
-#include <QTextDocumentFragment>
-#include <QRegularExpression>
+
 #include <qmath.h>
-#include <QDebug>
-#include "JlCompress.h"
 
-#include "DownloadManager.h"
-#include "LocaleDesc.h"
+#include <QRegularExpression>
 
-#define REGISTRY "aHR0cDovL215YmlibGUuaW50ZXJiaWJsaWEub3JnL3JlZ2lzdHJ5X3Rlc3Quemlw"
-#define REGISTRY_INFO ""
+#include "gtest/gtest_prod.h"
 
+#include <iostream>
+
+template <class QSqlDatabase, class QSqlQuery>
 class ModulesModel : public QSqlTableModel
 {
-    Q_OBJECT
 public:
-    ModulesModel(QObject *parent = 0);
-    ~ModulesModel();
+    ModulesModel(QSqlDatabase &db, QObject *parent = nullptr);
+    explicit ModulesModel() {}
+    virtual ~ModulesModel();
 
-    DownloadManager manager;
     QVariant data(const QModelIndex &index, int role) const override;
-    QString tableName() const;
     QHash<int, QByteArray> roleNames() const;
-    Q_INVOKABLE void updateModules();
-    QUrl urlRegistry = QUrl::fromEncoded(QByteArray::fromBase64(REGISTRY));
-    QUrl urlRegistryInfo = QUrl::fromEncoded(QByteArray::fromBase64(REGISTRY_INFO));
-    void checkAvailabilityNewModules();
+    virtual void init();
+    virtual bool createTable(const QString &tableName, const QString &relatedTable);
+    virtual QSqlQuery& query() const;
+    QSqlQuery* query_;
 
 private:
-    void newRows(QJsonArray &downloads);
-    int correctSize(const QJsonValue &jsonValue) const;
-    int currentVersion;
-    QFile registry;
+    friend class ModulesModelTest;
+    FRIEND_TEST(ModulesModelTest, correctSize);
+    FRIEND_TEST(ModulesModelTest, createTable);
 
-signals:
-    void updateTableSuccess();
-    void availabilityNewModules(bool);
-    void decompressSuccess();
-
-private slots:
-    void updateTable();
-    void compareVersions();
-    void decompressRegistry();
+    QSqlDatabase *db_;
+    int correctSize(const QString &str) const;
 };
+
 
 #endif // MODULESMODEL_H

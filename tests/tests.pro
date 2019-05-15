@@ -1,5 +1,5 @@
-QT += gui testlib sql network
-CONFIG += qt warn_on depend_includepath testcase
+QT += gui testlib sql network core
+CONFIG += qt warn_on depend_includepath testcase console
 
 TEMPLATE = app
 PROJECT_DIR = $$PWD/../
@@ -8,27 +8,28 @@ PROJECT_SOURCES = \
     $$PROJECT_DIR/src/DownloadManager.cpp \
     $$PROJECT_DIR/src/TextProgressBar.cpp \
     $$PROJECT_DIR/src/dbmanager.cpp \
-    $$PROJECT_DIR/src/ModulesModel.cpp
+    $$PROJECT_DIR/src/ModulesModel.cpp \
+    $$PROJECT_DIR/src/ModulesGroupModel.cpp
 
 PROJECT_HEADERS = \
     $$PROJECT_DIR/src/DownloadManager.h \
     $$PROJECT_DIR/src/TextProgressBar.h \
-    $$PROJECT_DIR/src/ModulesModel.h
+    $$PROJECT_DIR/src/ModulesModel.h \
+    $$PROJECT_DIR/src/ModulesGroupModel.h
 
-HEADERS += $$PROJECT_HEADERS
+GTEST_DIR = /home/igor/projects/googletest/googletest
+GMOCK_DIR = /home/igor/projects/googletest/googlemock
+
+HEADERS += $$PROJECT_HEADERS \
+    mock_modulesmodel.h \
+    iqsqldatabase.h \
+    iqsqlquery.h \
+    mock_iqsqldatabase.h \
+    mock_iqsqlquery.h
 
 SOURCES += $$PROJECT_SOURCES \
-    tst_tests.cpp
+    modulesgroupmodel-test.cpp \
+    modulesmodel-test.cpp \
+    main.cpp
 
-unix {
-    LIBS += -L$$(QUAZIP_CODE) -lz
-}
-
-win32 {
-    LIBS += -L$$(ZLIB_CODE) -lzdll
-}
-
-INCLUDEPATH += $$(QUAZIP_CODE)
-HEADERS += $$(QUAZIP_CODE)/*.h
-SOURCES += $$(QUAZIP_CODE)/*.cpp
-SOURCES += $$(QUAZIP_CODE)/*.c
+LIBS += -lquazip5 -lgmock -lgtest -lpthread
