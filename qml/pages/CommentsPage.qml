@@ -1,12 +1,14 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import bible.CommentsModel 1.0
+import bible.HistoryModel 1.0
 
 Pages {
     property int book
     property int chapter
     property int verse
     property string marker
+    property HistoryModel historyModel
 
     CommentsModel {
         id: commentsModel
@@ -44,7 +46,7 @@ Pages {
                     truncationMode: TruncationMode.Fade
 
                     onLinkActivated: {
-                        var regExp = /^[A-Z]:(\d+)\s(\d+):(\d+)[-]*(\d+)*$/;
+                        var regExp = /^[A-Z]:(\d+)\s(\d+):(\d+).*$/;
                         var data = link.match(regExp)
                         historyModel.addFromMask(data[1], data[2], data[3]);
                         pageStack.pop(undefined)

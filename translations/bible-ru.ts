@@ -57,7 +57,7 @@
 <context>
     <name>CommentsPage</name>
     <message>
-        <location filename="../qml/pages/CommentsPage.qml" line="32"/>
+        <location filename="../qml/pages/CommentsPage.qml" line="34"/>
         <source>Comments</source>
         <translation type="unfinished"></translation>
     </message>
@@ -73,7 +73,7 @@
 <context>
     <name>ExpandingSectionBooks</name>
     <message>
-        <location filename="../qml/pages/ExpandingSectionBooks.qml" line="239"/>
+        <location filename="../qml/pages/ExpandingSectionBooks.qml" line="240"/>
         <source>Copy text</source>
         <translation type="unfinished"></translation>
     </message>
