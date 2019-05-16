@@ -24,6 +24,9 @@ int main(int argc, char *argv[])
     QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
     QScopedPointer<QQuickView> view(SailfishApp::createView());
 
+    QCoreApplication::setOrganizationName("Spirit");
+    QCoreApplication::setApplicationName("bible");
+
     qmlRegisterType<BooksModel>("bible.BooksModel", 1, 0, "BooksModel");
     qmlRegisterType<CommentsModel>("bible.CommentsModel", 1, 0, "CommentsModel");
     qmlRegisterType<ModulesModel>("bible.ModulesModel", 1, 0, "ModulesModel");

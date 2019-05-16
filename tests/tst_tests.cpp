@@ -22,6 +22,7 @@ private:
     const int fileRegistryItems = 10;
     QFile fileRegistry;
     QFile fileRegistryInfo;
+    QSettings settings;
 
 private slots:
     void initTestCase();
@@ -47,6 +48,7 @@ tests::~tests()
 void tests::initTestCase()
 {
     connectToDatabase();
+    settings.setValue("modulesVersion", 0);
 }
 
 void tests::cleanupTestCase()
@@ -131,15 +133,19 @@ void tests::newModulesAvailable_data()
 {
     QTest::addColumn<int>("version");
     QTest::addColumn<bool>("newModulesAvailable");
-    QTest::newRow("db not have any version") << 1 << true;
-    QTest::newRow("current version") << 0 << false;
-    QTest::newRow("true new version") << 2 << true;
+    QTest::addColumn<int>("versionInQSettings");
+    QTest::newRow("db not have any version") << 1 << true << 1;
+    QTest::newRow("current version") << 0 << false << 1;
+    QTest::newRow("true new version") << 2 << true << 2;
+    QTest::newRow("If it is possible, the server version is lower than in the application.")
+            << 0 << false << 2;
 }
 
 void tests::newModulesAvailable()
 {
     QFETCH(int, version);
     QFETCH(bool, newModulesAvailable);
+    QFETCH(int, versionInQSettings);
     QJsonObject jsonObject;
     jsonObject.insert(QString("version"), version);
     QJsonDocument document(jsonObject);
@@ -159,6 +165,7 @@ void tests::newModulesAvailable()
     QList<QVariant> arguments = spy.takeFirst();
     QVERIFY(arguments.at(0).type() == QVariant::Bool);
     QCOMPARE(arguments.at(0), newModulesAvailable);
+    QCOMPARE(settings.value("modulesVersion").toInt(), versionInQSettings);
 }
 
 QTEST_MAIN(tests)

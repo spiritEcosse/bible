@@ -41,7 +41,6 @@ public:
 private:
     void newRows(QJsonArray &downloads);
     int correctSize(const QJsonValue &jsonValue) const;
-    int currentVersion;
     QFile registry;
 
 signals:

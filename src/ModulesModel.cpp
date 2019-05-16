@@ -127,7 +127,6 @@ void ModulesModel::checkAvailabilityNewModules()
 {
     manager.append(urlRegistryInfo);
     connect(&manager, SIGNAL (successfully()), this, SLOT (compareVersions()));
-    currentVersion = 0;
 }
 
 void ModulesModel::compareVersions()
@@ -144,7 +143,14 @@ void ModulesModel::compareVersions()
         return;
 
     int version = document.object().value("version").toInt();
-    emit availabilityNewModules(version > currentVersion);
+    QSettings settings;
+    bool newModules = version > settings.value("modulesVersion").toInt();
+
+    if (newModules) {
+        settings.setValue("modulesVersion", version);
+    }
+
+    emit availabilityNewModules(newModules);
 }
 
 //QString ModulesModel::section() const
