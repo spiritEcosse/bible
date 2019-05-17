@@ -127,9 +127,13 @@ void tests::updateModules()
     QVERIFY(QSqlDatabase::database().tables().contains("modules"));
 
     QSignalSpy spy(&modulesModel, &ModulesModel::updateTableSuccess);
+    QSignalSpy spyDecompress(&modulesModel, &ModulesModel::decompressSuccess);
     modulesModel.urlRegistry = QUrl(QString("%1%2").arg(strUrl, fileNameRegistryZip));
     modulesModel.updateModules();
+
     QVERIFY(spy.wait());
+
+    QCOMPARE(spyDecompress.count(), 1);
     QCOMPARE(spy.count(), 1);
 
     QCOMPARE(modulesModel.rowCount(), fileRegistryItems);
