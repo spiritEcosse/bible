@@ -42,16 +42,19 @@ private:
     void newRows(QJsonArray &downloads);
     int correctSize(const QJsonValue &jsonValue) const;
     QFile registry;
+    QFile registryArchive;
 
 signals:
     void updateTableSuccess();
     void availabilityNewModules(bool);
     void decompressSuccess();
+    void removeRegistryFileSuccess();
 
 private slots:
     void updateTable();
     void compareVersions();
     void decompressRegistry();
+    void removeRegistryFile();
 };
 
 #endif // MODULESMODEL_H

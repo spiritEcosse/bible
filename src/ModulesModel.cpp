@@ -52,10 +52,12 @@ ModulesModel::~ModulesModel()
 
 void ModulesModel::decompressRegistry()
 {
-    QFile registryArchive;
     registryArchive.setFileName(manager.fileNames.last());
-    JlCompress::extractFile(registryArchive.fileName(), registry.fileName());
-    emit decompressSuccess();
+    QString registryName = JlCompress::extractFile(registryArchive.fileName(), registry.fileName());
+    QFileInfo fileInfo(registryName);
+
+    if (fileInfo.fileName() == registry.fileName())
+        emit decompressSuccess();
 }
 
 void ModulesModel::updateModules()
@@ -63,6 +65,14 @@ void ModulesModel::updateModules()
     manager.append(urlRegistry);
     connect(&manager, SIGNAL (successfully()), SLOT (decompressRegistry()));
     connect(this, SIGNAL (decompressSuccess()), SLOT (updateTable()));
+    connect(this, SIGNAL (updateTableSuccess()), SLOT (removeRegistryFile()));
+}
+
+void ModulesModel::removeRegistryFile()
+{
+    if (registryArchive.remove()) {
+        emit removeRegistryFileSuccess();
+    }
 }
 
 void ModulesModel::updateTable()
