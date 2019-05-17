@@ -14,7 +14,8 @@ public:
     tests();
     ~tests();
 private:
-    const QString strUrl = "http://0.0.0.0:2443/";
+    const QString dirName = "files";
+    const QString strUrl = QString("http://0.0.0.0:2443/%1/").arg(dirName);
     const QString strUrlTest = QString("%1test").arg(strUrl);
     const QString fileNameRegistry = "registry.json";
     const QString fileNameRegistryInfo = "registry_info.json";
@@ -23,6 +24,7 @@ private:
     QFile fileRegistry;
     QFile fileRegistryInfo;
     QSettings settings;
+    QDir dir;
 
 private slots:
     void initTestCase();
@@ -47,14 +49,19 @@ tests::~tests()
 
 void tests::initTestCase()
 {
+    dir.mkdir(dirName);
+    QDir::setCurrent(dirName);
     connectToDatabase();
     settings.setValue("modulesVersion", 0);
+    fileRegistryInfo.setFileName(fileNameRegistryInfo);
+    fileRegistry.setFileName(fileNameRegistry);
 }
 
 void tests::cleanupTestCase()
 {
     QSqlQuery query;
     query.exec("DROP TABLE modules;");
+    dir.removeRecursively();
 }
 
 void tests::singleDownload()
@@ -63,6 +70,7 @@ void tests::singleDownload()
     QSignalSpy spy(&manager, &DownloadManager::successfully);
     manager.append(QUrl(strUrlTest));
     QVERIFY(spy.wait());
+    QCOMPARE(spy.count(), 1);
 }
 
 void tests::multiDownload()
@@ -73,6 +81,7 @@ void tests::multiDownload()
     QSignalSpy spy(&manager, &DownloadManager::successfully);
     manager.append(urls);
     QVERIFY(spy.wait());
+    QCOMPARE(spy.count(), 1);
 }
 
 void tests::updateModules_data()
@@ -105,15 +114,11 @@ void tests::updateModules_data()
     jsonObject.insert(QString("downloads"), QJsonValue(jsonArray));
     QJsonDocument document(jsonObject);
 
-    fileRegistry.setFileName(fileNameRegistry);
     fileRegistry.open(QFile::WriteOnly);
     fileRegistry.write(document.toJson());
     fileRegistry.close();
 
-    if (!JlCompress::compressFile(fileNameRegistryZip, fileRegistry.fileName())) {
-        qWarning() << "Could not create: " << fileNameRegistryZip;
-    }
-    fileRegistry.remove();
+    QVERIFY(JlCompress::compressFile(fileNameRegistryZip, fileRegistry.fileName()));
 }
 
 void tests::updateModules()
@@ -125,6 +130,7 @@ void tests::updateModules()
     modulesModel.urlRegistry = QUrl(QString("%1%2").arg(strUrl, fileNameRegistryZip));
     modulesModel.updateModules();
     QVERIFY(spy.wait());
+    QCOMPARE(spy.count(), 1);
 
     QCOMPARE(modulesModel.rowCount(), fileRegistryItems);
 }
@@ -150,7 +156,6 @@ void tests::newModulesAvailable()
     jsonObject.insert(QString("version"), version);
     QJsonDocument document(jsonObject);
 
-    fileRegistryInfo.setFileName(fileNameRegistryInfo);
     fileRegistryInfo.open(QFile::WriteOnly);
     fileRegistryInfo.write(document.toJson());
     fileRegistryInfo.close();
@@ -163,7 +168,6 @@ void tests::newModulesAvailable()
     QVERIFY(spy.wait());
     QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
-    QVERIFY(arguments.at(0).type() == QVariant::Bool);
     QCOMPARE(arguments.at(0), newModulesAvailable);
     QCOMPARE(settings.value("modulesVersion").toInt(), versionInQSettings);
 }

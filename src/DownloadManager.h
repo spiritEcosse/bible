@@ -16,7 +16,7 @@ public:
     void append(const QUrl &url);
     void append(const QStringList &urls);
     static QString saveFileName(const QUrl &url);
-    QList<QFile*> files;
+    QStringList fileNames;
 
 signals:
     void finished();

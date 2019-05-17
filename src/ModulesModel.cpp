@@ -52,8 +52,9 @@ ModulesModel::~ModulesModel()
 
 void ModulesModel::decompressRegistry()
 {
-    QFile *registryArchive = manager.files.last();
-    JlCompress::extractFile(registryArchive->fileName(), registry.fileName());
+    QFile registryArchive;
+    registryArchive.setFileName(manager.fileNames.last());
+    JlCompress::extractFile(registryArchive.fileName(), registry.fileName());
     emit decompressSuccess();
 }
 
@@ -131,13 +132,14 @@ void ModulesModel::checkAvailabilityNewModules()
 
 void ModulesModel::compareVersions()
 {
-    QFile *registry_json = manager.files.last();
-    if (!registry_json->open(QIODevice::ReadOnly | QIODevice::Text))
+    QFile registry_json;
+    registry_json.setFileName(manager.fileNames.last());
+    if (!registry_json.open(QIODevice::ReadOnly | QIODevice::Text))
         return ;
 
     QJsonParseError jsonError;
-    QJsonDocument document = QJsonDocument::fromJson(registry_json->readAll(), &jsonError);
-    registry_json->close();
+    QJsonDocument document = QJsonDocument::fromJson(registry_json.readAll(), &jsonError);
+    registry_json.close();
 
     if(jsonError.error != QJsonParseError::NoError)
         return;
