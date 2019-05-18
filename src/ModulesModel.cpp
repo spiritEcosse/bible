@@ -106,7 +106,7 @@ void ModulesModel::newRows(QJsonArray &downloads)
         newRecord.setValue("update", jsonObject.value("upd").toString());
         newRecord.setValue("urls", jsonObject.value("url").toString());
         newRecord.setValue("comment", jsonObject.value("cmt").toString());
-        newRecord.setValue("size", correctSize(jsonObject.value("siz")));
+        newRecord.setValue("size", correctSize(jsonObject.value("siz").toString()));
         newRecord.setValue("region", jsonObject.value("reg").toString());
         newRecord.setValue("default_download", jsonObject.value("def").toInt());
         newRecord.setValue("hidden", jsonObject.value("hid").toInt());
@@ -118,10 +118,10 @@ void ModulesModel::newRows(QJsonArray &downloads)
     }
 }
 
-int ModulesModel::correctSize(const QJsonValue &jsonValue) const
+int ModulesModel::correctSize(const QString &str) const
 {
-    QRegularExpression re("^([+-]?\\d*\\.?\\d+)(\\w{1})$", QRegularExpression::CaseInsensitiveOption);
-    QRegularExpressionMatch match = re.match(jsonValue.toString());
+    QRegularExpression re("^([+-]?\\d*\\.?\\d+)(\\w{1})*$", QRegularExpression::CaseInsensitiveOption);
+    QRegularExpressionMatch match = re.match(str);
     double size = 0;
     QStringList dimensions = {"K", "M", "G"};
 

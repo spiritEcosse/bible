@@ -37,10 +37,10 @@ public:
     QUrl urlRegistry = QUrl::fromEncoded(QByteArray::fromBase64(REGISTRY));
     QUrl urlRegistryInfo = QUrl::fromEncoded(QByteArray::fromBase64(REGISTRY_INFO));
     void checkAvailabilityNewModules();
+    int correctSize(const QString &) const;
 
 private:
     void newRows(QJsonArray &downloads);
-    int correctSize(const QJsonValue &jsonValue) const;
     QFile registry;
     QFile registryArchive;
 

@@ -35,6 +35,8 @@ private slots:
     void updateModules_data();
     void newModulesAvailable_data();
     void newModulesAvailable();
+    void modulesCorrectSize_data();
+    void modulesCorrectSize();
 };
 
 tests::tests()
@@ -99,7 +101,7 @@ void tests::updateModules_data()
                     qMakePair(QString("upd"), QJsonValue("update")),
                     qMakePair(QString("url"), QJsonValue("urls")),
                     qMakePair(QString("cmt"), QJsonValue("comment")),
-                    qMakePair(QString("siz"), QJsonValue("100K")),
+                    qMakePair(QString("siz"), QJsonValue("1")),
                     qMakePair(QString("reg"), QJsonValue("region")),
                     qMakePair(QString("def"), QJsonValue().toBool(true)),
                     qMakePair(QString("hid"), QJsonValue().toBool()),
@@ -174,6 +176,29 @@ void tests::newModulesAvailable()
     QList<QVariant> arguments = spy.takeFirst();
     QCOMPARE(arguments.at(0), newModulesAvailable);
     QCOMPARE(settings.value("modulesVersion").toInt(), versionInQSettings);
+}
+
+void tests::modulesCorrectSize_data()
+{
+    QTest::addColumn<QString>("input");
+    QTest::addColumn<int>("result");
+    QTest::newRow("100K") << "100K" << 102400;
+    QTest::newRow("100.0K") << "100.0K" << 102400;
+    QTest::newRow("1k") << "1k" << 1024;
+    QTest::newRow("12.32M") << "12.32M" << 12918456;
+    QTest::newRow("1m") << "1m" << 1048576;
+    QTest::newRow("0.05G") << "0.05G" << 53687091;
+    QTest::newRow("1g") << "1g" << 1073741824;
+    QTest::newRow("65700") << "65700" << 65700;
+}
+
+void tests::modulesCorrectSize()
+{
+    QFETCH(QString, input);
+    QFETCH(int, result);
+
+    ModulesModel modulesModel;
+    QCOMPARE(modulesModel.correctSize(input), result);
 }
 
 QTEST_MAIN(tests)
