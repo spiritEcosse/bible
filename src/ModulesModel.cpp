@@ -165,45 +165,37 @@ void ModulesModel::compareVersions()
     emit availabilityNewModules(newModules);
 }
 
-//QString ModulesModel::section() const
-//{
-//    QRegularExpression re(MODULES_SPLIT_NAME);
-//    QRegularExpressionMatch match = re.match(m_name);
-//    QLocale language = m_language;
-//    QStringList sectionList;
-//    QString section;
+QString ModulesModel::section(const QString &name, const QString &language, const QString &region) const
+{
+    QRegularExpression re(MODULES_SPLIT_NAME);
+    QRegularExpressionMatch match = re.match(name);
+    QString section;
+    QLocale locale = language;
+    QStringList sectionList;
 
-//    if (language.language() != QLocale::C)
-//        sectionList.append(language.languageToString(language.language()));
+    if (!locale.nativeLanguageName().isEmpty()) {
+        sectionList.append(locale.nativeLanguageName());
+    }
 
-//    if (match.hasMatch())
-//        sectionList.append(match.captured(2));
+    if (match.hasMatch()) {
+        sectionList.append(match.captured(2));
+    }
 
-//    if (sectionList.isEmpty()) {
-//        sectionList.append(m_region);
-//        sectionList.append(m_language);
-//    }
+    if (sectionList.empty() && !region.isEmpty()) {
+        sectionList.append(region);
+    }
 
-//    section = sectionList.join(" ").trimmed();
-//    section[0] = section[0].toUpper();
-//    return section;
-//}
+    if (sectionList.empty()) {
+        sectionList.append(language);
+    }
 
-//quint32 ModulesModel::correctSize(const QJsonValue &jsonValue) const
-//{
-//    QRegularExpression re("^([+-]?\\d*\\.?\\d+)(\\w{1})$", QRegularExpression::CaseInsensitiveOption);
-//    QRegularExpressionMatch match = re.match(jsonValue.toString());
-//    double size = 0;
-//    QStringList dimensions = {"K", "M", "G"};
+    section = sectionList.join(" ").trimmed();
 
-//    if (match.hasMatch()) {
-//        size = match.captured(1).toDouble();
-//        QString dimension = match.captured(2).toUpper();
-//        size *= qPow(1024, dimensions.indexOf(dimension) + 1);
-//    }
-////ToDo replace on formattedDataSize
-//    return size;
-//}
+    if (!section.isEmpty()) {
+        section[0] = section[0].toUpper();
+    }
+    return section;
+}
 
 //ModulesModel::parserJson(const QJsonValue &jsonValue) const
 //{

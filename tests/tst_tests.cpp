@@ -28,6 +28,8 @@ private:
 
 private slots:
     void initTestCase();
+    void modulesSection_data();
+    void modulesSection();
     void cleanupTestCase();
     void singleDownload();
     void multiDownload();
@@ -199,6 +201,29 @@ void tests::modulesCorrectSize()
 
     ModulesModel modulesModel;
     QCOMPARE(modulesModel.correctSize(input), result);
+}
+
+void tests::modulesSection_data()
+{
+    QTest::addColumn<QString>("language");
+    QTest::addColumn<QString>("name");
+    QTest::addColumn<QString>("region");
+    QTest::addColumn<QString>("result");
+    QTest::newRow("") << "en" << "AUV" << "" << "American English";
+    QTest::newRow("") << "Auyana" << "AUY" << "Papua New Guinea" << "Papua New Guinea";
+    QTest::newRow("") << "av" << "AVAR" << "" << "Av";
+    QTest::newRow("") << "ar" << "AVDDV" << "" << "العربية";
+}
+
+void tests::modulesSection()
+{
+    QFETCH(QString, language);
+    QFETCH(QString, name);
+    QFETCH(QString, region);
+    QFETCH(QString, result);
+
+    ModulesModel modulesModel;
+    QCOMPARE(modulesModel.section(name, language, region), result);
 }
 
 QTEST_MAIN(tests)

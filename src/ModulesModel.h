@@ -15,6 +15,8 @@
 #include <qmath.h>
 #include <QDebug>
 #include <quazip/JlCompress.h>
+#include <QLocale>
+#define MODULES_SPLIT_NAME "^(.+)\\.(.+)$"
 
 #include "DownloadManager.h"
 #include "LocaleDesc.h"
@@ -37,7 +39,8 @@ public:
     QUrl urlRegistry = QUrl::fromEncoded(QByteArray::fromBase64(REGISTRY));
     QUrl urlRegistryInfo = QUrl::fromEncoded(QByteArray::fromBase64(REGISTRY_INFO));
     void checkAvailabilityNewModules();
-    int correctSize(const QString &) const;
+    int correctSize(const QString &str) const;
+    QString section(const QString &name, const QString &language, const QString &region="") const;
 
 private:
     void newRows(QJsonArray &downloads);
