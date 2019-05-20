@@ -15,7 +15,7 @@ static void createTable(QString const tableName)
                     "   'information'       TEXT, "
                     "   'language'          CHAR(50), "
                     "   'language_show'     CHAR(50), "
-                    "   'update'            TEXT NOT NULL, "
+                    "   'update'            TEXT, "
                     "   'urls'              TEXT, "
                     "   'comment'           TEXT, "
                     "   'size'              NUMERIC NOT NULL, "
@@ -66,7 +66,30 @@ void ModulesModel::updateModules()
     manager.append(urlRegistry);
     connect(&manager, SIGNAL (successfully()), SLOT (decompressRegistry()));
     connect(this, SIGNAL (decompressSuccess()), SLOT (updateTable()));
+
+    setCountOldRows();
+
+    connect(this, SIGNAL (updateTableSuccess()), SLOT (removeOldEntries()));
     connect(this, SIGNAL (updateTableSuccess()), SLOT (removeRegistryFile()));
+}
+
+void ModulesModel::setCountOldRows()
+{
+    QSqlQuery query;
+    query.exec(QString("SELECT COUNT(*) as count FROM %1").arg(tableName()));
+    query.first();
+    countOldRows = query.value("count").toInt();
+}
+
+void ModulesModel::removeOldEntries()
+{
+    removeRows(0, countOldRows);
+
+    if (!submitAll()) {
+        qWarning() << "Failed to remove rows: " << lastError().text();
+    } else {
+        emit removeOldEntriesSuccess();
+    }
 }
 
 void ModulesModel::removeRegistryFile()
@@ -90,7 +113,6 @@ void ModulesModel::updateTable()
 
     QJsonArray downloads = document.object().value("downloads").toArray();
     newRows(downloads);
-    emit updateTableSuccess();
 }
 
 void ModulesModel::newRows(QJsonArray &downloads)
@@ -116,7 +138,9 @@ void ModulesModel::newRows(QJsonArray &downloads)
     }
 
 // This allows transactions to be rolled back and resubmitted without losing data.
-    if (!submitAll()) {
+    if (submitAll()) {
+        emit updateTableSuccess();
+    } else {
         qWarning() << "Failed to add new row: " << lastError().text();
     }
 }

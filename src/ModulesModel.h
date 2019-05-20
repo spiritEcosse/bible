@@ -41,23 +41,29 @@ public:
     void checkAvailabilityNewModules();
     int correctSize(const QString &str) const;
     QString section(const QString &name, const QString &language="", const QString &region="") const;
+    void setCountOldRows();
 
 private:
     void newRows(QJsonArray &downloads);
     QFile registry;
     QFile registryArchive;
+    int countOldRows = 0;
 
 signals:
     void updateTableSuccess();
     void availabilityNewModules(bool);
     void decompressSuccess();
     void removeRegistryFileSuccess();
+    void removeOldEntriesSuccess();
 
 private slots:
     void updateTable();
     void compareVersions();
     void decompressRegistry();
     void removeRegistryFile();
+
+public slots:
+    void removeOldEntries();
 };
 
 #endif // MODULESMODEL_H
