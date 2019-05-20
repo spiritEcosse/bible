@@ -59,12 +59,12 @@ void tests::initTestCase()
     settings.setValue("modulesVersion", 0);
     fileRegistryInfo.setFileName(fileNameRegistryInfo);
     fileRegistry.setFileName(fileNameRegistry);
+    QSqlQuery query;
+    query.exec("DROP TABLE modules;");
 }
 
 void tests::cleanupTestCase()
 {
-    QSqlQuery query;
-    query.exec("DROP TABLE modules;");
     dir.removeRecursively();
 }
 
@@ -140,7 +140,9 @@ void tests::updateModules()
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spy1.count(), 1);
     QCOMPARE(spy2.count(), 1);
-    QCOMPARE(modulesModel.rowCount(), fileRegistryItems);
+
+    ModulesModel modulesModelNew;
+    QCOMPARE(modulesModelNew.rowCount(), fileRegistryItems);
 }
 
 void tests::newModulesAvailable_data()

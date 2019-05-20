@@ -39,6 +39,7 @@ ModulesModel::ModulesModel(QObject *parent)
     setTable(tableName());
     select();
     registry.setFileName("registry.json");
+    setEditStrategy(QSqlTableModel::OnManualSubmit);
 }
 
 QString ModulesModel::tableName() const
@@ -111,10 +112,12 @@ void ModulesModel::newRows(QJsonArray &downloads)
         newRecord.setValue("default_download", jsonObject.value("def").toInt());
         newRecord.setValue("hidden", jsonObject.value("hid").toInt());
         newRecord.setValue("copyright", jsonObject.value("lic").toString());
+        insertRecord(-1, newRecord);
+    }
 
-        if (!insertRecord(-1, newRecord)) {
-            qWarning() << "Failed to add new row: " << lastError().text();
-        }
+// This allows transactions to be rolled back and resubmitted without losing data.
+    if (!submitAll()) {
+        qWarning() << "Failed to add new row: " << lastError().text();
     }
 }
 
