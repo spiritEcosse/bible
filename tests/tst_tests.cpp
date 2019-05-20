@@ -205,14 +205,26 @@ void tests::modulesCorrectSize()
 
 void tests::modulesSection_data()
 {
-    QTest::addColumn<QString>("language");
     QTest::addColumn<QString>("name");
+    QTest::addColumn<QString>("language");
     QTest::addColumn<QString>("region");
     QTest::addColumn<QString>("result");
-    QTest::newRow("") << "en" << "AUV" << "" << "American English";
-    QTest::newRow("") << "Auyana" << "AUY" << "Papua New Guinea" << "Papua New Guinea";
-    QTest::newRow("") << "av" << "AVAR" << "" << "Av";
-    QTest::newRow("") << "ar" << "AVDDV" << "" << "العربية";
+    QTest::newRow("name, language exists in qt")
+            << "AUV"            << "en" << "" << "American English";
+    QTest::newRow("name, language not exists in qt and region")
+            << "AUY"            << "Auyana" << "Papua New Guinea" << "Papua New Guinea";
+    QTest::newRow("name, language exists in qt and region")
+            << "AUV"            << "en" << "India" << "American English";
+    QTest::newRow("name, language not exists in qt")
+            << "AVAR"           << "av" << "" << "Av";
+    QTest::newRow("name, language exists in qt")
+            << "AVDDV"          << "ar" << "" << "العربية";
+    QTest::newRow("only name *.plan")
+            << "2016c-p.plan"   << "" << "" << "Plan";
+    QTest::newRow("name *.plan, language exists in qt")
+            << "2016c-p.plan"   << "ru" << "" << "Plan, русский";
+    QTest::newRow("name *.commentaries, language exists in qt")
+            << "AB-c.commentaries" << "en" << "" << "Commentaries, American English";
 }
 
 void tests::modulesSection()

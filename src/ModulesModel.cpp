@@ -173,12 +173,12 @@ QString ModulesModel::section(const QString &name, const QString &language, cons
     QLocale locale = language;
     QStringList sectionList;
 
-    if (!locale.nativeLanguageName().isEmpty()) {
-        sectionList.append(locale.nativeLanguageName());
-    }
-
     if (match.hasMatch()) {
         sectionList.append(match.captured(2));
+    }
+
+    if (!locale.nativeLanguageName().isEmpty()) {
+        sectionList.append(locale.nativeLanguageName());
     }
 
     if (sectionList.empty() && !region.isEmpty()) {
@@ -189,7 +189,7 @@ QString ModulesModel::section(const QString &name, const QString &language, cons
         sectionList.append(language);
     }
 
-    section = sectionList.join(" ").trimmed();
+    section = sectionList.join(", ").trimmed();
 
     if (!section.isEmpty()) {
         section[0] = section[0].toUpper();

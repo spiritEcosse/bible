@@ -40,7 +40,7 @@ public:
     QUrl urlRegistryInfo = QUrl::fromEncoded(QByteArray::fromBase64(REGISTRY_INFO));
     void checkAvailabilityNewModules();
     int correctSize(const QString &str) const;
-    QString section(const QString &name, const QString &language, const QString &region="") const;
+    QString section(const QString &name, const QString &language="", const QString &region="") const;
 
 private:
     void newRows(QJsonArray &downloads);
