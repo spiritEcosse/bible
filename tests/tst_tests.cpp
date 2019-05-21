@@ -185,6 +185,7 @@ void tests::newModulesAvailable()
     QVERIFY(spy.wait());
     QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
+    QVERIFY(arguments.at(0).type() == QVariant::Bool);
     QCOMPARE(arguments.at(0), newModulesAvailable);
     QCOMPARE(settings.value("modulesVersion").toInt(), versionInQSettings);
 }
