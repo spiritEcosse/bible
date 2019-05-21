@@ -19,7 +19,8 @@ before_install:
 
 script:
     - cd tests
-    - qmake
+    - qmake tests.pro -spec linux-g++
+    - make qmake_all
     - make
     - xvfb-run -a ./tests
     
