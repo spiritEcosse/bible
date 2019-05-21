@@ -10,8 +10,11 @@ addons:
         - g++-7
         - qt5-default
         - qt5-qmake
-        
+env:
+    - QT_VERSION=5.6.3
+
 script:
     - qmake -v
-    - ./configure && make && make test
+    - qmake
+    - make
     
