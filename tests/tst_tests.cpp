@@ -138,7 +138,7 @@ void tests::updateModules()
     QSignalSpy spy(&modulesModel, &ModulesModel::decompressSuccess);
     QSignalSpy spy1(&modulesModel, &ModulesModel::updateTableSuccess);
     QSignalSpy spy2(&modulesModel, &ModulesModel::removeRegistryFileSuccess);
-    QSignalSpy spy3(&modulesModel, &ModulesModel::removeOldEntriesSuccess);
+    QSignalSpy spy3(&modulesModel, &ModulesModel::removeOldRowsSuccess);
     modulesModel.urlRegistry = QUrl(QString("%1%2").arg(strUrl, fileNameRegistryZip));
     modulesModel.updateModules();
 
@@ -151,7 +151,7 @@ void tests::updateModules()
     ModulesModel modulesModelNew;
     QCOMPARE(modulesModelNew.rowCount(), fileRegistryItems);
     modulesModelNew.setCountOldRows();
-    modulesModelNew.removeOldEntries();
+    modulesModelNew.removeOldRows();
 }
 
 void tests::newModulesAvailable_data()
@@ -252,7 +252,7 @@ void tests::modulesSection()
 void tests::modulesRemoveOldRows_data()
 {
     QTest::addColumn<int>("rowCount");
-    QTest::addColumn<int>("appendRows");
+    QTest::addColumn<int>("addedRows");
     QTest::newRow("start") << 0 << 10;
     QTest::newRow("middle") << 10 << 5;
     QTest::newRow("end") << 5 << 0;
@@ -261,26 +261,26 @@ void tests::modulesRemoveOldRows_data()
 void tests::modulesRemoveOldRows()
 {
     QFETCH(int, rowCount);
-    QFETCH(int, appendRows);
+    QFETCH(int, addedRows);
 
     ModulesModel modulesModel;
     QCOMPARE(modulesModel.rowCount(), rowCount);
 
     modulesModel.setCountOldRows();
 
-    for (int i = 0; i < appendRows; i++) {
+    for (int i = 0; i < addedRows; i++) {
         QSqlRecord newRecord = modulesModel.record();
         newRecord.setValue("name", "name");
         newRecord.setValue("size", "1");
         modulesModel.insertRecord(-1, newRecord);
     }
 
-    modulesModel.removeOldEntries();
+    modulesModel.removeOldRows();
 
     if (!modulesModel.submitAll()) {
         qWarning() << "Failed to add new row: " << modulesModel.lastError().text();
     }
-    QCOMPARE(modulesModel.rowCount(), appendRows);
+    QCOMPARE(modulesModel.rowCount(), addedRows);
 }
 
 QTEST_MAIN(tests)

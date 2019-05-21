@@ -54,7 +54,7 @@ signals:
     void availabilityNewModules(bool);
     void decompressSuccess();
     void removeRegistryFileSuccess();
-    void removeOldEntriesSuccess();
+    void removeOldRowsSuccess();
 
 private slots:
     void updateTable();
@@ -63,7 +63,7 @@ private slots:
     void removeRegistryFile();
 
 public slots:
-    void removeOldEntries();
+    void removeOldRows();
 };
 
 #endif // MODULESMODEL_H

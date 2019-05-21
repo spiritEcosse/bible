@@ -69,7 +69,7 @@ void ModulesModel::updateModules()
 
     setCountOldRows();
 
-    connect(this, SIGNAL (updateTableSuccess()), SLOT (removeOldEntries()));
+    connect(this, SIGNAL (updateTableSuccess()), SLOT (removeOldRows()));
     connect(this, SIGNAL (updateTableSuccess()), SLOT (removeRegistryFile()));
 }
 
@@ -81,14 +81,14 @@ void ModulesModel::setCountOldRows()
     countOldRows = query.value("count").toInt();
 }
 
-void ModulesModel::removeOldEntries()
+void ModulesModel::removeOldRows()
 {
     removeRows(0, countOldRows);
 
     if (!submitAll()) {
         qWarning() << "Failed to remove rows: " << lastError().text();
     } else {
-        emit removeOldEntriesSuccess();
+        emit removeOldRowsSuccess();
     }
 }
 
