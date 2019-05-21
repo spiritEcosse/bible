@@ -1,5 +1,5 @@
 QT += gui testlib sql network
-CONFIG += qt warn_on depend_includepath testcase qtestlib
+CONFIG += qt warn_on depend_includepath testcase
 
 TEMPLATE = app
 PROJECT_DIR = $$PWD/../
