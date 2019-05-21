@@ -26,8 +26,8 @@ private:
     const int fileRegistryItems = 5;
     QFile fileRegistry;
     QFile fileRegistryInfo;
-    QSettings settings;
     QDir dir;
+    QSettings settings;
 
 private slots:
     void initTestCase();
@@ -48,12 +48,10 @@ private slots:
 
 tests::tests()
 {
-
 }
 
 tests::~tests()
 {
-
 }
 
 void tests::initTestCase()
