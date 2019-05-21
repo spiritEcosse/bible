@@ -21,8 +21,8 @@ notifications:
   email: false
   
 script:
-    - python -m SimpleHTTPServer 2443 &
     - cd tests
+    - python -m SimpleHTTPServer 2443 &
     - qmake tests.pro
     - make
     - xvfb-run -a ./tests
