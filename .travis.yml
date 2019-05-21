@@ -12,7 +12,7 @@ matrix:
 before_install:
   - if [ "$QT_BASE" = "56" ]; then sudo add-apt-repository ppa:beineri/opt-qt562-xenial -y; fi
   - sudo apt-get update -qq;
-  - sudo apt-get install -y xvfb libquazip5-headers libquazip5-1 libquazip5-dev qt5-default qt5-qmake libgdal-dev libproj-dev qt54base qt54tools qt54-meta-full
+  - sudo apt-get install -y xvfb libquazip5-headers libquazip5-1 libquazip5-dev qt5-default qt5-qmake qttools5-dev-tools qtbase5-dev qtdeclarative5-dev libqt5webkit5-dev libsqlite3-dev
 
 install:
   - if [ "$QT_BASE" = "56" ]; then sudo apt-get install -qq qt56base; source /opt/qt56/bin/qt56-env.sh; fi
