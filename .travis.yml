@@ -31,7 +31,9 @@ script:
     - make
     - xvfb-run -a ./tests
     # Codecov
-    - scripts/get_code_cov.sh
+    - cd scripts
+    - chmod +x get_code_cov.sh
+    - ./get_code_cov.sh
 
 after_success:
   # Codecov
