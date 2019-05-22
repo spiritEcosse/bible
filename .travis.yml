@@ -34,6 +34,7 @@ script:
     - cd scripts
     - chmod +x get_code_cov.sh
     - ./get_code_cov.sh
+    - cd ../../
 
 after_success:
   # Codecov
