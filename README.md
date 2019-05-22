@@ -1,3 +1,3 @@
 # bible
 
-https://travis-ci.com/spiritEcosse/bible.svg?branch=master
+[![Build status](https://travis-ci.com/spiritEcosse/bible.svg?branch=master)]
