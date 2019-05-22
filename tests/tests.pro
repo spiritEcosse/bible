@@ -8,12 +8,14 @@ PROJECT_SOURCES = \
     $$PROJECT_DIR/src/DownloadManager.cpp \
     $$PROJECT_DIR/src/TextProgressBar.cpp \
     $$PROJECT_DIR/src/dbmanager.cpp \
-    $$PROJECT_DIR/src/ModulesModel.cpp
+    $$PROJECT_DIR/src/ModulesModel.cpp \
+    $$PROJECT_DIR/src/ModulesGroupModel.cpp
 
 PROJECT_HEADERS = \
     $$PROJECT_DIR/src/DownloadManager.h \
     $$PROJECT_DIR/src/TextProgressBar.h \
-    $$PROJECT_DIR/src/ModulesModel.h
+    $$PROJECT_DIR/src/ModulesModel.h \
+    $$PROJECT_DIR/src/ModulesGroupModel.h
 
 HEADERS += $$PROJECT_HEADERS
 

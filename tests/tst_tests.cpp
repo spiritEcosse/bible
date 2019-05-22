@@ -8,6 +8,7 @@
 #include "../src/DownloadManager.h"
 #include "../src/ModulesModel.h"
 #include "../src/dbmanager.h"
+#include "../src/ModulesGroupModel.h"
 
 class tests : public QObject
 {
@@ -38,12 +39,14 @@ private slots:
     void updateModules_data();
     void newModulesAvailable_data();
     void newModulesAvailable();
-    void modulesCorrectSize_data();
-    void modulesCorrectSize();
-    void modulesSection_data();
-    void modulesSection();
-    void modulesRemoveOldRows_data();
-    void modulesRemoveOldRows();
+    void modulesGroupCorrectSize_data();
+    void modulesGroupCorrectSize();
+    void modulesGroupCorrectTitle_data();
+    void modulesGroupCorrectTitle();
+    void modulesGroupRemoveOldRows_data();
+    void modulesGroupRemoveOldRows();
+    void modulesModel_data();
+    void modulesModel();
 };
 
 tests::tests()
@@ -64,6 +67,7 @@ void tests::initTestCase()
     fileRegistry.setFileName(fileNameRegistry);
     QSqlQuery query;
     query.exec("DROP TABLE modules;");
+    query.exec("DROP TABLE modules_group;");
 }
 
 void tests::cleanupTestCase()
@@ -130,15 +134,15 @@ void tests::updateModules_data()
 
 void tests::updateModules()
 {
-    ModulesModel modulesModel;
-    QVERIFY(QSqlDatabase::database().tables().contains("modules"));
+    ModulesGroupModel modulesGroupModel;
+    QVERIFY(QSqlDatabase::database().tables().contains("modules_group"));
 
-    QSignalSpy spy(&modulesModel, &ModulesModel::decompressSuccess);
-    QSignalSpy spy1(&modulesModel, &ModulesModel::updateTableSuccess);
-    QSignalSpy spy2(&modulesModel, &ModulesModel::removeRegistryFileSuccess);
-    QSignalSpy spy3(&modulesModel, &ModulesModel::removeOldRowsSuccess);
-    modulesModel.urlRegistry = QUrl(QString("%1%2").arg(strUrl, fileNameRegistryZip));
-    modulesModel.updateModules();
+    QSignalSpy spy(&modulesGroupModel, &ModulesGroupModel::decompressSuccess);
+    QSignalSpy spy1(&modulesGroupModel, &ModulesGroupModel::updateTableSuccess);
+    QSignalSpy spy2(&modulesGroupModel, &ModulesGroupModel::removeRegistryFileSuccess);
+    QSignalSpy spy3(&modulesGroupModel, &ModulesGroupModel::removeOldRowsSuccess);
+    modulesGroupModel.urlRegistry = QUrl(QString("%1%2").arg(strUrl, fileNameRegistryZip));
+    modulesGroupModel.updateModules();
 
     QVERIFY(spy2.wait());
     QCOMPARE(spy.count(), 1);
@@ -146,10 +150,10 @@ void tests::updateModules()
     QCOMPARE(spy2.count(), 1);
     QCOMPARE(spy3.count(), 1);
 
-    ModulesModel modulesModelNew;
-    QCOMPARE(modulesModelNew.rowCount(), fileRegistryItems);
-    modulesModelNew.setCountOldRows();
-    modulesModelNew.removeOldRows();
+    ModulesGroupModel modulesGroupModelNew;
+    QCOMPARE(modulesGroupModelNew.rowCount(), fileRegistryItems);
+    modulesGroupModelNew.setCountOldRows();
+    modulesGroupModelNew.removeOldRows();
 }
 
 void tests::newModulesAvailable_data()
@@ -177,10 +181,10 @@ void tests::newModulesAvailable()
     fileRegistryInfo.write(document.toJson());
     fileRegistryInfo.close();
 
-    ModulesModel modulesModel;
-    QSignalSpy spy(&modulesModel, &ModulesModel::availabilityNewModules);
-    modulesModel.urlRegistryInfo = QUrl(QString("%1%2").arg(strUrl, fileRegistryInfo.fileName()));
-    modulesModel.checkAvailabilityNewModules();
+    ModulesGroupModel modulesGroupModel;
+    QSignalSpy spy(&modulesGroupModel, &ModulesGroupModel::availabilityNewModules);
+    modulesGroupModel.urlRegistryInfo = QUrl(QString("%1%2").arg(strUrl, fileRegistryInfo.fileName()));
+    modulesGroupModel.checkAvailabilityNewModules();
 
     QVERIFY(spy.wait());
     QCOMPARE(spy.count(), 1);
@@ -190,7 +194,7 @@ void tests::newModulesAvailable()
     QCOMPARE(settings.value("modulesVersion").toInt(), versionInQSettings);
 }
 
-void tests::modulesCorrectSize_data()
+void tests::modulesGroupCorrectSize_data()
 {
     QTest::addColumn<QString>("input");
     QTest::addColumn<int>("result");
@@ -204,16 +208,16 @@ void tests::modulesCorrectSize_data()
     QTest::newRow("65700") << "65700" << 65700;
 }
 
-void tests::modulesCorrectSize()
+void tests::modulesGroupCorrectSize()
 {
     QFETCH(QString, input);
     QFETCH(int, result);
 
-    ModulesModel modulesModel;
-    QCOMPARE(modulesModel.correctSize(input), result);
+    ModulesGroupModel modulesGroupModel;
+    QCOMPARE(modulesGroupModel.correctSize(input), result);
 }
 
-void tests::modulesSection_data()
+void tests::modulesGroupCorrectTitle_data()
 {
     QTest::addColumn<QString>("name");
     QTest::addColumn<QString>("language");
@@ -237,49 +241,58 @@ void tests::modulesSection_data()
             << "AB-c.commentaries" << "en" << "" << "Commentaries, American English";
 }
 
-void tests::modulesSection()
+void tests::modulesGroupCorrectTitle()
 {
     QFETCH(QString, language);
     QFETCH(QString, name);
     QFETCH(QString, region);
     QFETCH(QString, result);
 
-    ModulesModel modulesModel;
-    QCOMPARE(modulesModel.section(name, language, region), result);
+    ModulesGroupModel modulesGroupModel;
+    QCOMPARE(modulesGroupModel.correctTitle(name, language, region), result);
 }
 
-void tests::modulesRemoveOldRows_data()
+void tests::modulesGroupRemoveOldRows_data()
 {
     QTest::addColumn<int>("rowCount");
     QTest::addColumn<int>("addedRows");
     QTest::newRow("start") << 0 << 10;
-    QTest::newRow("middle") << 10 << 5;
-    QTest::newRow("end") << 5 << 0;
+    QTest::newRow("middle") << 10 << 3;
+    QTest::newRow("end") << 3 << 0;
 }
 
-void tests::modulesRemoveOldRows()
+void tests::modulesGroupRemoveOldRows()
 {
     QFETCH(int, rowCount);
     QFETCH(int, addedRows);
 
-    ModulesModel modulesModel;
-    QCOMPARE(modulesModel.rowCount(), rowCount);
+    ModulesGroupModel modulesGroupModel;
+    QCOMPARE(modulesGroupModel.rowCount(), rowCount);
 
-    modulesModel.setCountOldRows();
+    modulesGroupModel.setCountOldRows();
 
     for (int i = 0; i < addedRows; i++) {
-        QSqlRecord newRecord = modulesModel.record();
-        newRecord.setValue("name", "name");
-        newRecord.setValue("size", "1");
-        modulesModel.insertRecord(-1, newRecord);
+        QSqlRecord newRecord = modulesGroupModel.record();
+        newRecord.setValue("title", "title");
+        modulesGroupModel.insertRecord(-1, newRecord);
     }
 
-    modulesModel.removeOldRows();
+    modulesGroupModel.removeOldRows();
 
-    if (!modulesModel.submitAll()) {
-        qWarning() << "Failed to add new row: " << modulesModel.lastError().text();
+    if (!modulesGroupModel.submitAll()) {
+        qWarning() << "Failed to add new row: " << modulesGroupModel.lastError().text();
     }
-    QCOMPARE(modulesModel.rowCount(), addedRows);
+    QCOMPARE(modulesGroupModel.rowCount(), addedRows);
+}
+
+void tests::modulesModel_data()
+{
+}
+
+void tests::modulesModel()
+{
+    ModulesModel modulesModel;
+    QVERIFY(QSqlDatabase::database().tables().contains("modules"));
 }
 
 QTEST_MAIN(tests)
