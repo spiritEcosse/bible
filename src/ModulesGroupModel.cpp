@@ -8,8 +8,10 @@ static void createTable(QString const tableName)
 
         sql = QString(
                     "CREATE TABLE IF NOT EXISTS '%1' ("
-                    "   'id'      INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    "   'title'   CHAR(40) "
+                    "   'id'        INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    "   'language'  CHAR(50), "
+                    "   'type'      CHAR(50), "
+                    "   'region'    CHAR(50) "
                     ")"
                     ).arg(tableName);
 
@@ -107,7 +109,17 @@ void ModulesGroupModel::newRows(QJsonArray &downloads)
     foreach(const QJsonValue &jsonValue, downloads) {
         QJsonObject jsonObject = jsonValue.toObject();
         QSqlRecord newRecord = record();
-        newRecord.setValue("title", jsonObject.value("fil").toString());
+        QMap<QString, QString> group = makeGroup(
+                    jsonObject.value("fil").toString(),
+                    jsonObject.value("lng").toString(),
+                    jsonObject.value("reg").toString());
+
+        QMap<QString, QString>::const_iterator it = group.constBegin();
+        while (it != group.constEnd()) {
+            newRecord.setValue(it.key(), it.value());
+            ++it;
+        }
+
 //        newRecord.setValue("name", jsonObject.value("fil").toString());
 //        newRecord.setValue("description", jsonObject.value("des").toString());
 //        newRecord.setValue("abbreviation", jsonObject.value("abr").toString());
@@ -131,22 +143,6 @@ void ModulesGroupModel::newRows(QJsonArray &downloads)
     } else {
         qWarning() << "Failed to add new row: " << lastError().text();
     }
-}
-
-int ModulesGroupModel::correctSize(const QString &str) const
-{
-    QRegularExpression re("^([+-]?\\d*\\.?\\d+)(\\w{1})*$", QRegularExpression::CaseInsensitiveOption);
-    QRegularExpressionMatch match = re.match(str);
-    double size = 0;
-    QStringList dimensions = {"K", "M", "G"};
-
-    if (match.hasMatch()) {
-        size = match.captured(1).toDouble();
-        QString dimension = match.captured(2).toUpper();
-        size *= qPow(1024, dimensions.indexOf(dimension) + 1);
-    }
-//ToDo replace on formattedDataSize
-    return size;
 }
 
 void ModulesGroupModel::checkAvailabilityNewModules()
@@ -178,6 +174,32 @@ void ModulesGroupModel::compareVersions()
     }
 
     emit availabilityNewModules(newModules);
+}
+
+QMap<QString, QString> ModulesGroupModel::makeGroup(const QString &name, const QString &language, const QString &region) const
+{
+    QMap<QString, QString> group;
+    QRegularExpression re(MODULES_SPLIT_NAME);
+    QRegularExpressionMatch match = re.match(name);
+    QLocale locale = language;
+
+    if (match.hasMatch()) {
+        group["type"] = match.captured(2);
+    }
+
+    if (!locale.nativeLanguageName().isEmpty()) {
+        group["language"] = language;
+    }
+
+    if (group.empty() && !region.isEmpty()) {
+        group["region"] = region;
+    }
+
+    if (group.empty()) {
+        group["language"] = language;
+    }
+
+    return group;
 }
 
 QString ModulesGroupModel::correctTitle(const QString &name, const QString &language, const QString &region) const

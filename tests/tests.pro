@@ -17,9 +17,15 @@ PROJECT_HEADERS = \
     $$PROJECT_DIR/src/ModulesModel.h \
     $$PROJECT_DIR/src/ModulesGroupModel.h
 
-HEADERS += $$PROJECT_HEADERS
+HEADERS += $$PROJECT_HEADERS \
+    mock_modulesmodel.h \
+    iqsqldatabase.h \
+    iqsqlquery.h \
+    mock_iqsqldatabase.h
 
 SOURCES += $$PROJECT_SOURCES \
-    tst_tests.cpp
+    modulesgroupmodel-test.cpp \
+    modulesmodel-test.cpp \
+    main.cpp
 
-LIBS += -lquazip5
+LIBS += -lquazip5 -lgtest -lgmock

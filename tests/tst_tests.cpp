@@ -4,11 +4,14 @@
 #include <QSqlRecord>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QAbstractItemModelTester>
 
 #include "../src/DownloadManager.h"
 #include "../src/ModulesModel.h"
 #include "../src/dbmanager.h"
 #include "../src/ModulesGroupModel.h"
+
+typedef QMap<QString, QString> Group;
 
 class tests : public QObject
 {
@@ -39,12 +42,14 @@ private slots:
     void updateModules_data();
     void newModulesAvailable_data();
     void newModulesAvailable();
-    void modulesGroupCorrectSize_data();
-    void modulesGroupCorrectSize();
     void modulesGroupCorrectTitle_data();
     void modulesGroupCorrectTitle();
     void modulesGroupRemoveOldRows_data();
     void modulesGroupRemoveOldRows();
+    void modulesGroupMakeGroup();
+    void modulesGroupMakeGroup_data();
+    void modulesGroupNewRows_data();
+    void modulesGroupNewRows();
     void modulesModel_data();
     void modulesModel();
 };
@@ -61,13 +66,13 @@ void tests::initTestCase()
 {
     dir.mkdir(dirName);
     QDir::setCurrent(dirName);
-    connectToDatabase();
+//    connectToDatabase();
     settings.setValue("modulesVersion", 0);
     fileRegistryInfo.setFileName(fileNameRegistryInfo);
     fileRegistry.setFileName(fileNameRegistry);
-    QSqlQuery query;
-    query.exec("DROP TABLE modules;");
-    query.exec("DROP TABLE modules_group;");
+//    QSqlQuery query;
+//    query.exec("DROP TABLE modules;");
+//    query.exec("DROP TABLE modules_group;");
 }
 
 void tests::cleanupTestCase()
@@ -194,29 +199,6 @@ void tests::newModulesAvailable()
     QCOMPARE(settings.value("modulesVersion").toInt(), versionInQSettings);
 }
 
-void tests::modulesGroupCorrectSize_data()
-{
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<int>("result");
-    QTest::newRow("100K") << "100K" << 102400;
-    QTest::newRow("100.0K") << "100.0K" << 102400;
-    QTest::newRow("1k") << "1k" << 1024;
-    QTest::newRow("12.32M") << "12.32M" << 12918456;
-    QTest::newRow("1m") << "1m" << 1048576;
-    QTest::newRow("0.05G") << "0.05G" << 53687091;
-    QTest::newRow("1g") << "1g" << 1073741824;
-    QTest::newRow("65700") << "65700" << 65700;
-}
-
-void tests::modulesGroupCorrectSize()
-{
-    QFETCH(QString, input);
-    QFETCH(int, result);
-
-    ModulesGroupModel modulesGroupModel;
-    QCOMPARE(modulesGroupModel.correctSize(input), result);
-}
-
 void tests::modulesGroupCorrectTitle_data()
 {
     QTest::addColumn<QString>("name");
@@ -285,6 +267,90 @@ void tests::modulesGroupRemoveOldRows()
     QCOMPARE(modulesGroupModel.rowCount(), addedRows);
 }
 
+void tests::modulesGroupMakeGroup_data()
+{
+    QTest::addColumn<QString>("name");
+    QTest::addColumn<QString>("language");
+    QTest::addColumn<QString>("region");
+    QTest::addColumn<Group>("result");
+
+    Group group;
+    group["language"] = "en";
+
+    QTest::newRow("name, language exists in qt") << "AUV" << "en" << "" << group;
+    group.clear();
+    group["region"] = "Papua New Guinea";
+    QTest::newRow("name, language not exists in qt and region") << "AUY" << "Auyana" << "Papua New Guinea" << group;
+
+    group.clear();
+    group["language"] = "en";
+    QTest::newRow("name, language exists in qt and region") << "AUV" << "en" << "India" << group;
+    group.clear();
+
+    group["language"] = "av";
+    QTest::newRow("name, language not exists in qt") << "AVAR" << "av" << "" << group;
+
+    group.clear();
+    group["language"] = "ar";
+    QTest::newRow("name, language exists in qt") << "AVDDV" << "ar" << "" << group;
+
+    group.clear();
+    group["type"] = "plan";
+    QTest::newRow("only name *.plan") << "2016c-p.plan" << "" << "" << group;
+
+    group.clear();
+    group["language"] = "ru";
+    group["type"] = "plan";
+    QTest::newRow("name *.plan, language exists in qt") << "2016c-p.plan" << "ru" << "" << group;
+
+    group.clear();
+    group["language"] = "en";
+    group["type"] = "commentaries";
+    QTest::newRow("name *.commentaries, language exists in qt") << "AB-c.commentaries" << "en" << "" << group;
+}
+
+void tests::modulesGroupMakeGroup()
+{
+    QFETCH(QString, name);
+    QFETCH(QString, language);
+    QFETCH(QString, region);
+    QFETCH(Group, result);
+
+    ModulesGroupModel modulesGroupModel;
+    Group group = modulesGroupModel.makeGroup(name, language, region);
+    QCOMPARE(group, result);
+}
+
+void tests::modulesGroupNewRows_data()
+{
+}
+
+void tests::modulesGroupNewRows()
+{
+    QJsonArray jsonArray;
+    jsonArray << QJsonObject({
+                    qMakePair(QString("fil"), QJsonValue("AUV")),
+                    qMakePair(QString("lng"), QJsonValue("en")),
+    });
+    jsonArray << QJsonObject({
+                    qMakePair(QString("fil"), QJsonValue("AUY")),
+                    qMakePair(QString("lng"), QJsonValue("Auyana")),
+                    qMakePair(QString("reg"), QJsonValue("Papua New Guinea")),
+    });
+
+    ModulesGroupModel modulesGroupModel;
+    modulesGroupModel.newRows(jsonArray);
+    QSqlRecord record = modulesGroupModel.record(0);
+    QCOMPARE(record.value("language"), "en");
+    QCOMPARE(record.value("type"), "");
+    QCOMPARE(record.value("region"), "");
+
+    QSqlRecord record1 = modulesGroupModel.record(1);
+    QCOMPARE(record1.value("language"), "");
+    QCOMPARE(record1.value("type"), "");
+    QCOMPARE(record1.value("region"), "Papua New Guinea");
+}
+
 void tests::modulesModel_data()
 {
 }
@@ -295,6 +361,6 @@ void tests::modulesModel()
     QVERIFY(QSqlDatabase::database().tables().contains("modules"));
 }
 
-QTEST_MAIN(tests)
+QTEST_APPLESS_MAIN(tests)
 
 #include "tst_tests.moc"

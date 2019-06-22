@@ -1,7 +1,25 @@
 #include "ModulesModel.h"
 
-static void createTable(QString const tableName, QString const relatedTable)
+ModulesModel::ModulesModel(QObject *parent, QSqlDatabase db)
+    : QSqlTableModel(parent, db)
 {
+    db = db;
+}
+
+ModulesModel::~ModulesModel()
+{
+}
+
+void ModulesModel::init()
+{
+    createTable("modules", "modules_group");
+    setTable("modules");
+    select();
+}
+
+bool ModulesModel::createTable(const QString &tableName, const QString &relatedTable)
+{
+//    db.tables().contains(tableName)
     if (!QSqlDatabase::database().tables().contains(tableName)) {
         QSqlQuery query;
         QString sql;
@@ -31,24 +49,25 @@ static void createTable(QString const tableName, QString const relatedTable)
         if (!query.exec(sql)) {
             qFatal("Failed to query database: %s", qPrintable(query.lastError().text()));
         }
+        return true;
     }
+    return false;
 }
 
-ModulesModel::ModulesModel(QObject *parent)
-    : QSqlTableModel(parent)
+int ModulesModel::correctSize(const QString &str) const
 {
-    createTable(tableName(), "modules_group");
-    setTable(tableName());
-    select();
-}
+    QRegularExpression re("^([+-]?\\d*\\.?\\d+)(\\w{1})*$", QRegularExpression::CaseInsensitiveOption);
+    QRegularExpressionMatch match = re.match(str);
+    double size = 0;
+    QStringList dimensions = {"K", "M", "G"};
 
-QString ModulesModel::tableName() const
-{
-    return "modules";
-}
-
-ModulesModel::~ModulesModel()
-{
+    if (match.hasMatch()) {
+        size = match.captured(1).toDouble();
+        QString dimension = match.captured(2).toUpper();
+        size *= qPow(1024, dimensions.indexOf(dimension) + 1);
+    }
+//ToDo replace on formattedDataSize
+    return size;
 }
 
 QVariant ModulesModel::data(const QModelIndex &index, int role) const
@@ -72,3 +91,4 @@ QHash<int, QByteArray> ModulesModel::roleNames() const {
     names[Qt::UserRole + 6] = "language";
     return names;
 }
+

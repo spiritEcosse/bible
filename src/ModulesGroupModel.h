@@ -41,12 +41,12 @@ public:
     QUrl urlRegistry = QUrl::fromEncoded(QByteArray::fromBase64(REGISTRY));
     QUrl urlRegistryInfo = QUrl::fromEncoded(QByteArray::fromBase64(REGISTRY_INFO));
     void checkAvailabilityNewModules();
-    int correctSize(const QString &str) const;
     QString correctTitle(const QString &name, const QString &language="", const QString &region="") const;
+    QMap<QString, QString> makeGroup(const QString &name, const QString &language="", const QString &region="") const;
     void setCountOldRows();
+    void newRows(QJsonArray &downloads);
 
 private:
-    void newRows(QJsonArray &downloads);
     QFile registry;
     QFile registryArchive;
     int countOldRows = 0;
