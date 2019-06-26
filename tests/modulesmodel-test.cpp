@@ -1,12 +1,9 @@
-#include "mock_modulesmodel.h"
-#include "mock_iqsqldatabase.h"
-
-#include "iqsqldatabase.h"
-#include "iqsqlquery.h"
-
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <QDebug>
+
+#include "mock_modulesmodel.h"
+#include "mock_iqsqldatabase.h"
 
 #include "../src/ModulesModel.h"
 
@@ -31,8 +28,6 @@ class ModulesModelTest : public TestWithParam<const char*> {
 
   ModulesModelTest() {
      // You can do set-up work for each test here.
-      MockIQSqlDatabase mockD;
-      MockModulesModel* mockModulesModel = new MockModulesModel(mockD);
   }
 
   ~ModulesModelTest() override {
@@ -54,6 +49,7 @@ class ModulesModelTest : public TestWithParam<const char*> {
   }
 
   // Objects declared here can be used by all tests in the test case for ModulesModel.
+//  MockModulesModel* mockModulesModel = new MockModulesModel;
 };
 
 
@@ -68,21 +64,31 @@ static QHash<const char *, int> sizes = {
 };
 
 // Tests that ModulesModel does correctSize.
-TEST_P(ModulesModelTest, correctSize) {
-    EXPECT_EQ(mockModulesModel->correctSize(GetParam()), sizes.value(GetParam()));
-}
+//TEST_P(ModulesModelTest, correctSize) {
+//    EXPECT_EQ(mockModulesModel->correctSize(GetParam()), sizes.value(GetParam()));
+//}
 
-INSTANTIATE_TEST_CASE_P(PossibleIncomingSizes, ModulesModelTest, ValuesIn(sizes.keys()));
+//INSTANTIATE_TEST_CASE_P(PossibleIncomingSizes, ModulesModelTest, ValuesIn(sizes.keys()));
 
-TEST_F(ModulesModelTest, init)
+//TEST_F(ModulesModelTest, init)
+//{
+//    const QString tableName = "modules";
+//    const QString tableNameRelated = "modules_group";
+//    {
+//        InSequence s;
+//        EXPECT_CALL(*mockModulesModel, createTable(tableName, tableNameRelated));
+//        EXPECT_CALL(*mockModulesModel, setTable(tableName));
+//        EXPECT_CALL(*mockModulesModel, select());
+//    }
+//    mockModulesModel->init();
+//}
+
+TEST_F(ModulesModelTest, createTable)
 {
-    const QString tableName = "modules";
-    const QString tableNameRelated = "modules_group";
-    {
-        InSequence s;
-        EXPECT_CALL(*mockModulesModel, createTable(tableName, tableNameRelated));
-        EXPECT_CALL(*mockModulesModel, setTable(tableName));
-        EXPECT_CALL(*mockModulesModel, select());
-    }
-    mockModulesModel->init();
+    MockIQSqlDatabase mockIQSqlDatabase;
+    EXPECT_CALL(mockIQSqlDatabase, tables(_));
+    ModulesModel<MockIQSqlDatabase> modulesModel(mockIQSqlDatabase);
+//    const QString tableName = "modules";
+//    const QString tableNameRelated = "modules_group";
+//    mockModulesModel.createTable(tableName, tableNameRelated);
 }

@@ -12,11 +12,12 @@
 
 #include "gtest/gtest_prod.h"
 
+template <class QSqlDatabase>
 class ModulesModel : public QSqlTableModel
 {
-    Q_OBJECT
+    QSqlDatabase* db;
 public:
-    ModulesModel(QObject *parent = nullptr, QSqlDatabase db = QSqlDatabase());
+    ModulesModel(QSqlDatabase &db);
     virtual ~ModulesModel();
 
     QVariant data(const QModelIndex &index, int role) const override;
@@ -30,7 +31,6 @@ private:
 
     int correctSize(const QString &str) const;
     virtual bool createTable(const QString &tableName, const QString &relatedTable);
-    QSqlDatabase db;
 };
 
 

@@ -7,11 +7,13 @@
 #include <QStringList>
 
 #include "iqsqldatabase.h"
+#include <QtSql/qtsqlglobal.h>
 
-class MockIQSqlDatabase : public IQSqlDatabase
+class MockIQSqlDatabase
 {
 public:
-    MOCK_CONST_METHOD0(tables, QStringList());
+    MockIQSqlDatabase() {}
+    MOCK_CONST_METHOD1(tables, QStringList(QSql::TableType type));
 };
 
 #endif // MOCK_IQSQLDATABASE_H

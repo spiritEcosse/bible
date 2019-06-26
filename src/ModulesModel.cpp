@@ -1,25 +1,30 @@
 #include "ModulesModel.h"
 
-ModulesModel::ModulesModel(QObject *parent, QSqlDatabase db)
+template <class QSqlDatabase>
+ModulesModel<QSqlDatabase>::ModulesModel(QSqlDatabase &db)
     : QSqlTableModel(parent, db)
 {
-    db = db;
+    db.tables();
+//    this->db = db;
 }
 
-ModulesModel::~ModulesModel()
+template <class QSqlDatabase>
+ModulesModel<QSqlDatabase>::~ModulesModel()
 {
 }
 
-void ModulesModel::init()
+template <class QSqlDatabase>
+void ModulesModel<QSqlDatabase>::init()
 {
     createTable("modules", "modules_group");
     setTable("modules");
     select();
 }
 
-bool ModulesModel::createTable(const QString &tableName, const QString &relatedTable)
+template <class QSqlDatabase>
+bool ModulesModel<QSqlDatabase>::createTable(const QString &tableName, const QString &relatedTable)
 {
-//    db.tables().contains(tableName)
+    db.tables();
     if (!QSqlDatabase::database().tables().contains(tableName)) {
         QSqlQuery query;
         QString sql;
@@ -54,7 +59,8 @@ bool ModulesModel::createTable(const QString &tableName, const QString &relatedT
     return false;
 }
 
-int ModulesModel::correctSize(const QString &str) const
+template <class QSqlDatabase>
+int ModulesModel<QSqlDatabase>::correctSize(const QString &str) const
 {
     QRegularExpression re("^([+-]?\\d*\\.?\\d+)(\\w{1})*$", QRegularExpression::CaseInsensitiveOption);
     QRegularExpressionMatch match = re.match(str);
@@ -70,7 +76,8 @@ int ModulesModel::correctSize(const QString &str) const
     return size;
 }
 
-QVariant ModulesModel::data(const QModelIndex &index, int role) const
+template <class QSqlDatabase>
+QVariant ModulesModel<QSqlDatabase>::data(const QModelIndex &index, int role) const
 {
     if (role < Qt::UserRole) {
         return QSqlTableModel::data(index, role);
@@ -80,7 +87,8 @@ QVariant ModulesModel::data(const QModelIndex &index, int role) const
     return sqlRecord.value(role - Qt::UserRole);
 }
 
-QHash<int, QByteArray> ModulesModel::roleNames() const {
+template <class QSqlDatabase>
+QHash<int, QByteArray> ModulesModel<QSqlDatabase>::roleNames() const {
     QHash<int, QByteArray> names;
     names[Qt::UserRole] = "updateDate";
     names[Qt::UserRole + 1] = "description";
@@ -91,4 +99,3 @@ QHash<int, QByteArray> ModulesModel::roleNames() const {
     names[Qt::UserRole + 6] = "language";
     return names;
 }
-

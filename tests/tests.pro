@@ -1,5 +1,5 @@
-QT += gui testlib sql network
-CONFIG += qt warn_on depend_includepath testcase
+QT += gui testlib sql network core
+CONFIG += qt warn_on depend_includepath testcase console
 
 TEMPLATE = app
 PROJECT_DIR = $$PWD/../
@@ -17,6 +17,9 @@ PROJECT_HEADERS = \
     $$PROJECT_DIR/src/ModulesModel.h \
     $$PROJECT_DIR/src/ModulesGroupModel.h
 
+GTEST_DIR = /home/igor/projects/googletest/googletest
+GMOCK_DIR = /home/igor/projects/googletest/googlemock
+
 HEADERS += $$PROJECT_HEADERS \
     mock_modulesmodel.h \
     iqsqldatabase.h \
@@ -28,4 +31,4 @@ SOURCES += $$PROJECT_SOURCES \
     modulesmodel-test.cpp \
     main.cpp
 
-LIBS += -lquazip5 -lgtest -lgmock
+LIBS += -lquazip5 -lgmock -lgtest -lpthread

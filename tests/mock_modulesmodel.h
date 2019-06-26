@@ -5,8 +5,10 @@
 #include <gtest/gtest.h>
 
 #include "../src/ModulesModel.h"
+#include "mock_iqsqldatabase.h"
 
-class MockModulesModel : public ModulesModel
+template <class MockIQSqlDatabase>
+class MockModulesModel : public ModulesModel<MockIQSqlDatabase>
 {
 public:
     MOCK_METHOD2(createTable, bool(const QString &tableName, const QString &relatedTable));
