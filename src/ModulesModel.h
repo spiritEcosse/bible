@@ -12,13 +12,14 @@
 
 #include "gtest/gtest_prod.h"
 
+#include <iostream>
+
 template <class QSqlDatabase>
 class ModulesModel : public QSqlTableModel
 {
-    QSqlDatabase* db;
 public:
-    ModulesModel(QSqlDatabase &db);
-    virtual ~ModulesModel();
+    ModulesModel(QObject *parent = nullptr, QSqlDatabase &db = QSqlDatabase());
+    ~ModulesModel();
 
     QVariant data(const QModelIndex &index, int role) const override;
     QHash<int, QByteArray> roleNames() const;
@@ -29,6 +30,7 @@ private:
     FRIEND_TEST(ModulesModelTest, correctSize);
     FRIEND_TEST(ModulesModelTest, createTable);
 
+    QSqlDatabase *db;
     int correctSize(const QString &str) const;
     virtual bool createTable(const QString &tableName, const QString &relatedTable);
 };

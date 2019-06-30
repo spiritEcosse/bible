@@ -1,6 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <QDebug>
+#include <iostream>
 
 #include "mock_modulesmodel.h"
 #include "mock_iqsqldatabase.h"
@@ -86,8 +87,8 @@ static QHash<const char *, int> sizes = {
 TEST_F(ModulesModelTest, createTable)
 {
     MockIQSqlDatabase mockIQSqlDatabase;
-    EXPECT_CALL(mockIQSqlDatabase, tables(_));
-    ModulesModel<MockIQSqlDatabase> modulesModel(mockIQSqlDatabase);
+    EXPECT_CALL(mockIQSqlDatabase, tables());
+    ModulesModel<MockIQSqlDatabase> modulesModel(nullptr, mockIQSqlDatabase);
 //    const QString tableName = "modules";
 //    const QString tableNameRelated = "modules_group";
 //    mockModulesModel.createTable(tableName, tableNameRelated);

@@ -3,12 +3,12 @@
 
 #include <qsqldatabase.h>
 
-class IQSqlDatabase : public QSqlDatabase
+class IQSqlDatabase
 {
 public:
     virtual ~IQSqlDatabase() {}
 //    virtual bool open() = 0;
-    virtual int tables(QSql::TableType type) const = 0;
+    virtual QStringList tables(QSql::TableType type) const = 0;
 //    virtual int Pop() = 0;
 };
 

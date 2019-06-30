@@ -1,10 +1,12 @@
 #include "ModulesModel.h"
+#include "../tests/mock_iqsqldatabase.h"
 
 template <class QSqlDatabase>
-ModulesModel<QSqlDatabase>::ModulesModel(QSqlDatabase &db)
-    : QSqlTableModel(parent, db)
+ModulesModel<QSqlDatabase>::ModulesModel(QObject *parent, QSqlDatabase &qdb)
+    : QSqlTableModel(parent, qdb)
 {
-    db.tables();
+    db = &qdb;
+    db->tables();
 //    this->db = db;
 }
 
@@ -24,7 +26,6 @@ void ModulesModel<QSqlDatabase>::init()
 template <class QSqlDatabase>
 bool ModulesModel<QSqlDatabase>::createTable(const QString &tableName, const QString &relatedTable)
 {
-    db.tables();
     if (!QSqlDatabase::database().tables().contains(tableName)) {
         QSqlQuery query;
         QString sql;
@@ -99,3 +100,6 @@ QHash<int, QByteArray> ModulesModel<QSqlDatabase>::roleNames() const {
     names[Qt::UserRole + 6] = "language";
     return names;
 }
+
+template class ModulesModel<QSqlDatabase>;
+template class ModulesModel<MockIQSqlDatabase>;
