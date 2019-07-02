@@ -11,9 +11,9 @@ template <class MockIQSqlDatabase>
 class MockModulesModel : public ModulesModel<MockIQSqlDatabase>
 {
 public:
-    MOCK_METHOD2(createTable, bool(const QString &tableName, const QString &relatedTable));
-    MOCK_METHOD1(setTable, void(const QString &tableName));
-    MOCK_METHOD0(select, bool());
+    MOCK_METHOD2_T(createTable, bool(const QString &tableName, const QString &relatedTable));
+    MOCK_METHOD1_T(setTable, void(const QString &tableName));
+    MOCK_METHOD0_T(select, bool());
 };
 
 #endif // MOCKMODULESMODEL_H

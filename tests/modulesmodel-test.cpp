@@ -50,7 +50,7 @@ class ModulesModelTest : public TestWithParam<const char*> {
   }
 
   // Objects declared here can be used by all tests in the test case for ModulesModel.
-//  MockModulesModel* mockModulesModel = new MockModulesModel;
+  MockModulesModel<MockIQSqlDatabase>* mockModulesModel;
 };
 
 
@@ -65,31 +65,65 @@ static QHash<const char *, int> sizes = {
 };
 
 // Tests that ModulesModel does correctSize.
-//TEST_P(ModulesModelTest, correctSize) {
-//    EXPECT_EQ(mockModulesModel->correctSize(GetParam()), sizes.value(GetParam()));
-//}
+TEST_P(ModulesModelTest, correctSize) {
+    EXPECT_EQ(mockModulesModel->correctSize(GetParam()), sizes.value(GetParam()));
+}
 
-//INSTANTIATE_TEST_CASE_P(PossibleIncomingSizes, ModulesModelTest, ValuesIn(sizes.keys()));
+INSTANTIATE_TEST_CASE_P(PossibleIncomingSizes, ModulesModelTest, ValuesIn(sizes.keys()));
 
-//TEST_F(ModulesModelTest, init)
-//{
-//    const QString tableName = "modules";
-//    const QString tableNameRelated = "modules_group";
-//    {
-//        InSequence s;
-//        EXPECT_CALL(*mockModulesModel, createTable(tableName, tableNameRelated));
-//        EXPECT_CALL(*mockModulesModel, setTable(tableName));
-//        EXPECT_CALL(*mockModulesModel, select());
-//    }
-//    mockModulesModel->init();
-//}
+TEST_F(ModulesModelTest, init)
+{
+    const QString tableName = "modules";
+    const QString tableNameRelated = "modules_group";
+
+    mockModulesModel = new MockModulesModel<MockIQSqlDatabase>;
+    {
+        InSequence s;
+        EXPECT_CALL(*mockModulesModel, createTable(tableName, tableNameRelated))
+                .WillOnce(Return(true));
+        EXPECT_CALL(*mockModulesModel, setTable(tableName));
+        EXPECT_CALL(*mockModulesModel, select());
+    }
+    mockModulesModel->init();
+    EXPECT_CALL(*mockModulesModel, createTable(tableName, tableNameRelated))
+            .WillRepeatedly(Return(false));
+    mockModulesModel->createTable(tableName, tableNameRelated);
+}
 
 TEST_F(ModulesModelTest, createTable)
 {
+    const QString tableName = "modules";
+    const QString tableNameRelated = "modules_group";
+    QString sql = QString(
+                "CREATE TABLE IF NOT EXISTS '%1' ("
+                "   'id'                INTEGER PRIMARY KEY AUTOINCREMENT, "
+                "   'name'              CHAR(200) NOT NULL, "
+                "   'description'       TEXT, "
+                "   'abbreviation'      CHAR(50), "
+                "   'information'       TEXT, "
+                "   'language'          CHAR(50), "
+                "   'language_show'     CHAR(50), "
+                "   'update'            TEXT, "
+                "   'urls'              TEXT, "
+                "   'comment'           TEXT, "
+                "   'size'              NUMERIC NOT NULL, "
+                "   'region'            TEXT, "
+                "   'default_download'  NUMERIC DEFAULT 0, "
+                "   'hidden'            NUMERIC DEFAULT 0, "
+                "   'copyright'         TEXT, "
+                "   '%2_id'             NUMERIC NOT NULL, "
+                "FOREIGN KEY ('%2_id')  REFERENCES %2(id)"
+            ")"
+                ).arg(tableName, tableNameRelated);
     MockIQSqlDatabase mockIQSqlDatabase;
-    EXPECT_CALL(mockIQSqlDatabase, tables());
-    ModulesModel<MockIQSqlDatabase> modulesModel(nullptr, mockIQSqlDatabase);
-//    const QString tableName = "modules";
-//    const QString tableNameRelated = "modules_group";
-//    mockModulesModel.createTable(tableName, tableNameRelated);
+
+    {
+        InSequence s;
+        EXPECT_CALL(mockIQSqlDatabase, tables());
+        EXPECT_CALL(mockIQSqlDatabase, exec(sql));
+    }
+
+    ModulesModel<MockIQSqlDatabase> modulesModel(mockIQSqlDatabase, nullptr);
+    modulesModel.createTable(tableName, tableNameRelated);
 }
+

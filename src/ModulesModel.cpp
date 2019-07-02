@@ -2,12 +2,10 @@
 #include "../tests/mock_iqsqldatabase.h"
 
 template <class QSqlDatabase>
-ModulesModel<QSqlDatabase>::ModulesModel(QObject *parent, QSqlDatabase &qdb)
+ModulesModel<QSqlDatabase>::ModulesModel(QSqlDatabase &qdb, QObject *parent)
     : QSqlTableModel(parent, qdb)
 {
     db = &qdb;
-    db->tables();
-//    this->db = db;
 }
 
 template <class QSqlDatabase>
@@ -26,8 +24,7 @@ void ModulesModel<QSqlDatabase>::init()
 template <class QSqlDatabase>
 bool ModulesModel<QSqlDatabase>::createTable(const QString &tableName, const QString &relatedTable)
 {
-    if (!QSqlDatabase::database().tables().contains(tableName)) {
-        QSqlQuery query;
+    if ( !db->tables().contains(tableName) ) {
         QString sql;
 
         sql = QString(
@@ -52,8 +49,8 @@ bool ModulesModel<QSqlDatabase>::createTable(const QString &tableName, const QSt
                 ")"
                     ).arg(tableName, relatedTable);
 
-        if (!query.exec(sql)) {
-            qFatal("Failed to query database: %s", qPrintable(query.lastError().text()));
+        if (!db->exec(sql).exec()) {
+//            qFatal("Failed to query database: %s", qPrintable(query.lastError().text()));
         }
         return true;
     }

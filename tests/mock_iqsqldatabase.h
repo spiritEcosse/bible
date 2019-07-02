@@ -12,8 +12,8 @@
 class MockIQSqlDatabase : public QSqlDatabase
 {
 public:
-//    MockIQSqlDatabase() {}
     MOCK_CONST_METHOD0(tables, QStringList());
+    MOCK_CONST_METHOD1(exec, QSqlQuery(const QString& query));
 };
 
 #endif // MOCK_IQSQLDATABASE_H

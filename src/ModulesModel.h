@@ -18,12 +18,13 @@ template <class QSqlDatabase>
 class ModulesModel : public QSqlTableModel
 {
 public:
-    ModulesModel(QObject *parent = nullptr, QSqlDatabase &db = QSqlDatabase());
-    ~ModulesModel();
+    ModulesModel(QSqlDatabase &db, QObject *parent = nullptr);
+    explicit ModulesModel() {}
+    virtual ~ModulesModel();
 
     QVariant data(const QModelIndex &index, int role) const override;
     QHash<int, QByteArray> roleNames() const;
-    void init();
+    virtual void init();
 
 private:
     friend class ModulesModelTest;
