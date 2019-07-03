@@ -19,7 +19,6 @@ using ::testing::Eq;
 using ::testing::InSequence;
 using ::testing::Return;
 using ::testing::Mock;
-using ::testing::Invoke;
 
 // The fixture for testing class ModulesModel.
 class ModulesModelTest : public TestWithParam<const char*> {
@@ -51,6 +50,8 @@ class ModulesModelTest : public TestWithParam<const char*> {
 
   // Objects declared here can be used by all tests in the test case for ModulesModel.
   MockModulesModel<MockIQSqlDatabase>* mockModulesModel;
+  const QString tableName = "modules";
+  const QString relatedTable = "modules_group";
 };
 
 
@@ -73,27 +74,18 @@ INSTANTIATE_TEST_CASE_P(PossibleIncomingSizes, ModulesModelTest, ValuesIn(sizes.
 
 TEST_F(ModulesModelTest, init)
 {
-    const QString tableName = "modules";
-    const QString tableNameRelated = "modules_group";
-
     mockModulesModel = new MockModulesModel<MockIQSqlDatabase>;
     {
         InSequence s;
-        EXPECT_CALL(*mockModulesModel, createTable(tableName, tableNameRelated))
-                .WillOnce(Return(true));
+        EXPECT_CALL(*mockModulesModel, createTable(tableName, relatedTable));
         EXPECT_CALL(*mockModulesModel, setTable(tableName));
         EXPECT_CALL(*mockModulesModel, select());
     }
     mockModulesModel->init();
-    EXPECT_CALL(*mockModulesModel, createTable(tableName, tableNameRelated))
-            .WillRepeatedly(Return(false));
-    mockModulesModel->createTable(tableName, tableNameRelated);
 }
 
 TEST_F(ModulesModelTest, createTable)
 {
-    const QString tableName = "modules";
-    const QString tableNameRelated = "modules_group";
     QString sql = QString(
                 "CREATE TABLE IF NOT EXISTS '%1' ("
                 "   'id'                INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -114,16 +106,16 @@ TEST_F(ModulesModelTest, createTable)
                 "   '%2_id'             NUMERIC NOT NULL, "
                 "FOREIGN KEY ('%2_id')  REFERENCES %2(id)"
             ")"
-                ).arg(tableName, tableNameRelated);
+                ).arg(tableName, relatedTable);
     MockIQSqlDatabase mockIQSqlDatabase;
-
-    {
-        InSequence s;
-        EXPECT_CALL(mockIQSqlDatabase, tables());
-        EXPECT_CALL(mockIQSqlDatabase, exec(sql));
-    }
-
     ModulesModel<MockIQSqlDatabase> modulesModel(mockIQSqlDatabase, nullptr);
-    modulesModel.createTable(tableName, tableNameRelated);
-}
 
+    EXPECT_CALL(mockIQSqlDatabase, tables())
+            .Times(2)
+            .WillOnce(Return(QStringList{""}))
+            .WillRepeatedly(Return(QStringList{tableName}));
+    EXPECT_CALL(mockIQSqlDatabase, exec(sql));
+
+    EXPECT_TRUE(modulesModel.createTable(tableName, relatedTable));
+    EXPECT_FALSE(modulesModel.createTable(tableName, relatedTable));
+}
