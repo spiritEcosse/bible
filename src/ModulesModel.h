@@ -31,7 +31,7 @@ private:
     FRIEND_TEST(ModulesModelTest, correctSize);
     FRIEND_TEST(ModulesModelTest, createTable);
 
-    QSqlDatabase *db;
+    QSqlDatabase *db_;
     int correctSize(const QString &str) const;
     virtual bool createTable(const QString &tableName, const QString &relatedTable);
 };

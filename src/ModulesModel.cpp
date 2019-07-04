@@ -2,10 +2,9 @@
 #include "../tests/mock_iqsqldatabase.h"
 
 template <class QSqlDatabase>
-ModulesModel<QSqlDatabase>::ModulesModel(QSqlDatabase &qdb, QObject *parent)
-    : QSqlTableModel(parent, qdb)
+ModulesModel<QSqlDatabase>::ModulesModel(QSqlDatabase &db, QObject *parent)
+    : QSqlTableModel(parent, db), db_(&db)
 {
-    db = &qdb;
 }
 
 template <class QSqlDatabase>
@@ -24,7 +23,7 @@ void ModulesModel<QSqlDatabase>::init()
 template <class QSqlDatabase>
 bool ModulesModel<QSqlDatabase>::createTable(const QString &tableName, const QString &relatedTable)
 {
-    if ( !db->tables().contains(tableName) ) {
+    if ( !db_->tables().contains(tableName) ) {
         QString sql = QString(
                     "CREATE TABLE IF NOT EXISTS '%1' ("
                     "   'id'                INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -47,7 +46,7 @@ bool ModulesModel<QSqlDatabase>::createTable(const QString &tableName, const QSt
                     ")"
                     ).arg(tableName, relatedTable);
 
-        db->exec(sql);
+        db_->exec(sql);
 //        if (!db->exec(sql).exec()) {
 //            qFatal("Failed to query database: %s", qPrintable(query.lastError().text()));
 //        }
