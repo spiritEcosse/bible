@@ -105,14 +105,14 @@ TEST_F(ModulesModelTest, createTable)
                 "   'copyright'         TEXT, "
                 "   '%2_id'             NUMERIC NOT NULL, "
                 "FOREIGN KEY ('%2_id')  REFERENCES %2(id)"
-            ")"
+                ")"
                 ).arg(tableName, relatedTable);
     MockIQSqlDatabase mockIQSqlDatabase;
     ModulesModel<MockIQSqlDatabase> modulesModel(mockIQSqlDatabase, nullptr);
 
     EXPECT_CALL(mockIQSqlDatabase, tables())
             .Times(2)
-            .WillOnce(Return(QStringList{""}))
+            .WillOnce(Return(QStringList{}))
             .WillRepeatedly(Return(QStringList{tableName}));
     EXPECT_CALL(mockIQSqlDatabase, exec(sql));
 

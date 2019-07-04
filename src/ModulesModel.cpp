@@ -25,9 +25,7 @@ template <class QSqlDatabase>
 bool ModulesModel<QSqlDatabase>::createTable(const QString &tableName, const QString &relatedTable)
 {
     if ( !db->tables().contains(tableName) ) {
-        QString sql;
-
-        sql = QString(
+        QString sql = QString(
                     "CREATE TABLE IF NOT EXISTS '%1' ("
                     "   'id'                INTEGER PRIMARY KEY AUTOINCREMENT, "
                     "   'name'              CHAR(200) NOT NULL, "
@@ -46,7 +44,7 @@ bool ModulesModel<QSqlDatabase>::createTable(const QString &tableName, const QSt
                     "   'copyright'         TEXT, "
                     "   '%2_id'             NUMERIC NOT NULL, "
                     "FOREIGN KEY ('%2_id')  REFERENCES %2(id)"
-                ")"
+                    ")"
                     ).arg(tableName, relatedTable);
 
         db->exec(sql);
