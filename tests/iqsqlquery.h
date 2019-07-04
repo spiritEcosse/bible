@@ -3,11 +3,11 @@
 
 #include <QSqlDatabase>
 
-class IQSqlQuery
-{
-public:
-    virtual ~IQSqlQuery() {}
-    virtual bool exec(const QString& query) = 0;
-};
+//class IQSqlQuery
+//{
+//public:
+//    virtual ~IQSqlQuery() {}
+//    virtual bool exec(const QString& query) = 0;
+//};
 
 #endif // IQSQLQUERY_H

@@ -5,6 +5,7 @@
 
 #include "mock_modulesmodel.h"
 #include "mock_iqsqldatabase.h"
+#include "iqsqlquery.h"
 
 #include "../src/ModulesModel.h"
 
@@ -20,17 +21,31 @@ using ::testing::InSequence;
 using ::testing::Return;
 using ::testing::Mock;
 
+
+class IQSqlQuery {
+ public:
+  virtual ~IQSqlQuery() {}
+  virtual bool exec() = 0;
+};
+
+class MockIQSqlQuery : public IQSqlQuery {
+ public:
+  MockIQSqlQuery() {}
+  MOCK_METHOD0(exec, bool());  // NOLINT
+};
+
 // The fixture for testing class ModulesModel.
 class ModulesModelTest : public TestWithParam<const char*> {
  protected:
   // You can remove any or all of the following functions if its body
   // is empty.
 
-  ModulesModelTest() {
-     // You can do set-up work for each test here.
-  }
+    ModulesModelTest() : foo_(&mock_foo_) {}
 
-  ~ModulesModelTest() override {
+    IQSqlQuery* const foo_;
+    MockIQSqlQuery mock_foo_;
+
+    ~ModulesModelTest() override {
      // You can do clean-up work that doesn't throw exceptions here.
 //      delete mockModulesModel;
   }
@@ -52,6 +67,9 @@ class ModulesModelTest : public TestWithParam<const char*> {
   MockModulesModel<MockIQSqlDatabase>* mockModulesModel;
   const QString tableName = "modules";
   const QString relatedTable = "modules_group";
+
+//  IQSqlQuery* const iq;foo_
+//  MockIQSqlQuery mockIq;
 };
 
 
@@ -71,6 +89,7 @@ TEST_P(ModulesModelTest, correctSize) {
 }
 
 INSTANTIATE_TEST_CASE_P(PossibleIncomingSizes, ModulesModelTest, ValuesIn(sizes.keys()));
+
 
 TEST_F(ModulesModelTest, init)
 {
@@ -110,12 +129,15 @@ TEST_F(ModulesModelTest, createTable)
     MockIQSqlDatabase mockIQSqlDatabase;
     ModulesModel<MockIQSqlDatabase> modulesModel(mockIQSqlDatabase, nullptr);
 
-    EXPECT_CALL(mockIQSqlDatabase, tables())
-            .Times(2)
-            .WillOnce(Return(QStringList{}))
-            .WillRepeatedly(Return(QStringList{tableName}));
-    EXPECT_CALL(mockIQSqlDatabase, exec(sql));
+    {
+        InSequence s;
+        EXPECT_CALL(mockIQSqlDatabase, tables())
+                .WillOnce(Return(QStringList{}));
+        EXPECT_CALL(mockIQSqlDatabase, exec(sql));
+    }
 
     EXPECT_TRUE(modulesModel.createTable(tableName, relatedTable));
+    EXPECT_CALL(mockIQSqlDatabase, tables())
+            .WillRepeatedly(Return(QStringList{tableName}));
     EXPECT_FALSE(modulesModel.createTable(tableName, relatedTable));
 }

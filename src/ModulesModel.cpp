@@ -47,7 +47,7 @@ bool ModulesModel<QSqlDatabase>::createTable(const QString &tableName, const QSt
                     ).arg(tableName, relatedTable);
 
         db_->exec(sql);
-//        if (!db->exec(sql).exec()) {
+//        if (!db_->exec(sql).exec()) {
 //            qFatal("Failed to query database: %s", qPrintable(query.lastError().text()));
 //        }
         return true;
