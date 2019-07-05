@@ -101,6 +101,7 @@ TEST_F(ModulesModelTest, init)
         EXPECT_CALL(*mockModulesModel, select());
     }
     mockModulesModel->init();
+    Mock::VerifyAndClearExpectations(mockModulesModel);
 }
 
 TEST_F(ModulesModelTest, createTable)
