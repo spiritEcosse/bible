@@ -25,6 +25,8 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
     QHash<int, QByteArray> roleNames() const;
     virtual void init();
+    virtual bool createTable(const QString &tableName, const QString &relatedTable);
+    virtual QSqlQuery query() { return QSqlQuery(); }
 
 private:
     friend class ModulesModelTest;
@@ -33,7 +35,6 @@ private:
 
     QSqlDatabase *db_;
     int correctSize(const QString &str) const;
-    virtual bool createTable(const QString &tableName, const QString &relatedTable);
 };
 
 

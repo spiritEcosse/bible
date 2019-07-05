@@ -90,13 +90,12 @@ TEST_P(ModulesModelTest, correctSize) {
 
 INSTANTIATE_TEST_CASE_P(PossibleIncomingSizes, ModulesModelTest, ValuesIn(sizes.keys()));
 
-
 TEST_F(ModulesModelTest, init)
 {
     mockModulesModel = new MockModulesModel<MockIQSqlDatabase>;
     {
         InSequence s;
-        EXPECT_CALL(*mockModulesModel, createTable(tableName, relatedTable));
+//        EXPECT_CALL(*mockModulesModel, createTable(tableName, relatedTable));
         EXPECT_CALL(*mockModulesModel, setTable(tableName));
         EXPECT_CALL(*mockModulesModel, select());
     }
@@ -128,7 +127,7 @@ TEST_F(ModulesModelTest, createTable)
                 ")"
                 ).arg(tableName, relatedTable);
     MockIQSqlDatabase mockIQSqlDatabase;
-//    MockModulesModel<MockIQSqlDatabase> modulesModel;
+//    MockModulesModel<MockIQSqlDatabase> mockModulesModel(mockIQSqlDatabase, nullptr);
     ModulesModel<MockIQSqlDatabase>* modulesModel;
     MockModulesModel<MockIQSqlDatabase> mockModulesModel(mockIQSqlDatabase, nullptr);
     modulesModel = &mockModulesModel;
@@ -138,11 +137,11 @@ TEST_F(ModulesModelTest, createTable)
         EXPECT_CALL(mockIQSqlDatabase, tables())
                 .WillOnce(Return(QStringList{}));
         EXPECT_CALL(mockModulesModel, query());
-//        EXPECT_CALL(mockIQSqlDatabase, exec(sql));
+//        EXPECT_CALL(, exec(sql));
     }
 
     EXPECT_TRUE(modulesModel->createTable(tableName, relatedTable));
-//    EXPECT_CALL(mockIQSqlDatabase, tables())
-//            .WillRepeatedly(Return(QStringList{tableName}));
-//    EXPECT_FALSE(modulesModel.createTable(tableName, relatedTable));
+    EXPECT_CALL(mockIQSqlDatabase, tables())
+            .WillRepeatedly(Return(QStringList{tableName}));
+    EXPECT_FALSE(modulesModel->createTable(tableName, relatedTable));
 }

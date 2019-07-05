@@ -15,7 +15,7 @@ ModulesModel<QSqlDatabase>::~ModulesModel()
 template <class QSqlDatabase>
 void ModulesModel<QSqlDatabase>::init()
 {
-    createTable("modules", "modules_group");
+//    createTable("modules", "modules_group");
     setTable("modules");
     select();
 }
