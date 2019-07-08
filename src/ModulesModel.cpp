@@ -15,9 +15,10 @@ ModulesModel<QSqlDatabase>::~ModulesModel()
 template <class QSqlDatabase>
 void ModulesModel<QSqlDatabase>::init()
 {
-//    createTable("modules", "modules_group");
+    createTable("modules", "modules_group");
     setTable("modules");
     select();
+//    query();
 }
 
 template <class QSqlDatabase>
@@ -47,7 +48,6 @@ bool ModulesModel<QSqlDatabase>::createTable(const QString &tableName, const QSt
                     ).arg(tableName, relatedTable);
 
 //        db_->exec(sql);
-        query();
 //        if (!db_->exec(sql).exec()) {
 //            qFatal("Failed to query database: %s", qPrintable(query.lastError().text()));
 //        }
