@@ -26,6 +26,7 @@ public:
     QHash<int, QByteArray> roleNames() const;
     virtual void init();
     virtual bool createTable(const QString &tableName, const QString &relatedTable);
+    virtual QSqlQuery query() const = 0;
 
 private:
     friend class ModulesModelTest;

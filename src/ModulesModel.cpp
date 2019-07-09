@@ -18,7 +18,7 @@ void ModulesModel<QSqlDatabase>::init()
     createTable("modules", "modules_group");
     setTable("modules");
     select();
-//    query();
+    query();
 }
 
 template <class QSqlDatabase>
