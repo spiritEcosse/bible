@@ -22,28 +22,13 @@ using ::testing::Return;
 using ::testing::Mock;
 
 
-class IQSqlQuery {
- public:
-  virtual ~IQSqlQuery() {}
-  virtual bool exec() = 0;
-};
-
-class MockIQSqlQuery : public IQSqlQuery {
- public:
-  MockIQSqlQuery() {}
-  MOCK_METHOD0(exec, bool());  // NOLINT
-};
-
 // The fixture for testing class ModulesModel.
 class ModulesModelTest : public TestWithParam<const char*> {
  protected:
   // You can remove any or all of the following functions if its body
   // is empty.
 
-    ModulesModelTest() : foo_(&mock_foo_) {}
-
-    IQSqlQuery* const foo_;
-    MockIQSqlQuery mock_foo_;
+    ModulesModelTest() {}
 
     ~ModulesModelTest() override {
      // You can do clean-up work that doesn't throw exceptions here.
@@ -90,15 +75,22 @@ TEST_P(ModulesModelTest, correctSize) {
 
 INSTANTIATE_TEST_CASE_P(PossibleIncomingSizes, ModulesModelTest, ValuesIn(sizes.keys()));
 
+class MockIQSqlQuery : public QSqlQuery
+{
+};
+
+
 TEST_F(ModulesModelTest, init)
 {
+    MockIQSqlQuery q;
     mockModulesModel = new MockModulesModel<MockIQSqlDatabase>;
     {
         InSequence s;
         EXPECT_CALL(*mockModulesModel, createTable(tableName, relatedTable));
         EXPECT_CALL(*mockModulesModel, setTable(tableName));
         EXPECT_CALL(*mockModulesModel, select());
-        EXPECT_CALL(*mockModulesModel, query());
+        EXPECT_CALL(*mockModulesModel, query())
+                .WillOnce(Return(q));
     }
     mockModulesModel->init();
     Mock::VerifyAndClearExpectations(mockModulesModel);
