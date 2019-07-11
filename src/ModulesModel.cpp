@@ -1,28 +1,40 @@
 #include "ModulesModel.h"
 #include "../tests/mock_iqsqldatabase.h"
+#include "../tests/mock_iqsqlquery.h"
 
-template <class QSqlDatabase>
-ModulesModel<QSqlDatabase>::ModulesModel(QSqlDatabase &db, QObject *parent)
+template <class QSqlDatabase, class QSqlQuery>
+ModulesModel<QSqlDatabase, QSqlQuery>::ModulesModel(QSqlDatabase &db, QObject *parent)
     : QSqlTableModel(parent, db), db_(&db)
 {
 }
 
-template <class QSqlDatabase>
-ModulesModel<QSqlDatabase>::~ModulesModel()
+template <class QSqlDatabase, class QSqlQuery>
+ModulesModel<QSqlDatabase, QSqlQuery>::~ModulesModel()
 {
 }
 
-template <class QSqlDatabase>
-void ModulesModel<QSqlDatabase>::init()
+template <class QSqlDatabase, class QSqlQuery>
+QSqlQuery& ModulesModel<QSqlDatabase, QSqlQuery>::query() const
 {
-    createTable("modules", "modules_group");
+    QSqlQuery q;
+    return q;
+}
+
+template <class QSqlDatabase, class QSqlQuery>
+void ModulesModel<QSqlDatabase, QSqlQuery>::init()
+{
     setTable("modules");
+
+    const QString s = "s";
+    query_ = &query();
+    query_->exec(s);
+
+    createTable("modules", "modules_group");
     select();
-    query();
 }
 
-template <class QSqlDatabase>
-bool ModulesModel<QSqlDatabase>::createTable(const QString &tableName, const QString &relatedTable)
+template <class QSqlDatabase, class QSqlQuery>
+bool ModulesModel<QSqlDatabase, QSqlQuery>::createTable(const QString &tableName, const QString &relatedTable)
 {
     if ( !db_->tables().contains(tableName) ) {
         QString sql = QString(
@@ -46,18 +58,13 @@ bool ModulesModel<QSqlDatabase>::createTable(const QString &tableName, const QSt
                     "FOREIGN KEY ('%2_id')  REFERENCES %2(id)"
                     ")"
                     ).arg(tableName, relatedTable);
-
-//        db_->exec(sql);
-//        if (!db_->exec(sql).exec()) {
-//            qFatal("Failed to query database: %s", qPrintable(query.lastError().text()));
-//        }
         return true;
     }
     return false;
 }
 
-template <class QSqlDatabase>
-int ModulesModel<QSqlDatabase>::correctSize(const QString &str) const
+template <class QSqlDatabase, class QSqlQuery>
+int ModulesModel<QSqlDatabase, QSqlQuery>::correctSize(const QString &str) const
 {
     QRegularExpression re("^([+-]?\\d*\\.?\\d+)(\\w{1})*$", QRegularExpression::CaseInsensitiveOption);
     QRegularExpressionMatch match = re.match(str);
@@ -73,8 +80,8 @@ int ModulesModel<QSqlDatabase>::correctSize(const QString &str) const
     return size;
 }
 
-template <class QSqlDatabase>
-QVariant ModulesModel<QSqlDatabase>::data(const QModelIndex &index, int role) const
+template <class QSqlDatabase, class QSqlQuery>
+QVariant ModulesModel<QSqlDatabase, QSqlQuery>::data(const QModelIndex &index, int role) const
 {
     if (role < Qt::UserRole) {
         return QSqlTableModel::data(index, role);
@@ -84,8 +91,8 @@ QVariant ModulesModel<QSqlDatabase>::data(const QModelIndex &index, int role) co
     return sqlRecord.value(role - Qt::UserRole);
 }
 
-template <class QSqlDatabase>
-QHash<int, QByteArray> ModulesModel<QSqlDatabase>::roleNames() const {
+template <class QSqlDatabase, class QSqlQuery>
+QHash<int, QByteArray> ModulesModel<QSqlDatabase, QSqlQuery>::roleNames() const {
     QHash<int, QByteArray> names;
     names[Qt::UserRole] = "updateDate";
     names[Qt::UserRole + 1] = "description";
@@ -97,5 +104,5 @@ QHash<int, QByteArray> ModulesModel<QSqlDatabase>::roleNames() const {
     return names;
 }
 
-template class ModulesModel<QSqlDatabase>;
-template class ModulesModel<MockIQSqlDatabase>;
+template class ModulesModel<QSqlDatabase, QSqlQuery>;
+template class ModulesModel<MockIQSqlDatabase, MockIQSqlQuery>;

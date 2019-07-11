@@ -5,21 +5,19 @@
 
 #include "mock_modulesmodel.h"
 #include "mock_iqsqldatabase.h"
-#include "iqsqlquery.h"
+#include "mock_iqsqlquery.h"
 
 #include "../src/ModulesModel.h"
-
 
 using ::testing::_;
 using ::testing::TestWithParam;
 using ::testing::Test;
 using ::testing::ValuesIn;
-using ::testing::NiceMock;
-using ::testing::TypedEq;
-using ::testing::Eq;
 using ::testing::InSequence;
 using ::testing::Return;
 using ::testing::Mock;
+using ::testing::ReturnRef;
+using ::testing::NiceMock;
 
 
 // The fixture for testing class ModulesModel.
@@ -49,12 +47,16 @@ class ModulesModelTest : public TestWithParam<const char*> {
   }
 
   // Objects declared here can be used by all tests in the test case for ModulesModel.
-  MockModulesModel<MockIQSqlDatabase>* mockModulesModel;
+  MockModulesModel<MockIQSqlDatabase, MockIQSqlQuery>* mockModulesModel;
   const QString tableName = "modules";
   const QString relatedTable = "modules_group";
 
 //  IQSqlQuery* const iq;foo_
 //  MockIQSqlQuery mockIq;
+  std::unique_ptr<MockIQSqlQuery> getSpecialListener() {
+    MockIQSqlQuery* special = new MockIQSqlQuery();
+    return std::unique_ptr<MockIQSqlQuery>(special);
+  }
 };
 
 
@@ -75,22 +77,18 @@ TEST_P(ModulesModelTest, correctSize) {
 
 INSTANTIATE_TEST_CASE_P(PossibleIncomingSizes, ModulesModelTest, ValuesIn(sizes.keys()));
 
-class MockIQSqlQuery : public QSqlQuery
-{
-};
-
-
 TEST_F(ModulesModelTest, init)
 {
     MockIQSqlQuery q;
-    mockModulesModel = new MockModulesModel<MockIQSqlDatabase>;
+    mockModulesModel = new MockModulesModel<MockIQSqlDatabase, MockIQSqlQuery>;
     {
         InSequence s;
-        EXPECT_CALL(*mockModulesModel, createTable(tableName, relatedTable));
         EXPECT_CALL(*mockModulesModel, setTable(tableName));
-        EXPECT_CALL(*mockModulesModel, select());
         EXPECT_CALL(*mockModulesModel, query())
-                .WillOnce(Return(q));
+                .WillOnce(ReturnRef(q));
+        EXPECT_CALL(q, exec(_));
+        EXPECT_CALL(*mockModulesModel, createTable(tableName, relatedTable));
+        EXPECT_CALL(*mockModulesModel, select());
     }
     mockModulesModel->init();
     Mock::VerifyAndClearExpectations(mockModulesModel);
@@ -120,18 +118,14 @@ TEST_F(ModulesModelTest, createTable)
                 ")"
                 ).arg(tableName, relatedTable);
     MockIQSqlDatabase mockIQSqlDatabase;
-    MockModulesModel<MockIQSqlDatabase> mockModulesModel(mockIQSqlDatabase, nullptr);
-//    ModulesModel<MockIQSqlDatabase> modulesModel;
-//    MockModulesModel<MockIQSqlDatabase> mockModulesModel(mockIQSqlDatabase, nullptr);
-//    modulesModel = &mockModulesModel;
+    NiceMock<MockModulesModel<MockIQSqlDatabase, MockIQSqlQuery>> mockModulesModel(mockIQSqlDatabase, nullptr);
 
     ON_CALL(mockModulesModel, createTable(_, _))
-            .WillByDefault(Invoke(&mockModulesModel, &MockModulesModel<MockIQSqlDatabase>::ParentCreateTable));
+            .WillByDefault(Invoke(&mockModulesModel, &MockModulesModel<MockIQSqlDatabase, MockIQSqlQuery>::ParentCreateTable));
     {
         InSequence s;
         EXPECT_CALL(mockIQSqlDatabase, tables())
                 .WillOnce(Return(QStringList{}));
-//        EXPECT_CALL(, exec(sql));
     }
 
     EXPECT_TRUE(mockModulesModel.createTable(tableName, relatedTable));

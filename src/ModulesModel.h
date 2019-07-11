@@ -14,7 +14,7 @@
 
 #include <iostream>
 
-template <class QSqlDatabase>
+template <class QSqlDatabase, class QSqlQuery>
 class ModulesModel : public QSqlTableModel
 {
 public:
@@ -26,7 +26,8 @@ public:
     QHash<int, QByteArray> roleNames() const;
     virtual void init();
     virtual bool createTable(const QString &tableName, const QString &relatedTable);
-    virtual QSqlQuery query() const = 0;
+    virtual QSqlQuery& query() const;
+    QSqlQuery* query_;
 
 private:
     friend class ModulesModelTest;
