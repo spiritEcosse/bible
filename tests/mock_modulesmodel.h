@@ -5,13 +5,35 @@
 #include <gtest/gtest.h>
 
 #include "../src/ModulesModel.h"
+#include "mock_iqsqldatabase.h"
+#include "mock_iqsqlquery.h"
 
-class MockModulesModel : public ModulesModel
+using ::testing::_;
+
+template <class MockIQSqlDatabase, class MockIQSqlQuery>
+class MockModulesModel : public ModulesModel<MockIQSqlDatabase, MockIQSqlQuery>
 {
 public:
-    MOCK_METHOD2(createTable, bool(const QString &tableName, const QString &relatedTable));
-    MOCK_METHOD1(setTable, void(const QString &tableName));
-    MOCK_METHOD0(select, bool());
+    MockModulesModel(MockIQSqlDatabase &db, QObject *parent)
+        : ModulesModel<MockIQSqlDatabase, MockIQSqlQuery>(db, parent) {}
+    MockModulesModel() {}
+    MOCK_CONST_METHOD2_T(data, QVariant(const QModelIndex &index, int role));
+    MOCK_METHOD0_T(init, void());
+    MOCK_METHOD2_T(createTable, bool(const QString &tableName, const QString &relatedTable));
+    MOCK_CONST_METHOD0_T(query, MockIQSqlQuery&());
+    MOCK_METHOD1_T(execLastError, bool(const QString& query));
+    MOCK_METHOD1_T(setTable, void(const QString &tableName));
+    MOCK_METHOD0_T(select, bool());
+
+    bool ParentCreateTable(const QString &tableName, const QString &relatedTable) {
+        return ModulesModel<MockIQSqlDatabase, MockIQSqlQuery>::createTable(tableName, relatedTable);
+    }
+    void parentInit() {
+        return ModulesModel<MockIQSqlDatabase, MockIQSqlQuery>::init();
+    }
+    bool parentExecLastError(const QString& query) {
+        return ModulesModel<MockIQSqlDatabase, MockIQSqlQuery>::execLastError(query);
+    }
 };
 
 #endif // MOCKMODULESMODEL_H

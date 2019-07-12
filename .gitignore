@@ -3,6 +3,8 @@ registry
 **/logs/
 *.log
 
+*.autosave
+
 bible.creator.user
 
 # This file is used to ignore files which are generated

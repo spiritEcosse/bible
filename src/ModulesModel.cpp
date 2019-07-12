@@ -1,30 +1,50 @@
 #include "ModulesModel.h"
+#include "../tests/mock_iqsqldatabase.h"
+#include "../tests/mock_iqsqlquery.h"
 
-ModulesModel::ModulesModel(QObject *parent, QSqlDatabase db)
-    : QSqlTableModel(parent, db)
-{
-    db = db;
-}
-
-ModulesModel::~ModulesModel()
+template <class QSqlDatabase, class QSqlQuery>
+ModulesModel<QSqlDatabase, QSqlQuery>::ModulesModel(QSqlDatabase &db, QObject *parent)
+    : QSqlTableModel(parent, db), db_(&db)
 {
 }
 
-void ModulesModel::init()
+template <class QSqlDatabase, class QSqlQuery>
+ModulesModel<QSqlDatabase, QSqlQuery>::~ModulesModel()
 {
-    createTable("modules", "modules_group");
+}
+
+template <class QSqlDatabase, class QSqlQuery>
+QSqlQuery& ModulesModel<QSqlDatabase, QSqlQuery>::query() const
+{
+    QSqlQuery q;
+    return q;
+}
+
+template <class QSqlDatabase, class QSqlQuery>
+void ModulesModel<QSqlDatabase, QSqlQuery>::init()
+{
     setTable("modules");
+    query_ = &query();
+    createTable("modules", "modules_group");
     select();
 }
 
-bool ModulesModel::createTable(const QString &tableName, const QString &relatedTable)
+template <class QSqlDatabase, class QSqlQuery>
+bool ModulesModel<QSqlDatabase, QSqlQuery>::execLastError(const QString& query)
 {
-//    db.tables().contains(tableName)
-    if (!QSqlDatabase::database().tables().contains(tableName)) {
-        QSqlQuery query;
-        QString sql;
+    if (!query_->exec(query))
+    {
+        qPrintable(query_->lastError().text());
+        return false;
+    }
+    return true;
+}
 
-        sql = QString(
+template <class QSqlDatabase, class QSqlQuery>
+bool ModulesModel<QSqlDatabase, QSqlQuery>::createTable(const QString &tableName, const QString &relatedTable)
+{
+    if ( !db_->tables().contains(tableName) ) {
+        QString sql = QString(
                     "CREATE TABLE IF NOT EXISTS '%1' ("
                     "   'id'                INTEGER PRIMARY KEY AUTOINCREMENT, "
                     "   'name'              CHAR(200) NOT NULL, "
@@ -43,18 +63,15 @@ bool ModulesModel::createTable(const QString &tableName, const QString &relatedT
                     "   'copyright'         TEXT, "
                     "   '%2_id'             NUMERIC NOT NULL, "
                     "FOREIGN KEY ('%2_id')  REFERENCES %2(id)"
-                ")"
+                    ")"
                     ).arg(tableName, relatedTable);
-
-        if (!query.exec(sql)) {
-            qFatal("Failed to query database: %s", qPrintable(query.lastError().text()));
-        }
-        return true;
+        return execLastError(sql);
     }
     return false;
 }
 
-int ModulesModel::correctSize(const QString &str) const
+template <class QSqlDatabase, class QSqlQuery>
+int ModulesModel<QSqlDatabase, QSqlQuery>::correctSize(const QString &str) const
 {
     QRegularExpression re("^([+-]?\\d*\\.?\\d+)(\\w{1})*$", QRegularExpression::CaseInsensitiveOption);
     QRegularExpressionMatch match = re.match(str);
@@ -70,7 +87,8 @@ int ModulesModel::correctSize(const QString &str) const
     return size;
 }
 
-QVariant ModulesModel::data(const QModelIndex &index, int role) const
+template <class QSqlDatabase, class QSqlQuery>
+QVariant ModulesModel<QSqlDatabase, QSqlQuery>::data(const QModelIndex &index, int role) const
 {
     if (role < Qt::UserRole) {
         return QSqlTableModel::data(index, role);
@@ -80,7 +98,8 @@ QVariant ModulesModel::data(const QModelIndex &index, int role) const
     return sqlRecord.value(role - Qt::UserRole);
 }
 
-QHash<int, QByteArray> ModulesModel::roleNames() const {
+template <class QSqlDatabase, class QSqlQuery>
+QHash<int, QByteArray> ModulesModel<QSqlDatabase, QSqlQuery>::roleNames() const {
     QHash<int, QByteArray> names;
     names[Qt::UserRole] = "updateDate";
     names[Qt::UserRole + 1] = "description";
@@ -92,3 +111,5 @@ QHash<int, QByteArray> ModulesModel::roleNames() const {
     return names;
 }
 
+template class ModulesModel<QSqlDatabase, QSqlQuery>;
+template class ModulesModel<MockIQSqlDatabase, MockIQSqlQuery>;
