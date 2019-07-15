@@ -1,47 +1,6 @@
 #include "ModulesGroupModel.h"
-
-static void createTable(QString const tableName)
-{
-    if (!QSqlDatabase::database().tables().contains(tableName)) {
-        QSqlQuery query;
-        QString sql;
-
-        sql = QString(
-                    "CREATE TABLE IF NOT EXISTS '%1' ("
-                    "   'id'        INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    "   'language'  CHAR(50), "
-                    "   'type'      CHAR(50), "
-                    "   'region'    CHAR(50) "
-                    ")"
-                    ).arg(tableName);
-
-        if (!query.exec(sql)) {
-            qFatal("Failed to query database: %s", qPrintable(query.lastError().text()));
-        }
-    }
-}
-
-template <class QSqlDatabase, class QSqlQuery>
-ModulesGroupModel<QSqlDatabase, QSqlQuery>::ModulesGroupModel(QObject *parent)
-    : QSqlTableModel(parent)
-{
-    createTable(tableName());
-    setTable(tableName());
-    select();
-    registry.setFileName("registry.json");
-    setEditStrategy(QSqlTableModel::OnManualSubmit);
-}
-
-template <class QSqlDatabase, class QSqlQuery>
-ModulesGroupModel<QSqlDatabase, QSqlQuery>::~ModulesGroupModel()
-{
-}
-
-template <class QSqlDatabase, class QSqlQuery>
-QString ModulesGroupModel<QSqlDatabase, QSqlQuery>::tableName() const
-{
-    return "modules_group";
-}
+#include "../tests/mock_iqsqldatabase.h"
+#include "../tests/mock_iqsqlquery.h"
 
 void SignalsSlots::decompressRegistry()
 {
@@ -51,28 +10,6 @@ void SignalsSlots::decompressRegistry()
 
 //    if (fileInfo.fileName() == registry.fileName())
 //        emit decompressSuccess();
-}
-
-template <class QSqlDatabase, class QSqlQuery>
-void ModulesGroupModel<QSqlDatabase, QSqlQuery>::updateModules()
-{
-    manager.append(urlRegistry);
-    QObject::connect(&manager, SIGNAL (successfully()), SLOT (decompressRegistry()));
-    QObject::connect(this, SIGNAL (decompressSuccess()), SLOT (updateTable()));
-
-    setCountOldRows();
-
-    QObject::connect(this, SIGNAL (updateTableSuccess()), SLOT (removeOldRows()));
-    QObject::connect(this, SIGNAL (updateTableSuccess()), SLOT (removeRegistryFile()));
-}
-
-template <class QSqlDatabase, class QSqlQuery>
-void ModulesGroupModel<QSqlDatabase, QSqlQuery>::setCountOldRows()
-{
-    QSqlQuery query;
-    query.exec(QString("SELECT COUNT(*) as count FROM %1").arg(tableName()));
-    query.first();
-    countOldRows = query.value("count").toInt();
 }
 
 void SignalsSlots::removeOldRows()
@@ -107,6 +44,107 @@ void SignalsSlots::updateTable()
 
 //    QJsonArray downloads = document.object().value("downloads").toArray();
 //    newRows(downloads);
+}
+
+void SignalsSlots::compareVersions()
+{
+//    QFile registry_json;
+//    registry_json.setFileName(manager.fileNames.last());
+//    if (!registry_json.open(QIODevice::ReadOnly | QIODevice::Text))
+//        return ;
+
+//    QJsonParseError jsonError;
+//    QJsonDocument document = QJsonDocument::fromJson(registry_json.readAll(), &jsonError);
+//    registry_json.close();
+
+//    if(jsonError.error != QJsonParseError::NoError)
+//        return;
+
+//    int version = document.object().value("version").toInt();
+//    QSettings settings;
+//    bool newModules = version > settings.value("modulesVersion").toInt();
+
+//    if (newModules) {
+//        settings.setValue("modulesVersion", version);
+//    }
+
+//    emit availabilityNewModules(newModules);
+}
+
+template <class QSqlDatabase, class QSqlQuery>
+ModulesGroupModel<QSqlDatabase, QSqlQuery>::ModulesGroupModel(QSqlDatabase &db, QObject *parent)
+    : SignalsSlots(db, parent), db_(&db) {}
+
+template <class QSqlDatabase, class QSqlQuery>
+ModulesGroupModel<QSqlDatabase, QSqlQuery>::~ModulesGroupModel()
+{
+}
+
+template <class QSqlDatabase, class QSqlQuery>
+QSqlQuery& ModulesGroupModel<QSqlDatabase, QSqlQuery>::query() const
+{
+    QSqlQuery q;
+    return q;
+}
+
+template <class QSqlDatabase, class QSqlQuery>
+void ModulesGroupModel<QSqlDatabase, QSqlQuery>::init()
+{
+    setTable("modules_group");
+    query_ = &query();
+    createTable("modules_group");
+    select();
+//    setEditStrategy(QSqlTableModel::OnManualSubmit);
+//    registry.setFileName("registry.json");
+}
+
+template <class QSqlDatabase, class QSqlQuery>
+bool ModulesGroupModel<QSqlDatabase, QSqlQuery>::execLastError(const QString& query)
+{
+    if (!query_->exec(query))
+    {
+        qPrintable(query_->lastError().text());
+        return false;
+    }
+    return true;
+}
+
+template <class QSqlDatabase, class QSqlQuery>
+bool ModulesGroupModel<QSqlDatabase, QSqlQuery>::createTable(const QString &tableName)
+{
+    if ( !db_->tables().contains(tableName) ) {
+        QString sql = QString(
+                    "CREATE TABLE IF NOT EXISTS '%1' ("
+                    "   'id'        INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    "   'language'  CHAR(50), "
+                    "   'type'      CHAR(50), "
+                    "   'region'    CHAR(50) "
+                    ).arg(tableName);
+        return execLastError(sql);
+    }
+    return false;
+}
+
+template <class QSqlDatabase, class QSqlQuery>
+void ModulesGroupModel<QSqlDatabase, QSqlQuery>::updateModules()
+{
+//    manager.append(urlRegistry);
+//    QObject::connect(&manager, SIGNAL (successfully()), SLOT (decompressRegistry()));
+    connect(this, SIGNAL (decompressSuccess()), SLOT (updateTable()));
+
+//    setCountOldRows();
+
+//    QObject::connect(this, SIGNAL (updateTableSuccess()), SLOT (removeOldRows()));
+//    QObject::connect(this, SIGNAL (updateTableSuccess()), SLOT (removeRegistryFile()));
+}
+
+template <class QSqlDatabase, class QSqlQuery>
+void ModulesGroupModel<QSqlDatabase, QSqlQuery>::setCountOldRows()
+{
+//    QSqlQuery query;
+//    query.exec(QString("SELECT COUNT(*) as count FROM %1").arg(tableName()));
+//    query.first();
+//    countOldRows = query.value("count").toInt();
 }
 
 template <class QSqlDatabase, class QSqlQuery>
@@ -145,42 +183,17 @@ void ModulesGroupModel<QSqlDatabase, QSqlQuery>::newRows(QJsonArray &downloads)
 
 // This allows transactions to be rolled back and resubmitted without losing data.
     if (submitAll()) {
-        emit updateTableSuccess();
+//        emit updateTableSuccess();
     } else {
-        qWarning() << "Failed to add new row: " << lastError().text();
+//        qWarning() << "Failed to add new row: " << lastError().text();
     }
 }
 
 template <class QSqlDatabase, class QSqlQuery>
 void ModulesGroupModel<QSqlDatabase, QSqlQuery>::checkAvailabilityNewModules()
 {
-    manager.append(urlRegistryInfo);
-    QObject::connect(&manager, SIGNAL (successfully()), this, SLOT (compareVersions()));
-}
-
-void SignalsSlots::compareVersions()
-{
-//    QFile registry_json;
-//    registry_json.setFileName(manager.fileNames.last());
-//    if (!registry_json.open(QIODevice::ReadOnly | QIODevice::Text))
-//        return ;
-
-//    QJsonParseError jsonError;
-//    QJsonDocument document = QJsonDocument::fromJson(registry_json.readAll(), &jsonError);
-//    registry_json.close();
-
-//    if(jsonError.error != QJsonParseError::NoError)
-//        return;
-
-//    int version = document.object().value("version").toInt();
-//    QSettings settings;
-//    bool newModules = version > settings.value("modulesVersion").toInt();
-
-//    if (newModules) {
-//        settings.setValue("modulesVersion", version);
-//    }
-
-//    emit availabilityNewModules(newModules);
+//    manager.append(urlRegistryInfo);
+//    connect(&manager, SIGNAL (successfully()), this, SLOT (compareVersions()));
 }
 
 template <class QSqlDatabase, class QSqlQuery>
@@ -266,3 +279,6 @@ ModulesGroupModel<QSqlDatabase, QSqlQuery>
     names[Qt::UserRole] = "title";
     return names;
 }
+
+template class ModulesGroupModel<QSqlDatabase, QSqlQuery>;
+template class ModulesGroupModel<MockIQSqlDatabase, MockIQSqlQuery>;

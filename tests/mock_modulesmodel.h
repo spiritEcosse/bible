@@ -8,8 +8,6 @@
 #include "mock_iqsqldatabase.h"
 #include "mock_iqsqlquery.h"
 
-using ::testing::_;
-
 template <class MockIQSqlDatabase, class MockIQSqlQuery>
 class MockModulesModel : public ModulesModel<MockIQSqlDatabase, MockIQSqlQuery>
 {

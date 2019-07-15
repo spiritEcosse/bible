@@ -25,7 +25,8 @@ HEADERS += $$PROJECT_HEADERS \
     iqsqldatabase.h \
     iqsqlquery.h \
     mock_iqsqldatabase.h \
-    mock_iqsqlquery.h
+    mock_iqsqlquery.h \
+    mock_modulesgroupmodel.h
 
 SOURCES += $$PROJECT_SOURCES \
     modulesgroupmodel-test.cpp \

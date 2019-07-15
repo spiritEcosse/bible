@@ -33,7 +33,6 @@ public:
 private:
     friend class ModulesModelTest;
     FRIEND_TEST(ModulesModelTest, correctSize);
-    FRIEND_TEST(ModulesModelTest, createTable);
 
     QSqlDatabase *db_;
     int correctSize(const QString &str) const;
