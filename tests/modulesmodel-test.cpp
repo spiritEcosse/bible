@@ -112,7 +112,7 @@ TEST_F(ModulesModelTest, createTable)
                 "FOREIGN KEY ('%2_id')  REFERENCES %2(id)"
                 ")"
                 ).arg(tableName, relatedTable);
-    NiceMock<MockModulesModel<MockIQSqlDatabase, MockIQSqlQuery>> mockModulesModel(mockIQSqlDatabase, nullptr);
+    NiceMock<MockModulesModel<MockIQSqlDatabase, MockIQSqlQuery>> mockModulesModel(mockIQSqlDatabase);
 
     ON_CALL(mockModulesModel, createTable(_, _))
             .WillByDefault(Invoke(&mockModulesModel, &MockModulesModel<MockIQSqlDatabase, MockIQSqlQuery>::ParentCreateTable));

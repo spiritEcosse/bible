@@ -14,7 +14,7 @@ template <class MockIQSqlDatabase, class MockIQSqlQuery>
 class MockModulesModel : public ModulesModel<MockIQSqlDatabase, MockIQSqlQuery>
 {
 public:
-    MockModulesModel(MockIQSqlDatabase &db, QObject *parent)
+    MockModulesModel(MockIQSqlDatabase &db, QObject *parent = nullptr)
         : ModulesModel<MockIQSqlDatabase, MockIQSqlQuery>(db, parent) {}
     MockModulesModel() {}
     MOCK_CONST_METHOD2_T(data, QVariant(const QModelIndex &index, int role));
