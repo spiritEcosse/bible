@@ -21,7 +21,8 @@ static void createTable(QString const tableName)
     }
 }
 
-ModulesGroupModel::ModulesGroupModel(QObject *parent)
+template <class QSqlDatabase, class QSqlQuery>
+ModulesGroupModel<QSqlDatabase, QSqlQuery>::ModulesGroupModel(QObject *parent)
     : QSqlTableModel(parent)
 {
     createTable(tableName());
@@ -31,38 +32,42 @@ ModulesGroupModel::ModulesGroupModel(QObject *parent)
     setEditStrategy(QSqlTableModel::OnManualSubmit);
 }
 
-ModulesGroupModel::~ModulesGroupModel()
+template <class QSqlDatabase, class QSqlQuery>
+ModulesGroupModel<QSqlDatabase, QSqlQuery>::~ModulesGroupModel()
 {
 }
 
-QString ModulesGroupModel::tableName() const
+template <class QSqlDatabase, class QSqlQuery>
+QString ModulesGroupModel<QSqlDatabase, QSqlQuery>::tableName() const
 {
     return "modules_group";
 }
 
-void ModulesGroupModel::decompressRegistry()
+void SignalsSlots::decompressRegistry()
 {
-    registryArchive.setFileName(manager.fileNames.last());
-    QString registryName = JlCompress::extractFile(registryArchive.fileName(), registry.fileName());
-    QFileInfo fileInfo(registryName);
+//    registryArchive.setFileName(manager.fileNames.last());
+//    QString registryName = JlCompress::extractFile(registryArchive.fileName(), registry.fileName());
+//    QFileInfo fileInfo(registryName);
 
-    if (fileInfo.fileName() == registry.fileName())
-        emit decompressSuccess();
+//    if (fileInfo.fileName() == registry.fileName())
+//        emit decompressSuccess();
 }
 
-void ModulesGroupModel::updateModules()
+template <class QSqlDatabase, class QSqlQuery>
+void ModulesGroupModel<QSqlDatabase, QSqlQuery>::updateModules()
 {
     manager.append(urlRegistry);
-    connect(&manager, SIGNAL (successfully()), SLOT (decompressRegistry()));
-    connect(this, SIGNAL (decompressSuccess()), SLOT (updateTable()));
+    QObject::connect(&manager, SIGNAL (successfully()), SLOT (decompressRegistry()));
+    QObject::connect(this, SIGNAL (decompressSuccess()), SLOT (updateTable()));
 
     setCountOldRows();
 
-    connect(this, SIGNAL (updateTableSuccess()), SLOT (removeOldRows()));
-    connect(this, SIGNAL (updateTableSuccess()), SLOT (removeRegistryFile()));
+    QObject::connect(this, SIGNAL (updateTableSuccess()), SLOT (removeOldRows()));
+    QObject::connect(this, SIGNAL (updateTableSuccess()), SLOT (removeRegistryFile()));
 }
 
-void ModulesGroupModel::setCountOldRows()
+template <class QSqlDatabase, class QSqlQuery>
+void ModulesGroupModel<QSqlDatabase, QSqlQuery>::setCountOldRows()
 {
     QSqlQuery query;
     query.exec(QString("SELECT COUNT(*) as count FROM %1").arg(tableName()));
@@ -70,41 +75,42 @@ void ModulesGroupModel::setCountOldRows()
     countOldRows = query.value("count").toInt();
 }
 
-void ModulesGroupModel::removeOldRows()
+void SignalsSlots::removeOldRows()
 {
-    removeRows(0, countOldRows);
+//    removeRows(0, countOldRows);
 
-    if (!submitAll()) {
-        qWarning() << "Failed to remove rows: " << lastError().text();
-    } else {
-        emit removeOldRowsSuccess();
-    }
+//    if (!submitAll()) {
+//        qWarning() << "Failed to remove rows: " << lastError().text();
+//    } else {
+//        emit removeOldRowsSuccess();
+//    }
 }
 
-void ModulesGroupModel::removeRegistryFile()
+void SignalsSlots::removeRegistryFile()
 {
-    if (registryArchive.remove()) {
-        emit removeRegistryFileSuccess();
-    }
+//    if (registryArchive.remove()) {
+//        emit removeRegistryFileSuccess();
+//    }
 }
 
-void ModulesGroupModel::updateTable()
+void SignalsSlots::updateTable()
 {
-    if (!registry.open(QIODevice::ReadOnly | QIODevice::Text))
-        return ;
+//    if (!registry.open(QIODevice::ReadOnly | QIODevice::Text))
+//        return ;
 
-    QJsonParseError jsonError;
-    QJsonDocument document = QJsonDocument::fromJson(registry.readAll(), &jsonError);
-    registry.close();
+//    QJsonParseError jsonError;
+//    QJsonDocument document = QJsonDocument::fromJson(registry.readAll(), &jsonError);
+//    registry.close();
 
-    if(jsonError.error != QJsonParseError::NoError)
-        return;
+//    if(jsonError.error != QJsonParseError::NoError)
+//        return;
 
-    QJsonArray downloads = document.object().value("downloads").toArray();
-    newRows(downloads);
+//    QJsonArray downloads = document.object().value("downloads").toArray();
+//    newRows(downloads);
 }
 
-void ModulesGroupModel::newRows(QJsonArray &downloads)
+template <class QSqlDatabase, class QSqlQuery>
+void ModulesGroupModel<QSqlDatabase, QSqlQuery>::newRows(QJsonArray &downloads)
 {
     foreach(const QJsonValue &jsonValue, downloads) {
         QJsonObject jsonObject = jsonValue.toObject();
@@ -145,38 +151,42 @@ void ModulesGroupModel::newRows(QJsonArray &downloads)
     }
 }
 
-void ModulesGroupModel::checkAvailabilityNewModules()
+template <class QSqlDatabase, class QSqlQuery>
+void ModulesGroupModel<QSqlDatabase, QSqlQuery>::checkAvailabilityNewModules()
 {
     manager.append(urlRegistryInfo);
-    connect(&manager, SIGNAL (successfully()), this, SLOT (compareVersions()));
+    QObject::connect(&manager, SIGNAL (successfully()), this, SLOT (compareVersions()));
 }
 
-void ModulesGroupModel::compareVersions()
+void SignalsSlots::compareVersions()
 {
-    QFile registry_json;
-    registry_json.setFileName(manager.fileNames.last());
-    if (!registry_json.open(QIODevice::ReadOnly | QIODevice::Text))
-        return ;
+//    QFile registry_json;
+//    registry_json.setFileName(manager.fileNames.last());
+//    if (!registry_json.open(QIODevice::ReadOnly | QIODevice::Text))
+//        return ;
 
-    QJsonParseError jsonError;
-    QJsonDocument document = QJsonDocument::fromJson(registry_json.readAll(), &jsonError);
-    registry_json.close();
+//    QJsonParseError jsonError;
+//    QJsonDocument document = QJsonDocument::fromJson(registry_json.readAll(), &jsonError);
+//    registry_json.close();
 
-    if(jsonError.error != QJsonParseError::NoError)
-        return;
+//    if(jsonError.error != QJsonParseError::NoError)
+//        return;
 
-    int version = document.object().value("version").toInt();
-    QSettings settings;
-    bool newModules = version > settings.value("modulesVersion").toInt();
+//    int version = document.object().value("version").toInt();
+//    QSettings settings;
+//    bool newModules = version > settings.value("modulesVersion").toInt();
 
-    if (newModules) {
-        settings.setValue("modulesVersion", version);
-    }
+//    if (newModules) {
+//        settings.setValue("modulesVersion", version);
+//    }
 
-    emit availabilityNewModules(newModules);
+//    emit availabilityNewModules(newModules);
 }
 
-QMap<QString, QString> ModulesGroupModel::makeGroup(const QString &name, const QString &language, const QString &region) const
+template <class QSqlDatabase, class QSqlQuery>
+QMap<QString, QString>
+ModulesGroupModel<QSqlDatabase, QSqlQuery>
+::makeGroup(const QString &name, const QString &language, const QString &region) const
 {
     QMap<QString, QString> group;
     QRegularExpression re(MODULES_SPLIT_NAME);
@@ -202,7 +212,9 @@ QMap<QString, QString> ModulesGroupModel::makeGroup(const QString &name, const Q
     return group;
 }
 
-QString ModulesGroupModel::correctTitle(const QString &name, const QString &language, const QString &region) const
+template <class QSqlDatabase, class QSqlQuery>
+QString ModulesGroupModel<QSqlDatabase, QSqlQuery>
+::correctTitle(const QString &name, const QString &language, const QString &region) const
 {
     QRegularExpression re(MODULES_SPLIT_NAME);
     QRegularExpressionMatch match = re.match(name);
@@ -234,7 +246,9 @@ QString ModulesGroupModel::correctTitle(const QString &name, const QString &lang
     return section;
 }
 
-QVariant ModulesGroupModel::data(const QModelIndex &index, int role) const
+template <class QSqlDatabase, class QSqlQuery>
+QVariant ModulesGroupModel<QSqlDatabase, QSqlQuery>
+::data(const QModelIndex &index, int role) const
 {
     if (role < Qt::UserRole) {
         return QSqlTableModel::data(index, role);
@@ -244,7 +258,10 @@ QVariant ModulesGroupModel::data(const QModelIndex &index, int role) const
     return sqlRecord.value(role - Qt::UserRole);
 }
 
-QHash<int, QByteArray> ModulesGroupModel::roleNames() const {
+template <class QSqlDatabase, class QSqlQuery>
+QHash<int, QByteArray>
+ModulesGroupModel<QSqlDatabase, QSqlQuery>
+::roleNames() const {
     QHash<int, QByteArray> names;
     names[Qt::UserRole] = "title";
     return names;

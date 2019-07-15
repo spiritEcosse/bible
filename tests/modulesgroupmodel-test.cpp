@@ -2,19 +2,17 @@
 
 #include "../src/ModulesGroupModel.h"
 
-namespace {
-
-// The fixture for testing class Foo.
-class ModulesGroupModel : public ::testing::Test {
+// The fixture for testing class ModulesGroupModelTest.
+class ModulesGroupModelTest : public ::testing::Test {
  protected:
   // You can remove any or all of the following functions if its body
   // is empty.
 
-  ModulesGroupModel() {
+  ModulesGroupModelTest() {
      // You can do set-up work for each test here.
   }
 
-  ~ModulesGroupModel() override {
+  ~ModulesGroupModelTest() override {
      // You can do clean-up work that doesn't throw exceptions here.
   }
 
@@ -33,5 +31,3 @@ class ModulesGroupModel : public ::testing::Test {
 
   // Objects declared here can be used by all tests in the test case for Foo.
 };
-
-}  // namespace
