@@ -26,11 +26,13 @@ HEADERS += $$PROJECT_HEADERS \
     iqsqlquery.h \
     mock_iqsqldatabase.h \
     mock_iqsqlquery.h \
-    mock_modulesgroupmodel.h
+    mock_modulesgroupmodel.h \
+    mock_downloadmanager.h
 
 SOURCES += $$PROJECT_SOURCES \
     modulesgroupmodel-test.cpp \
     modulesmodel-test.cpp \
-    main.cpp
+    main.cpp \
+    downloadmanager-test.cpp
 
 LIBS += -lquazip5 -lgmock -lgtest -lpthread

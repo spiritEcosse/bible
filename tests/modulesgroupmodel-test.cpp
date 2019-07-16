@@ -7,8 +7,6 @@
 #include "mock_iqsqldatabase.h"
 #include "mock_iqsqlquery.h"
 
-#include "../src/ModulesGroupModel.h"
-
 using ::testing::_;
 using ::testing::TestWithParam;
 using ::testing::Test;

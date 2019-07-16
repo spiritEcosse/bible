@@ -6,15 +6,17 @@
 #include <QObject>
 
 #include "TextProgressBar.h"
+#include "gtest/gtest_prod.h"
 
 class DownloadManager: public QObject
 {
     Q_OBJECT
 public:
     explicit DownloadManager(QObject *parent = nullptr);
+    virtual ~DownloadManager() {}
 
-    void append(const QUrl &url);
-    void append(const QStringList &urls);
+    virtual void append(const QUrl &url);
+    virtual void append(const QStringList &urls);
     static QString saveFileName(const QUrl &url);
     QStringList fileNames;
 
@@ -23,16 +25,19 @@ signals:
     void successfully();
 
 private slots:
-    void startNextDownload();
-    void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
-    void downloadFinished();
-    void downloadReadyRead();
+    virtual void startNextDownload();
+    virtual void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
+    virtual void downloadFinished();
+    virtual void downloadReadyRead();
 
 private:
-    bool isHttpRedirect() const;
-    void reportRedirect();
+    virtual bool isHttpRedirect() const;
+    virtual void reportRedirect();
 
-    QNetworkAccessManager manager;
+//    QNetworkAccessManager manager;
+    friend class DownloadManagerTest;
+    FRIEND_TEST(DownloadManagerTest, append);
+
     QQueue<QUrl> downloadQueue;
     QNetworkReply *currentDownload = nullptr;
     QFile output;

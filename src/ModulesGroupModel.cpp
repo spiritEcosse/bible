@@ -129,13 +129,13 @@ template <class QSqlDatabase, class QSqlQuery>
 void ModulesGroupModel<QSqlDatabase, QSqlQuery>::updateModules()
 {
 //    manager.append(urlRegistry);
-//    QObject::connect(&manager, SIGNAL (successfully()), SLOT (decompressRegistry()));
-    connect(this, SIGNAL (decompressSuccess()), SLOT (updateTable()));
+//    connect(&manager, SIGNAL (successfully()), SLOT (decompressRegistry()));
+//    connect(this, SIGNAL (decompressSuccess()), SLOT (updateTable()));
 
 //    setCountOldRows();
 
-//    QObject::connect(this, SIGNAL (updateTableSuccess()), SLOT (removeOldRows()));
-//    QObject::connect(this, SIGNAL (updateTableSuccess()), SLOT (removeRegistryFile()));
+//    connect(this, SIGNAL (updateTableSuccess()), SLOT (removeOldRows()));
+//    connect(this, SIGNAL (updateTableSuccess()), SLOT (removeRegistryFile()));
 }
 
 template <class QSqlDatabase, class QSqlQuery>
