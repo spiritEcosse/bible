@@ -34,6 +34,7 @@ public:
     MOCK_CONST_METHOD0_T(roleNames, QHash<int, QByteArray>());
     MOCK_METHOD1_T(setTable, void(const QString &tableName));
     MOCK_METHOD0_T(select, bool());
+    MOCK_METHOD0_T(updateModules, void());
 
     bool ParentCreateTable(const QString &tableName) {
         return ModulesGroupModel<MockIQSqlDatabase, MockIQSqlQuery>::createTable(tableName);

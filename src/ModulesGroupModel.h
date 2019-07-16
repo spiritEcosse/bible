@@ -70,7 +70,8 @@ public:
     virtual void setCountOldRows();
     virtual void newRows(QJsonArray &downloads);
     virtual QMap<QString, QString> makeGroup(const QString &name, const QString &language="", const QString &region="") const;
-    Q_INVOKABLE virtual void updateModules();
+//    Q_INVOKABLE virtual void updateModules();
+    virtual void updateModules();
     virtual QVariant data(const QModelIndex &index, int role) const override;
     virtual QHash<int, QByteArray> roleNames() const;
 
