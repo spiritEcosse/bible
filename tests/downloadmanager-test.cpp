@@ -2,6 +2,7 @@
 #include <gmock/gmock.h>
 
 #include "mock_downloadmanager.h"
+#include "mock_iqtimer.h"
 
 using::testing::_;
 using::testing::Mock;
@@ -31,6 +32,7 @@ protected:
   // Objects declared here can be used by all tests in the test case for Foo.
   MockDownloadManager mockDownloadManager;
   DownloadManager* downloadManager;
+  MockIQTimer mockIQTimer;
   const QUrl url = BuiltInDefaultValue<const QUrl>::Get();
 };
 
@@ -41,10 +43,13 @@ TEST_F(DownloadManagerTest, append)
             .WillByDefault(Invoke(&mockDownloadManager, &MockDownloadManager::parentAppend));
 
     QQueue<QUrl> queue = QQueue<QUrl>{};
+    downloadManager->timer = &mockIQTimer;
+    EXPECT_CALL(*mockDownloadManager.timer, singleShot());
     EXPECT_EQ(queue, downloadManager->downloadQueue);
     EXPECT_EQ(0, downloadManager->totalCount);
     downloadManager->append(url);
     queue.enqueue(url);
+    //singleShot
     EXPECT_EQ(queue, downloadManager->downloadQueue);
     EXPECT_EQ(1, downloadManager->totalCount);
 }

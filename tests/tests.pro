@@ -1,4 +1,3 @@
-QT += gui testlib sql network core
 CONFIG += qt warn_on depend_includepath testcase console
 
 TEMPLATE = app
@@ -27,12 +26,18 @@ HEADERS += $$PROJECT_HEADERS \
     mock_iqsqldatabase.h \
     mock_iqsqlquery.h \
     mock_modulesgroupmodel.h \
-    mock_downloadmanager.h
+    mock_downloadmanager.h \
+    mock_iqtimer.h \
+    iqtimer.h \
+    qtnetwork.h
 
 SOURCES += $$PROJECT_SOURCES \
     modulesgroupmodel-test.cpp \
     modulesmodel-test.cpp \
     main.cpp \
     downloadmanager-test.cpp
+
+INCLUDEPATH += $$PWD/QtNetwork + $$PWD/QtSql
+DEPENDPATH += $$PWD/QtNetwork + $$PWD/QtSql
 
 LIBS += -lquazip5 -lgmock -lgtest -lpthread

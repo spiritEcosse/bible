@@ -1,8 +1,9 @@
 #ifndef DOWNLOADMANAGER_H
 #define DOWNLOADMANAGER_H
 
-#include <QtCore>
+#include <QTimer>
 #include <QtNetwork>
+
 #include <QObject>
 
 #include "TextProgressBar.h"
@@ -33,6 +34,8 @@ private slots:
 private:
     virtual bool isHttpRedirect() const;
     virtual void reportRedirect();
+
+    QTimer* timer;
 
 //    QNetworkAccessManager manager;
     friend class DownloadManagerTest;
