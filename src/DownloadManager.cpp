@@ -16,14 +16,14 @@ void DownloadManager::append(const QStringList &urls)
     for (const QString &urlAsString : urls)
         append(QUrl::fromEncoded(urlAsString.toLocal8Bit()));
 
-    if (downloadQueue.isEmpty())
-        QTimer::singleShot(0, this, SIGNAL(finished()));
+//    if (downloadQueue.isEmpty())
+//        timer->singleShot(0, this, SIGNAL(finished()));
 }
 
 void DownloadManager::append(const QUrl &url)
 {
-    if (downloadQueue.isEmpty())
-        timer->singleShot(0, this, SLOT(startNextDownload()));
+//    if (downloadQueue.isEmpty())
+//        timer->singleShot(0, this, SLOT(startNextDownload()));
 
     downloadQueue.enqueue(url);
     ++totalCount;

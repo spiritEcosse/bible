@@ -1,5 +1,3 @@
-CONFIG += qt warn_on depend_includepath testcase console
-
 TEMPLATE = app
 PROJECT_DIR = $$PWD/../
 
@@ -16,28 +14,25 @@ PROJECT_HEADERS = \
     $$PROJECT_DIR/src/ModulesModel.h \
     $$PROJECT_DIR/src/ModulesGroupModel.h
 
-GTEST_DIR = /home/igor/projects/googletest/googletest
-GMOCK_DIR = /home/igor/projects/googletest/googlemock
-
-HEADERS += $$PROJECT_HEADERS \
+HEADERS += \
     mock_modulesmodel.h \
     iqsqldatabase.h \
     iqsqlquery.h \
+    QtSql/qsqldatabase.h \
     mock_iqsqldatabase.h \
     mock_iqsqlquery.h \
     mock_modulesgroupmodel.h \
     mock_downloadmanager.h \
-    mock_iqtimer.h \
-    iqtimer.h \
-    qtnetwork.h
+    mock_qtimer.h \
+    mock_qnetworkrequest.h
 
-SOURCES += $$PROJECT_SOURCES \
+SOURCES += \
     modulesgroupmodel-test.cpp \
     modulesmodel-test.cpp \
     main.cpp \
     downloadmanager-test.cpp
 
-INCLUDEPATH += $$PWD/QtNetwork + $$PWD/QtSql
-DEPENDPATH += $$PWD/QtNetwork + $$PWD/QtSql
+INCLUDEPATH += $$PWD/QtNetwork + $$PWD/QtSql + $$PWD/QtCore
+DEPENDPATH += $$PWD/QtNetwork + $$PWD/QtSql + $$PWD/QtCore
 
 LIBS += -lquazip5 -lgmock -lgtest -lpthread

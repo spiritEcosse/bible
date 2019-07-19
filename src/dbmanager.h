@@ -1,12 +1,11 @@
+#ifndef DBMANAGER_H
+#define DBMANAGER_H
+
 #include <QString>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QDir>
 #include <QStandardPaths>
-
-#ifndef DBMANAGER_H
-#define DBMANAGER_H
-
 
 class DbManager
 {
