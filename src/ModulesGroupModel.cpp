@@ -2,7 +2,8 @@
 #include "../tests/mock_iqsqldatabase.h"
 #include "../tests/mock_iqsqlquery.h"
 
-void SignalsSlots::decompressRegistry()
+template <class QSqlDatabase, class QSqlQuery>
+void ModulesGroupModel<QSqlDatabase, QSqlQuery>::decompressRegistry()
 {
 //    registryArchive.setFileName(manager.fileNames.last());
 //    QString registryName = JlCompress::extractFile(registryArchive.fileName(), registry.fileName());
@@ -12,7 +13,8 @@ void SignalsSlots::decompressRegistry()
 //        emit decompressSuccess();
 }
 
-void SignalsSlots::removeOldRows()
+template <class QSqlDatabase, class QSqlQuery>
+void ModulesGroupModel<QSqlDatabase, QSqlQuery>::removeOldRows()
 {
 //    removeRows(0, countOldRows);
 
@@ -23,14 +25,16 @@ void SignalsSlots::removeOldRows()
 //    }
 }
 
-void SignalsSlots::removeRegistryFile()
+template <class QSqlDatabase, class QSqlQuery>
+void ModulesGroupModel<QSqlDatabase, QSqlQuery>::removeRegistryFile()
 {
 //    if (registryArchive.remove()) {
 //        emit removeRegistryFileSuccess();
 //    }
 }
 
-void SignalsSlots::updateTable()
+template <class QSqlDatabase, class QSqlQuery>
+void ModulesGroupModel<QSqlDatabase, QSqlQuery>::updateTable()
 {
 //    if (!registry.open(QIODevice::ReadOnly | QIODevice::Text))
 //        return ;
@@ -46,7 +50,8 @@ void SignalsSlots::updateTable()
 //    newRows(downloads);
 }
 
-void SignalsSlots::compareVersions()
+template <class QSqlDatabase, class QSqlQuery>
+void ModulesGroupModel<QSqlDatabase, QSqlQuery>::compareVersions()
 {
 //    QFile registry_json;
 //    registry_json.setFileName(manager.fileNames.last());
@@ -73,7 +78,7 @@ void SignalsSlots::compareVersions()
 
 template <class QSqlDatabase, class QSqlQuery>
 ModulesGroupModel<QSqlDatabase, QSqlQuery>::ModulesGroupModel(QSqlDatabase &db, QObject *parent)
-    : SignalsSlots(db, parent), db_(&db) {}
+    : QSqlTableModel(parent, db), db_(&db) {}
 
 template <class QSqlDatabase, class QSqlQuery>
 ModulesGroupModel<QSqlDatabase, QSqlQuery>::~ModulesGroupModel()

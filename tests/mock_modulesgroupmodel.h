@@ -27,7 +27,7 @@ public:
     // type has multiple template arguments.  To fix it, use a
     // typedef for the return type.
     MOCK_CONST_METHOD3_T(makeGroup, QMap<QString, QString>(QString, QString, QString));
-    MOCK_CONST_METHOD2_T(data, QVariant(const QModelIndex &index, int role));
+    MOCK_CONST_METHOD2_T(data, QVariant(QModelIndex, int));
     // The following line won't really compile, as the return
     // type has multiple template arguments.  To fix it, use a
     // typedef for the return type.
@@ -35,6 +35,11 @@ public:
     MOCK_METHOD1_T(setTable, void(const QString &tableName));
     MOCK_METHOD0_T(select, bool());
     MOCK_METHOD0_T(updateModules, void());
+
+    MOCK_CONST_METHOD0_T(record, QSqlRecord());
+    MOCK_CONST_METHOD1_T(record, QSqlRecord(int row));
+    MOCK_METHOD2_T(insertRecord, bool(int row, const QSqlRecord &record));
+    MOCK_METHOD0_T(submitAll, bool());
 
     bool ParentCreateTable(const QString &tableName) {
         return ModulesGroupModel<MockIQSqlDatabase, MockIQSqlQuery>::createTable(tableName);

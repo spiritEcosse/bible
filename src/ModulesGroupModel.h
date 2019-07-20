@@ -26,32 +26,8 @@
 #define REGISTRY "aHR0cDovL215YmlibGUuaW50ZXJiaWJsaWEub3JnL3JlZ2lzdHJ5X3Rlc3Quemlw"
 #define REGISTRY_INFO ""
 
-class SignalsSlots : public QSqlTableModel
-{
-    Q_OBJECT
-public:
-    SignalsSlots(QSqlDatabase &db, QObject *parent)
-        : QSqlTableModel(parent, db) {}
-    explicit SignalsSlots() {}
-signals:
-    void updateTableSuccess();
-    void availabilityNewModules(bool);
-    void decompressSuccess();
-    void removeRegistryFileSuccess();
-    void removeOldRowsSuccess();
-
-private slots:
-    void updateTable();
-    void compareVersions();
-    void decompressRegistry();
-    void removeRegistryFile();
-
-public slots:
-    void removeOldRows();
-};
-
 template <class QSqlDatabase, class QSqlQuery>
-class ModulesGroupModel : public SignalsSlots
+class ModulesGroupModel : public QSqlTableModel
 {
 public:
     ModulesGroupModel(QSqlDatabase &db, QObject *parent = nullptr);
@@ -83,6 +59,22 @@ private:
     QFile registry;
     QFile registryArchive;
     int countOldRows = 0;
+
+signals:
+    void updateTableSuccess();
+    void availabilityNewModules(bool);
+    void decompressSuccess();
+    void removeRegistryFileSuccess();
+    void removeOldRowsSuccess();
+
+private slots:
+    void updateTable();
+    void compareVersions();
+    void decompressRegistry();
+    void removeRegistryFile();
+
+public slots:
+    void removeOldRows();
 };
 
 #endif // MODULESGROUPMODEL_H

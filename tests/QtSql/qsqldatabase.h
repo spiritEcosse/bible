@@ -3,32 +3,31 @@
 
 #include <QtSql/qtsqlglobal.h>
 #include <QtCore/qstring.h>
-
-class QSqlError;
+#include <QtSql/qsqlerror.h>
 
 class QSqlDatabase
 {
 public:
-    QSqlDatabase();
-    QSqlDatabase(const QSqlDatabase &other);
-    virtual ~QSqlDatabase();
+//    QSqlDatabase() {}
+//    QSqlDatabase(const QSqlDatabase &other);
+    virtual ~QSqlDatabase() {}
 
     static const char *defaultConnection;
-    virtual bool isValid() const {}
-    static QSqlDatabase database(const QString& connectionName = QLatin1String(defaultConnection),
-                                 bool open = true) {}
-    static QSqlDatabase addDatabase(const QString& type,
-                                     const QString& connectionName = QLatin1String(defaultConnection));
-    virtual QSqlError lastError() const;
+    virtual bool isValid() const = 0;
+//    static QSqlDatabase database(const QString& connectionName = QLatin1String(defaultConnection),
+//                                 bool open = true);
+//    static QSqlDatabase addDatabase(const QString& type,
+//                                    const QString& connectionName = QLatin1String(defaultConnection));
+    virtual QSqlError lastError() const = 0;
 
 //    QSqlDatabase &operator=(const QSqlDatabase &other);
 
-    virtual bool open() {}
+    virtual bool open() = 0;
 //    bool open(const QString& user, const QString& password);
 //    void close();
 //    bool isOpen() const;
 //    bool isOpenError() const;
-    virtual QStringList tables(QSql::TableType type = QSql::Tables) const;
+    virtual QStringList tables(QSql::TableType type = QSql::Tables) const = 0;
 //    QSqlIndex primaryIndex(const QString& tablename) const;
 //    QSqlRecord record(const QString& tablename) const;
 //    QSqlQuery exec(const QString& query = QString()) const;
@@ -40,7 +39,7 @@ public:
 //    bool commit();
 //    bool rollback();
 
-    virtual void setDatabaseName(const QString& name);
+    virtual void setDatabaseName(const QString& name) = 0;
 //    void setUserName(const QString& name);
 //    void setPassword(const QString& password);
 //    void setHostName(const QString& host);

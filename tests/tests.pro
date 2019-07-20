@@ -14,7 +14,7 @@ PROJECT_HEADERS = \
     $$PROJECT_DIR/src/ModulesModel.h \
     $$PROJECT_DIR/src/ModulesGroupModel.h
 
-HEADERS += \
+HEADERS += $$PROJECT_HEADERS \
     mock_modulesmodel.h \
     iqsqldatabase.h \
     iqsqlquery.h \
@@ -26,7 +26,7 @@ HEADERS += \
     mock_qtimer.h \
     mock_qnetworkrequest.h
 
-SOURCES += \
+SOURCES += $$PROJECT_SOURCES \
     modulesgroupmodel-test.cpp \
     modulesmodel-test.cpp \
     main.cpp \

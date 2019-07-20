@@ -7,8 +7,9 @@
 class QSqlError
 {
 public:
-    virtual ~QSqlError();
-    virtual QString text() const;
+    QSqlError() {}
+    virtual ~QSqlError() {}
+    virtual QString text() const {}
 };
 
 #endif // QSQLERROR_H
