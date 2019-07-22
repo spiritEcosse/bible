@@ -22,8 +22,8 @@ void DownloadManager::append(const QStringList &urls)
 
 void DownloadManager::append(const QUrl &url)
 {
-//    if (downloadQueue.isEmpty())
-//        timer->singleShot(0, this, SLOT(startNextDownload()));
+    if (downloadQueue.isEmpty())
+        timer->singleShot(0, this, SLOT(startNextDownload()));
 
     downloadQueue.enqueue(url);
     ++totalCount;
