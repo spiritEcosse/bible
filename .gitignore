@@ -6,6 +6,7 @@ registry
 *.autosave
 
 bible.creator.user
+*.user
 
 # This file is used to ignore files which are generated
 # ----------------------------------------------------------------------------
