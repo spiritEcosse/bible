@@ -19,12 +19,19 @@ HEADERS += $$PROJECT_HEADERS \
     iqsqldatabase.h \
     iqsqlquery.h \
     QtSql/qsqldatabase.h \
+    QtSql/qsqlerror.h \
+    QtSql/qsqlquery.h \
+    QtSql/qsqlrecord.h \
+    QtSql/qsqltablemodel.h \
     mock_iqsqldatabase.h \
-    mock_iqsqlquery.h \
     mock_modulesgroupmodel.h \
     mock_downloadmanager.h \
     mock_qtimer.h \
-    mock_qnetworkrequest.h
+    mock_qnetworkrequest.h \
+    mock_qsqlquery.h \
+    mock_qsqldatabase.h \
+    mock_qsqlrecord.h \
+    mock_qsqlerror.h
 
 SOURCES += $$PROJECT_SOURCES \
     modulesgroupmodel-test.cpp \

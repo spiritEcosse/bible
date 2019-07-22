@@ -1,55 +1,69 @@
-//#include <gmock/gmock.h>
-//#include <gtest/gtest.h>
-//#include <QDebug>
-//#include <iostream>
+#include <gmock/gmock.h>
+#include <gtest/gtest.h>
+#include <QDebug>
+#include <iostream>
 
-//#include "mock_modulesgroupmodel.h"
-//#include "mock_iqsqldatabase.h"
-//#include "mock_iqsqlquery.h"
+#include "mock_modulesgroupmodel.h"
+#include "mock_iqsqldatabase.h"
+#include "mock_qsqlquery.h"
+#include "mock_qsqlerror.h"
 
-//using ::testing::_;
-//using ::testing::TestWithParam;
-//using ::testing::Test;
-//using ::testing::ValuesIn;
-//using ::testing::InSequence;
-//using ::testing::Return;
-//using ::testing::Mock;
-//using ::testing::ReturnRef;
-//using ::testing::NiceMock;
-//using ::testing::Invoke;
+using ::testing::_;
+using ::testing::TestWithParam;
+using ::testing::Test;
+using ::testing::ValuesIn;
+using ::testing::InSequence;
+using ::testing::Return;
+using ::testing::Mock;
+using ::testing::ReturnRef;
+using ::testing::NiceMock;
+using ::testing::Invoke;
+using ::testing::DefaultValue;
+using ::testing::ReturnPointee;
+using ::testing::ByRef;
+using ::testing::InvokeWithoutArgs;
+using testing::internal::BuiltInDefaultValue;
 
-//// The fixture for testing class ModulesGroupModelTest.
-//class ModulesGroupModelTest : public ::testing::Test {
-// protected:
-//  // You can remove any or all of the following functions if its body
-//  // is empty.
+// The fixture for testing class ModulesGroupModelTest.
+class ModulesGroupModelTest : public ::testing::Test {
+ protected:
+  // You can remove any or all of the following functions if its body
+  // is empty.
 
-//  ModulesGroupModelTest() {
-//     // You can do set-up work for each test here.
-//  }
+  ModulesGroupModelTest()
+      : modulesGroupModel(&mockModulesGroupModel)
+  {
+     // You can do set-up work for each test here.
+  }
 
-//  ~ModulesGroupModelTest() override {
-//     // You can do clean-up work that doesn't throw exceptions here.
-//  }
+  ~ModulesGroupModelTest() override {
+     // You can do clean-up work that doesn't throw exceptions here.
+  }
 
-//  // If the constructor and destructor are not enough for setting up
-//  // and cleaning up each test, you can define the following methods:
+  // If the constructor and destructor are not enough for setting up
+  // and cleaning up each test, you can define the following methods:
 
-//  void SetUp() override {
-//     // Code here will be called immediately after the constructor (right
-//     // before each test).
-//  }
+  void SetUp() override {
+     // Code here will be called immediately after the constructor (right
+     // before each test).
+  }
 
-//  void TearDown() override {
-//     // Code here will be called immediately after each test (right
-//     // before the destructor).
-//  }
+  void TearDown() override {
+     // Code here will be called immediately after each test (right
+     // before the destructor).
+  }
 
-//  MockIQSqlQuery mockIQSqlQuery;
-//  MockIQSqlDatabase mockIQSqlDatabase;
-//  const QString tableName = "modules_group";
-//  // Objects declared here can be used by all tests in the test case for Foo.
-//};
+  MockQSqlQuery mockQSqlQuery;
+  MockQSqlError mockQSqlError;
+
+  MockModulesGroupModel mockModulesGroupModel;
+  ModulesGroupModel* modulesGroupModel;
+
+  const QString tableName = "modules_group";
+  const QString query = BuiltInDefaultValue<const QString>::Get();
+
+  // Objects declared here can be used by all tests in the test case for Foo.
+};
 
 //TEST_F(ModulesGroupModelTest, init)
 //{
@@ -77,7 +91,7 @@
 //                "   'type'      CHAR(50), "
 //                "   'region'    CHAR(50) "
 //                ).arg(tableName);
-//    NiceMock<MockModulesGroupModel<MockIQSqlDatabase, MockIQSqlQuery>> mockModulesGroupModel(mockIQSqlDatabase);
+//    NiceMock<MockModulesGroupModel mockModulesGroupModel(mockIQSqlDatabase);
 
 //    ON_CALL(mockModulesGroupModel, createTable(_))
 //            .WillByDefault(Invoke(&mockModulesGroupModel, &MockModulesGroupModel<MockIQSqlDatabase, MockIQSqlQuery>::ParentCreateTable));
@@ -95,25 +109,26 @@
 //    EXPECT_FALSE(mockModulesGroupModel.createTable(tableName));
 //}
 
-//TEST_F(ModulesGroupModelTest, execLastError)
-//{
-//    NiceMock<MockModulesGroupModel<MockIQSqlDatabase, MockIQSqlQuery>> mockModulesGroupModel;
-//    mockModulesGroupModel.query_ = &mockIQSqlQuery;
 
-//    ON_CALL(mockModulesGroupModel, execLastError(_))
-//            .WillByDefault(Invoke(&mockModulesGroupModel, &MockModulesGroupModel<MockIQSqlDatabase, MockIQSqlQuery>::parentExecLastError));
+TEST_F(ModulesGroupModelTest, execLastError)
+{
+    mockModulesGroupModel.query_ = &mockQSqlQuery;
 
-//    const QString query = QString("SELECT * from %1").arg(tableName);
-//    EXPECT_CALL(mockIQSqlQuery, exec(query))
-//            .WillOnce(Return(true));
+    ON_CALL(mockModulesGroupModel, execLastError(_))
+            .WillByDefault(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::parentExecLastError));
 
-//    EXPECT_TRUE(mockModulesGroupModel.execLastError(query));
+    EXPECT_CALL(mockQSqlQuery, exec(query))
+            .WillOnce(Return(true));
 
-//    {
-//        InSequence s;
-//        EXPECT_CALL(mockIQSqlQuery, exec(query))
-//                .WillOnce(Return(false));
-//        EXPECT_CALL(mockIQSqlQuery, lastError());
-//    }
-//    EXPECT_FALSE(mockModulesGroupModel.execLastError(query));
-//}
+    EXPECT_TRUE(mockModulesGroupModel.execLastError(query));
+
+    {
+        InSequence s;
+        EXPECT_CALL(mockQSqlQuery, exec(query))
+                .WillOnce(Return(false));
+        EXPECT_CALL(mockQSqlQuery, lastError())
+                .WillOnce(ReturnPointee(&mockQSqlError));
+        EXPECT_CALL(mockQSqlError, text());
+    }
+    EXPECT_FALSE(mockModulesGroupModel.execLastError(query));
+}

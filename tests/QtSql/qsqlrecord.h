@@ -13,48 +13,47 @@ class QSqlRecord
 public:
     QSqlRecord();
     QSqlRecord(const QSqlRecord& other);
-    QSqlRecord& operator=(const QSqlRecord& other);
-    ~QSqlRecord();
+    virtual ~QSqlRecord();
 
-    bool operator==(const QSqlRecord &other) const;
-    inline bool operator!=(const QSqlRecord &other) const { return !operator==(other); }
+//    bool operator==(const QSqlRecord &other) const;
+//    inline bool operator!=(const QSqlRecord &other) const { return !operator==(other); }
 
-    QVariant value(int i) const;
-    QVariant value(const QString& name) const;
-    void setValue(int i, const QVariant& val);
-    void setValue(const QString& name, const QVariant& val);
+//    QVariant value(int i) const;
+//    QVariant value(const QString& name) const;
+//    void setValue(int i, const QVariant& val);
+//    void setValue(const QString& name, const QVariant& val);
 
-    void setNull(int i);
-    void setNull(const QString& name);
-    bool isNull(int i) const;
-    bool isNull(const QString& name) const;
+//    void setNull(int i);
+//    void setNull(const QString& name);
+//    bool isNull(int i) const;
+//    bool isNull(const QString& name) const;
 
-    int indexOf(const QString &name) const;
-    QString fieldName(int i) const;
+//    int indexOf(const QString &name) const;
+//    QString fieldName(int i) const;
 
-    QSqlField field(int i) const;
-    QSqlField field(const QString &name) const;
+//    QSqlField field(int i) const;
+//    QSqlField field(const QString &name) const;
 
-    bool isGenerated(int i) const;
-    bool isGenerated(const QString& name) const;
-    void setGenerated(const QString& name, bool generated);
-    void setGenerated(int i, bool generated);
+//    bool isGenerated(int i) const;
+//    bool isGenerated(const QString& name) const;
+//    void setGenerated(const QString& name, bool generated);
+//    void setGenerated(int i, bool generated);
 
-    void append(const QSqlField& field);
-    void replace(int pos, const QSqlField& field);
-    void insert(int pos, const QSqlField& field);
-    void remove(int pos);
+//    void append(const QSqlField& field);
+//    void replace(int pos, const QSqlField& field);
+//    void insert(int pos, const QSqlField& field);
+//    void remove(int pos);
 
-    bool isEmpty() const;
-    bool contains(const QString& name) const;
-    void clear();
-    void clearValues();
-    int count() const;
-    QSqlRecord keyValues(const QSqlRecord &keyFields) const;
+//    bool isEmpty() const;
+//    bool contains(const QString& name) const;
+//    void clear();
+//    void clearValues();
+//    int count() const;
+//    QSqlRecord keyValues(const QSqlRecord &keyFields) const;
 
-private:
-    void detach();
-    QSqlRecordPrivate* d;
+//private:
+//    void detach();
+//    QSqlRecordPrivate* d;
 };
 
 #endif // QSQLRECORD_H

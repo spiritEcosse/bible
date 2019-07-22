@@ -8,7 +8,6 @@
 class QSqlDatabase
 {
 public:
-//    QSqlDatabase() {}
 //    QSqlDatabase(const QSqlDatabase &other);
     virtual ~QSqlDatabase() {}
 
@@ -66,7 +65,7 @@ public:
 //    static QSqlDatabase cloneDatabase(const QString &other, const QString& connectionName);
 
     //    static void removeDatabase(const QString& connectionName);
-    static bool contains(const QString& connectionName = QLatin1String(defaultConnection));
+//    static bool contains(const QString& connectionName = QLatin1String(defaultConnection));
 //    static QStringList drivers();
 //    static QStringList connectionNames();
 //    static void registerSqlDriver(const QString &name, QSqlDriverCreatorBase *creator);
