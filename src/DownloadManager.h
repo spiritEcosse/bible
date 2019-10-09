@@ -4,6 +4,7 @@
 #include <QtCore>
 #include <QtNetwork>
 #include <QObject>
+#include <QTimer>
 
 #include "TextProgressBar.h"
 #include "gtest/gtest_prod.h"
@@ -33,6 +34,7 @@ private slots:
 private:
     virtual bool isHttpRedirect() const;
     virtual void reportRedirect();
+    QTimer* timer;
 
 //    QNetworkAccessManager manager;
     friend class DownloadManagerTest;
