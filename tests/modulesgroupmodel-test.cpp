@@ -66,22 +66,20 @@ class ModulesGroupModelTest : public ::testing::Test {
   // Objects declared here can be used by all tests in the test case for Foo.
 };
 
-//TEST_F(ModulesGroupModelTest, init)
-//{
-//    MockModulesGroupModel<MockIQSqlDatabase, MockIQSqlQuery> mockModulesGroupModel;
-//    ON_CALL(mockModulesGroupModel, init())
-//            .WillByDefault(Invoke(&mockModulesGroupModel, &MockModulesGroupModel<MockIQSqlDatabase, MockIQSqlQuery>::parentInit));
-//    {
-//        InSequence s;
-//        EXPECT_CALL(mockModulesGroupModel, setTable(tableName));
-//        EXPECT_CALL(mockModulesGroupModel, query())
-//                .WillOnce(ReturnRef(mockIQSqlQuery));
-//        EXPECT_CALL(mockModulesGroupModel, createTable(tableName));
-//        EXPECT_CALL(mockModulesGroupModel, select());
-//    }
+TEST_F(ModulesGroupModelTest, init)
+{
+    MockModulesGroupModel mockModulesGroupModel;
+    ON_CALL(mockModulesGroupModel, init())
+            .WillByDefault(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::parentInit));
+    {
+        InSequence s;
+        EXPECT_CALL(mockModulesGroupModel, setTable(tableName));
+        EXPECT_CALL(mockModulesGroupModel, createTable(tableName));
+        EXPECT_CALL(mockModulesGroupModel, select());
+    }
 
-//    mockModulesGroupModel.init();
-//}
+    mockModulesGroupModel.init();
+}
 
 TEST_F(ModulesGroupModelTest, createTable)
 {

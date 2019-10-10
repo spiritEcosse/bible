@@ -74,16 +74,9 @@ void ModulesGroupModel::compareVersions()
 //    emit availabilityNewModules(newModules);
 }
 
-//QSqlQuery& ModulesGroupModel::query() const
-//{
-//    QSqlQuery q;
-//    return q;
-//}
-
 void ModulesGroupModel::init()
 {
     setTable("modules_group");
-//    query_ = &query();
     createTable("modules_group");
     select();
 //    setEditStrategy(QSqlTableModel::OnManualSubmit);

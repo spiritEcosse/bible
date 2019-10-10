@@ -38,7 +38,6 @@ public:
 
     virtual void init();
     virtual bool createTable(const QString &tableName);
-//    virtual QSqlQuery& query() const;
     virtual bool execLastError(const QString& query);
     virtual void checkAvailabilityNewModules();
     virtual QString correctTitle(const QString &name, const QString &language="", const QString &region="") const;

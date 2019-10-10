@@ -3,7 +3,7 @@
 
 #include <gmock/gmock.h>
 #include <QtCore/qstringlist.h>
-#include <QtSql/qsqldatabase.h>
+#include <QSqlDatabase>
 
 class MockQSqlDatabase : public QSqlDatabase
 {

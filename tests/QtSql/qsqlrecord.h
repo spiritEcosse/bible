@@ -3,6 +3,7 @@
 
 #include <QtSql/qtsqlglobal.h>
 #include <QtCore/qstring.h>
+#include <QVariant>
 
 class QVariant;
 class QSqlField;
@@ -11,14 +12,14 @@ class QSqlRecordPrivate;
 class QSqlRecord
 {
 public:
-    QSqlRecord();
-    QSqlRecord(const QSqlRecord& other);
-    virtual ~QSqlRecord();
+    QSqlRecord() {}
+    QSqlRecord(const QSqlRecord& other) {}
+    virtual ~QSqlRecord() {}
 
 //    bool operator==(const QSqlRecord &other) const;
 //    inline bool operator!=(const QSqlRecord &other) const { return !operator==(other); }
 
-//    QVariant value(int i) const;
+    virtual QVariant value(int) const { return QVariant(); }
 //    QVariant value(const QString& name) const;
 //    void setValue(int i, const QVariant& val);
 //    void setValue(const QString& name, const QVariant& val);

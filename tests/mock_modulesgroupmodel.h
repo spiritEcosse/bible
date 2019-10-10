@@ -4,7 +4,6 @@
 #include <gmock/gmock.h>
 
 #include "../src/ModulesGroupModel.h"
-#include "mock_qsqldatabase.h"
 #include "mock_qsqlquery.h"
 #include "mock_qsqlrecord.h"
 
