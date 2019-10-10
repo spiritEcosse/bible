@@ -37,8 +37,6 @@ private:
     virtual void reportRedirect();
     QTimer* timer;
 
-    QTimer* timer;
-
 //    QNetworkAccessManager manager;
     friend class DownloadManagerTest;
     FRIEND_TEST(DownloadManagerTest, append);
