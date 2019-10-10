@@ -4,7 +4,7 @@
 #include <iostream>
 
 #include "mock_modulesgroupmodel.h"
-#include "mock_iqsqldatabase.h"
+#include "mock_qsqldatabase.h"
 #include "mock_qsqlquery.h"
 #include "mock_qsqlerror.h"
 
@@ -55,6 +55,7 @@ class ModulesGroupModelTest : public ::testing::Test {
 
   MockQSqlQuery mockQSqlQuery;
   MockQSqlError mockQSqlError;
+  MockQSqlDatabase mockQSqlDatabase;
 
   MockModulesGroupModel mockModulesGroupModel;
   ModulesGroupModel* modulesGroupModel;
@@ -82,32 +83,32 @@ class ModulesGroupModelTest : public ::testing::Test {
 //    mockModulesGroupModel.init();
 //}
 
-//TEST_F(ModulesGroupModelTest, createTable)
-//{
-//    QString sql = QString(
-//                "CREATE TABLE IF NOT EXISTS '%1' ("
-//                "   'id'        INTEGER PRIMARY KEY AUTOINCREMENT, "
-//                "   'language'  CHAR(50), "
-//                "   'type'      CHAR(50), "
-//                "   'region'    CHAR(50) "
-//                ).arg(tableName);
-//    NiceMock<MockModulesGroupModel mockModulesGroupModel(mockIQSqlDatabase);
+TEST_F(ModulesGroupModelTest, createTable)
+{
+    QString sql = QString(
+                "CREATE TABLE IF NOT EXISTS '%1' ("
+                "   'id'        INTEGER PRIMARY KEY AUTOINCREMENT, "
+                "   'language'  CHAR(50), "
+                "   'type'      CHAR(50), "
+                "   'region'    CHAR(50) "
+                ).arg(tableName);
 
-//    ON_CALL(mockModulesGroupModel, createTable(_))
-//            .WillByDefault(Invoke(&mockModulesGroupModel, &MockModulesGroupModel<MockIQSqlDatabase, MockIQSqlQuery>::ParentCreateTable));
-//    {
-//        InSequence s;
-//        EXPECT_CALL(mockIQSqlDatabase, tables())
-//                .WillOnce(Return(QStringList{}));
-//        EXPECT_CALL(mockModulesGroupModel, execLastError(sql))
-//                .WillRepeatedly(Return(true));
-//    }
+    mockModulesGroupModel.db_ = &mockQSqlDatabase;
+    ON_CALL(mockModulesGroupModel, createTable(_))
+            .WillByDefault(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::ParentCreateTable));
+    {
+        InSequence s;
+        EXPECT_CALL(mockQSqlDatabase, tables())
+                .WillOnce(Return(QStringList{}));
+        EXPECT_CALL(mockModulesGroupModel, execLastError(sql))
+                .WillRepeatedly(Return(true));
+    }
 
-//    EXPECT_TRUE(mockModulesGroupModel.createTable(tableName));
-//    EXPECT_CALL(mockIQSqlDatabase, tables())
-//            .WillRepeatedly(Return(QStringList{tableName}));
-//    EXPECT_FALSE(mockModulesGroupModel.createTable(tableName));
-//}
+    EXPECT_TRUE(mockModulesGroupModel.createTable(tableName));
+    EXPECT_CALL(mockQSqlDatabase, tables())
+            .WillRepeatedly(Return(QStringList{tableName}));
+    EXPECT_FALSE(mockModulesGroupModel.createTable(tableName));
+}
 
 
 TEST_F(ModulesGroupModelTest, execLastError)

@@ -8,11 +8,10 @@
 class MockQSqlDatabase : public QSqlDatabase
 {
 public:
-    MockQSqlDatabase() {}
     MOCK_CONST_METHOD0(isValid, bool());
     MOCK_CONST_METHOD0(lastError, QSqlError());
     MOCK_METHOD0(open, bool());
-    MOCK_CONST_METHOD1(tables, QStringList(QSql::TableType));
+    MOCK_CONST_METHOD0(tables, QStringList());
     MOCK_METHOD1(setDatabaseName, void(const QString& name));
 };
 

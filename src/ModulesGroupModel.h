@@ -59,6 +59,9 @@ private:
     QFile registryArchive;
     int countOldRows = 0;
 
+    friend class ModulesGroupModelTest;
+    FRIEND_TEST(ModulesGroupModelTest, createTable);
+
 signals:
     void updateTableSuccess();
     void availabilityNewModules(bool);
