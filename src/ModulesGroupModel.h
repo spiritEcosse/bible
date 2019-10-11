@@ -53,7 +53,6 @@ public:
     QUrl urlRegistryInfo = QUrl::fromEncoded(QByteArray::fromBase64(REGISTRY_INFO));
 
 private:
-    QSqlDatabase *db_;
     QFile registry;
     QFile registryArchive;
     int countOldRows = 0;

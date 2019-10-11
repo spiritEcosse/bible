@@ -3,6 +3,7 @@
 
 #include <QtSql/qsqlrecord.h>
 #include <QtCore/QModelIndex>
+#include <QSqlDatabase>
 
 //enum Qt {
 //    UserRole,
@@ -21,6 +22,10 @@ public:
     virtual bool insertRecord(int row, const QSqlRecord &record) = 0;
     virtual bool select() = 0;
     virtual bool submitAll() = 0;
+    virtual QSqlDatabase& database() const {
+        QSqlDatabase d;
+        return d;
+    }
 };
 
 #endif // QSQLTABLEMODEL_H

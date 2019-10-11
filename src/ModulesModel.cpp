@@ -29,7 +29,7 @@ bool ModulesModel::execLastError(const QString& query)
 
 bool ModulesModel::createTable(const QString &tableName, const QString &relatedTable)
 {
-    if ( !db_->tables().contains(tableName) ) {
+    if ( !database().tables().contains(tableName) ) {
         QString sql = QString(
                     "CREATE TABLE IF NOT EXISTS '%1' ("
                     "   'id'                INTEGER PRIMARY KEY AUTOINCREMENT, "

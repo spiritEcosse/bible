@@ -29,8 +29,6 @@ public:
     virtual bool execLastError(const QString& query);
 
 private:
-    QSqlDatabase *db_;
-
     friend class ModulesGroupModelTest;
     FRIEND_TEST(ModulesModelTest, createTable);
 

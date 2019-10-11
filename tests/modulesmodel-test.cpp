@@ -117,11 +117,12 @@ TEST_F(ModulesModelTest, createTable)
                 "FOREIGN KEY ('%2_id')  REFERENCES %2(id)"
                 ")"
                 ).arg(tableName, relatedTable);
-    mockModulesModel.db_ = &mockQSqlDatabase;
     ON_CALL(mockModulesModel, createTable(_, _))
             .WillByDefault(Invoke(&mockModulesModel, &MockModulesModel::ParentCreateTable));
     {
         InSequence s;
+        EXPECT_CALL(mockModulesModel, database())
+                .WillOnce(ReturnPointee(&mockQSqlDatabase));
         EXPECT_CALL(mockQSqlDatabase, tables())
                 .WillOnce(Return(QStringList{}));
         EXPECT_CALL(mockModulesModel, execLastError(sql))
@@ -129,6 +130,8 @@ TEST_F(ModulesModelTest, createTable)
     }
 
     EXPECT_TRUE(mockModulesModel.createTable(tableName, relatedTable));
+    EXPECT_CALL(mockModulesModel, database())
+            .WillOnce(ReturnPointee(&mockQSqlDatabase));
     EXPECT_CALL(mockQSqlDatabase, tables())
             .WillRepeatedly(Return(QStringList{tableName}));
     EXPECT_FALSE(mockModulesModel.createTable(tableName, relatedTable));
