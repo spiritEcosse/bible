@@ -1,8 +1,8 @@
 #ifndef QSQLRECORD_H
 #define QSQLRECORD_H
 
-#include <QtSql/qtsqlglobal.h>
-#include <QtCore/qstring.h>
+//#include <qtsqlglobal.h>
+//#include <QtCore/qstring.h>
 #include <QVariant>
 
 class QVariant;

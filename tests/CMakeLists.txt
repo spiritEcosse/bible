@@ -22,9 +22,9 @@ else ()
 endif ()
 
 
-include_directories(${GTestSrc} ${GTestSrc}/include ${GMockSrc} ${GMockSrc}/include)
+include_directories(${GTestSrc} ${GTestSrc}/include ${GMockSrc} ${GMockSrc}/include quazip qt/QtSql qt/QtCore qt/QtNetwork)
 
-add_executable(${PROJECT_NAME} main.cpp tst_tests.h modulesgroupmodel-test.cpp QtSql/qsqlrecord.h QtSql/qtsqlglobal.h
+add_executable(${PROJECT_NAME} main.cpp tst_tests.h modulesgroupmodel-test.cpp
                ${GTestSrc}/src/gtest-all.cc
                ${GMockSrc}/src/gmock-all.cc)
 add_test(${PROJECT_NAME} COMMAND ${PROJECT_NAME})

@@ -1,8 +1,8 @@
 #ifndef QSQLTABLEMODEL_H
 #define QSQLTABLEMODEL_H
 
-#include <QtSql/qsqlrecord.h>
-#include <QtCore/QModelIndex>
+#include <QSqlRecord>
+#include <QModelIndex>
 #include <QSqlDatabase>
 
 //enum Qt {

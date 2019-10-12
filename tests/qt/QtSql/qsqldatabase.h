@@ -1,10 +1,10 @@
 #ifndef QSQLDATABASE_H
 #define QSQLDATABASE_H
 
-#include <QtSql/qtsqlglobal.h>
-#include <QtCore/qstring.h>
+//#include <QtSql/qtsqlglobal.h>
+#include <QString>
 #include <QStringList>
-#include <QtSql/qsqlerror.h>
+//#include <QtSql/qsqlerror.h>
 
 class QSqlDatabase
 {

@@ -2,7 +2,7 @@
 #define MOCK_QSQLERROR_H
 
 #include <gmock/gmock.h>
-#include <QtSql/qsqlerror.h>
+#include <QSqlError>
 
 class MockQSqlError : public QSqlError
 {

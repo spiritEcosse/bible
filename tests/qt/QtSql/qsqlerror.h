@@ -1,14 +1,14 @@
 #ifndef QSQLERROR_H
 #define QSQLERROR_H
 
-#include <QtCore/qstring.h>
+#include <QString>
 
 class QSqlError
 {
 public:
     virtual ~QSqlError() {}
     virtual QString text() const {
-        return QString("");
+        return QString();
     }
 };
 

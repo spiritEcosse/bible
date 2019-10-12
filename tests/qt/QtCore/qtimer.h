@@ -1,7 +1,7 @@
 #ifndef QTIMER_H
 #define QTIMER_H
 
-#include <QtCore/qobject.h>
+#include <QObject>
 
 class QTimer
 {

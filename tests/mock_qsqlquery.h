@@ -3,7 +3,7 @@
 
 #include <gmock/gmock.h>
 #include "qsqlquery.h"
-#include <QtSql/qsqlerror.h>
+#include <QSqlError>
 
 class MockQSqlQuery : public QSqlQuery
 {

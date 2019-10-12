@@ -1,7 +1,7 @@
 #ifndef QNETWORKREQUEST_H
 #define QNETWORKREQUEST_H
 
-#include <QtCore/QUrl>
+#include <QUrl>
 
 class QNetworkRequest
 {

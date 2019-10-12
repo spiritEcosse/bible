@@ -2,8 +2,8 @@
 #define MOCK_QSQLDATABASE_H
 
 #include <gmock/gmock.h>
-#include <QtCore/qstringlist.h>
 #include <QSqlDatabase>
+#include <QStringList>
 
 class MockQSqlDatabase : public QSqlDatabase
 {

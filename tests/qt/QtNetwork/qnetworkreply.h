@@ -1,7 +1,7 @@
 #ifndef QNETWORKREPLY_H
 #define QNETWORKREPLY_H
 
-#include <QtNetwork/QNetworkRequest>
+#include <QNetworkRequest>
 
 class QNetworkReply
 {
