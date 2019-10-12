@@ -1,6 +1,5 @@
 //#include <gmock/gmock.h>
 //#include <gtest/gtest.h>
-//#include <QDebug>
 //#include <iostream>
 
 //#include "mock_modulesgroupmodel.h"
@@ -117,3 +116,14 @@
 //    }
 //    EXPECT_FALSE(mockModulesGroupModel.execLastError(query));
 //}
+
+#include <gtest/gtest.h>
+#include <gmock/gmock-matchers.h>
+
+using namespace testing;
+
+TEST(tests2, tests1)
+{
+    EXPECT_EQ(1, 1);
+    ASSERT_THAT(0, Eq(0));
+}

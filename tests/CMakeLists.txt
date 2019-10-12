@@ -1,34 +1,32 @@
-# Download and unpack googletest at configure time
-configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
-execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/googletest-download" )
-execute_process(COMMAND "${CMAKE_COMMAND}" --build .
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/googletest-download" )
+CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
 
-# Prevent GoogleTest from overriding our compiler/linker options
-# when building with Visual Studio
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+PROJECT(tests
+        LANGUAGES CXX)
 
-# Add googletest directly to our build. This adds
-# the following targets: gtest, gtest_main, gmock
-# and gmock_main
-add_subdirectory("${CMAKE_BINARY_DIR}/googletest-src"
-                 "${CMAKE_BINARY_DIR}/googletest-build")
 
-# The gtest/gmock targets carry header search path
-# dependencies automatically when using CMake 2.8.11 or
-# later. Otherwise we have to add them here ourselves.
-if(CMAKE_VERSION VERSION_LESS 2.8.11)
-    include_directories("${gtest_SOURCE_DIR}/include"
-                        "${gmock_SOURCE_DIR}/include")
-endif()
+add_definitions(-DGTEST_LANGUAGE_CXX11)
 
-# Now simply link your own targets against gtest, gmock,
-# etc. as appropriate
+find_package(Threads REQUIRED)
 
-include_directories(cmake-build-debug-googletest-src/googlemock/include)
-include_directories(cmake-build-debug-googletest-src/googletest/include)
-set(SOURCE_FILES main.cpp)
-add_executable(modulesgroupmodel-test $(SOURCE_FILES))
+if ($ENV{GOOGLETEST_DIR})
+    SET(GOOGLETEST_DIR $ENV{GOOGLETEST_DIR})
+else ()
+    message(WARNING "Using googletest src dir specified at Qt Creator wizard")
+    SET(GOOGLETEST_DIR "/home/igor/projects/opt/googletest")
+endif ()
+if (EXISTS ${GOOGLETEST_DIR})
+    SET(GTestSrc ${GOOGLETEST_DIR}/googletest)
+    SET(GMockSrc ${GOOGLETEST_DIR}/googlemock)
+else ()
+    message( FATAL_ERROR "No googletest src dir found - set GOOGLETEST_DIR to enable!")
+endif ()
 
-#target_link_libraries(modulesgroupmodel-test gtest gtest_main)
+
+include_directories(${GTestSrc} ${GTestSrc}/include ${GMockSrc} ${GMockSrc}/include)
+
+add_executable(${PROJECT_NAME} main.cpp tst_tests.h modulesgroupmodel-test.cpp
+               ${GTestSrc}/src/gtest-all.cc
+               ${GMockSrc}/src/gmock-all.cc)
+add_test(${PROJECT_NAME} COMMAND ${PROJECT_NAME})
+target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
+
