@@ -1,3 +1,6 @@
+#include "tst_tests.h"
+//#include "modulesgroupmodel-test.cpp"
+
 #include <gtest/gtest.h>
 
 int main(int argc, char *argv[])

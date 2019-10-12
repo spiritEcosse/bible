@@ -24,7 +24,7 @@ endif ()
 
 include_directories(${GTestSrc} ${GTestSrc}/include ${GMockSrc} ${GMockSrc}/include)
 
-add_executable(${PROJECT_NAME} main.cpp tst_tests.h modulesgroupmodel-test.cpp
+add_executable(${PROJECT_NAME} main.cpp tst_tests.h modulesgroupmodel-test.cpp QtSql/qsqlrecord.h QtSql/qtsqlglobal.h
                ${GTestSrc}/src/gtest-all.cc
                ${GMockSrc}/src/gmock-all.cc)
 add_test(${PROJECT_NAME} COMMAND ${PROJECT_NAME})
