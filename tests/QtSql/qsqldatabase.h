@@ -3,31 +3,31 @@
 
 #include <QtSql/qtsqlglobal.h>
 #include <QtCore/qstring.h>
+#include <QStringList>
 #include <QtSql/qsqlerror.h>
 
 class QSqlDatabase
 {
 public:
-//    QSqlDatabase() {}
-//    QSqlDatabase(const QSqlDatabase &other);
+    QSqlDatabase() {}
     virtual ~QSqlDatabase() {}
 
     static const char *defaultConnection;
-    virtual bool isValid() const = 0;
+    virtual bool isValid() const { return false; }
 //    static QSqlDatabase database(const QString& connectionName = QLatin1String(defaultConnection),
 //                                 bool open = true);
 //    static QSqlDatabase addDatabase(const QString& type,
 //                                    const QString& connectionName = QLatin1String(defaultConnection));
-    virtual QSqlError lastError() const = 0;
+//    virtual QSqlError lastError() const {}
 
 //    QSqlDatabase &operator=(const QSqlDatabase &other);
 
-    virtual bool open() = 0;
+    virtual bool open() { return false; }
 //    bool open(const QString& user, const QString& password);
 //    void close();
 //    bool isOpen() const;
 //    bool isOpenError() const;
-    virtual QStringList tables(QSql::TableType type = QSql::Tables) const = 0;
+    virtual QStringList tables() const { return QStringList{}; }
 //    QSqlIndex primaryIndex(const QString& tablename) const;
 //    QSqlRecord record(const QString& tablename) const;
 //    QSqlQuery exec(const QString& query = QString()) const;
@@ -39,7 +39,7 @@ public:
 //    bool commit();
 //    bool rollback();
 
-    virtual void setDatabaseName(const QString& name) = 0;
+    virtual void setDatabaseName(const QString&) {}
 //    void setUserName(const QString& name);
 //    void setPassword(const QString& password);
 //    void setHostName(const QString& host);
@@ -66,7 +66,7 @@ public:
 //    static QSqlDatabase cloneDatabase(const QString &other, const QString& connectionName);
 
     //    static void removeDatabase(const QString& connectionName);
-    static bool contains(const QString& connectionName = QLatin1String(defaultConnection));
+//    static bool contains(const QString& connectionName = QLatin1String(defaultConnection));
 //    static QStringList drivers();
 //    static QStringList connectionNames();
 //    static void registerSqlDriver(const QString &name, QSqlDriverCreatorBase *creator);

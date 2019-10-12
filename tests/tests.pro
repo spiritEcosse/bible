@@ -18,13 +18,25 @@ HEADERS += $$PROJECT_HEADERS \
     mock_modulesmodel.h \
     iqsqldatabase.h \
     iqsqlquery.h \
+    QtSql/QSqlDatabase \
     QtSql/qsqldatabase.h \
+    QtSql/QSqlError \
+    QtSql/qsqlerror.h \
+    QtSql/QSqlQuery \
+    QtSql/qsqlquery.h \
+    QtSql/QSqlRecord \
+    QtSql/qsqlrecord.h \
+    QtSql/QSqlTableModel \
+    QtSql/qsqltablemodel.h \
     mock_iqsqldatabase.h \
-    mock_iqsqlquery.h \
     mock_modulesgroupmodel.h \
     mock_downloadmanager.h \
     mock_qtimer.h \
-    mock_qnetworkrequest.h
+    mock_qnetworkrequest.h \
+    mock_qsqlquery.h \
+    mock_qsqldatabase.h \
+    mock_qsqlrecord.h \
+    mock_qsqlerror.h
 
 SOURCES += $$PROJECT_SOURCES \
     modulesgroupmodel-test.cpp \

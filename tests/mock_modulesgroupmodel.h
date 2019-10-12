@@ -1,55 +1,53 @@
-//#ifndef MOCKMODULESGROUPMODEL_H
-//#define MOCKMODULESGROUPMODEL_H
+#ifndef MOCKMODULESGROUPMODEL_H
+#define MOCKMODULESGROUPMODEL_H
 
-//#include <gmock/gmock.h>
-//#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
-//#include "../src/ModulesGroupModel.h"
-//#include "mock_iqsqldatabase.h"
-//#include "mock_iqsqlquery.h"
+#include "../src/ModulesGroupModel.h"
+#include "mock_qsqlrecord.h"
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
-//template <class MockIQSqlDatabase, class MockIQSqlQuery>
-//class MockModulesGroupModel : public ModulesGroupModel<MockIQSqlDatabase, MockIQSqlQuery>
-//{
-//public:
-//    MockModulesGroupModel(MockIQSqlDatabase &db, QObject *parent = nullptr)
-//        : ModulesGroupModel<MockIQSqlDatabase, MockIQSqlQuery>(db, parent) {}
-//    MockModulesGroupModel() {}
-//    MOCK_METHOD0_T(init, void());
-//    MOCK_METHOD1_T(createTable, bool(const QString &tableName));
-//    MOCK_CONST_METHOD0_T(query, MockIQSqlQuery&());
-//    MOCK_METHOD1_T(execLastError, bool(const QString& query));
-//    MOCK_METHOD0_T(checkAvailabilityNewModules, void());
-//    MOCK_CONST_METHOD3_T(correctTitle, QString(QString, QString, QString));
-//    MOCK_METHOD0_T(setCountOldRows, void());
-//    MOCK_METHOD1_T(newRows, void(QJsonArray &downloads));
-//    // The following line won't really compile, as the return
-//    // type has multiple template arguments.  To fix it, use a
-//    // typedef for the return type.
-//    MOCK_CONST_METHOD3_T(makeGroup, QMap<QString, QString>(QString, QString, QString));
-//    MOCK_CONST_METHOD2_T(data, QVariant(QModelIndex, int));
-//    // The following line won't really compile, as the return
-//    // type has multiple template arguments.  To fix it, use a
-//    // typedef for the return type.
-//    MOCK_CONST_METHOD0_T(roleNames, QHash<int, QByteArray>());
-//    MOCK_METHOD1_T(setTable, void(const QString &tableName));
-//    MOCK_METHOD0_T(select, bool());
-//    MOCK_METHOD0_T(updateModules, void());
+using ::testing::Invoke;
 
-//    MOCK_CONST_METHOD0_T(record, QSqlRecord());
-//    MOCK_CONST_METHOD1_T(record, QSqlRecord(int row));
-//    MOCK_METHOD2_T(insertRecord, bool(int row, const QSqlRecord &record));
-//    MOCK_METHOD0_T(submitAll, bool());
+class MockModulesGroupModel : public ModulesGroupModel
+{
+public:
+    MOCK_METHOD0(init, void());
+    MOCK_METHOD1(createTable, bool(const QString &tableName));
+    MOCK_CONST_METHOD0(query, QSqlQuery&());
+    MOCK_METHOD1(execLastError, bool(const QString& query));
+    MOCK_METHOD0(checkAvailabilityNewModules, void());
+    MOCK_CONST_METHOD3(correctTitle, QString(QString, QString, QString));
+    MOCK_METHOD0(setCountOldRows, void());
+    MOCK_METHOD1(newRows, void(QJsonArray &downloads));
+    // The following line won't really compile, as the return
+    // type has multiple template arguments.  To fix it, use a
+    // typedef for the return type.
+    MOCK_CONST_METHOD3(makeGroup, QMap<QString, QString>(QString, QString, QString));
+    MOCK_CONST_METHOD2(data, QVariant(QModelIndex, int));
+    // The following line won't really compile, as the return
+    // type has multiple template arguments.  To fix it, use a
+    // typedef for the return type.
+    MOCK_CONST_METHOD0(roleNames, QHash<int, QByteArray>());
+    MOCK_METHOD1(setTable, void(const QString &tableName));
+    MOCK_METHOD0(select, bool());
+    MOCK_METHOD0(updateModules, void());
 
-//    bool ParentCreateTable(const QString &tableName) {
-//        return ModulesGroupModel<MockIQSqlDatabase, MockIQSqlQuery>::createTable(tableName);
-//    }
-//    void parentInit() {
-//        return ModulesGroupModel<MockIQSqlDatabase, MockIQSqlQuery>::init();
-//    }
-//    bool parentExecLastError(const QString& query) {
-//        return ModulesGroupModel<MockIQSqlDatabase, MockIQSqlQuery>::execLastError(query);
-//    }
-//};
+//    MOCK_CONST_METHOD0(record, MockQSqlRecord());
+//    MOCK_CONST_METHOD1(record, MockQSqlRecord(int row));
+    MOCK_METHOD2(insertRecord, bool(int row, const QSqlRecord &record));
+    MOCK_METHOD0(submitAll, bool());
+    MOCK_CONST_METHOD0(database, QSqlDatabase&());
+    bool ParentCreateTable(const QString &tableName) {
+        return ModulesGroupModel::createTable(tableName);
+    }
+    void parentInit() {
+        return ModulesGroupModel::init();
+    }
+    bool parentExecLastError(const QString& query) {
+        return ModulesGroupModel::execLastError(query);
+    }
+};
 
-//#endif // MOCKMODULESGROUPMODEL_H
+#endif // MOCKMODULESGROUPMODEL_H

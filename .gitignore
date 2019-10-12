@@ -4,6 +4,7 @@ registry
 *.log
 
 *.autosave
+*.user
 
 bible.creator.user
 *.user
