@@ -13,14 +13,10 @@ using ::testing::ValuesIn;
 using ::testing::InSequence;
 using ::testing::Return;
 using ::testing::Mock;
-using ::testing::ReturnRef;
-using ::testing::NiceMock;
 using ::testing::Invoke;
 using ::testing::DefaultValue;
 using ::testing::ReturnPointee;
-using ::testing::ByRef;
-using ::testing::InvokeWithoutArgs;
-using testing::internal::BuiltInDefaultValue;
+using ::testing::internal::BuiltInDefaultValue;
 
 // The fixture for testing class ModulesGroupModelTest.
 class ModulesGroupModelTest : public TestWithParam<const char*> {
@@ -105,7 +101,7 @@ TEST_F(ModulesGroupModelTest, createTable)
                 "   'region'    CHAR(50) "
                 ).arg(tableName);
 
-    ON_CALL(mockModulesGroupModel, createTable(_))
+    ON_CALL(mockModulesGroupModel, createTable(tableName))
             .WillByDefault(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::ParentCreateTable));
     {
         InSequence s;
@@ -131,7 +127,7 @@ TEST_F(ModulesGroupModelTest, execLastError)
 {
     mockModulesGroupModel.query_ = &mockQSqlQuery;
 
-    ON_CALL(mockModulesGroupModel, execLastError(_))
+    ON_CALL(mockModulesGroupModel, execLastError(query))
             .WillByDefault(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::parentExecLastError));
 
     EXPECT_CALL(mockQSqlQuery, exec(query))

@@ -14,10 +14,10 @@ using ::testing::ValuesIn;
 using ::testing::InSequence;
 using ::testing::Return;
 using ::testing::Mock;
-using ::testing::ReturnRef;
-using ::testing::NiceMock;
 using ::testing::Invoke;
+using ::testing::DefaultValue;
 using ::testing::ReturnPointee;
+using ::testing::internal::BuiltInDefaultValue;
 
 
 // The fixture for testing class ModulesModel.
@@ -58,6 +58,7 @@ protected:
 
     const QString tableName = "modules";
     const QString relatedTable = "modules_group";
+    const QString query = BuiltInDefaultValue<const QString>::Get();
 };
 
 TEST_F(ModulesModelTest, init)
@@ -97,7 +98,7 @@ TEST_F(ModulesModelTest, createTable)
                 "FOREIGN KEY ('%2_id')  REFERENCES %2(id)"
                 ")"
                 ).arg(tableName, relatedTable);
-    ON_CALL(mockModulesModel, createTable(_, _))
+    ON_CALL(mockModulesModel, createTable(tableName, relatedTable))
             .WillByDefault(Invoke(&mockModulesModel, &MockModulesModel::ParentCreateTable));
     {
         InSequence s;
@@ -121,10 +122,9 @@ TEST_F(ModulesModelTest, execLastError)
 {
     mockModulesModel.query_ = &mockQSqlQuery;
 
-    ON_CALL(mockModulesModel, execLastError(_))
+    ON_CALL(mockModulesModel, execLastError(query))
             .WillByDefault(Invoke(&mockModulesModel, &MockModulesModel::parentExecLastError));
 
-    const QString query = QString("SELECT * from %1").arg(tableName);
     EXPECT_CALL(mockQSqlQuery, exec(query))
             .WillOnce(Return(true));
 
