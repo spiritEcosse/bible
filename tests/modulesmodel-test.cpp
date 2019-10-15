@@ -111,10 +111,13 @@ TEST_F(ModulesModelTest, createTable)
     }
 
     EXPECT_TRUE(mockModulesModel.createTable(tableName, relatedTable));
-    EXPECT_CALL(mockModulesModel, database())
-            .WillOnce(ReturnPointee(&mockQSqlDatabase));
-    EXPECT_CALL(mockQSqlDatabase, tables())
-            .WillRepeatedly(Return(QStringList{tableName}));
+    {
+        InSequence s;
+        EXPECT_CALL(mockModulesModel, database())
+                .WillOnce(ReturnPointee(&mockQSqlDatabase));
+        EXPECT_CALL(mockQSqlDatabase, tables())
+                .WillRepeatedly(Return(QStringList{tableName}));
+    }
     EXPECT_FALSE(mockModulesModel.createTable(tableName, relatedTable));
 }
 
