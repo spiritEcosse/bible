@@ -4,18 +4,13 @@
 #include <gmock/gmock.h>
 
 #include "../src/ModulesGroupModel.h"
-#include "mock_qsqlrecord.h"
-#include <QSqlDatabase>
-#include <QSqlQuery>
 
-using ::testing::Invoke;
 
 class MockModulesGroupModel : public ModulesGroupModel
 {
 public:
     MOCK_METHOD0(init, void());
     MOCK_METHOD1(createTable, bool(const QString &tableName));
-    MOCK_CONST_METHOD0(query, QSqlQuery&());
     MOCK_METHOD1(execLastError, bool(const QString& query));
     MOCK_METHOD0(checkAvailabilityNewModules, void());
     MOCK_CONST_METHOD3(correctTitle, QString(QString, QString, QString));
@@ -34,8 +29,8 @@ public:
     MOCK_METHOD0(select, bool());
     MOCK_METHOD0(updateModules, void());
 
-//    MOCK_CONST_METHOD0(record, MockQSqlRecord());
-//    MOCK_CONST_METHOD1(record, MockQSqlRecord(int row));
+    MOCK_CONST_METHOD0(record, QSqlRecord());
+    MOCK_CONST_METHOD1(record, QSqlRecord(int row));
     MOCK_METHOD2(insertRecord, bool(int row, const QSqlRecord &record));
     MOCK_METHOD0(submitAll, bool());
     MOCK_METHOD0(database, QSqlDatabase&());
