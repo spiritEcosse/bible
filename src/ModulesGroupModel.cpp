@@ -130,43 +130,43 @@ void ModulesGroupModel::setCountOldRows()
 
 void ModulesGroupModel::newRows(QJsonArray &downloads)
 {
-//    foreach(const QJsonValue &jsonValue, downloads) {
-//        QJsonObject jsonObject = jsonValue.toObject();
-//        QSqlRecord newRecord = record();
-//        QMap<QString, QString> group = makeGroup(
-//                    jsonObject.value("fil").toString(),
-//                    jsonObject.value("lng").toString(),
-//                    jsonObject.value("reg").toString());
+    foreach(const QJsonValue &jsonValue, downloads) {
+        QJsonObject jsonObject = jsonValue.toObject();
+        QSqlRecord newRecord = record();
+        QMap<QString, QString> group = makeGroup(
+                    jsonObject.value("fil").toString(),
+                    jsonObject.value("lng").toString(),
+                    jsonObject.value("reg").toString());
 
-//        QMap<QString, QString>::const_iterator it = group.constBegin();
-//        while (it != group.constEnd()) {
-//            newRecord.setValue(it.key(), it.value());
-//            ++it;
-//        }
+        QMap<QString, QString>::const_iterator it = group.constBegin();
+        while (it != group.constEnd()) {
+            newRecord.setValue(it.key(), it.value());
+            ++it;
+        }
 
-//        newRecord.setValue("name", jsonObject.value("fil").toString());
-//        newRecord.setValue("description", jsonObject.value("des").toString());
-//        newRecord.setValue("abbreviation", jsonObject.value("abr").toString());
-//        newRecord.setValue("information", jsonObject.value("inf").toString());
-//        newRecord.setValue("language", jsonObject.value("lng").toString());
-//        newRecord.setValue("language_show", jsonObject.value("aln").toString());
-//        newRecord.setValue("update", jsonObject.value("upd").toString());
-//        newRecord.setValue("urls", jsonObject.value("url").toString());
-//        newRecord.setValue("comment", jsonObject.value("cmt").toString());
-//        newRecord.setValue("size", correctSize(jsonObject.value("siz").toString()));
-//        newRecord.setValue("region", jsonObject.value("reg").toString());
-//        newRecord.setValue("default_download", jsonObject.value("def").toInt());
-//        newRecord.setValue("hidden", jsonObject.value("hid").toInt());
-//        newRecord.setValue("copyright", jsonObject.value("lic").toString());
-//        insertRecord(-1, newRecord);
-//    }
+        newRecord.setValue("name", jsonObject.value("fil").toString());
+        newRecord.setValue("description", jsonObject.value("des").toString());
+        newRecord.setValue("abbreviation", jsonObject.value("abr").toString());
+        newRecord.setValue("information", jsonObject.value("inf").toString());
+        newRecord.setValue("language", jsonObject.value("lng").toString());
+        newRecord.setValue("language_show", jsonObject.value("aln").toString());
+        newRecord.setValue("update", jsonObject.value("upd").toString());
+        newRecord.setValue("urls", jsonObject.value("url").toString());
+        newRecord.setValue("comment", jsonObject.value("cmt").toString());
+        newRecord.setValue("size", correctSize(jsonObject.value("siz").toString()));
+        newRecord.setValue("region", jsonObject.value("reg").toString());
+        newRecord.setValue("default_download", jsonObject.value("def").toInt());
+        newRecord.setValue("hidden", jsonObject.value("hid").toInt());
+        newRecord.setValue("copyright", jsonObject.value("lic").toString());
+        insertRecord(-1, newRecord);
+    }
 
 // This allows transactions to be rolled back and resubmitted without losing data.
-//    if (submitAll()) {
-////        emit updateTableSuccess();
-//    } else {
-////        qWarning() << "Failed to add new row: " << lastError().text();
-//    }
+    if (submitAll()) {
+//        emit updateTableSuccess();
+    } else {
+//        qWarning() << "Failed to add new row: " << lastError().text();
+    }
 }
 
 void ModulesGroupModel::checkAvailabilityNewModules()
@@ -239,12 +239,12 @@ QString ModulesGroupModel
 QVariant ModulesGroupModel
 ::data(const QModelIndex &index, int role) const
 {
-//    if (role < Qt::UserRole) {
-//        return QSqlTableModel::data(index, role);
-//    }
+    if (role < Qt::UserRole) {
+        return QSqlTableModel::data(index, role);
+    }
 
-//    const QSqlRecord sqlRecord = record(index.row());
-//    return sqlRecord.value(role - Qt::UserRole);
+    const QSqlRecord sqlRecord = record(index.row());
+    return sqlRecord.value(role - Qt::UserRole);
 }
 
 QHash<int, QByteArray>
@@ -253,4 +253,20 @@ ModulesGroupModel
     QHash<int, QByteArray> names;
     names[Qt::UserRole] = "title";
     return names;
+}
+
+int ModulesGroupModel::correctSize(const QString &str) const
+{
+    QRegularExpression re("^([+-]?\\d*\\.?\\d+)(\\w{1})*$", QRegularExpression::CaseInsensitiveOption);
+    QRegularExpressionMatch match = re.match(str);
+    double size = 0;
+    QStringList dimensions = {"K", "M", "G"};
+
+    if (match.hasMatch()) {
+        size = match.captured(1).toDouble();
+        QString dimension = match.captured(2).toUpper();
+        size *= qPow(1024, dimensions.indexOf(dimension) + 1);
+    }
+//ToDo replace on formattedDataSize
+    return size;
 }

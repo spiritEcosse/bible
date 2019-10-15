@@ -17,7 +17,6 @@ CONFIG += sailfishapp
 QT += core \
     sql \
     widgets \
-    testlib \
     network
 
 TEMPLATE = app

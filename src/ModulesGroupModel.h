@@ -56,9 +56,13 @@ private:
     QFile registry;
     QFile registryArchive;
     int countOldRows = 0;
+    int correctSize(const QString &str) const;
 
     friend class ModulesGroupModelTest;
     FRIEND_TEST(ModulesGroupModelTest, createTable);
+
+    friend class ModulesModelTest;
+    FRIEND_TEST(ModulesGroupModelTest, correctSize);
 
 signals:
     void updateTableSuccess();

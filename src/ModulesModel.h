@@ -31,11 +31,6 @@ public:
 private:
     friend class ModulesGroupModelTest;
     FRIEND_TEST(ModulesModelTest, createTable);
-
-    friend class ModulesModelTest;
-    FRIEND_TEST(ModulesModelTest, correctSize);
-
-    int correctSize(const QString &str) const;
 };
 
 

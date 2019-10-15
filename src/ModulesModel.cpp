@@ -56,22 +56,6 @@ bool ModulesModel::createTable(const QString &tableName, const QString &relatedT
     return false;
 }
 
-int ModulesModel::correctSize(const QString &str) const
-{
-    QRegularExpression re("^([+-]?\\d*\\.?\\d+)(\\w{1})*$", QRegularExpression::CaseInsensitiveOption);
-    QRegularExpressionMatch match = re.match(str);
-    double size = 0;
-    QStringList dimensions = {"K", "M", "G"};
-
-    if (match.hasMatch()) {
-        size = match.captured(1).toDouble();
-        QString dimension = match.captured(2).toUpper();
-        size *= qPow(1024, dimensions.indexOf(dimension) + 1);
-    }
-//ToDo replace on formattedDataSize
-    return size;
-}
-
 QVariant ModulesModel::data(const QModelIndex &index, int role) const
 {
     if (role < Qt::UserRole) {

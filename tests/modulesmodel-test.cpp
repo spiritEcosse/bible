@@ -63,23 +63,6 @@ protected:
     const QString relatedTable = "modules_group";
 };
 
-static QHash<const char *, int> sizes = {
-    { "100.0K", 102400 },
-    { "1K", 1024 },
-    { "12.32M", 12918456 },
-    { "1m", 1048576 },
-    { "0.05G", 53687091 },
-    { "1g", 1073741824 },
-    { "65700", 65700 },
-};
-
-// Tests that ModulesModel does correctSize.
-TEST_P(ModulesModelTest, correctSize) {
-    EXPECT_EQ(mockModulesModel.correctSize(GetParam()), sizes.value(GetParam()));
-}
-
-INSTANTIATE_TEST_CASE_P(PossibleIncomingSizes, ModulesModelTest, ValuesIn(sizes.keys()));
-
 TEST_F(ModulesModelTest, init)
 {
     ON_CALL(mockModulesModel, init())

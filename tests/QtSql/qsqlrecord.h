@@ -13,7 +13,7 @@ class QSqlRecord
 {
 public:
     QSqlRecord() {}
-    QSqlRecord(const QSqlRecord& other) {}
+    QSqlRecord(const QSqlRecord&) {}
     virtual ~QSqlRecord() {}
 
 //    bool operator==(const QSqlRecord &other) const;
@@ -22,7 +22,7 @@ public:
     virtual QVariant value(int) const { return QVariant(); }
 //    QVariant value(const QString& name) const;
 //    void setValue(int i, const QVariant& val);
-//    void setValue(const QString& name, const QVariant& val);
+    virtual void setValue(const QString&, const QVariant&) {}
 
 //    void setNull(int i);
 //    void setNull(const QString& name);

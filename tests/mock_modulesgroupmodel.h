@@ -38,7 +38,7 @@ public:
 //    MOCK_CONST_METHOD1(record, MockQSqlRecord(int row));
     MOCK_METHOD2(insertRecord, bool(int row, const QSqlRecord &record));
     MOCK_METHOD0(submitAll, bool());
-    MOCK_CONST_METHOD0(database, QSqlDatabase&());
+    MOCK_METHOD0(database, QSqlDatabase&());
     bool ParentCreateTable(const QString &tableName) {
         return ModulesGroupModel::createTable(tableName);
     }

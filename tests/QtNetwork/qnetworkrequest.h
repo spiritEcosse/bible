@@ -1,7 +1,7 @@
 #ifndef QNETWORKREQUEST_H
 #define QNETWORKREQUEST_H
 
-#include <QtCore/QUrl>
+#include <QUrl>
 
 class QNetworkRequest
 {
@@ -10,10 +10,11 @@ public:
         HttpStatusCodeAttribute,
         RedirectionTargetAttribute
     };
-    QNetworkRequest(const QUrl &url = QUrl()) {
-        Q_UNUSED(url);
+
+    QNetworkRequest(const QUrl &url = QUrl()) { Q_UNUSED(url); }
+    virtual QUrl url() const {
+        return QUrl();
     }
-    virtual QUrl url() const {}
 };
 
 #endif // QNETWORKREQUEST_H

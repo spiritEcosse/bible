@@ -25,7 +25,7 @@ using ::testing::InvokeWithoutArgs;
 using testing::internal::BuiltInDefaultValue;
 
 // The fixture for testing class ModulesGroupModelTest.
-class ModulesGroupModelTest : public ::testing::Test {
+class ModulesGroupModelTest : public TestWithParam<const char*> {
  protected:
   // You can remove any or all of the following functions if its body
   // is empty.
@@ -65,6 +65,22 @@ class ModulesGroupModelTest : public ::testing::Test {
 
   // Objects declared here can be used by all tests in the test case for Foo.
 };
+
+static QHash<const char *, int> sizes = {
+    { "100.0K", 102400 },
+    { "1K", 1024 },
+    { "12.32M", 12918456 },
+    { "1m", 1048576 },
+    { "0.05G", 53687091 },
+    { "1g", 1073741824 },
+    { "65700", 65700 },
+};
+
+TEST_P(ModulesGroupModelTest, correctSize) {
+    EXPECT_EQ(mockModulesGroupModel.correctSize(GetParam()), sizes.value(GetParam()));
+}
+
+INSTANTIATE_TEST_CASE_P(PossibleIncomingSizes, ModulesGroupModelTest, ValuesIn(sizes.keys()));
 
 TEST_F(ModulesGroupModelTest, init)
 {
@@ -110,6 +126,7 @@ TEST_F(ModulesGroupModelTest, createTable)
             .WillRepeatedly(Return(QStringList{tableName}));
     EXPECT_FALSE(mockModulesGroupModel.createTable(tableName));
 }
+
 
 
 TEST_F(ModulesGroupModelTest, execLastError)
