@@ -1,7 +1,7 @@
 #ifndef QSQLERROR_H
 #define QSQLERROR_H
 
-#include <QtCore/qstring.h>
+#include <QString>
 
 class QSqlError
 {

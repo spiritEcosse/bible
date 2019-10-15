@@ -1,14 +1,11 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
-#include <QDebug>
-#include <iostream>
 
 #include "mock_modulesmodel.h"
 #include "mock_qsqldatabase.h"
 #include "mock_qsqlquery.h"
 #include "mock_qsqlerror.h"
 
-#include "../src/ModulesModel.h"
 
 using ::testing::_;
 using ::testing::TestWithParam;

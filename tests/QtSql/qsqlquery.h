@@ -1,7 +1,7 @@
 #ifndef QSQLQUERY_H
 #define QSQLQUERY_H
 
-#include <QtSql/qsqlerror.h>
+#include <QSqlError>
 
 class QSqlQuery
 {

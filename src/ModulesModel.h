@@ -21,11 +21,11 @@ public:
     ModulesModel();
     virtual ~ModulesModel();
 
+    QSqlQuery* query_;
     QVariant data(const QModelIndex &index, int role) const override;
     QHash<int, QByteArray> roleNames() const;
     virtual void init();
     virtual bool createTable(const QString &tableName, const QString &relatedTable);
-    QSqlQuery* query_;
     virtual bool execLastError(const QString& query);
 
 private:

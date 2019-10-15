@@ -1,7 +1,5 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
-#include <QDebug>
-#include <iostream>
 
 #include "mock_modulesgroupmodel.h"
 #include "mock_qsqldatabase.h"

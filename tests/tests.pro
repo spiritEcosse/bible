@@ -16,8 +16,6 @@ PROJECT_HEADERS = \
 
 HEADERS += $$PROJECT_HEADERS \
     mock_modulesmodel.h \
-    iqsqldatabase.h \
-    iqsqlquery.h \
     QtSql/QSqlDatabase \
     QtSql/qsqldatabase.h \
     QtSql/QSqlError \
@@ -29,7 +27,6 @@ HEADERS += $$PROJECT_HEADERS \
     QtSql/QSqlTableModel \
     QtSql/qsqltablemodel.h \
     QtNetwork/qnetworkrequest.h \
-    mock_iqsqldatabase.h \
     mock_modulesgroupmodel.h \
     mock_downloadmanager.h \
     mock_qtimer.h \

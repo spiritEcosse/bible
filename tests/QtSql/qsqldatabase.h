@@ -1,15 +1,11 @@
 #ifndef QSQLDATABASE_H
 #define QSQLDATABASE_H
 
-#include <QtSql/qtsqlglobal.h>
-#include <QtCore/qstring.h>
 #include <QStringList>
-#include <QtSql/qsqlerror.h>
 
 class QSqlDatabase
 {
 public:
-    QSqlDatabase() {}
     virtual ~QSqlDatabase() {}
 
     static const char *defaultConnection;
