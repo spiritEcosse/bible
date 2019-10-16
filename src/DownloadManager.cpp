@@ -22,11 +22,12 @@ void DownloadManager::append(const QStringList &urls)
 
 void DownloadManager::append(const QUrl &url)
 {
-    if (downloadQueue.isEmpty())
+    if (downloadQueue->isEmpty()) {
         timer->singleShot(0, this, SLOT(startNextDownload()));
+    }
 
-    downloadQueue.enqueue(url);
-    ++totalCount;
+//    downloadQueue->enqueue(url);
+//    ++totalCount;
 }
 
 QString DownloadManager::saveFileName(const QUrl &url)
@@ -52,7 +53,7 @@ QString DownloadManager::saveFileName(const QUrl &url)
 
 void DownloadManager::startNextDownload()
 {
-    if (downloadQueue.isEmpty()) {
+    if (downloadQueue->isEmpty()) {
         printf("%d/%d files downloaded successfully\n", downloadedCount, totalCount);
         emit finished();
 
@@ -62,7 +63,7 @@ void DownloadManager::startNextDownload()
         return;
     }
 
-    QUrl url = downloadQueue.dequeue();
+    QUrl url = downloadQueue->dequeue();
 
     QString filename = saveFileName(url);
     output.setFileName(filename);

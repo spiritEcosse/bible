@@ -13,7 +13,11 @@ using ::testing::Return;
 using ::testing::Mock;
 using ::testing::Invoke;
 using ::testing::DefaultValue;
+using ::testing::Eq;
+using ::testing::DoAll;
+using ::testing::SetArgReferee;
 using ::testing::ReturnPointee;
+using ::testing::Property;
 using ::testing::internal::BuiltInDefaultValue;
 
 #endif // GTEST_GLOBAL_H

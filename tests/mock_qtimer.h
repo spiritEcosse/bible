@@ -1,9 +1,9 @@
 #ifndef MOCK_QTIMER_H
 #define MOCK_QTIMER_H
 
-#include <QTimer>
-
 #include <gmock/gmock.h>
+
+#include <QTimer>
 
 class MockQTimer : public QTimer
 {

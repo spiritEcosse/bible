@@ -2,6 +2,7 @@
 
 #include "mock_downloadmanager.h"
 #include "mock_qtimer.h"
+#include "mock_qqueue.h"
 
 
 class DownloadManagerTest : public ::testing::Test
@@ -26,25 +27,29 @@ protected:
   // Objects declared here can be used by all tests in the test case for Foo.
   MockDownloadManager mockDownloadManager;
   DownloadManager* downloadManager;
+  MockQqueue<QUrl> mockQqueue;
   MockQTimer mockQTimer;
+
   const QUrl url = BuiltInDefaultValue<const QUrl>::Get();
 };
 
 TEST_F(DownloadManagerTest, append)
 {
     ON_CALL(mockDownloadManager, append(url))
-            .WillByDefault(Invoke(&mockDownloadManager, &MockDownloadManager::parentAppend));
+            .WillByDefault(
+                    Invoke(&mockDownloadManager, &MockDownloadManager::parentAppend)
+                );
+
+    mockDownloadManager.timer = &mockQTimer;
+    mockDownloadManager.downloadQueue = &mockQqueue;
 
     {
+        InSequence s;
 
+        EXPECT_CALL(mockQqueue, isEmpty());
+        EXPECT_CALL(mockQTimer, singleShot(_, _, _));
+//        EXPECT_CALL(mockDownloadManager, startNextDownload());
+//        EXPECT_CALL(mockQqueue, enqueue(_));
     }
-    QQueue<QUrl> queue = QQueue<QUrl>{};
-    downloadManager->timer = &mockQTimer;
-    EXPECT_CALL(mockQTimer, singleShot(_, _, _));
-    EXPECT_EQ(queue, downloadManager->downloadQueue);
-    EXPECT_EQ(0, downloadManager->totalCount);
-    downloadManager->append(url);
-    queue.enqueue(url);
-    EXPECT_EQ(queue, downloadManager->downloadQueue);
-    EXPECT_EQ(1, downloadManager->totalCount);
+    mockDownloadManager.append(url);
 }

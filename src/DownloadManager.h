@@ -41,7 +41,7 @@ private:
     friend class DownloadManagerTest;
     FRIEND_TEST(DownloadManagerTest, append);
 
-    QQueue<QUrl> downloadQueue;
+    QQueue<QUrl> *downloadQueue;
     QNetworkReply *currentDownload = nullptr;
     QFile output;
     QTime downloadTime;
