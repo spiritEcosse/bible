@@ -34,7 +34,8 @@ HEADERS += $$PROJECT_HEADERS \
     mock_qsqlquery.h \
     mock_qsqldatabase.h \
     mock_qsqlrecord.h \
-    mock_qsqlerror.h
+    mock_qsqlerror.h \
+    gtest_global.h
 
 SOURCES += $$PROJECT_SOURCES \
     modulesgroupmodel-test.cpp \

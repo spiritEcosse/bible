@@ -1,22 +1,10 @@
-#include <gmock/gmock.h>
-#include <gtest/gtest.h>
+#include "gtest_global.h"
 
 #include "mock_modulesgroupmodel.h"
 #include "mock_qsqldatabase.h"
 #include "mock_qsqlquery.h"
 #include "mock_qsqlerror.h"
 
-using ::testing::_;
-using ::testing::TestWithParam;
-using ::testing::Test;
-using ::testing::ValuesIn;
-using ::testing::InSequence;
-using ::testing::Return;
-using ::testing::Mock;
-using ::testing::Invoke;
-using ::testing::DefaultValue;
-using ::testing::ReturnPointee;
-using ::testing::internal::BuiltInDefaultValue;
 
 // The fixture for testing class ModulesGroupModelTest.
 class ModulesGroupModelTest : public TestWithParam<const char*> {

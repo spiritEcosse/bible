@@ -1,14 +1,8 @@
-#include <gtest/gtest.h>
-#include <gmock/gmock.h>
+#include "gtest_global.h"
 
 #include "mock_downloadmanager.h"
 #include "mock_qtimer.h"
 
-using::testing::_;
-using::testing::Mock;
-using::testing::Invoke;
-using::testing::Property;
-using testing::internal::BuiltInDefaultValue;
 
 class DownloadManagerTest : public ::testing::Test
 {
@@ -41,6 +35,9 @@ TEST_F(DownloadManagerTest, append)
     ON_CALL(mockDownloadManager, append(url))
             .WillByDefault(Invoke(&mockDownloadManager, &MockDownloadManager::parentAppend));
 
+    {
+
+    }
     QQueue<QUrl> queue = QQueue<QUrl>{};
     downloadManager->timer = &mockQTimer;
     EXPECT_CALL(mockQTimer, singleShot(_, _, _));

@@ -1,8 +1,8 @@
 #ifndef MOCK_DOWNLOADMANAGER_H
 #define MOCK_DOWNLOADMANAGER_H
 
-#include <gtest/gtest.h>
 #include <gmock/gmock.h>
+
 #include "../src/DownloadManager.h"
 
 class MockDownloadManager : public DownloadManager
