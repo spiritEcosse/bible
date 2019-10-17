@@ -31,6 +31,7 @@ protected:
   MockQTimer mockQTimer;
 
   const QUrl url = BuiltInDefaultValue<const QUrl>::Get();
+  const QStringList urls = {"", ""};
 };
 
 TEST_F(DownloadManagerTest, append)
@@ -54,4 +55,33 @@ TEST_F(DownloadManagerTest, append)
     }
     mockDownloadManager.append(url);
     EXPECT_EQ(1, mockDownloadManager.totalCount);
+
+    {
+        InSequence s;
+
+        EXPECT_CALL(mockQqueue, isEmpty())
+                .WillOnce(Return(false));
+        EXPECT_CALL(mockQqueue, enqueue(url));
+    }
+    mockDownloadManager.append(url);
+    EXPECT_EQ(2, mockDownloadManager.totalCount);
+}
+
+
+TEST_F(DownloadManagerTest, appendUrls)
+{
+    ON_CALL(mockDownloadManager, append(urls))
+            .WillByDefault(
+                    Invoke(&mockDownloadManager, &MockDownloadManager::parentAppendUrls)
+                );
+
+    {
+        InSequence s;
+
+        EXPECT_CALL(mockDownloadManager, append(url));
+        EXPECT_CALL(mockQqueue, isEmpty())
+                .WillOnce(Return(true));
+        EXPECT_CALL(mockQTimer, singleShot(0, downloadManager, _)); // ToDo : add SIGNAL
+    }
+    mockDownloadManager.append(urls);
 }

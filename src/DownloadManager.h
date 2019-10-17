@@ -37,6 +37,7 @@ private:
     virtual bool isHttpRedirect() const;
     virtual void reportRedirect();
     QTimer* timer;
+    QUrl* qurl;
     QQueue<QUrl> *downloadQueue;
 
 //    QNetworkAccessManager manager;

@@ -21,6 +21,10 @@ public:
     {
       return DownloadManager::append(url);
     }
+    void parentAppendUrls(const QStringList &urls)
+    {
+        return DownloadManager::append(urls);
+    }
 };
 
 #endif // MOCK_DOWNLOADMANAGER_H
