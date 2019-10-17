@@ -43,7 +43,7 @@ TEST_F(DownloadManagerTest, append)
     mockDownloadManager.timer = &mockQTimer;
     mockDownloadManager.downloadQueue = &mockQqueue;
 
-    EXPECT_EQ(0, mockDownloadManager.totalCount);
+    EXPECT_EQ(NULL, mockDownloadManager.totalCount);
     {
         InSequence s;
 
