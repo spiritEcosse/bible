@@ -8,8 +8,8 @@
 class MockDownloadManager : public DownloadManager
 {
 public:
-    MOCK_METHOD1(append, void(const QUrl &url));
     MOCK_METHOD1(append, void(const QStringList &urls));
+    MOCK_METHOD1(append, void(const QUrl &url));
     MOCK_METHOD0(startNextDownload, void());
     MOCK_METHOD2(downloadProgress, void(qint64 bytesReceived, qint64 bytesTotal));
     MOCK_METHOD0(downloadFinished, void());

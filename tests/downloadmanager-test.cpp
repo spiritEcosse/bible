@@ -27,7 +27,7 @@ protected:
   // Objects declared here can be used by all tests in the test case for Foo.
   MockDownloadManager mockDownloadManager;
   DownloadManager* downloadManager;
-  MockQqueue<QUrl> mockQqueue;
+  MockQQueue<QUrl> mockQqueue;
   MockQTimer mockQTimer;
 
   const QUrl url = BuiltInDefaultValue<const QUrl>::Get();

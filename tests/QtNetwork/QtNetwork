@@ -1,6 +1,7 @@
 #ifndef QT_QTNETWORK_MODULE_H
 #define QT_QTNETWORK_MODULE_H
 #include <QtNetwork/QtNetworkDepends>
+#include <qqueue.h>
 //#include "qtnetworkglobal.h"
 //#include "qabstractnetworkcache.h"
 //#include "qabstractsocket.h"

@@ -36,12 +36,12 @@ private:
     virtual bool isHttpRedirect() const;
     virtual void reportRedirect();
     QTimer* timer;
+    QQueue<QUrl> *downloadQueue;
 
 //    QNetworkAccessManager manager;
     friend class DownloadManagerTest;
     FRIEND_TEST(DownloadManagerTest, append);
 
-    QQueue<QUrl> *downloadQueue;
     QNetworkReply *currentDownload = nullptr;
     QFile output;
     QTime downloadTime;
