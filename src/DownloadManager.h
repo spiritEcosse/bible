@@ -7,6 +7,7 @@
 #include <QObject>
 #include <QTimer>
 
+
 #include "TextProgressBar.h"
 #include "gtest/gtest_prod.h"
 

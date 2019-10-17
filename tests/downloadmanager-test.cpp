@@ -43,13 +43,15 @@ TEST_F(DownloadManagerTest, append)
     mockDownloadManager.timer = &mockQTimer;
     mockDownloadManager.downloadQueue = &mockQqueue;
 
+    EXPECT_EQ(0, mockDownloadManager.totalCount);
     {
         InSequence s;
 
-        EXPECT_CALL(mockQqueue, isEmpty());
-        EXPECT_CALL(mockQTimer, singleShot(_, _, _));
-//        EXPECT_CALL(mockDownloadManager, startNextDownload());
-//        EXPECT_CALL(mockQqueue, enqueue(_));
+        EXPECT_CALL(mockQqueue, isEmpty())
+                .WillOnce(Return(true));
+        EXPECT_CALL(mockQTimer, singleShot(0, downloadManager, _)); // ToDo : add SLOT
+        EXPECT_CALL(mockQqueue, enqueue(url));
     }
     mockDownloadManager.append(url);
+    EXPECT_EQ(1, mockDownloadManager.totalCount);
 }

@@ -28,6 +28,7 @@ HEADERS += $$PROJECT_HEADERS \
     QtSql/qsqltablemodel.h \
     QtNetwork/qnetworkrequest.h \
     QtCore/QQueue \
+    QtCore/QtCore \
     QtCore/qqueue.h \
     mock_modulesgroupmodel.h \
     mock_downloadmanager.h \

@@ -26,8 +26,8 @@ void DownloadManager::append(const QUrl &url)
         timer->singleShot(0, this, SLOT(startNextDownload()));
     }
 
-//    downloadQueue->enqueue(url);
-//    ++totalCount;
+    downloadQueue->enqueue(url);
+    ++totalCount;
 }
 
 QString DownloadManager::saveFileName(const QUrl &url)
