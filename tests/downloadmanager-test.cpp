@@ -3,6 +3,7 @@
 #include "mock_downloadmanager.h"
 #include "mock_qtimer.h"
 #include "mock_qqueue.h"
+#include "mock_qurl.h"
 
 
 class DownloadManagerTest : public ::testing::Test
@@ -29,10 +30,12 @@ protected:
   DownloadManager* downloadManager;
   MockQQueue<QUrl> mockQqueue;
   MockQTimer mockQTimer;
+  MockQUrl mockQurl;
 
   const QUrl url = BuiltInDefaultValue<const QUrl>::Get();
-  const QStringList urls = {"", ""};
+  const QStringList urls = {"url1"};
 };
+
 
 TEST_F(DownloadManagerTest, append)
 {
@@ -67,17 +70,18 @@ TEST_F(DownloadManagerTest, append)
     EXPECT_EQ(2, mockDownloadManager.totalCount);
 }
 
-
 TEST_F(DownloadManagerTest, appendUrls)
 {
     ON_CALL(mockDownloadManager, append(urls))
             .WillByDefault(
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentAppendUrls)
                 );
-
+    mockDownloadManager.qurl = &mockQurl;
     {
         InSequence s;
 
+        EXPECT_CALL(mockQurl, fromEncodedImpl(_, QUrl::TolerantMode));
+//                .WillOnce(Return(url));
         EXPECT_CALL(mockDownloadManager, append(url));
         EXPECT_CALL(mockQqueue, isEmpty())
                 .WillOnce(Return(true));

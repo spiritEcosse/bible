@@ -28,10 +28,10 @@ HEADERS += $$PROJECT_HEADERS \
     QtSql/qsqltablemodel.h \
     QtNetwork/qnetworkrequest.h \
     QtCore/QQueue \
-    QtCore/QUrl \
-    QtCore/qurl.h \
     QtCore/QtCore \
     QtCore/qqueue.h \
+    QtCore/qurl.h \
+    QtCore/Qurl \
     mock_modulesgroupmodel.h \
     mock_downloadmanager.h \
     mock_qtimer.h \
@@ -41,7 +41,8 @@ HEADERS += $$PROJECT_HEADERS \
     mock_qsqlrecord.h \
     mock_qsqlerror.h \
     gtest_global.h \
-    mock_qqueue.h
+    mock_qqueue.h \
+    mock_qurl.h
 
 SOURCES += $$PROJECT_SOURCES \
     modulesgroupmodel-test.cpp \

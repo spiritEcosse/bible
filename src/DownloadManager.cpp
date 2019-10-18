@@ -14,12 +14,12 @@ DownloadManager::DownloadManager(QObject *parent)
 void DownloadManager::append(const QStringList &urls)
 {
     for (const QString &urlAsString : urls) {
-        const QUrl url = qurl->fromEncoded(urlAsString.toLocal8Bit());
-        append(url);
+        append(qurl->fromEncoded(urlAsString.toLocal8Bit()));
     }
 
-    if (downloadQueue->isEmpty())
+    if (downloadQueue->isEmpty()) {
         timer->singleShot(0, this, SIGNAL(finished()));
+    }
 }
 
 void DownloadManager::append(const QUrl &url)

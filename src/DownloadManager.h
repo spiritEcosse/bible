@@ -43,6 +43,7 @@ private:
 //    QNetworkAccessManager manager;
     friend class DownloadManagerTest;
     FRIEND_TEST(DownloadManagerTest, append);
+    FRIEND_TEST(DownloadManagerTest, appendUrls);
 
     QNetworkReply *currentDownload = nullptr;
     QFile output;

@@ -10,6 +10,7 @@ using ::testing::Test;
 using ::testing::ValuesIn;
 using ::testing::InSequence;
 using ::testing::Return;
+using ::testing::ReturnRef;
 using ::testing::Mock;
 using ::testing::Invoke;
 using ::testing::DefaultValue;
