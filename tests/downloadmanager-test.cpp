@@ -88,4 +88,15 @@ TEST_F(DownloadManagerTest, appendUrls)
         EXPECT_CALL(mockQTimer, singleShot(0, downloadManager, _)); // ToDo : add SIGNAL
     }
     mockDownloadManager.appendUrls(urls);
+
+    {
+        InSequence s;
+
+        EXPECT_CALL(mockQurl, fromEncodedImpl(_, QUrl::TolerantMode));
+        //                .WillOnce(Return(url)); # ToDo add Return(url)
+        EXPECT_CALL(mockDownloadManager, append(_)); // pass url instead _
+        EXPECT_CALL(mockQqueue, isEmpty())
+                .WillOnce(Return(false));
+    }
+    mockDownloadManager.appendUrls(urls);
 }
