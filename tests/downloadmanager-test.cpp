@@ -16,18 +16,18 @@ protected:
   ~DownloadManagerTest() override {}
 
   void SetUp() override {
-     // Code here will be called immediately after the constructor (right
-     // before each test).
+      mockDownloadManager.timer = &mockQTimer;
+      mockDownloadManager.downloadQueue = &mockQqueue;
+      mockDownloadManager.qurl = &mockQurl;
   }
 
   void TearDown() override {
-     // Code here will be called immediately after each test (right
-     // before the destructor).
   }
 
   // Objects declared here can be used by all tests in the test case for Foo.
   MockDownloadManager mockDownloadManager;
   DownloadManager* downloadManager;
+
   MockQQueue<QUrl> mockQqueue;
   MockQTimer mockQTimer;
   MockQUrl mockQurl;
@@ -44,10 +44,8 @@ TEST_F(DownloadManagerTest, append)
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentAppend)
                 );
 
-    mockDownloadManager.timer = &mockQTimer;
-    mockDownloadManager.downloadQueue = &mockQqueue;
-
     EXPECT_EQ(NULL, mockDownloadManager.totalCount);
+
     {
         InSequence s;
 
@@ -76,7 +74,7 @@ TEST_F(DownloadManagerTest, appendUrls)
             .WillByDefault(
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentAppendUrls)
                 );
-    mockDownloadManager.qurl = &mockQurl;
+
     {
         InSequence s;
 
@@ -99,4 +97,21 @@ TEST_F(DownloadManagerTest, appendUrls)
                 .WillOnce(Return(false));
     }
     mockDownloadManager.appendUrls(urls);
+}
+
+TEST_F(DownloadManagerTest, startNextDownload)
+{
+    ON_CALL(mockDownloadManager, startNextDownload())
+            .WillByDefault(
+                    Invoke(&mockDownloadManager, &MockDownloadManager::parentStartNextDownload)
+                );
+
+    {
+        InSequence s;
+
+        EXPECT_CALL(mockQqueue, isEmpty())
+                .WillOnce(Return(true));
+    }
+
+    mockDownloadManager.startNextDownload();
 }

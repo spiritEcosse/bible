@@ -25,6 +25,10 @@ public:
     {
         return DownloadManager::appendUrls(urls);
     }
+    void parentStartNextDownload()
+    {
+        return DownloadManager::startNextDownload();
+    }
 };
 
 #endif // MOCK_DOWNLOADMANAGER_H
