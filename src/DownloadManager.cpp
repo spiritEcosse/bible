@@ -11,7 +11,7 @@ DownloadManager::DownloadManager(QObject *parent)
 {
 }
 
-void DownloadManager::append(const QStringList &urls)
+void DownloadManager::appendUrls(const QStringList &urls)
 {
     for (const QString &urlAsString : urls) {
         append(qurl->fromEncoded(urlAsString.toLocal8Bit()));

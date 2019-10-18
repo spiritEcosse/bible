@@ -72,7 +72,7 @@ TEST_F(DownloadManagerTest, append)
 
 TEST_F(DownloadManagerTest, appendUrls)
 {
-    ON_CALL(mockDownloadManager, append(urls))
+    ON_CALL(mockDownloadManager, appendUrls(urls))
             .WillByDefault(
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentAppendUrls)
                 );
@@ -81,11 +81,11 @@ TEST_F(DownloadManagerTest, appendUrls)
         InSequence s;
 
         EXPECT_CALL(mockQurl, fromEncodedImpl(_, QUrl::TolerantMode));
-//                .WillOnce(Return(url));
-        EXPECT_CALL(mockDownloadManager, append(url));
+//                .WillOnce(Return(url)); # ToDo add Return(url)
+        EXPECT_CALL(mockDownloadManager, append(_)); // pass url instead _
         EXPECT_CALL(mockQqueue, isEmpty())
                 .WillOnce(Return(true));
         EXPECT_CALL(mockQTimer, singleShot(0, downloadManager, _)); // ToDo : add SIGNAL
     }
-    mockDownloadManager.append(urls);
+    mockDownloadManager.appendUrls(urls);
 }

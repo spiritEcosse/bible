@@ -19,7 +19,7 @@ public:
     virtual ~DownloadManager() {}
 
     virtual void append(const QUrl &url);
-    virtual void append(const QStringList &urls);
+    virtual void appendUrls(const QStringList &urls);
     static QString saveFileName(const QUrl &url);
     QStringList fileNames;
 
