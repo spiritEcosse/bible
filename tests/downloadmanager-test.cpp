@@ -115,3 +115,33 @@ TEST_F(DownloadManagerTest, startNextDownload)
 
     mockDownloadManager.startNextDownload();
 }
+
+TEST_F(DownloadManagerTest, downloadProgress)
+{
+
+}
+
+TEST_F(DownloadManagerTest, downloadFinished)
+{
+
+}
+
+TEST_F(DownloadManagerTest, downloadReadyRead)
+{
+
+}
+
+TEST_F(DownloadManagerTest, isHttpRedirect)
+{
+
+}
+
+TEST_F(DownloadManagerTest, reportRedirect)
+{
+
+}
+
+TEST_F(DownloadManagerTest, saveFileName)
+{
+
+}

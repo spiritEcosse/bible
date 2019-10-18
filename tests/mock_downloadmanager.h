@@ -29,6 +29,30 @@ public:
     {
         return DownloadManager::startNextDownload();
     }
+    void parentDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
+    {
+        return DownloadManager::downloadProgress(bytesReceived, bytesTotal);
+    }
+    void parentDownloadFinished()
+    {
+        return DownloadManager::downloadFinished();
+    }
+    void parentDownloadReadyRead()
+    {
+        return DownloadManager::downloadReadyRead();
+    }
+//    void parentIsHttpRedirect()
+//    {
+//        return DownloadManager::isHttpRedirect();
+//    }
+    void parentReportRedirect()
+    {
+        return DownloadManager::reportRedirect();
+    }
+//    void parentSaveFileName(const QUrl &url)
+//    {
+//        return DownloadManager::saveFileName(url);
+//    }
 };
 
 #endif // MOCK_DOWNLOADMANAGER_H
