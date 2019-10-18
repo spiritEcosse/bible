@@ -512,8 +512,8 @@ public:
     { return toUtf8_helper(*this); }
     virtual Q_REQUIRED_RESULT QByteArray toLocal8Bit() const &
     { return toLocal8Bit_helper(isNull() ? nullptr : constData(), size()); }
-    virtual Q_REQUIRED_RESULT QByteArray toLocal8Bit() &&
-    { return toLocal8Bit_helper(isNull() ? nullptr : constData(), size()); }
+//    Q_REQUIRED_RESULT QByteArray toLocal8Bit() &&
+//    { return toLocal8Bit_helper(isNull() ? nullptr : constData(), size()); }
 #else
     Q_REQUIRED_RESULT QByteArray toLatin1() const;
     Q_REQUIRED_RESULT QByteArray toUtf8() const;

@@ -11,7 +11,6 @@ class MockQstring : public QString
 {
 public:
     MOCK_METHOD0(toLocal8Bit, QByteArray());
-    MOCK_CONST_METHOD0(toLocal8Bit, QByteArray());
 };
 
 #endif // MOCK_QSTRING_H
