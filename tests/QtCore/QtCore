@@ -211,7 +211,7 @@
 #include "qstatemachine.h"
 #endif
 #include "qstorageinfo.h"
-#include "qstring.h"
+#include "mock_qstring.h"
 #include "qstringalgorithms.h"
 #include "qstringbuilder.h"
 #include "qstringlist.h"

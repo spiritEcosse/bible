@@ -4,6 +4,7 @@
 #include "mock_qtimer.h"
 #include "mock_qqueue.h"
 #include "mock_qurl.h"
+#include "mock_qstring.h"
 
 
 class DownloadManagerTest : public ::testing::Test
@@ -31,6 +32,7 @@ protected:
   MockQQueue<QUrl> mockQqueue;
   MockQTimer mockQTimer;
   MockQUrl mockQurl;
+  MockQstring mockQstring;
 
   const QUrl url = BuiltInDefaultValue<const QUrl>::Get();
   const QStringList urls = {"url1"};
@@ -80,6 +82,7 @@ TEST_F(DownloadManagerTest, appendUrls)
     {
         InSequence s;
 
+        EXPECT_CALL(mockQstring, toLocal8Bit());
         EXPECT_CALL(mockQurl, fromEncodedImpl(_, QUrl::TolerantMode));
 //                .WillOnce(Return(url)); # ToDo add Return(url)
         EXPECT_CALL(mockDownloadManager, append(_)); // pass url instead _

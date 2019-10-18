@@ -32,8 +32,11 @@ HEADERS += $$PROJECT_HEADERS \
     QtCore/qqueue.h \
     QtCore/qurl.h \
     QtCore/Qurl \
+    QtCore/qstring.h \
+    QtCore/QString \
     mock_modulesgroupmodel.h \
     mock_downloadmanager.h \
+    mock_qstring.h \
     mock_qtimer.h \
     mock_qnetworkrequest.h \
     mock_qsqlquery.h \
