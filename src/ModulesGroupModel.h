@@ -78,7 +78,7 @@ signals:
 public slots:
     void updateTable();
     void compareVersions();
-    void decompressRegistry();
+    virtual void decompressRegistry();
     void removeRegistryFile();
 
 public slots:
