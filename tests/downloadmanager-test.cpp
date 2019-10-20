@@ -13,7 +13,8 @@ class DownloadManagerTest : public ::testing::Test
 {
 protected:
   DownloadManagerTest()
-      : downloadManager(&mockDownloadManager), modulesGroupModel(&mockModulesGroupModel)
+      : downloadManager(&mockDownloadManager),
+        modulesGroupModel(&mockModulesGroupModel)
   {}
 
   ~DownloadManagerTest() override {}
