@@ -87,7 +87,7 @@ TEST_F(DownloadManagerTest, appendUrls)
 TEST_F(DownloadManagerTest, startNextDownload)
 {
     QObject::connect(downloadManager, &DownloadManager::successfully,
-                     &modulesGroupModel, &ModulesGroupModel::decompressRegistry);
+                     modulesGroupModel, &ModulesGroupModel::decompressRegistry);
     ON_CALL(mockDownloadManager, startNextDownload())
             .WillByDefault(
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentStartNextDownload)
