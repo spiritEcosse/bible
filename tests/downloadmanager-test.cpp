@@ -99,6 +99,7 @@ TEST_F(DownloadManagerTest, startNextDownload)
 
         EXPECT_CALL(mockQqueue, isEmpty())
                 .WillOnce(Return(true));
+        EXPECT_EQ(mockDownloadManager.downloadedCount, mockDownloadManager.totalCount);
         EXPECT_CALL(mockModulesGroupModel, decompressRegistry());
     }
 
