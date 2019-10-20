@@ -12,8 +12,8 @@ class QSqlTableModel : public QObject
     Q_OBJECT
 public:
     QSqlDatabase db;
-    virtual ~QSqlTableModel();
-    explicit QSqlTableModel(QObject *parent = nullptr);
+    virtual ~QSqlTableModel() {}
+    explicit QSqlTableModel(QObject *parent = nullptr) {}
 
     virtual inline void setTable(const QString &) {}
     virtual inline QSqlRecord record(int) const { return QSqlRecord(); }

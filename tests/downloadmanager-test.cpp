@@ -6,7 +6,6 @@
 #include "mock_qtimer.h"
 #include "mock_qqueue.h"
 #include "mock_qurl.h"
-#include <QObject>
 
 
 class DownloadManagerTest : public ::testing::Test
@@ -31,6 +30,7 @@ protected:
   MockDownloadManager mockDownloadManager;
   DownloadManager* downloadManager;
   ModulesGroupModel modulesGroupModel;
+
 
   MockQQueue<QUrl> mockQqueue;
   MockQTimer mockQTimer;
@@ -84,8 +84,8 @@ TEST_F(DownloadManagerTest, appendUrls)
 
 TEST_F(DownloadManagerTest, startNextDownload)
 {
-//    QObject::connect(&downloadManager, &DownloadManager::successfully,
-//                     &modulesGroupModel, &ModulesGroupModel::decompressRegistry);
+    QObject::connect(downloadManager, &DownloadManager::successfully,
+                     &modulesGroupModel, &ModulesGroupModel::decompressRegistry);
     ON_CALL(mockDownloadManager, startNextDownload())
             .WillByDefault(
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentStartNextDownload)

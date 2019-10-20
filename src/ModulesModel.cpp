@@ -5,10 +5,6 @@ ModulesModel::ModulesModel()
 {
 }
 
-ModulesModel::~ModulesModel()
-{
-}
-
 
 void ModulesModel::init()
 {

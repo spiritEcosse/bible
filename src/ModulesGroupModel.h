@@ -32,7 +32,7 @@ class ModulesGroupModel : public QSqlTableModel
     Q_OBJECT
 public:
     ModulesGroupModel();
-    virtual ~ModulesGroupModel();
+    virtual ~ModulesGroupModel() {}
 
     QSqlQuery* query_;
     DownloadManager* manager;
