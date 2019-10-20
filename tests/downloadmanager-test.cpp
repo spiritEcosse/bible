@@ -3,6 +3,7 @@
 #include "../src/ModulesGroupModel.h"
 
 #include "mock_downloadmanager.h"
+#include "mock_modulesgroupmodel.h"
 #include "mock_qtimer.h"
 #include "mock_qqueue.h"
 #include "mock_qurl.h"
@@ -12,7 +13,7 @@ class DownloadManagerTest : public ::testing::Test
 {
 protected:
   DownloadManagerTest()
-      : downloadManager(&mockDownloadManager)
+      : downloadManager(&mockDownloadManager), modulesGroupModel(&mockModulesGroupModel)
   {}
 
   ~DownloadManagerTest() override {}
@@ -29,8 +30,9 @@ protected:
   // Objects declared here can be used by all tests in the test case for Foo.
   MockDownloadManager mockDownloadManager;
   DownloadManager* downloadManager;
-  ModulesGroupModel modulesGroupModel;
 
+  MockModulesGroupModel mockModulesGroupModel;
+  ModulesGroupModel* modulesGroupModel;
 
   MockQQueue<QUrl> mockQqueue;
   MockQTimer mockQTimer;
