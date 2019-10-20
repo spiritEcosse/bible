@@ -7,7 +7,6 @@
 #include <QObject>
 #include <QTimer>
 
-
 #include "TextProgressBar.h"
 #include "gtest/gtest_prod.h"
 
@@ -27,7 +26,7 @@ signals:
     void finished();
     void successfully();
 
-private slots:
+public slots:
     virtual void startNextDownload();
     virtual void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
     virtual void downloadFinished();

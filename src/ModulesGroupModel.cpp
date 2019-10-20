@@ -3,7 +3,7 @@
 ModulesGroupModel::ModulesGroupModel()
     : QSqlTableModel() {}
 
-ModulesGroupModel::~ModulesGroupModel() {}
+//ModulesGroupModel::~ModulesGroupModel() {}
 
 void ModulesGroupModel::decompressRegistry()
 {

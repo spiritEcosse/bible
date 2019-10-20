@@ -29,6 +29,7 @@
 
 class ModulesGroupModel : public QSqlTableModel
 {
+    Q_OBJECT
 public:
     ModulesGroupModel();
     virtual ~ModulesGroupModel();
@@ -62,6 +63,7 @@ private:
 
     friend class ModulesGroupModelTest;
     FRIEND_TEST(ModulesGroupModelTest, createTable);
+    FRIEND_TEST(DownloadManagerTest, startNextDownload);
 
     friend class ModulesModelTest;
     FRIEND_TEST(ModulesGroupModelTest, correctSize);
@@ -73,7 +75,7 @@ signals:
     void removeRegistryFileSuccess();
     void removeOldRowsSuccess();
 
-private slots:
+public slots:
     void updateTable();
     void compareVersions();
     void decompressRegistry();

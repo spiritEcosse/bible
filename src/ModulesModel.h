@@ -17,6 +17,7 @@
 
 class ModulesModel : public QSqlTableModel
 {
+    Q_OBJECT
 public:
     ModulesModel();
     virtual ~ModulesModel();

@@ -1,9 +1,12 @@
 #include "gtest_global.h"
 
+#include "../src/ModulesGroupModel.h"
+
 #include "mock_downloadmanager.h"
 #include "mock_qtimer.h"
 #include "mock_qqueue.h"
 #include "mock_qurl.h"
+#include <QObject>
 
 
 class DownloadManagerTest : public ::testing::Test
@@ -27,6 +30,7 @@ protected:
   // Objects declared here can be used by all tests in the test case for Foo.
   MockDownloadManager mockDownloadManager;
   DownloadManager* downloadManager;
+  ModulesGroupModel modulesGroupModel;
 
   MockQQueue<QUrl> mockQqueue;
   MockQTimer mockQTimer;
@@ -80,6 +84,8 @@ TEST_F(DownloadManagerTest, appendUrls)
 
 TEST_F(DownloadManagerTest, startNextDownload)
 {
+//    QObject::connect(&downloadManager, &DownloadManager::successfully,
+//                     &modulesGroupModel, &ModulesGroupModel::decompressRegistry);
     ON_CALL(mockDownloadManager, startNextDownload())
             .WillByDefault(
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentStartNextDownload)
