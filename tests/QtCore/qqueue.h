@@ -9,8 +9,8 @@ class QQueue : public QList<T>
 {
 public:
     virtual ~QQueue() {}
-    virtual bool isEmpty() const = 0;
-    virtual void enqueue(const T &) = 0;
+    virtual bool isEmpty() const { return true; }
+    virtual void enqueue(const T &) {}
     virtual T dequeue() { return QList<T>::takeFirst(); }
 };
 

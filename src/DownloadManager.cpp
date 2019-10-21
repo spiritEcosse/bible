@@ -66,19 +66,19 @@ void DownloadManager::startNextDownload()
         QUrl url = downloadQueue->dequeue();
 
         QString filename = saveFileName(url);
-        output.setFileName(filename);
-        fileNames.append(output.fileName());
+//        output.setFileName(filename);
+//        fileNames.append(output.fileName());
 
-        if (!output.open(QIODevice::WriteOnly)) {
-            fprintf(stderr, "Problem opening save file '%s' for download '%s': %s\n",
-                    qPrintable(filename), url.toEncoded().constData(),
-                    qPrintable(output.errorString()));
+//        if (!output.open(QIODevice::WriteOnly)) {
+//            fprintf(stderr, "Problem opening save file '%s' for download '%s': %s\n",
+//                    qPrintable(filename), url.toEncoded().constData(),
+//                    qPrintable(output.errorString()));
 
-            startNextDownload();
-            return;                 // skip this download
-        }
+//            startNextDownload();
+//            return;                 // skip this download
+//        }
 
-        QNetworkRequest request(url);
+//        QNetworkRequest request(url);
     //    currentDownload = manager.get(request);
     //    connect(currentDownload, SIGNAL(downloadProgress(qint64,qint64)),
     //            SLOT(downloadProgress(qint64,qint64)));
@@ -88,8 +88,8 @@ void DownloadManager::startNextDownload()
     //            SLOT(downloadReadyRead()));
 
         // prepare the output
-        printf("Downloading %s...\n", url.toEncoded().constData());
-        downloadTime.start();
+//        printf("Downloading %s...\n", url.toEncoded().constData());
+//        downloadTime.start();
     }
 }
 

@@ -108,6 +108,18 @@ TEST_F(DownloadManagerTest, startNextDownload)
     }
 
     mockDownloadManager.startNextDownload();
+
+    {
+        InSequence s;
+
+        EXPECT_CALL(mockQqueue, isEmpty())
+                .WillOnce(Return(false));
+        EXPECT_CALL(mockQqueue, dequeue())
+                .WillOnce(ReturnPointee(&url));
+        EXPECT_CALL(mockDownloadManager, saveFileName(_));
+    }
+
+    mockDownloadManager.startNextDownload();
 }
 
 TEST_F(DownloadManagerTest, downloadProgress)
