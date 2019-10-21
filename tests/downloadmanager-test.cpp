@@ -7,6 +7,7 @@
 #include "mock_qtimer.h"
 #include "mock_qqueue.h"
 #include "mock_qurl.h"
+#include "mock_qfile.h"
 
 
 class DownloadManagerTest : public ::testing::Test
@@ -23,6 +24,7 @@ protected:
       mockDownloadManager.timer = &mockQTimer;
       mockDownloadManager.downloadQueue = &mockQqueue;
       mockDownloadManager.qurl = &mockQurl;
+      mockDownloadManager.output = &mockQFile;
   }
 
   void TearDown() override {
@@ -38,9 +40,11 @@ protected:
   MockQQueue<QUrl> mockQqueue;
   MockQTimer mockQTimer;
   MockQUrl mockQurl;
+  MockQFile mockQFile;
 
   const QUrl url = BuiltInDefaultValue<const QUrl>::Get();
   const QStringList urls = {"url1"};
+  QString filename = BuiltInDefaultValue<QString>::Get();
 };
 
 
@@ -116,7 +120,9 @@ TEST_F(DownloadManagerTest, startNextDownload)
                 .WillOnce(Return(false));
         EXPECT_CALL(mockQqueue, dequeue())
                 .WillOnce(ReturnPointee(&url));
-        EXPECT_CALL(mockDownloadManager, saveFileName(_));
+        EXPECT_CALL(mockDownloadManager, saveFileName(_))
+                .WillOnce(Return(filename));
+        EXPECT_CALL(mockQFile, setFileName(filename));
     }
 
     mockDownloadManager.startNextDownload();

@@ -16,7 +16,7 @@ public:
     MOCK_METHOD0(downloadReadyRead, void());
     MOCK_CONST_METHOD0(isHttpRedirect, bool());
     MOCK_METHOD0(reportRedirect, void());
-    MOCK_METHOD1(saveFileName, QString(const QUrl &url));
+    MOCK_METHOD1(saveFileName, QString(const QUrl&));
 
     void parentAppend(const QUrl &url)
     {

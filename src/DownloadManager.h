@@ -48,7 +48,7 @@ private:
     FRIEND_TEST(MockDownloadManager, parentStartNextDownload);
 
     QNetworkReply *currentDownload = nullptr;
-    QFile output;
+    QFile* output;
     QTime downloadTime;
     TextProgressBar progressBar;
 

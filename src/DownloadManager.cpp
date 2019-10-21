@@ -63,16 +63,16 @@ void DownloadManager::startNextDownload()
             emit successfully();
         }
     } else {
-        QUrl url = downloadQueue->dequeue();
+        const QUrl url = downloadQueue->dequeue();
 
         QString filename = saveFileName(url);
-//        output.setFileName(filename);
-//        fileNames.append(output.fileName());
+        output->setFileName(filename);
+        fileNames.append(output->fileName());
 
-//        if (!output.open(QIODevice::WriteOnly)) {
+//        if (!output->open(QIODevice::WriteOnly)) {
 //            fprintf(stderr, "Problem opening save file '%s' for download '%s': %s\n",
 //                    qPrintable(filename), url.toEncoded().constData(),
-//                    qPrintable(output.errorString()));
+//                    qPrintable(output->errorString()));
 
 //            startNextDownload();
 //            return;                 // skip this download
@@ -118,19 +118,19 @@ void DownloadManager::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)
 void DownloadManager::downloadFinished()
 {
     progressBar.clear();
-    output.close();
+    output->close();
 
     if (currentDownload->error()) {
         // download failed
         fprintf(stderr, "Failed: %s\n", qPrintable(currentDownload->errorString()));
-        output.remove();
+        output->remove();
     } else {
         // let's check if it was actually a redirect
         if (isHttpRedirect()) {
             reportRedirect();
-            output.remove();
+            output->remove();
         } else {
-            printf("Succeeded (saved to %s)\n", qPrintable(output.fileName()));
+            printf("Succeeded (saved to %s)\n", qPrintable(output->fileName()));
             ++downloadedCount;
         }
     }
@@ -141,7 +141,7 @@ void DownloadManager::downloadFinished()
 
 void DownloadManager::downloadReadyRead()
 {
-    output.write(currentDownload->readAll());
+    output->write(currentDownload->readAll());
 }
 
 bool DownloadManager::isHttpRedirect() const
