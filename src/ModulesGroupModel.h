@@ -75,7 +75,7 @@ signals:
     void removeRegistryFileSuccess();
     void removeOldRowsSuccess();
 
-public slots:
+private slots:
     void updateTable();
     void compareVersions();
     virtual void decompressRegistry();

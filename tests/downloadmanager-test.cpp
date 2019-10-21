@@ -89,6 +89,9 @@ TEST_F(DownloadManagerTest, startNextDownload)
 {
     QObject::connect(downloadManager, &DownloadManager::successfully,
                      modulesGroupModel, &ModulesGroupModel::decompressRegistry);
+    QObject::connect(downloadManager, &DownloadManager::finished,
+                     &DownloadManager::downloadFinished);
+
     ON_CALL(mockDownloadManager, startNextDownload())
             .WillByDefault(
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentStartNextDownload)
@@ -99,8 +102,10 @@ TEST_F(DownloadManagerTest, startNextDownload)
 
         EXPECT_CALL(mockQqueue, isEmpty())
                 .WillOnce(Return(true));
+        EXPECT_CALL(mockDownloadManager, downloadFinished());
         EXPECT_EQ(mockDownloadManager.downloadedCount, mockDownloadManager.totalCount);
         EXPECT_CALL(mockModulesGroupModel, decompressRegistry());
+//        EXPECT_EXIT(f(), ExitedWithCode(0), "Success"); // check return is call
     }
 
     mockDownloadManager.startNextDownload();

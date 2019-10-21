@@ -26,7 +26,7 @@ signals:
     void finished();
     void successfully();
 
-public slots:
+private slots:
     virtual void startNextDownload();
     virtual void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
     virtual void downloadFinished();
