@@ -123,9 +123,14 @@ TEST_F(DownloadManagerTest, startNextDownload)
         EXPECT_CALL(mockDownloadManager, saveFileName(_))
                 .WillOnce(Return(filename));
         EXPECT_CALL(mockQFile, setFileName(filename));
+        EXPECT_CALL(mockQFile, fileName());
     }
 
+    QStringList fileNames;
+    EXPECT_EQ(mockDownloadManager.fileNames, fileNames);
     mockDownloadManager.startNextDownload();
+    fileNames.append(filename);
+    EXPECT_EQ(mockDownloadManager.fileNames, fileNames);
 }
 
 TEST_F(DownloadManagerTest, downloadProgress)
