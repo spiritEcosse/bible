@@ -20,7 +20,7 @@ public:
     virtual void append(const QUrl &url);
     virtual void appendUrls(const QStringList &urls);
     virtual QString saveFileName(const QUrl &url);
-    QStringList fileNames;
+    QStringList* fileNames;
 
 signals:
     void finished();

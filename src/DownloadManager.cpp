@@ -67,7 +67,7 @@ void DownloadManager::startNextDownload()
 
         QString filename = saveFileName(url);
         output->setFileName(filename);
-        fileNames.append(output->fileName());
+        fileNames->append(output->fileName());
 
 //        if (!output->open(QIODevice::WriteOnly)) {
 //            fprintf(stderr, "Problem opening save file '%s' for download '%s': %s\n",

@@ -1,13 +1,14 @@
 #ifndef MOCK_QSTRINGLIST_H
 #define MOCK_QSTRINGLIST_H
 
+#include <gmock/gmock.h>
+
 #include <QStringList>
 
-template <typename T>
-class MockQStringList : public QStringList<T>
+class MockQStringList : public QStringList
 {
 public:
-
+    MOCK_METHOD1(append, void(const QString&));
 };
 
 #endif // MOCK_QSTRINGLIST_H
