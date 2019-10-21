@@ -105,7 +105,6 @@ TEST_F(DownloadManagerTest, startNextDownload)
         EXPECT_CALL(mockDownloadManager, downloadFinished());
         EXPECT_EQ(mockDownloadManager.downloadedCount, mockDownloadManager.totalCount);
         EXPECT_CALL(mockModulesGroupModel, decompressRegistry());
-//        EXPECT_EXIT(f(), ExitedWithCode(0), "Success"); // check return is call
     }
 
     mockDownloadManager.startNextDownload();
