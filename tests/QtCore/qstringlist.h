@@ -120,10 +120,16 @@ public:
 #endif
 
 #if QT_STRINGVIEW_LEVEL < 2
-    inline bool contains(const QString &str, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
+    virtual inline bool contains(const QString &str, Qt::CaseSensitivity cs = Qt::CaseSensitive) const {
+        return true;
+    }
 #endif
-    inline bool contains(QLatin1String str, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
-    inline bool contains(QStringView str, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
+    virtual inline bool contains(QLatin1String str, Qt::CaseSensitivity cs = Qt::CaseSensitive) const {
+        return true;
+    }
+    virtual inline bool contains(QStringView str, Qt::CaseSensitivity cs = Qt::CaseSensitive) const {
+        return true;
+    }
 
     inline QStringList operator+(const QStringList &other) const
     { QStringList n = *this; n += other; return n; }
@@ -228,21 +234,21 @@ inline QStringList QListSpecialMethods<QString>::filter(const QString &str, Qt::
 }
 
 #if QT_STRINGVIEW_LEVEL < 2
-inline bool QStringList::contains(const QString &str, Qt::CaseSensitivity cs) const
-{
-    return QtPrivate::QStringList_contains(this, str, cs);
-}
+//inline bool QStringList::contains(const QString &str, Qt::CaseSensitivity cs) const
+//{
+//    return QtPrivate::QStringList_contains(this, str, cs);
+//}
 #endif
 
-inline bool QStringList::contains(QLatin1String str, Qt::CaseSensitivity cs) const
-{
-    return QtPrivate::QStringList_contains(this, str, cs);
-}
+//inline bool QStringList::contains(QLatin1String str, Qt::CaseSensitivity cs) const
+//{
+//    return QtPrivate::QStringList_contains(this, str, cs);
+//}
 
-inline bool QStringList::contains(QStringView str, Qt::CaseSensitivity cs) const
-{
-    return QtPrivate::QStringList_contains(this, str, cs);
-}
+//inline bool QStringList::contains(QStringView str, Qt::CaseSensitivity cs) const
+//{
+//    return QtPrivate::QStringList_contains(this, str, cs);
+//}
 
 inline QStringList &QListSpecialMethods<QString>::replaceInStrings(const QString &before, const QString &after, Qt::CaseSensitivity cs)
 {

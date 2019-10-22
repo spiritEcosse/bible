@@ -100,7 +100,7 @@ TEST_F(ModulesGroupModelTest, createTable)
                 .WillOnce(ReturnPointee(&mockQSqlDatabase));
         EXPECT_CALL(mockQSqlDatabase, tables())
                 .WillOnce(ReturnPointee(&mockQStringList));
-        EXPECT_CALL(mockQStringList, containsImpl(_, Qt::CaseSensitive))
+        EXPECT_CALL(mockQStringList, contains(tableName, Qt::CaseSensitive))
                 .WillOnce(Return(false));
         EXPECT_CALL(mockModulesGroupModel, execLastError(sql))
                 .WillOnce(Return(true));
