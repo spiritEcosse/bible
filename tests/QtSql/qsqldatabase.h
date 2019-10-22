@@ -23,7 +23,8 @@ public:
 //    void close();
 //    bool isOpen() const;
 //    bool isOpenError() const;
-    virtual QStringList tables() const { return QStringList{}; }
+    QStringList qStringList;
+    virtual QStringList& tables() { return qStringList; }
 //    QSqlIndex primaryIndex(const QString& tablename) const;
 //    QSqlRecord record(const QString& tablename) const;
 //    QSqlQuery exec(const QString& query = QString()) const;

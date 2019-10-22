@@ -13,7 +13,7 @@ public:
     MOCK_CONST_METHOD0(isValid, bool());
     MOCK_CONST_METHOD0(lastError, QSqlError());
     MOCK_METHOD0(open, bool());
-    MOCK_CONST_METHOD0(tables, QStringList());
+    MOCK_METHOD0(tables, QStringList&());
     MOCK_METHOD1(setDatabaseName, void(const QString& name));
 };
 

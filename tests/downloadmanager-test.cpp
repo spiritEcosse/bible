@@ -126,8 +126,9 @@ TEST_F(DownloadManagerTest, startNextDownload)
         EXPECT_CALL(mockDownloadManager, saveFileName(_))
                 .WillOnce(Return(filename));
         EXPECT_CALL(mockQFile, setFileName(filename));
-        EXPECT_CALL(mockQFile, fileName());
-        EXPECT_CALL(mockQStringList, append(_));
+        EXPECT_CALL(mockQFile, fileName())
+                .WillOnce(Return(filename));
+        EXPECT_CALL(mockQStringList, append(filename));
     }
 
     mockDownloadManager.startNextDownload();
