@@ -100,6 +100,8 @@ class QStringList : public QList<QString>
 {
 #endif
 public:
+    virtual ~QStringList() {}
+    virtual void append(const QString &) {}
     inline QStringList() Q_DECL_NOTHROW { }
     inline explicit QStringList(const QString &i) { append(i); }
     inline QStringList(const QList<QString> &l) : QList<QString>(l) { }
