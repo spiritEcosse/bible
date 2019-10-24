@@ -1,6 +1,8 @@
 TEMPLATE = app
 PROJECT_DIR = $$PWD/../
 
+QT -= gui
+
 PROJECT_SOURCES = \
     $$PROJECT_DIR/src/DownloadManager.cpp \
     $$PROJECT_DIR/src/TextProgressBar.cpp \
@@ -34,9 +36,12 @@ HEADERS += $$PROJECT_HEADERS \
     QtCore/Qurl \
     QtCore/QFile \
     QtCore/qfile.h \
+    QtNetwork/QNetworkReply \
+    QtNetwork/qnetworkreply.h \
     mock_modulesgroupmodel.h \
     mock_downloadmanager.h \
     mock_qfile.h \
+    mock_qnetworkreply.h \
     mock_qtimer.h \
     mock_qnetworkrequest.h \
     mock_qsqlquery.h \

@@ -8,6 +8,7 @@
 #include "mock_qqueue.h"
 #include "mock_qurl.h"
 #include "mock_qfile.h"
+#include "mock_qnetworkreply.h"
 
 
 class DownloadManagerTest : public ::testing::Test
@@ -25,6 +26,7 @@ protected:
       mockDownloadManager.downloadQueue = &mockQqueue;
       mockDownloadManager.qurl = &mockQurl;
       mockDownloadManager.output = &mockQFile;
+      mockDownloadManager.currentDownload = &mockQNetworkReply;
   }
 
   void TearDown() override {
@@ -41,6 +43,7 @@ protected:
   MockQTimer mockQTimer;
   MockQUrl mockQurl;
   MockQFile mockQFile;
+  MockQNetworkReply mockQNetworkReply;
 
   const QUrl url = BuiltInDefaultValue<const QUrl>::Get();
   const QStringList urls = {"url1"};
@@ -153,10 +156,10 @@ TEST_F(DownloadManagerTest, downloadReadyRead)
     {
         InSequence s;
         
-        EXPECT_CALL(mockQFile, write());
+        EXPECT_CALL(mockQFile, write(_));
     }
-    
-    mockDownloadManager.downloadReadyRead(); 
+
+    mockDownloadManager.downloadReadyRead();
 }
 
 TEST_F(DownloadManagerTest, isHttpRedirect)
