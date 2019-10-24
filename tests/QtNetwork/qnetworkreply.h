@@ -72,10 +72,10 @@ public:
     };
     Q_ENUM(NetworkError)
 
-    ~QNetworkReply();
+    ~QNetworkReply() {}
 
     // reimplemented from QIODevice
-    virtual void close() override;
+    virtual void close() {}
     virtual bool isSequential() const override;
 
     // like QAbstractSocket:
@@ -85,7 +85,7 @@ public:
     QNetworkAccessManager *manager() const;
     QNetworkAccessManager::Operation operation() const;
     QNetworkRequest request() const;
-    NetworkError error() const;
+    NetworkError error() const {}
     bool isFinished() const;
     bool isRunning() const;
     QUrl url() const;
