@@ -145,7 +145,18 @@ TEST_F(DownloadManagerTest, downloadFinished)
 
 TEST_F(DownloadManagerTest, downloadReadyRead)
 {
-
+    ON_CALL(mockDownloadManager, downloadReadyRead())
+            .WillByDefault(
+                    Invoke(&mockDownloadManager, &MockDownloadManager::parentDownloadReadyRead)
+                );
+     
+    {
+        InSequence s;
+        
+        EXPECT_CALL(mockQFile, write());
+    }
+    
+    mockDownloadManager.downloadReadyRead(); 
 }
 
 TEST_F(DownloadManagerTest, isHttpRedirect)

@@ -56,4 +56,4 @@ SOURCES += $$PROJECT_SOURCES \
 INCLUDEPATH += $$PWD/QtNetwork + $$PWD/QtSql + $$PWD/QtCore
 DEPENDPATH += $$PWD/QtNetwork + $$PWD/QtSql + $$PWD/QtCore
 
-LIBS += -lquazip5 -lgmock -lgtest -lpthread
+LIBS += -lgmock -lgtest -lpthread

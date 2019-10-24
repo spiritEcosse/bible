@@ -32,6 +32,7 @@ public:
 
     QString fileName() const override;
     virtual void setFileName(const QString &name);
+    //virtual void write();
 
 #if defined(Q_OS_DARWIN)
     // Mac always expects filenames in UTF-8... and decomposed...
