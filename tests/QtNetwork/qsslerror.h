@@ -10,7 +10,7 @@ QT_BEGIN_NAMESPACE
 
 #ifndef QT_NO_SSL
 
-class QSslErrorPrivate;
+//class QSslErrorPrivate;
 class Q_NETWORK_EXPORT QSslError
 {
 public:
@@ -61,10 +61,10 @@ public:
     QSslError(SslError error);
     QSslError(SslError error, const QSslCertificate &certificate);
 
-    QSslError(const QSslError &other);
+    QSslError(const QSslError &other) {}
 
     void swap(QSslError &other) Q_DECL_NOTHROW
-    { qSwap(d, other.d); }
+    {}
 
     ~QSslError() {}
 #ifdef Q_COMPILER_RVALUE_REFS
@@ -80,7 +80,7 @@ public:
     QSslCertificate certificate() const;
 
 private:
-    QScopedPointer<QSslErrorPrivate> d;
+//    QScopedPointer<QSslErrorPrivate> d;
 };
 Q_DECLARE_SHARED(QSslError)
 
