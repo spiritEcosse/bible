@@ -37,6 +37,8 @@ HEADERS += $$PROJECT_HEADERS \
     mock_modulesgroupmodel.h \
     mock_downloadmanager.h \
     mock_qfile.h \
+    QtNetwork/qnetworkreply.h \
+    QtNetwork/QNetworkReply \
     mock_qtimer.h \
     mock_qnetworkrequest.h \
     mock_qsqlquery.h \
