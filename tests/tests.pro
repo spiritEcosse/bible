@@ -38,6 +38,8 @@ HEADERS += $$PROJECT_HEADERS \
     QtCore/qfile.h \
     QtNetwork/QNetworkReply \
     QtNetwork/qnetworkreply.h \
+    QtNetwork/QSslError \
+    QtNetwork/qsslserror.h \
     mock_modulesgroupmodel.h \
     mock_downloadmanager.h \
     mock_qfile.h \

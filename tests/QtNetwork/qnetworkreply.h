@@ -1,13 +1,14 @@
 #ifndef QNETWORKREPLY_H
 #define QNETWORKREPLY_H
 
-//#include <QtNetwork/qtnetworkglobal.h>
+#include <QtNetwork/qtnetworkglobal.h>
 #include <QtCore/QIODevice>
 #include <QtCore/QString>
 #include <QtCore/QVariant>
 
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkAccessManager>
+#include <QSslError>
 
 QT_BEGIN_NAMESPACE
 
@@ -76,15 +77,15 @@ public:
 
     // reimplemented from QIODevice
     virtual void close() {}
-    virtual bool isSequential() const override;
+    virtual bool isSequential() const override {}
 
     // like QAbstractSocket:
     qint64 readBufferSize() const;
-    virtual void setReadBufferSize(qint64 size);
+    virtual void setReadBufferSize(qint64 size) {}
 
     QNetworkAccessManager *manager() const;
     QNetworkAccessManager::Operation operation() const;
-    QNetworkRequest request() const;
+    QNetworkRequest request() const {}
     NetworkError error() const {}
     bool isFinished() const;
     bool isRunning() const;
@@ -102,17 +103,17 @@ public:
     const QList<RawHeaderPair>& rawHeaderPairs() const;
 
     // attributes
-    QVariant attribute(QNetworkRequest::Attribute code) const;
+    QVariant attribute(QNetworkRequest::Attribute code) const {}
 
 #ifndef QT_NO_SSL
     QSslConfiguration sslConfiguration() const;
     void setSslConfiguration(const QSslConfiguration &configuration);
-    void ignoreSslErrors(const QList<QSslError> &errors);
+    void ignoreSslErrors(const QList<QSslError> &errors) {}
 #endif
 
 public Q_SLOTS:
     virtual void abort() = 0;
-    virtual void ignoreSslErrors();
+    virtual void ignoreSslErrors() {}
 
 Q_SIGNALS:
     void metaDataChanged();
@@ -130,9 +131,9 @@ Q_SIGNALS:
     void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
 
 protected:
-    explicit QNetworkReply(QObject *parent = nullptr);
+    explicit QNetworkReply(QObject *parent = nullptr) {}
     QNetworkReply(QNetworkReplyPrivate &dd, QObject *parent);
-    virtual qint64 writeData(const char *data, qint64 len) override;
+    virtual qint64 writeData(const char *data, qint64 len) override {}
 
     void setOperation(QNetworkAccessManager::Operation operation);
     void setRequest(const QNetworkRequest &request);
@@ -143,9 +144,9 @@ protected:
     void setRawHeader(const QByteArray &headerName, const QByteArray &value);
     void setAttribute(QNetworkRequest::Attribute code, const QVariant &value);
 
-    virtual void sslConfigurationImplementation(QSslConfiguration &) const;
-    virtual void setSslConfigurationImplementation(const QSslConfiguration &);
-    virtual void ignoreSslErrorsImplementation(const QList<QSslError> &);
+    virtual void sslConfigurationImplementation(QSslConfiguration &) const {}
+    virtual void setSslConfigurationImplementation(const QSslConfiguration &) {}
+    virtual void ignoreSslErrorsImplementation(const QList<QSslError> &) {}
 
 private:
     Q_DECLARE_PRIVATE(QNetworkReply)
