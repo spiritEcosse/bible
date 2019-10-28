@@ -82,7 +82,7 @@ public:
     // like QAbstractSocket:
     qint64 readBufferSize() const;
     virtual void setReadBufferSize(qint64 size) {}
-    virtual QByteArray readAll() {}
+    virtual QByteArray readAll() = 0;
 
     QNetworkAccessManager *manager() const;
     QNetworkAccessManager::Operation operation() const;
