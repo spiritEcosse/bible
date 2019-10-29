@@ -176,9 +176,8 @@ TEST_F(DownloadManagerTest, isHttpRedirect)
     {
         InSequence s;
 
-        EXPECT_CALL(mockQNetworkReply, attribute(_));
+        EXPECT_CALL(mockQNetworkReply, attribute(QNetworkRequest::HttpStatusCodeAttribute));
     }
-
     mockDownloadManager.isHttpRedirect();
 }
 

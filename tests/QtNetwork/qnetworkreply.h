@@ -105,7 +105,7 @@ public:
 
     QVariant qvariant;
     // attributes
-    QVariant attribute(QNetworkRequest::Attribute code) const {
+    virtual QVariant attribute(QNetworkRequest::Attribute code) const {
         Q_UNUSED(code)
         return qvariant;
     }
