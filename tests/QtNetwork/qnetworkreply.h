@@ -105,7 +105,7 @@ public:
 
     QVariant qvariant;
     // attributes
-    virtual QVariant attribute(QNetworkRequest::Attribute code) const = 0;
+    virtual QVariant& attribute(QNetworkRequest::Attribute code) const = 0;
 
 #ifndef QT_NO_SSL
     QSslConfiguration sslConfiguration() const;

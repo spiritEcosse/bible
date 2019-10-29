@@ -36,6 +36,8 @@ HEADERS += $$PROJECT_HEADERS \
     QtCore/Qurl \
     QtCore/QFile \
     QtCore/qfile.h \
+    QtCore/QVariant \
+    QtCore/qvariant.h \
     QtNetwork/QNetworkReply \
     QtNetwork/qnetworkreply.h \
     QtNetwork/qsslerror.h \
@@ -52,7 +54,8 @@ HEADERS += $$PROJECT_HEADERS \
     mock_qsqlerror.h \
     gtest_global.h \
     mock_qqueue.h \
-    mock_qurl.h
+    mock_qurl.h \
+    mock_qvariant.h
 
 SOURCES += $$PROJECT_SOURCES \
     modulesgroupmodel-test.cpp \

@@ -9,6 +9,7 @@
 #include "mock_qurl.h"
 #include "mock_qfile.h"
 #include "mock_qnetworkreply.h"
+#include "mock_qvariant.h"
 
 
 class DownloadManagerTest : public ::testing::Test
@@ -44,6 +45,7 @@ protected:
   MockQUrl mockQurl;
   MockQFile mockQFile;
   MockQNetworkReply mockQNetworkReply;
+  MockQVariant mockQVariant;
 
   const QUrl url = BuiltInDefaultValue<const QUrl>::Get();
   const QStringList urls = {"url1"};
@@ -172,13 +174,15 @@ TEST_F(DownloadManagerTest, isHttpRedirect)
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentIsHttpRedirect)
                 );
 
-    int statusCode;
     {
         InSequence s;
 
-        EXPECT_CALL(mockQNetworkReply, attribute(QNetworkRequest::HttpStatusCodeAttribute));
+        EXPECT_CALL(mockQNetworkReply, attribute(QNetworkRequest::HttpStatusCodeAttribute))
+                .WillOnce(ReturnPointee(&mockQVariant));
+        EXPECT_CALL(mockQVariant, toInt(_))
+                .WillOnce(Return(301));
     }
-    mockDownloadManager.isHttpRedirect();
+    EXPECT_TRUE(mockDownloadManager.isHttpRedirect());
 }
 
 TEST_F(DownloadManagerTest, reportRedirect)
