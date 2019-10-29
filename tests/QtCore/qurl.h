@@ -203,7 +203,7 @@ public:
     int port(int defaultPort = -1) const;
 
     void setPath(const QString &path, ParsingMode mode = DecodedMode);
-    virtual QString path(ComponentFormattingOptions options = FullyDecoded) const {
+    virtual QString path(ComponentFormattingOption options = FullyDecoded) const {
         Q_UNUSED(options)
         return QString();
     }
