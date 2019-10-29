@@ -179,7 +179,7 @@ TEST_F(DownloadManagerTest, isHttpRedirect)
 
         EXPECT_CALL(mockQNetworkReply, attribute(QNetworkRequest::HttpStatusCodeAttribute))
                 .WillOnce(ReturnPointee(&mockQVariant));
-        EXPECT_CALL(mockQVariant, toInt(_))
+        EXPECT_CALL(mockQVariant, toInt(nullptr))
                 .WillOnce(Return(301));
     }
     EXPECT_TRUE(mockDownloadManager.isHttpRedirect());
