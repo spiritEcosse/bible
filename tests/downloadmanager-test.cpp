@@ -94,6 +94,21 @@ TEST_F(DownloadManagerTest, appendUrls)
     mockDownloadManager.appendUrls(urls);
 }
 
+TEST_F(DownloadManagerTest, saveFileName)
+{
+    ON_CALL(mockDownloadManager, saveFileName(_))
+            .WillByDefault(
+                    Invoke(&mockDownloadManager, &MockDownloadManager::parentSaveFileName)
+                );
+
+    {
+        InSequence s;
+        EXPECT_CALL(mockQurl, path(QUrl::FullyDecoded));
+    }
+
+    mockDownloadManager.saveFileName(mockQurl);
+}
+
 TEST_F(DownloadManagerTest, startNextDownload)
 {
     QObject::connect(downloadManager, &DownloadManager::successfully,
@@ -186,11 +201,6 @@ TEST_F(DownloadManagerTest, isHttpRedirect)
 }
 
 TEST_F(DownloadManagerTest, reportRedirect)
-{
-
-}
-
-TEST_F(DownloadManagerTest, saveFileName)
 {
 
 }

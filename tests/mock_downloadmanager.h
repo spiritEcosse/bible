@@ -50,10 +50,10 @@ public:
     {
         return DownloadManager::reportRedirect();
     }
-//    void parentSaveFileName(const QUrl &url)
-//    {
-//        return DownloadManager::saveFileName(url);
-//    }
+    QString parentSaveFileName(const QUrl &url)
+    {
+        return DownloadManager::saveFileName(url);
+    }
 };
 
 #endif // MOCK_DOWNLOADMANAGER_H

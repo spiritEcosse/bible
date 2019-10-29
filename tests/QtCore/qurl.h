@@ -203,7 +203,10 @@ public:
     int port(int defaultPort = -1) const;
 
     void setPath(const QString &path, ParsingMode mode = DecodedMode);
-    QString path(ComponentFormattingOptions options = FullyDecoded) const;
+    virtual QString path(ComponentFormattingOptions options = FullyDecoded) const {
+        Q_UNUSED(options)
+        return QString();
+    }
     QString fileName(ComponentFormattingOptions options = FullyDecoded) const;
 
     bool hasQuery() const;
