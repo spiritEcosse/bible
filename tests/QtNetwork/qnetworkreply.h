@@ -103,8 +103,12 @@ public:
     typedef QPair<QByteArray, QByteArray> RawHeaderPair;
     const QList<RawHeaderPair>& rawHeaderPairs() const;
 
+    QVariant qvariant;
     // attributes
-    QVariant attribute(QNetworkRequest::Attribute code) const {}
+    QVariant attribute(QNetworkRequest::Attribute code) const {
+        Q_UNUSED(code)
+        return qvariant;
+    }
 
 #ifndef QT_NO_SSL
     QSslConfiguration sslConfiguration() const;

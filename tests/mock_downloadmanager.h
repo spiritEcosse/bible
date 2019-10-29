@@ -42,10 +42,10 @@ public:
     {
         return DownloadManager::downloadReadyRead();
     }
-//    void parentIsHttpRedirect()
-//    {
-//        return DownloadManager::isHttpRedirect();
-//    }
+    bool parentIsHttpRedirect()
+    {
+        return DownloadManager::isHttpRedirect();
+    }
     void parentReportRedirect()
     {
         return DownloadManager::reportRedirect();

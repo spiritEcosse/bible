@@ -167,7 +167,19 @@ TEST_F(DownloadManagerTest, downloadReadyRead)
 
 TEST_F(DownloadManagerTest, isHttpRedirect)
 {
+    ON_CALL(mockDownloadManager, isHttpRedirect())
+            .WillByDefault(
+                    Invoke(&mockDownloadManager, &MockDownloadManager::parentIsHttpRedirect)
+                );
 
+    int statusCode;
+    {
+        InSequence s;
+
+        EXPECT_CALL(mockQNetworkReply, attribute(_));
+    }
+
+    mockDownloadManager.isHttpRedirect();
 }
 
 TEST_F(DownloadManagerTest, reportRedirect)

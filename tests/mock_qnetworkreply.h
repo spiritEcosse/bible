@@ -17,6 +17,7 @@ public:
     MOCK_METHOD0(ignoreSslErrors, void());
     MOCK_METHOD2(readData, qint64(char *data, qint64 maxlen));
     MOCK_METHOD2(readLineData, qint64(char *data, qint64 maxlen));
+    MOCK_CONST_METHOD1(attribute, QVariant(QNetworkRequest::Attribute code));
 };
 
 #endif // MOCK_QNETWORKREPLY_H
