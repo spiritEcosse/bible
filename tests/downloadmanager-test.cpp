@@ -32,10 +32,10 @@ protected:
   MockQQueue<QUrl> mockQqueue;
   MockQTimer mockQTimer;
   MockQUrl mockQurl;
-  const MockQString mockQString;
+  MockQString mockQString;
 
   const QUrl url = BuiltInDefaultValue<const QUrl>::Get();
-  const QStringList urls = {mockQString};
+  QStringList urls;
 };
 
 
@@ -74,11 +74,15 @@ TEST_F(DownloadManagerTest, append)
 
 TEST_F(DownloadManagerTest, appendUrls)
 {
-    ON_CALL(mockDownloadManager, appendUrls(urls))
+    QString *q;
+    q = &mockQString;
+    urls << *q;
+
+    ON_CALL(mockDownloadManager, appendUrls(_))
             .WillByDefault(
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentAppendUrls)
                 );
-    mockDownloadManager.qurl = &mockQurl;
+
     {
         InSequence s;
         EXPECT_CALL(mockQString, toLocal8Bit());

@@ -182,6 +182,7 @@ public:
 
     QByteArray qb;
     virtual QByteArray toLocal8Bit() const {
+        return QByteArray();
     }
 
     inline QString() Q_DECL_NOTHROW;
@@ -1414,7 +1415,7 @@ public:
         m_string = other.m_string; m_position = other.m_position;
         m_size = other.m_size; return *this;
     }
-    virtual ~QStringRef(){}
+    ~QStringRef(){}
 #endif // Qt < 6.0.0
 
     inline const QString *string() const { return m_string; }

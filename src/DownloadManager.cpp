@@ -13,10 +13,10 @@ DownloadManager::DownloadManager(QObject *parent)
 
 void DownloadManager::appendUrls(const QStringList &urls)
 {
-    urls.first().toLocal8Bit();
-//    for (const QString &urlAsString : urls) {
-//        urlAsString.toLocal8Bit();
-//    }
+    for (QString urlAsString : urls) {
+//        std::cout << "";
+        urlAsString.toLocal8Bit();
+    }
 
 //    if (downloadQueue->isEmpty()) {
 //        timer->singleShot(0, this, SIGNAL(finished()));
