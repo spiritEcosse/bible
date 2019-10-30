@@ -93,7 +93,7 @@ bool ModulesGroupModel::execLastError(const QString& query)
 
 bool ModulesGroupModel::createTable(const QString &tableName)
 {
-    if ( !database().tables().contains(tableName, Qt::CaseSensitive) ) {
+    if ( !database().tables().contains(tableName) ) {
         QString sql = QString(
                     "CREATE TABLE IF NOT EXISTS '%1' ("
                     "   'id'        INTEGER PRIMARY KEY AUTOINCREMENT, "

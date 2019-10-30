@@ -107,15 +107,22 @@ TEST_F(ModulesGroupModelTest, createTable)
     }
 
     EXPECT_TRUE(mockModulesGroupModel.createTable(tableName));
+}
 
-//    {
-//        InSequence s;
-//        EXPECT_CALL(mockModulesGroupModel, database())
-//                .WillOnce(ReturnPointee(&mockQSqlDatabase));
-//        EXPECT_CALL(mockQSqlDatabase, tables())
-//                .WillRepeatedly(Return(QStringList{tableName}));
-//    }
-//    EXPECT_FALSE(mockModulesGroupModel.createTable(tableName));
+TEST_F(ModulesGroupModelTest, createTableReturnFalse)
+{
+    ON_CALL(mockModulesGroupModel, createTable(tableName))
+            .WillByDefault(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::ParentCreateTable));
+
+    {
+        InSequence s;
+        EXPECT_CALL(mockModulesGroupModel, database())
+                .WillOnce(ReturnPointee(&mockQSqlDatabase));
+        EXPECT_CALL(mockQSqlDatabase, tables())
+                .WillRepeatedly(ReturnPointee(&mockQStringList));
+    }
+
+    EXPECT_FALSE(mockModulesGroupModel.createTable(tableName));
 }
 
 TEST_F(ModulesGroupModelTest, execLastError)
