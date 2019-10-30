@@ -35,7 +35,8 @@ void DownloadManager::append(const QUrl &url)
 QString DownloadManager::saveFileName(const QUrl &url)
 {
     QString path = url.path();
-    QString basename = QFileInfo(path).fileName();
+    qFileInfo->setFile(path);
+    QString basename = qFileInfo->fileName();
 
     if (basename.isEmpty())
         basename = "download";

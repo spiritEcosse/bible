@@ -47,6 +47,7 @@ HEADERS += $$PROJECT_HEADERS \
     mock_modulesgroupmodel.h \
     mock_downloadmanager.h \
     mock_qfile.h \
+    mock_qfileinfo.h \
     mock_qnetworkreply.h \
     mock_qtimer.h \
     mock_qnetworkrequest.h \

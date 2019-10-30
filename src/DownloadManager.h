@@ -38,6 +38,7 @@ private:
     QTimer* timer;
     QUrl* qurl;
     QQueue<QUrl> *downloadQueue;
+    QFileInfo* qFileInfo;
 
 //    QNetworkAccessManager manager;
     friend class DownloadManagerTest;
@@ -46,6 +47,7 @@ private:
     FRIEND_TEST(DownloadManagerTest, appendUrls);
     FRIEND_TEST(DownloadManagerTest, startNextDownload);
     FRIEND_TEST(MockDownloadManager, parentStartNextDownload);
+    FRIEND_TEST(DownloadManagerTest, saveFileName);
 
     QNetworkReply *currentDownload = nullptr;
     QFile* output;

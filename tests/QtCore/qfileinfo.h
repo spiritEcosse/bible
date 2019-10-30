@@ -51,20 +51,20 @@ QT_BEGIN_NAMESPACE
 class QDir;
 class QDirIteratorPrivate;
 class QDateTime;
-class QFileInfoPrivate;
+//class QFileInfoPrivate;
 
 class Q_CORE_EXPORT QFileInfo
 {
     friend class QDirIteratorPrivate;
 public:
-    explicit QFileInfo(QFileInfoPrivate *d);
+//    explicit QFileInfo(QFileInfoPrivate *d);
 
     QFileInfo();
     QFileInfo(const QString &file);
     QFileInfo(const QFile &file);
     QFileInfo(const QDir &dir, const QString &file);
     QFileInfo(const QFileInfo &fileinfo);
-    ~QFileInfo();
+    virtual ~QFileInfo() {}
 
     QFileInfo &operator=(const QFileInfo &fileinfo);
 #ifdef Q_COMPILER_RVALUE_REFS
@@ -72,12 +72,12 @@ public:
 #endif
 
     void swap(QFileInfo &other) Q_DECL_NOTHROW
-    { qSwap(d_ptr, other.d_ptr); }
+    { }
 
     bool operator==(const QFileInfo &fileinfo) const;
     inline bool operator!=(const QFileInfo &fileinfo) const { return !(operator==(fileinfo)); }
 
-    void setFile(const QString &file);
+    virtual inline void setFile(const QString &file) { Q_UNUSED(file) }
     void setFile(const QFile &file);
     void setFile(const QDir &dir, const QString &file);
     bool exists() const;
@@ -87,7 +87,9 @@ public:
     QString filePath() const;
     QString absoluteFilePath() const;
     QString canonicalFilePath() const;
-    QString fileName() const;
+    virtual inline QString fileName() const {
+        return QString();
+    }
     QString baseName() const;
     QString completeBaseName() const;
     QString suffix() const;
@@ -147,14 +149,14 @@ public:
     void setCaching(bool on);
 
 protected:
-    QSharedDataPointer<QFileInfoPrivate> d_ptr;
+//    QSharedDataPointer<QFileInfoPrivate> d_ptr;
 
 private:
-    QFileInfoPrivate* d_func();
-    inline const QFileInfoPrivate* d_func() const
-    {
-        return d_ptr.constData();
-    }
+//    QFileInfoPrivate* d_func();
+//    inline const QFileInfoPrivate* d_func() const
+//    {
+//        return d_ptr.constData();
+//    }
 };
 
 Q_DECLARE_SHARED(QFileInfo)
