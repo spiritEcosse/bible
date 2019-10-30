@@ -38,6 +38,8 @@ HEADERS += $$PROJECT_HEADERS \
     QtCore/qfile.h \
     QtCore/QVariant \
     QtCore/qvariant.h \
+    QtCore/QFileInfo \
+    QtCore/qfileinfo.h \
     QtNetwork/QNetworkReply \
     QtNetwork/qnetworkreply.h \
     QtNetwork/qsslerror.h \
