@@ -13,13 +13,14 @@ DownloadManager::DownloadManager(QObject *parent)
 
 void DownloadManager::appendUrls(const QStringList &urls)
 {
-    for (const QString &urlAsString : urls) {
-        append(qurl->fromEncoded(urlAsString.toLocal8Bit()));
-    }
+    urls.first().toLocal8Bit();
+//    for (const QString &urlAsString : urls) {
+//        urlAsString.toLocal8Bit();
+//    }
 
-    if (downloadQueue->isEmpty()) {
-        timer->singleShot(0, this, SIGNAL(finished()));
-    }
+//    if (downloadQueue->isEmpty()) {
+//        timer->singleShot(0, this, SIGNAL(finished()));
+//    }
 }
 
 void DownloadManager::append(const QUrl &url)

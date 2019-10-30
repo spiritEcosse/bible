@@ -180,13 +180,17 @@ class Q_CORE_EXPORT QString
 public:
     typedef QStringData Data;
 
+    QByteArray qb;
+    virtual QByteArray toLocal8Bit() const {
+    }
+
     inline QString() Q_DECL_NOTHROW;
     explicit QString(const QChar *unicode, int size = -1);
     QString(QChar c);
     QString(int size, QChar c);
     inline QString(QLatin1String latin1);
     inline QString(const QString &) Q_DECL_NOTHROW;
-    inline ~QString();
+    virtual ~QString() {}
     QString &operator=(QChar c);
     QString &operator=(const QString &) Q_DECL_NOTHROW;
     QString &operator=(QLatin1String latin1);
@@ -510,14 +514,15 @@ public:
     { return toUtf8_helper(*this); }
     Q_REQUIRED_RESULT QByteArray toUtf8() &&
     { return toUtf8_helper(*this); }
-    virtual Q_REQUIRED_RESULT QByteArray toLocal8Bit() const &
-    { return toLocal8Bit_helper(isNull() ? nullptr : constData(), size()); }
-//    Q_REQUIRED_RESULT QByteArray toLocal8Bit() &&
+//    Q_REQUIRED_RESULT QByteArray toLocal8Bit() const & {
+//        return toLocal8Bit_helper(isNull() ? nullptr : constData(), size());
+//    }
+//    Q_REQUIRED_RESULT QByteArray toLocal8Bit()
 //    { return toLocal8Bit_helper(isNull() ? nullptr : constData(), size()); }
 #else
     Q_REQUIRED_RESULT QByteArray toLatin1() const;
     Q_REQUIRED_RESULT QByteArray toUtf8() const;
-    Q_REQUIRED_RESULT QByteArray toLocal8Bit() const;
+//    Q_REQUIRED_RESULT QByteArray toLocal8Bit() const;
 #endif
     Q_REQUIRED_RESULT QVector<uint> toUcs4() const;
 
@@ -786,7 +791,7 @@ public:
     bool isRightToLeft() const;
 
     QString(int size, Qt::Initialization);
-    Q_DECL_CONSTEXPR inline QString(QStringDataPtr dd) : d(dd.ptr) {}
+    inline QString(QStringDataPtr dd) : d(dd.ptr) {}
 
 private:
 #if defined(QT_NO_CAST_FROM_ASCII)
@@ -1090,7 +1095,7 @@ inline void QCharRef::setCell(uchar acell) { QChar(*this).setCell(acell); }
 
 
 inline QString::QString() Q_DECL_NOTHROW : d(Data::sharedNull()) {}
-inline QString::~QString() { if (!d->ref.deref()) Data::deallocate(d); }
+//inline QString::~QString() { if (!d->ref.deref()) Data::deallocate(d); }
 
 inline void QString::reserve(int asize)
 {
@@ -1504,7 +1509,7 @@ public:
 #endif
     Q_REQUIRED_RESULT QByteArray toLatin1() const;
     Q_REQUIRED_RESULT QByteArray toUtf8() const;
-    Q_REQUIRED_RESULT QByteArray toLocal8Bit() const;
+//    Q_REQUIRED_RESULT QByteArray toLocal8Bit() const;
     Q_REQUIRED_RESULT QVector<uint> toUcs4() const;
 
     inline void clear() { m_string = nullptr; m_position = m_size = 0; }

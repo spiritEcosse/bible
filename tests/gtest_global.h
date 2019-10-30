@@ -14,6 +14,7 @@ using ::testing::ReturnRef;
 using ::testing::Mock;
 using ::testing::Invoke;
 using ::testing::DefaultValue;
+using ::testing::ExpectationSet;
 using ::testing::Eq;
 using ::testing::DoAll;
 using ::testing::SetArgReferee;

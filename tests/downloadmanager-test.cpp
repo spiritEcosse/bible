@@ -32,10 +32,10 @@ protected:
   MockQQueue<QUrl> mockQqueue;
   MockQTimer mockQTimer;
   MockQUrl mockQurl;
-  MockQstring mockQstring;
+  const MockQString mockQString;
 
   const QUrl url = BuiltInDefaultValue<const QUrl>::Get();
-  const QStringList urls = {"url1"};
+  const QStringList urls = {mockQString};
 };
 
 
@@ -81,14 +81,13 @@ TEST_F(DownloadManagerTest, appendUrls)
     mockDownloadManager.qurl = &mockQurl;
     {
         InSequence s;
-
-        EXPECT_CALL(mockQstring, toLocal8Bit());
-        EXPECT_CALL(mockQurl, fromEncodedImpl(_, QUrl::TolerantMode));
-//                .WillOnce(Return(url)); # ToDo add Return(url)
-        EXPECT_CALL(mockDownloadManager, append(_)); // pass url instead _
-        EXPECT_CALL(mockQqueue, isEmpty())
-                .WillOnce(Return(true));
-        EXPECT_CALL(mockQTimer, singleShot(0, downloadManager, _)); // ToDo : add SIGNAL
+        EXPECT_CALL(mockQString, toLocal8Bit());
+//        EXPECT_CALL(mockQurl, fromEncodedImpl(_, QUrl::TolerantMode));
+////                .WillOnce(Return(url)); # ToDo add Return(url)
+//        EXPECT_CALL(mockDownloadManager, append(_)); // pass url instead _
+//        EXPECT_CALL(mockQqueue, isEmpty())
+//                .WillOnce(Return(true));
+//        EXPECT_CALL(mockQTimer, singleShot(0, downloadManager, _)); // ToDo : add SIGNAL
     }
     mockDownloadManager.appendUrls(urls);
 }
