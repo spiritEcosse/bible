@@ -54,6 +54,7 @@ protected:
   const QStringList urls = {"url1"};
   QString filename = BuiltInDefaultValue<QString>::Get();
   QString path = BuiltInDefaultValue<QString>::Get();
+  QString basename = BuiltInDefaultValue<QString>::Get();
 };
 
 
@@ -110,7 +111,8 @@ TEST_F(DownloadManagerTest, saveFileName)
         EXPECT_CALL(mockQurl, path(QUrl::FullyDecoded))
                 .WillOnce(Return(path));
         EXPECT_CALL(mockQFileInfo, setFile(path));
-        EXPECT_CALL(mockQFileInfo, fileName());
+        EXPECT_CALL(mockQFileInfo, fileName())
+                .WillOnce(Return(basename));
     }
 
     mockDownloadManager.saveFileName(mockQurl);
