@@ -11,6 +11,7 @@
 #include "mock_qnetworkreply.h"
 #include "mock_qvariant.h"
 #include "mock_qfileinfo.h"
+#include "mock_qstringlist.h"
 
 
 class DownloadManagerTest : public ::testing::Test
@@ -30,6 +31,7 @@ protected:
       mockDownloadManager.output = &mockQFile;
       mockDownloadManager.currentDownload = &mockQNetworkReply;
       mockDownloadManager.qFileInfo = &mockQFileInfo;
+      mockDownloadManager.fileNames = &mockQStringList;
   }
 
   void TearDown() override {
@@ -49,6 +51,7 @@ protected:
   MockQNetworkReply mockQNetworkReply;
   MockQVariant mockQVariant;
   MockQFileInfo mockQFileInfo;
+  MockQStringList mockQStringList;
 
   const QUrl url = BuiltInDefaultValue<const QUrl>::Get();
   const QStringList urls = {"url1"};
@@ -152,14 +155,12 @@ TEST_F(DownloadManagerTest, startNextDownload)
         EXPECT_CALL(mockDownloadManager, saveFileName(_))
                 .WillOnce(Return(filename));
         EXPECT_CALL(mockQFile, setFileName(filename));
-        EXPECT_CALL(mockQFile, fileName());
+        EXPECT_CALL(mockQFile, fileName())
+                .WillOnce(Return(filename));
+        EXPECT_CALL(mockQStringList, append(filename));
     }
 
-    QStringList fileNames;
-    EXPECT_EQ(mockDownloadManager.fileNames, fileNames);
     mockDownloadManager.startNextDownload();
-    fileNames.append(filename);
-    EXPECT_EQ(mockDownloadManager.fileNames, fileNames);
 }
 
 TEST_F(DownloadManagerTest, downloadProgress)
