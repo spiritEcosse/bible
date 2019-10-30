@@ -9,7 +9,7 @@ class MockQUrl : public QUrl
 {
 public:
     MOCK_METHOD2(fromEncodedImpl, QUrl(QByteArray, ParsingMode));
-    MOCK_CONST_METHOD1(path, QString(ComponentFormattingOptions));
+    MOCK_CONST_METHOD1(path, QString(ComponentFormattingOption)); // ToDo replace on ComponentFormattingOptions
     virtual QUrl fromEncoded(
             const QByteArray &url, ParsingMode mode = TolerantMode)
     {

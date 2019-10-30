@@ -3,8 +3,6 @@
 ModulesGroupModel::ModulesGroupModel()
     : QSqlTableModel() {}
 
-ModulesGroupModel::~ModulesGroupModel() {}
-
 void ModulesGroupModel::decompressRegistry()
 {
 //    registryArchive.setFileName(manager.fileNames.last());

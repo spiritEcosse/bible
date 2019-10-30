@@ -4,6 +4,7 @@
 #include "mock_qsqldatabase.h"
 #include "mock_qsqlquery.h"
 #include "mock_qsqlerror.h"
+#include "mock_qstringlist.h"
 
 
 // The fixture for testing class ModulesGroupModelTest.
@@ -38,6 +39,7 @@ class ModulesGroupModelTest : public TestWithParam<const char*> {
   MockQSqlQuery mockQSqlQuery;
   MockQSqlError mockQSqlError;
   MockQSqlDatabase mockQSqlDatabase;
+  MockQStringList mockQStringList;
 
   MockModulesGroupModel mockModulesGroupModel;
   ModulesGroupModel* modulesGroupModel;
@@ -91,29 +93,37 @@ TEST_F(ModulesGroupModelTest, createTable)
 
     ON_CALL(mockModulesGroupModel, createTable(tableName))
             .WillByDefault(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::ParentCreateTable));
+
     {
         InSequence s;
         EXPECT_CALL(mockModulesGroupModel, database())
                 .WillOnce(ReturnPointee(&mockQSqlDatabase));
         EXPECT_CALL(mockQSqlDatabase, tables())
-                .WillOnce(Return(QStringList{}));
+                .WillOnce(ReturnPointee(&mockQStringList));
+        EXPECT_CALL(mockQStringList, contains(tableName, Qt::CaseSensitive))
+                .WillOnce(Return(false));
         EXPECT_CALL(mockModulesGroupModel, execLastError(sql))
-                .WillRepeatedly(Return(true));
+                .WillOnce(Return(true));
     }
 
     EXPECT_TRUE(mockModulesGroupModel.createTable(tableName));
+}
+
+TEST_F(ModulesGroupModelTest, createTableReturnFalse)
+{
+    ON_CALL(mockModulesGroupModel, createTable(tableName))
+            .WillByDefault(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::ParentCreateTable));
 
     {
         InSequence s;
         EXPECT_CALL(mockModulesGroupModel, database())
                 .WillOnce(ReturnPointee(&mockQSqlDatabase));
         EXPECT_CALL(mockQSqlDatabase, tables())
-                .WillRepeatedly(Return(QStringList{tableName}));
+                .WillRepeatedly(ReturnPointee(&mockQStringList));
     }
+
     EXPECT_FALSE(mockModulesGroupModel.createTable(tableName));
 }
-
-
 
 TEST_F(ModulesGroupModelTest, execLastError)
 {

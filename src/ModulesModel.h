@@ -17,9 +17,10 @@
 
 class ModulesModel : public QSqlTableModel
 {
+    Q_OBJECT
 public:
     ModulesModel();
-    virtual ~ModulesModel();
+    virtual ~ModulesModel() {}
 
     QSqlQuery* query_;
     QVariant data(const QModelIndex &index, int role) const override;

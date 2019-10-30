@@ -1,6 +1,8 @@
 TEMPLATE = app
 PROJECT_DIR = $$PWD/../
 
+QT -= gui
+
 PROJECT_SOURCES = \
     $$PROJECT_DIR/src/DownloadManager.cpp \
     $$PROJECT_DIR/src/TextProgressBar.cpp \
@@ -32,11 +34,25 @@ HEADERS += $$PROJECT_HEADERS \
     QtCore/qqueue.h \
     QtCore/qurl.h \
     QtCore/Qurl \
-    QtCore/qstring.h \
-    QtCore/QString \
+    mock_qstring.h \
+    QtCore/QFile \
+    QtCore/qfile.h \
+    QtCore/QVariant \
+    QtCore/qvariant.h \
+    QtCore/QFileInfo \
+    QtCore/qfileinfo.h \
+    QtNetwork/QNetworkReply \
+    QtNetwork/qnetworkreply.h \
+    QtNetwork/qsslerror.h \
+    QtNetwork/QSslError \
     mock_modulesgroupmodel.h \
     mock_downloadmanager.h \
-    mock_qstring.h \
+    mock_qfile.h \
+    mock_qfileinfo.h \
+    mock_qnetworkreply.h \
+    QtCore/QStringList \
+    QtCore/qstringlist.h \
+    mock_qstringlist.h \
     mock_qtimer.h \
     mock_qnetworkrequest.h \
     mock_qsqlquery.h \
@@ -45,7 +61,8 @@ HEADERS += $$PROJECT_HEADERS \
     mock_qsqlerror.h \
     gtest_global.h \
     mock_qqueue.h \
-    mock_qurl.h
+    mock_qurl.h \
+    mock_qvariant.h
 
 SOURCES += $$PROJECT_SOURCES \
     modulesgroupmodel-test.cpp \
@@ -56,4 +73,4 @@ SOURCES += $$PROJECT_SOURCES \
 INCLUDEPATH += $$PWD/QtNetwork + $$PWD/QtSql + $$PWD/QtCore
 DEPENDPATH += $$PWD/QtNetwork + $$PWD/QtSql + $$PWD/QtCore
 
-LIBS += -lquazip5 -lgmock -lgtest -lpthread
+LIBS += -lgmock -lgtest -lpthread

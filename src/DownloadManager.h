@@ -7,7 +7,6 @@
 #include <QObject>
 #include <QTimer>
 
-
 #include "TextProgressBar.h"
 #include "gtest/gtest_prod.h"
 
@@ -20,8 +19,8 @@ public:
 
     virtual void append(const QUrl &url);
     virtual void appendUrls(const QStringList &urls);
-    static QString saveFileName(const QUrl &url);
-    QStringList fileNames;
+    virtual QString saveFileName(const QUrl &url);
+    QStringList* fileNames;
 
 signals:
     void finished();
@@ -39,14 +38,19 @@ private:
     QTimer* timer;
     QUrl* qurl;
     QQueue<QUrl> *downloadQueue;
+    QFileInfo* qFileInfo;
 
 //    QNetworkAccessManager manager;
     friend class DownloadManagerTest;
+    friend class MockDownloadManager;
     FRIEND_TEST(DownloadManagerTest, append);
     FRIEND_TEST(DownloadManagerTest, appendUrls);
+    FRIEND_TEST(DownloadManagerTest, startNextDownload);
+    FRIEND_TEST(MockDownloadManager, parentStartNextDownload);
+    FRIEND_TEST(DownloadManagerTest, saveFileName);
 
     QNetworkReply *currentDownload = nullptr;
-    QFile output;
+    QFile* output;
     QTime downloadTime;
     TextProgressBar progressBar;
 

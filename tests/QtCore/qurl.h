@@ -195,15 +195,18 @@ public:
 
     void setHost(const QString &host, ParsingMode mode = DecodedMode);
     QString host(ComponentFormattingOptions = FullyDecoded) const;
-#if QT_CONFIG(topleveldomain)
-    QString topLevelDomain(ComponentFormattingOptions options = FullyDecoded) const;
-#endif
+//#if QT_CONFIG(topleveldomain)
+//    QString topLevelDomain(ComponentFormattingOptions options = FullyDecoded) const;
+//#endif
 
     void setPort(int port);
     int port(int defaultPort = -1) const;
 
     void setPath(const QString &path, ParsingMode mode = DecodedMode);
-    QString path(ComponentFormattingOptions options = FullyDecoded) const;
+    virtual QString path(ComponentFormattingOption options = FullyDecoded) const {
+        Q_UNUSED(options)
+        return QString();
+    }
     QString fileName(ComponentFormattingOptions options = FullyDecoded) const;
 
     bool hasQuery() const;
