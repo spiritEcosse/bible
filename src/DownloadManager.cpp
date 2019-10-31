@@ -155,7 +155,7 @@ bool DownloadManager::isHttpRedirect() const
 void DownloadManager::reportRedirect()
 {
     int statusCode = currentDownload->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-    currentDownload->request().url();
+    QUrl requestUrl = currentDownload->request().url();
 //    QUrl requestUrl = currentDownload->request().url();
 //    QTextStream(stderr) << "Request: " << requestUrl->toDisplayString() // WARNING: add mock QTextStream
 //                        << " was redirected with code: " << statusCode

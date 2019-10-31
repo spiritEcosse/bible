@@ -221,6 +221,7 @@ TEST_F(DownloadManagerTest, reportRedirect)
                 );
 
     MockQVariant mockQVariantTarget;
+//    MockQurl qurl = std::move( sample );
     {
         InSequence s;
 
