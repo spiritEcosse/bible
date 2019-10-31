@@ -18,6 +18,7 @@ public:
     MOCK_METHOD2(readData, qint64(char *data, qint64 maxlen));
     MOCK_METHOD2(readLineData, qint64(char *data, qint64 maxlen));
     MOCK_CONST_METHOD1(attribute, QVariant&(QNetworkRequest::Attribute code));
+    MOCK_METHOD0(request, QNetworkRequest&());
 };
 
 #endif // MOCK_QNETWORKREPLY_H

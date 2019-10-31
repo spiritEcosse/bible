@@ -73,7 +73,7 @@ public:
     };
     Q_ENUM(NetworkError)
 
-    ~QNetworkReply() {}
+    virtual ~QNetworkReply() {}
 
     // reimplemented from QIODevice
     virtual void close() {}
@@ -86,7 +86,10 @@ public:
 
     QNetworkAccessManager *manager() const;
     QNetworkAccessManager::Operation operation() const;
-    QNetworkRequest request() const {}
+    QNetworkRequest req;
+    virtual QNetworkRequest& request() {
+        return req;
+    }
     NetworkError error() const {}
     bool isFinished() const;
     bool isRunning() const;
