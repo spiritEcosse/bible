@@ -221,7 +221,6 @@ TEST_F(DownloadManagerTest, reportRedirect)
                 );
 
     MockQVariant mockQVariantTarget;
-//    MockQurl qurl = std::move( sample );
     {
         InSequence s;
 
@@ -232,46 +231,46 @@ TEST_F(DownloadManagerTest, reportRedirect)
         EXPECT_CALL(mockQNetworkReply, request())
                 .WillOnce(ReturnPointee(&mockQNetworkRequest));
         EXPECT_CALL(mockQNetworkRequest, url())
-                .WillOnce(Return(mockQurl));
-//        EXPECT_CALL(mockQurl, toDisplayString(QUrl::FormattingOptions(QUrl::PrettyDecoded)));
-//        EXPECT_CALL(mockQNetworkReply, attribute(QNetworkRequest::RedirectionTargetAttribute))
-//                .WillOnce(ReturnPointee(&mockQVariantTarget));
-//        EXPECT_CALL(mockQVariantTarget, isValid())
-//                .WillOnce(Return(false));
+                .WillOnce(ReturnPointee(&mockQurl));
+        EXPECT_CALL(mockQurl, toDisplayString(QUrl::FormattingOptions(QUrl::PrettyDecoded)));
+        EXPECT_CALL(mockQNetworkReply, attribute(QNetworkRequest::RedirectionTargetAttribute))
+                .WillOnce(ReturnPointee(&mockQVariantTarget));
+        EXPECT_CALL(mockQVariantTarget, isValid())
+                .WillOnce(Return(false));
     }
 
     mockDownloadManager.reportRedirect();
 }
 
-//TEST_F(DownloadManagerTest, reportRedirectTargetNotValid)
-//{
-//    ON_CALL(mockDownloadManager, reportRedirect())
-//            .WillByDefault(
-//                Invoke(&mockDownloadManager, &MockDownloadManager::parentReportRedirect)
-//                );
+TEST_F(DownloadManagerTest, reportRedirectTargetNotValid)
+{
+    ON_CALL(mockDownloadManager, reportRedirect())
+            .WillByDefault(
+                Invoke(&mockDownloadManager, &MockDownloadManager::parentReportRedirect)
+                );
 
-//    MockQVariant mockQVariantTarget;
-//    MockQUrl mockQurlRedirect;
-//    {
-//        InSequence s;
+    MockQVariant mockQVariantTarget;
+    MockQUrl mockQurlRedirect;
+    {
+        InSequence s;
 
-//        EXPECT_CALL(mockQNetworkReply, attribute(QNetworkRequest::HttpStatusCodeAttribute))
-//                .WillOnce(ReturnPointee(&mockQVariant));
-//        EXPECT_CALL(mockQVariant, toInt(nullptr))
-//                .WillOnce(Return(statusCode));
-//        EXPECT_CALL(mockQNetworkReply, request())
-//                .WillOnce(ReturnPointee(&mockQNetworkRequest));
-//        EXPECT_CALL(mockQNetworkRequest, url())
-//                .WillOnce(ReturnRef(mockQurl));
-//        EXPECT_CALL(mockQurl, toDisplayString(QUrl::FormattingOptions(QUrl::PrettyDecoded)));
-//        EXPECT_CALL(mockQNetworkReply, attribute(QNetworkRequest::RedirectionTargetAttribute))
-//                .WillOnce(ReturnPointee(&mockQVariantTarget));
-//        EXPECT_CALL(mockQVariantTarget, isValid())
-//                .WillOnce(Return(true));
-//        EXPECT_CALL(mockQVariantTarget, toUrl())
-//                .WillOnce(ReturnRef(mockQurlRedirect));
-//        EXPECT_CALL(mockQurlRedirect, isRelative());
-//    }
+        EXPECT_CALL(mockQNetworkReply, attribute(QNetworkRequest::HttpStatusCodeAttribute))
+                .WillOnce(ReturnPointee(&mockQVariant));
+        EXPECT_CALL(mockQVariant, toInt(nullptr))
+                .WillOnce(Return(statusCode));
+        EXPECT_CALL(mockQNetworkReply, request())
+                .WillOnce(ReturnPointee(&mockQNetworkRequest));
+        EXPECT_CALL(mockQNetworkRequest, url())
+                .WillOnce(ReturnRef(mockQurl));
+        EXPECT_CALL(mockQurl, toDisplayString(QUrl::FormattingOptions(QUrl::PrettyDecoded)));
+        EXPECT_CALL(mockQNetworkReply, attribute(QNetworkRequest::RedirectionTargetAttribute))
+                .WillOnce(ReturnPointee(&mockQVariantTarget));
+        EXPECT_CALL(mockQVariantTarget, isValid())
+                .WillOnce(Return(true));
+        EXPECT_CALL(mockQVariantTarget, toUrl())
+                .WillOnce(ReturnRef(mockQurlRedirect));
+        EXPECT_CALL(mockQurlRedirect, isRelative());
+    }
 
-//    mockDownloadManager.reportRedirect();
-//}
+    mockDownloadManager.reportRedirect();
+}

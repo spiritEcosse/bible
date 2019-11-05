@@ -8,7 +8,7 @@
 class MockQNetworkRequest : public QNetworkRequest
 {
 public:
-    MOCK_CONST_METHOD0(url, QUrl());
+    MOCK_METHOD0(url, QUrl&());
 };
 
 #endif // MOCK_QNETWORKREQUEST_H
