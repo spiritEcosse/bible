@@ -338,7 +338,7 @@ class Q_CORE_EXPORT QVariant
 #ifndef QT_BOOTSTRAPPED
 
     QUrl qurl;
-    virtual QUrl& toUrl() {
+    virtual const QUrl& toUrl() const {
         return qurl;
     }
     QEasingCurve toEasingCurve() const;

@@ -160,11 +160,12 @@ void DownloadManager::reportRedirect()
                         << " was redirected with code: " << statusCode
                         << '\n';
 
-    QVariant* target(&currentDownload->attribute(QNetworkRequest::RedirectionTargetAttribute));
+    QVariant& target = currentDownload->attribute(QNetworkRequest::RedirectionTargetAttribute);
 
-    if (target->isValid()) {
-        QUrl* redirectUrl(&target->toUrl());
-        if (redirectUrl->isRelative()) {
+    if (target.isValid()) {
+        const QUrl &redirectUrl = target.toUrl();
+
+        if (redirectUrl.isRelative()) {
 
         }
 //            redirectUrl = requestUrl->resolved(redirectUrl);

@@ -10,7 +10,7 @@ class MockQVariant : public QVariant
 {
 public:
     MOCK_CONST_METHOD1(toInt, int(bool *ok));
-    MOCK_METHOD0(toUrl, QUrl&());
+    MOCK_CONST_METHOD0(toUrl, QUrl&());
     MOCK_CONST_METHOD0(isValid, bool());
 };
 
