@@ -265,6 +265,6 @@ int ModulesGroupModel::correctSize(const QString &str) const
         QString dimension = match.captured(2).toUpper();
         size *= qPow(1024, dimensions.indexOf(dimension) + 1);
     }
-//ToDo replace on formattedDataSize
+//WARNING: replace on formattedDataSize
     return size;
 }

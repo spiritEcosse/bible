@@ -53,6 +53,8 @@
 #include <QtCore/qbytearraylist.h>
 #endif
 
+#include <QUrl>
+
 #if QT_HAS_INCLUDE(<variant>) && __cplusplus >= 201703L
 #include <variant>
 #elif defined(Q_CLANG_QDOC)
@@ -286,7 +288,9 @@ class Q_CORE_EXPORT QVariant
     bool canConvert(int targetTypeId) const;
     bool convert(int targetTypeId);
 
-    inline bool isValid() const;
+    virtual inline bool isValid() const {
+        return true;
+    }
     bool isNull() const;
 
     void clear();
@@ -332,7 +336,11 @@ class Q_CORE_EXPORT QVariant
     QRegularExpression toRegularExpression() const;
 #endif // QT_CONFIG(regularexpression)
 #ifndef QT_BOOTSTRAPPED
-    QUrl toUrl() const;
+
+    QUrl qurl;
+    virtual const QUrl& toUrl() const {
+        return qurl;
+    }
     QEasingCurve toEasingCurve() const;
     QUuid toUuid() const;
     QJsonValue toJsonValue() const;
@@ -557,7 +565,7 @@ inline void qVariantSetValue<QVariant>(QVariant &v, const QVariant &t)
     v = t;
 }
 
-inline bool QVariant::isValid() const { return d.type != Invalid; }
+//inline bool QVariant::isValid() const { return d.type != Invalid; }
 
 template<typename T>
 inline void QVariant::setValue(const T &avalue)

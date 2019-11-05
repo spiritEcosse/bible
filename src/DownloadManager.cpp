@@ -155,17 +155,21 @@ bool DownloadManager::isHttpRedirect() const
 void DownloadManager::reportRedirect()
 {
     int statusCode = currentDownload->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-    QUrl requestUrl = currentDownload->request().url();
-    QTextStream(stderr) << "Request: " << requestUrl.toDisplayString()
+    const QUrl &requestUrl = currentDownload->request().url();
+    QTextStream(stderr) << "Request: " << requestUrl.toDisplayString() // WARNING: add mock QTextStream
                         << " was redirected with code: " << statusCode
                         << '\n';
 
-    QVariant target = currentDownload->attribute(QNetworkRequest::RedirectionTargetAttribute);
-    if (!target.isValid())
-        return;
-    QUrl redirectUrl = target.toUrl();
-    if (redirectUrl.isRelative())
-        redirectUrl = requestUrl.resolved(redirectUrl);
-    QTextStream(stderr) << "Redirected to: " << redirectUrl.toDisplayString()
-                        << '\n';
+    QVariant& target = currentDownload->attribute(QNetworkRequest::RedirectionTargetAttribute);
+
+    if (target.isValid()) {
+        const QUrl &redirectUrl = target.toUrl();
+
+        if (redirectUrl.isRelative()) {
+
+        }
+//            redirectUrl = requestUrl->resolved(redirectUrl);
+//        QTextStream(stderr) << "Redirected to: " << redirectUrl.toDisplayString()
+//                            << '\n';
+    }
 }
