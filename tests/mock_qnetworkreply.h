@@ -10,6 +10,7 @@ class MockQNetworkReply : public QNetworkReply
 {
 public:
     MOCK_METHOD0(close, void());
+    MOCK_CONST_METHOD0(error, NetworkError&());
     MOCK_METHOD0(readAll, QByteArray());
     MOCK_CONST_METHOD0(isSequential, bool());
     MOCK_METHOD1(setReadBufferSize, void(qint64));

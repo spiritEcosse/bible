@@ -96,7 +96,7 @@ void DownloadManager::startNextDownload()
 
 void DownloadManager::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)
 {
-    progressBar.setStatus(bytesReceived, bytesTotal);
+    progressBar->setStatus(bytesReceived, bytesTotal);
 
     // calculate the download speed
     double speed = bytesReceived * 1000.0 / downloadTime.elapsed();
@@ -111,14 +111,14 @@ void DownloadManager::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)
         unit = "MB/s";
     }
 
-    progressBar.setMessage(QString::fromLatin1("%1 %2")
+    progressBar->setMessage(QString::fromLatin1("%1 %2")
                            .arg(speed, 3, 'f', 1).arg(unit));
-    progressBar.update();
+    progressBar->update();
 }
 
 void DownloadManager::downloadFinished()
 {
-    progressBar.clear();
+    progressBar->clear();
     output->close();
 
     if (currentDownload->error()) {

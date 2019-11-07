@@ -36,6 +36,7 @@ public:
     {
         return 1;
     }
+    virtual void close() override {}
 
 #if defined(Q_OS_DARWIN)
     // Mac always expects filenames in UTF-8... and decomposed...

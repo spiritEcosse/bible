@@ -61,7 +61,8 @@ HEADERS += $$PROJECT_HEADERS \
     gtest_global.h \
     mock_qqueue.h \
     mock_qurl.h \
-    mock_qvariant.h
+    mock_qvariant.h \
+    mock_textprogressbar.h
 
 SOURCES += $$PROJECT_SOURCES \
     modulesgroupmodel-test.cpp \

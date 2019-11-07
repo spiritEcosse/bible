@@ -52,7 +52,7 @@ private:
     QNetworkReply *currentDownload = nullptr;
     QFile* output;
     QTime downloadTime;
-    TextProgressBar progressBar;
+    TextProgressBar* progressBar;
 
     int downloadedCount = 0;
     int totalCount = 0;

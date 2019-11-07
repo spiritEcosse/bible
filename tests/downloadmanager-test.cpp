@@ -13,6 +13,7 @@
 #include "mock_qfileinfo.h"
 #include "mock_qstringlist.h"
 #include "mock_qnetworkrequest.h"
+#include "mock_textprogressbar.h"
 
 
 class DownloadManagerTest : public ::testing::Test
@@ -33,6 +34,7 @@ protected:
       mockDownloadManager.currentDownload = &mockQNetworkReply;
       mockDownloadManager.qFileInfo = &mockQFileInfo;
       mockDownloadManager.fileNames = &mockQStringList;
+      mockDownloadManager.progressBar = &mockTextProgressBar;
   }
 
   void TearDown() override {
@@ -54,6 +56,7 @@ protected:
   MockQFileInfo mockQFileInfo;
   MockQStringList mockQStringList;
   MockQNetworkRequest mockQNetworkRequest;
+  MockTextProgressBar mockTextProgressBar;
 
   const QUrl url = BuiltInDefaultValue<const QUrl>::Get();
   const QStringList urls = {"url1"};
@@ -173,7 +176,18 @@ TEST_F(DownloadManagerTest, downloadProgress)
 
 TEST_F(DownloadManagerTest, downloadFinished)
 {
+    ON_CALL(mockDownloadManager, downloadFinished())
+            .WillByDefault(
+                    Invoke(&mockDownloadManager, &MockDownloadManager::parentDownloadFinished)
+                );
+    {
+        InSequence s;
+        EXPECT_CALL(mockTextProgressBar, clear());
+        EXPECT_CALL(mockQFile, close());
+        EXPECT_CALL(mockQNetworkReply, error());
+    }
 
+    mockDownloadManager.downloadFinished();
 }
 
 TEST_F(DownloadManagerTest, downloadReadyRead)

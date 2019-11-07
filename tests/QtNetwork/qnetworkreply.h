@@ -90,7 +90,10 @@ public:
     virtual QNetworkRequest& request() {
         return req;
     }
-    NetworkError error() const {}
+    NetworkError networkError;
+    virtual inline const NetworkError &error() const {
+        return networkError;
+    }
     bool isFinished() const;
     bool isRunning() const;
     QUrl url() const;

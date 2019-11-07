@@ -6,10 +6,11 @@
 class TextProgressBar
 {
 public:
-    void clear();
-    void update();
-    void setMessage(const QString &message);
-    void setStatus(qint64 value, qint64 maximum);
+    virtual ~TextProgressBar() {}
+    virtual void clear();
+    virtual void update();
+    virtual void setMessage(const QString &message);
+    virtual void setStatus(qint64 value, qint64 maximum);
 
 private:
     QString message;
