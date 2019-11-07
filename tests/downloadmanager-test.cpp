@@ -65,6 +65,9 @@ protected:
   QString path = BuiltInDefaultValue<QString>::Get();
   QString basename = BuiltInDefaultValue<QString>::Get();
   int statusCode = BuiltInDefaultValue<int>::Get();
+  int bytesReceived = BuiltInDefaultValue<int>::Get();
+  int bytesTotal = BuiltInDefaultValue<int>::Get();
+  const QString message = BuiltInDefaultValue<QString>::Get();
 };
 
 
@@ -172,7 +175,19 @@ TEST_F(DownloadManagerTest, startNextDownload)
 
 TEST_F(DownloadManagerTest, downloadProgress)
 {
+    ON_CALL(mockDownloadManager, downloadProgress(_, _))
+            .WillByDefault(
+                    Invoke(&mockDownloadManager, &MockDownloadManager::parentDownloadProgress)
+                );
 
+    {
+        InSequence s;
+        EXPECT_CALL(mockTextProgressBar, setStatus(bytesReceived, bytesTotal));
+        EXPECT_CALL(mockTextProgressBar, setMessage(_)); // FIXME: pass message
+        EXPECT_CALL(mockTextProgressBar, update());
+    }
+
+    mockDownloadManager.downloadProgress(bytesReceived, bytesTotal);
 }
 
 TEST_F(DownloadManagerTest, downloadFinishedError)
@@ -181,6 +196,7 @@ TEST_F(DownloadManagerTest, downloadFinishedError)
             .WillByDefault(
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentDownloadFinished)
                 );
+
     {
         InSequence s;
         EXPECT_CALL(mockTextProgressBar, clear());
