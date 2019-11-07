@@ -68,7 +68,8 @@ SOURCES += $$PROJECT_SOURCES \
     modulesgroupmodel-test.cpp \
     modulesmodel-test.cpp \
     main.cpp \
-    downloadmanager-test.cpp
+    downloadmanager-test.cpp \
+    textprogressbar-test.cpp
 
 INCLUDEPATH += $$PWD/QtNetwork + $$PWD/QtSql + $$PWD/QtCore
 DEPENDPATH += $$PWD/QtNetwork + $$PWD/QtSql + $$PWD/QtCore

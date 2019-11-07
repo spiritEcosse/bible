@@ -16,7 +16,7 @@ void TextProgressBar::clear()
     iteration = 0;
 }
 
-void TextProgressBar::update()
+void TextProgressBar::update() // FIXME: test all method
 {
     ++iteration;
 
