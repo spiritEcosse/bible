@@ -20,5 +20,6 @@ using ::testing::SetArgReferee;
 using ::testing::ReturnPointee;
 using ::testing::Property;
 using ::testing::internal::BuiltInDefaultValue;
+using ::testing::StrictMock;
 
 #endif // GTEST_GLOBAL_H

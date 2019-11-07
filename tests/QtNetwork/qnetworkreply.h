@@ -90,10 +90,10 @@ public:
     virtual QNetworkRequest& request() {
         return req;
     }
-    NetworkError networkError;
-    virtual inline const NetworkError &error() const {
-        return networkError;
+    virtual inline NetworkError error() const {
+        return NetworkError::NoError;
     }
+    virtual void deleteLater() {}
     bool isFinished() const;
     bool isRunning() const;
     QUrl url() const;

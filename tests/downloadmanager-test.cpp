@@ -41,6 +41,7 @@ protected:
   }
 
   // Objects declared here can be used by all tests in the test case for Foo.
+//  StrictMock<MockDownloadManager> mockDownloadManager;
   MockDownloadManager mockDownloadManager;
   DownloadManager* downloadManager;
 
@@ -174,7 +175,7 @@ TEST_F(DownloadManagerTest, downloadProgress)
 
 }
 
-TEST_F(DownloadManagerTest, downloadFinished)
+TEST_F(DownloadManagerTest, downloadFinishedError)
 {
     ON_CALL(mockDownloadManager, downloadFinished())
             .WillByDefault(
@@ -184,7 +185,55 @@ TEST_F(DownloadManagerTest, downloadFinished)
         InSequence s;
         EXPECT_CALL(mockTextProgressBar, clear());
         EXPECT_CALL(mockQFile, close());
-        EXPECT_CALL(mockQNetworkReply, error());
+        EXPECT_CALL(mockQNetworkReply, error())
+                .WillOnce(Return(QNetworkReply::NetworkError::TimeoutError));
+        EXPECT_CALL(mockQFile, remove());
+        EXPECT_CALL(mockQNetworkReply, deleteLater());
+        EXPECT_CALL(mockDownloadManager, startNextDownload());
+    }
+
+    mockDownloadManager.downloadFinished();
+}
+
+TEST_F(DownloadManagerTest, downloadFinished)
+{
+    ON_CALL(mockDownloadManager, downloadFinished())
+            .WillByDefault(
+                    Invoke(&mockDownloadManager, &MockDownloadManager::parentDownloadFinished)
+                );
+
+    {
+        InSequence s;
+        EXPECT_CALL(mockTextProgressBar, clear());
+        EXPECT_CALL(mockQFile, close());
+        EXPECT_CALL(mockQNetworkReply, error())
+                .WillOnce(Return(QNetworkReply::NetworkError::NoError));
+        EXPECT_CALL(mockDownloadManager, isHttpRedirect())
+                .WillOnce(Return(true));
+        EXPECT_CALL(mockDownloadManager, reportRedirect());
+        EXPECT_CALL(mockQFile, remove());
+        EXPECT_CALL(mockQNetworkReply, deleteLater());
+        EXPECT_CALL(mockDownloadManager, startNextDownload());
+    }
+
+    mockDownloadManager.downloadFinished();
+}
+
+TEST_F(DownloadManagerTest, downloadFinishedNotRedirect)
+{
+    ON_CALL(mockDownloadManager, downloadFinished())
+            .WillByDefault(
+                Invoke(&mockDownloadManager, &MockDownloadManager::parentDownloadFinished)
+                );
+
+    {
+        InSequence s;
+        EXPECT_CALL(mockTextProgressBar, clear());
+        EXPECT_CALL(mockQFile, close());
+        EXPECT_CALL(mockQNetworkReply, error())
+                .WillOnce(Return(QNetworkReply::NetworkError::NoError));
+        EXPECT_CALL(mockDownloadManager, isHttpRedirect())
+                .WillOnce(Return(false));
     }
 
     mockDownloadManager.downloadFinished();

@@ -81,7 +81,7 @@ public:
     QString symLinkTarget() const;
     static QString symLinkTarget(const QString &fileName);
 
-    bool remove();
+    virtual bool remove();
     static bool remove(const QString &fileName);
 
     bool rename(const QString &newName);

@@ -123,7 +123,7 @@ void DownloadManager::downloadFinished()
 
     if (currentDownload->error()) {
         // download failed
-        fprintf(stderr, "Failed: %s\n", qPrintable(currentDownload->errorString()));
+        fprintf(stderr, "Failed: %s\n", qPrintable(currentDownload->errorString())); //WARNING: needed fprintf ?
         output->remove();
     } else {
         // let's check if it was actually a redirect
@@ -132,7 +132,7 @@ void DownloadManager::downloadFinished()
             output->remove();
         } else {
             printf("Succeeded (saved to %s)\n", qPrintable(output->fileName()));
-            ++downloadedCount;
+            ++downloadedCount; // WARNING: check this
         }
     }
 
