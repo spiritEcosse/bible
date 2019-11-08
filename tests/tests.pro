@@ -8,16 +8,17 @@ PROJECT_SOURCES = \
     $$PROJECT_DIR/src/TextProgressBar.cpp \
     $$PROJECT_DIR/src/dbmanager.cpp \
     $$PROJECT_DIR/src/ModulesModel.cpp \
-    $$PROJECT_DIR/src/ModulesGroupModel.cpp
+    $$PROJECT_DIR/src/ModulesGroupModel.cpp \
+    $$PROJECT_DIR/src/booksmodel.cpp
 
 PROJECT_HEADERS = \
     $$PROJECT_DIR/src/DownloadManager.h \
     $$PROJECT_DIR/src/TextProgressBar.h \
     $$PROJECT_DIR/src/ModulesModel.h \
-    $$PROJECT_DIR/src/ModulesGroupModel.h
+    $$PROJECT_DIR/src/ModulesGroupModel.h \
+    $$PROJECT_DIR/src/booksmodel.h
 
 HEADERS += $$PROJECT_HEADERS \
-    mock_modulesmodel.h \
     QtSql/QSqlDatabase \
     QtSql/qsqldatabase.h \
     QtSql/QSqlError \
@@ -25,6 +26,8 @@ HEADERS += $$PROJECT_HEADERS \
     QtSql/QSqlQuery \
     QtSql/qsqlquery.h \
     QtSql/QSqlRecord \
+    QtSql/QSqlQueryModel \
+    QtSql/qsqlquerymodel.h \
     QtSql/qsqlrecord.h \
     QtSql/QSqlTableModel \
     QtSql/qsqltablemodel.h \
@@ -44,8 +47,6 @@ HEADERS += $$PROJECT_HEADERS \
     QtNetwork/qnetworkreply.h \
     QtNetwork/qsslerror.h \
     QtNetwork/QSslError \
-    mock_modulesgroupmodel.h \
-    mock_downloadmanager.h \
     mock_qfile.h \
     mock_qfileinfo.h \
     mock_qnetworkreply.h \
@@ -58,11 +59,14 @@ HEADERS += $$PROJECT_HEADERS \
     mock_qsqldatabase.h \
     mock_qsqlrecord.h \
     mock_qsqlerror.h \
-    gtest_global.h \
     mock_qqueue.h \
     mock_qurl.h \
     mock_qvariant.h \
-    mock_textprogressbar.h
+    mock_textprogressbar.h \
+    mock_modulesmodel.h \
+    mock_modulesgroupmodel.h \
+    mock_downloadmanager.h \
+    gtest_global.h
 
 SOURCES += $$PROJECT_SOURCES \
     modulesgroupmodel-test.cpp \
