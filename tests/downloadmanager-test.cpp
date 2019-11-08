@@ -1,7 +1,5 @@
 #include "gtest_global.h"
 
-#include "../src/ModulesGroupModel.h"
-
 #include "mock_downloadmanager.h"
 #include "mock_modulesgroupmodel.h"
 #include "mock_qtimer.h"

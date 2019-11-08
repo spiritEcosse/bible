@@ -1,7 +1,6 @@
 #include "gtest_global.h"
 
 #include "mock_textprogressbar.h"
-#include "mock_qstringlist.h"
 
 
 class TextProgressBarTest : public ::testing::Test
