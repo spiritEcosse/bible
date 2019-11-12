@@ -10,10 +10,10 @@
 #include <QSqlError>
 #include <QAbstractItemModelTester>
 
-#include "../src/DownloadManager.h"
-#include "../src/ModulesModel.h"
-#include "../src/dbmanager.h"
-#include "../src/ModulesGroupModel.h"
+#include "../../src/DownloadManager.h"
+#include "../../src/ModulesModel.h"
+#include "../../src/dbmanager.h"
+#include "../../src/ModulesGroupModel.h"
 
 typedef QMap<QString, QString> Group;
 
@@ -93,7 +93,7 @@ void DownloadModules::multiDownload()
 
     DownloadManager manager;
     QSignalSpy spy(&manager, &DownloadManager::successfully);
-    manager.append(urls);
+    manager.appendUrls(urls);
     QVERIFY(spy.wait());
     QCOMPARE(spy.count(), 1);
 }
@@ -361,4 +361,4 @@ void DownloadModules::modulesModel()
 
 QTEST_APPLESS_MAIN(DownloadModules)
 
-#include "tst_DownloadModules.moc"
+#include "tst_downloadmodules.moc"

@@ -5,6 +5,7 @@ project(DownloadModules LANGUAGES CXX)
 find_package(Qt5Test REQUIRED)
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Sql REQUIRED)
+find_package(Qt5Network REQUIRED)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -19,4 +20,4 @@ enable_testing()
 add_executable(DownloadModules tst_downloadmodules.cpp)
 add_test(DownloadModules COMMAND DownloadModules)
 
-target_link_libraries(DownloadModules PRIVATE Qt5::Test Qt5::Core Qt5::Sql)
+target_link_libraries(DownloadModules PRIVATE Qt5::Test Qt5::Core Qt5::Sql Qt5::Network)
