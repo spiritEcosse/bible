@@ -32,7 +32,7 @@ set(Sources
     ${SRC_PATH}/dbmanager.cpp
 )
 
-add_executable(DownloadModules tst_downloadmodules.cpp ${Sources} ${Headers})
+add_executable(DownloadModules tst_downloadmodules.cpp main.cpp ${Sources} ${Headers})
 add_test(DownloadModules COMMAND DownloadModules)
 
 target_link_libraries(DownloadModules PRIVATE

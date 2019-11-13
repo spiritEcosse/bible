@@ -367,6 +367,6 @@ void DownloadModules::modulesModel()
     QVERIFY(QSqlDatabase::database().tables().contains("modules"));
 }
 
-QTEST_APPLESS_MAIN(DownloadModules)
+QTEST_MAIN(DownloadModules)
 
 #include "tst_downloadmodules.moc"
