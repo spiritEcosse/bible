@@ -60,6 +60,14 @@ private slots:
 
 };
 
+DownloadModules::DownloadModules()
+{
+}
+
+DownloadModules::~DownloadModules()
+{
+}
+
 void DownloadModules::initTestCase()
 {
     dir.mkdir(dirName);
