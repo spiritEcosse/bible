@@ -31,11 +31,11 @@ class ModulesGroupModel : public QSqlTableModel
 {
     Q_OBJECT
 public:
-    ModulesGroupModel();
+    ModulesGroupModel(QObject *parent = nullptr);
     virtual ~ModulesGroupModel() {}
 
-    QSqlQuery* query_;
-    DownloadManager* manager;
+    QSqlQuery* query_ = new QSqlQuery();
+    DownloadManager* manager = new DownloadManager();
 
     virtual void init();
     virtual bool createTable(const QString &tableName);

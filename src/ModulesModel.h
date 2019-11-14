@@ -22,7 +22,7 @@ public:
     ModulesModel();
     virtual ~ModulesModel() {}
 
-    QSqlQuery* query_;
+    QSqlQuery* query_ = new QSqlQuery();
     QVariant data(const QModelIndex &index, int role) const override;
     QHash<int, QByteArray> roleNames() const;
     virtual void init();

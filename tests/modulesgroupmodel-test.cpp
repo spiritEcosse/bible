@@ -89,6 +89,7 @@ TEST_F(ModulesGroupModelTest, createTable)
                 "   'language'  CHAR(50), "
                 "   'type'      CHAR(50), "
                 "   'region'    CHAR(50) "
+                ")"
                 ).arg(tableName);
 
     ON_CALL(mockModulesGroupModel, createTable(tableName))

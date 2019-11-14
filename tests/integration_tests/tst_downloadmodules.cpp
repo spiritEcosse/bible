@@ -72,13 +72,13 @@ void DownloadModules::initTestCase()
 {
     dir.mkdir(dirName);
     QDir::setCurrent(dirName);
-//    connectToDatabase();
+    connectToDatabase();
     settings.setValue("modulesVersion", 0);
     fileRegistryInfo.setFileName(fileNameRegistryInfo);
     fileRegistry.setFileName(fileNameRegistry);
-//    QSqlQuery query;
-//    query.exec("DROP TABLE modules;");
-//    query.exec("DROP TABLE modules_group;");
+    QSqlQuery query;
+    query.exec("DROP TABLE modules;");
+    query.exec("DROP TABLE modules_group;");
 }
 
 void DownloadModules::cleanupTestCase()
@@ -146,6 +146,7 @@ void DownloadModules::updateModules_data()
 void DownloadModules::updateModules()
 {
     ModulesGroupModel modulesGroupModel;
+    modulesGroupModel.init();
     QVERIFY(QSqlDatabase::database().tables().contains("modules_group"));
 
     QSignalSpy spy(&modulesGroupModel, &ModulesGroupModel::decompressSuccess);
@@ -161,7 +162,9 @@ void DownloadModules::updateModules()
     QCOMPARE(spy2.count(), 1);
     QCOMPARE(spy3.count(), 1);
 
+
     ModulesGroupModel modulesGroupModelNew;
+    modulesGroupModelNew.init();
     QCOMPARE(modulesGroupModelNew.rowCount(), fileRegistryItems);
     modulesGroupModelNew.setCountOldRows();
     modulesGroupModelNew.removeOldRows();
@@ -255,6 +258,7 @@ void DownloadModules::modulesGroupRemoveOldRows()
     QFETCH(int, addedRows);
 
     ModulesGroupModel modulesGroupModel;
+    modulesGroupModel.init();
     QCOMPARE(modulesGroupModel.rowCount(), rowCount);
 
     modulesGroupModel.setCountOldRows();
@@ -345,6 +349,7 @@ void DownloadModules::modulesGroupNewRows()
     });
 
     ModulesGroupModel modulesGroupModel;
+    modulesGroupModel.init();
     modulesGroupModel.newRows(jsonArray);
     QSqlRecord record = modulesGroupModel.record(0);
     QCOMPARE(record.value("language"), "en");
@@ -364,6 +369,7 @@ void DownloadModules::modulesModel_data()
 void DownloadModules::modulesModel()
 {
     ModulesModel modulesModel;
+    modulesModel.init();
     QVERIFY(QSqlDatabase::database().tables().contains("modules"));
 }
 

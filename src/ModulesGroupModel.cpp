@@ -1,90 +1,92 @@
 #include "ModulesGroupModel.h"
 
-ModulesGroupModel::ModulesGroupModel()
-    : QSqlTableModel() {}
+ModulesGroupModel::ModulesGroupModel(QObject *parent)
+    : QSqlTableModel(parent) {}
 
 void ModulesGroupModel::decompressRegistry()
 {
-//    registryArchive.setFileName(manager.fileNames.last());
-//    QString registryName = JlCompress::extractFile(registryArchive.fileName(), registry.fileName());
-//    QFileInfo fileInfo(registryName);
+    registryArchive.setFileName(manager->fileNames->last());
+    QString registryName = JlCompress::extractFile(registryArchive.fileName(), registry.fileName());
+    QFileInfo fileInfo(registryName);
 
-//    if (fileInfo.fileName() == registry.fileName())
-//        emit decompressSuccess();
+    if (fileInfo.fileName() == registry.fileName()) {
+        emit decompressSuccess();
+    }
 }
 
 void ModulesGroupModel::removeOldRows()
 {
-//    removeRows(0, countOldRows);
+    removeRows(0, countOldRows);
 
-//    if (!submitAll()) {
-//        qWarning() << "Failed to remove rows: " << lastError().text();
-//    } else {
-//        emit removeOldRowsSuccess();
-//    }
+    if (!submitAll()) {
+        qWarning() << "Failed to remove rows: " << lastError().text();
+    } else {
+        emit removeOldRowsSuccess();
+    }
 }
 
 void ModulesGroupModel::removeRegistryFile()
 {
-//    if (registryArchive.remove()) {
-//        emit removeRegistryFileSuccess();
-//    }
+    if (registryArchive.remove()) {
+        emit removeRegistryFileSuccess();
+    }
 }
 
 void ModulesGroupModel::updateTable()
 {
-//    if (!registry.open(QIODevice::ReadOnly | QIODevice::Text))
-//        return ;
+    if (!registry.open(QIODevice::ReadOnly | QIODevice::Text))
+        return ;
 
-//    QJsonParseError jsonError;
-//    QJsonDocument document = QJsonDocument::fromJson(registry.readAll(), &jsonError);
-//    registry.close();
+    QJsonParseError jsonError;
+    QJsonDocument document = QJsonDocument::fromJson(registry.readAll(), &jsonError);
+    registry.close();
 
-//    if(jsonError.error != QJsonParseError::NoError)
-//        return;
+    if(jsonError.error != QJsonParseError::NoError)
+        return;
 
-//    QJsonArray downloads = document.object().value("downloads").toArray();
-//    newRows(downloads);
+    QJsonArray downloads = document.object().value("downloads").toArray();
+    newRows(downloads);
 }
 
 void ModulesGroupModel::compareVersions()
 {
-//    QFile registry_json;
-//    registry_json.setFileName(manager.fileNames.last());
-//    if (!registry_json.open(QIODevice::ReadOnly | QIODevice::Text))
-//        return ;
+    QFile registry_json;
+    registry_json.setFileName(manager->fileNames->last());
+    if (!registry_json.open(QIODevice::ReadOnly | QIODevice::Text))
+        return ;
 
-//    QJsonParseError jsonError;
-//    QJsonDocument document = QJsonDocument::fromJson(registry_json.readAll(), &jsonError);
-//    registry_json.close();
+    QJsonParseError jsonError;
+    QJsonDocument document = QJsonDocument::fromJson(registry_json.readAll(), &jsonError);
+    registry_json.close();
 
-//    if(jsonError.error != QJsonParseError::NoError)
-//        return;
+    if(jsonError.error != QJsonParseError::NoError)
+        return;
 
-//    int version = document.object().value("version").toInt();
-//    QSettings settings;
-//    bool newModules = version > settings.value("modulesVersion").toInt();
+    int version = document.object().value("version").toInt();
+    QSettings settings;
+    bool newModules = version > settings.value("modulesVersion").toInt();
 
-//    if (newModules) {
-//        settings.setValue("modulesVersion", version);
-//    }
+    if (newModules) {
+        settings.setValue("modulesVersion", version);
+    }
 
-//    emit availabilityNewModules(newModules);
+    emit availabilityNewModules(newModules);
 }
 
 void ModulesGroupModel::init()
 {
-    setTable("modules_group");
     createTable("modules_group");
+    setTable("modules_group");
     select();
-//    setEditStrategy(QSqlTableModel::OnManualSubmit);
-//    registry.setFileName("registry.json");
+    setEditStrategy(QSqlTableModel::OnManualSubmit);
+    registry.setFileName("registry.json");
 }
 
 bool ModulesGroupModel::execLastError(const QString& query)
 {
     if (!query_->exec(query))
     {
+        qWarning() << query << query_->lastError().text();
         qPrintable(query_->lastError().text());
         return false;
     }
@@ -100,6 +102,7 @@ bool ModulesGroupModel::createTable(const QString &tableName)
                     "   'language'  CHAR(50), "
                     "   'type'      CHAR(50), "
                     "   'region'    CHAR(50) "
+                    ")"
                     ).arg(tableName);
         return execLastError(sql);
     }
@@ -108,22 +111,22 @@ bool ModulesGroupModel::createTable(const QString &tableName)
 
 void ModulesGroupModel::updateModules()
 {
-//    manager.append(urlRegistry);
-//    connect(&manager, SIGNAL (successfully()), SLOT (decompressRegistry()));
-//    connect(this, SIGNAL (decompressSuccess()), SLOT (updateTable()));
+    manager->append(urlRegistry);
+    connect(manager, SIGNAL (successfully()), SLOT (decompressRegistry()));
+    connect(this, SIGNAL (decompressSuccess()), SLOT (updateTable()));
 
-//    setCountOldRows();
+    setCountOldRows();
 
-//    connect(this, SIGNAL (updateTableSuccess()), SLOT (removeOldRows()));
-//    connect(this, SIGNAL (updateTableSuccess()), SLOT (removeRegistryFile()));
+    connect(this, SIGNAL (updateTableSuccess()), SLOT (removeOldRows()));
+    connect(this, SIGNAL (updateTableSuccess()), SLOT (removeRegistryFile()));
 }
 
 void ModulesGroupModel::setCountOldRows()
 {
-//    QSqlQuery query;
-//    query.exec(QString("SELECT COUNT(*) as count FROM %1").arg(tableName()));
-//    query.first();
-//    countOldRows = query.value("count").toInt();
+    QSqlQuery query;
+    query.exec(QString("SELECT COUNT(*) as count FROM %1").arg(tableName()));
+    query.first();
+    countOldRows = query.value("count").toInt();
 }
 
 void ModulesGroupModel::newRows(QJsonArray &downloads)
@@ -142,35 +145,35 @@ void ModulesGroupModel::newRows(QJsonArray &downloads)
             ++it;
         }
 
-        newRecord.setValue("name", jsonObject.value("fil").toString());
-        newRecord.setValue("description", jsonObject.value("des").toString());
-        newRecord.setValue("abbreviation", jsonObject.value("abr").toString());
-        newRecord.setValue("information", jsonObject.value("inf").toString());
-        newRecord.setValue("language", jsonObject.value("lng").toString());
-        newRecord.setValue("language_show", jsonObject.value("aln").toString());
-        newRecord.setValue("update", jsonObject.value("upd").toString());
-        newRecord.setValue("urls", jsonObject.value("url").toString());
-        newRecord.setValue("comment", jsonObject.value("cmt").toString());
-        newRecord.setValue("size", correctSize(jsonObject.value("siz").toString()));
-        newRecord.setValue("region", jsonObject.value("reg").toString());
-        newRecord.setValue("default_download", jsonObject.value("def").toInt());
-        newRecord.setValue("hidden", jsonObject.value("hid").toInt());
-        newRecord.setValue("copyright", jsonObject.value("lic").toString());
-        insertRecord(-1, newRecord);
+//        newRecord.setValue("name", jsonObject.value("fil").toString());
+//        newRecord.setValue("description", jsonObject.value("des").toString());
+//        newRecord.setValue("abbreviation", jsonObject.value("abr").toString());
+//        newRecord.setValue("information", jsonObject.value("inf").toString());
+//        newRecord.setValue("language", jsonObject.value("lng").toString());
+//        newRecord.setValue("language_show", jsonObject.value("aln").toString());
+//        newRecord.setValue("update", jsonObject.value("upd").toString());
+//        newRecord.setValue("urls", jsonObject.value("url").toString());
+//        newRecord.setValue("comment", jsonObject.value("cmt").toString());
+//        newRecord.setValue("size", correctSize(jsonObject.value("siz").toString()));
+//        newRecord.setValue("region", jsonObject.value("reg").toString());
+//        newRecord.setValue("default_download", jsonObject.value("def").toInt());
+//        newRecord.setValue("hidden", jsonObject.value("hid").toInt());
+//        newRecord.setValue("copyright", jsonObject.value("lic").toString());
+        insertRecord(-1, newRecord); // FIXME: add to this lastError().text()
     }
 
 // This allows transactions to be rolled back and resubmitted without losing data.
     if (submitAll()) {
-//        emit updateTableSuccess();
+        emit updateTableSuccess();
     } else {
-//        qWarning() << "Failed to add new row: " << lastError().text();
+        qWarning() << "Failed to add new row: " << lastError().text();
     }
 }
 
 void ModulesGroupModel::checkAvailabilityNewModules()
 {
-//    manager.append(urlRegistryInfo);
-//    connect(&manager, SIGNAL (successfully()), this, SLOT (compareVersions()));
+    manager->append(urlRegistryInfo);
+    connect(manager, SIGNAL (successfully()), this, SLOT (compareVersions()));
 }
 
 QMap<QString, QString>
@@ -197,7 +200,6 @@ ModulesGroupModel
     if (group.empty()) {
         group["language"] = language;
     }
-
     return group;
 }
 

@@ -1,5 +1,6 @@
 #include "DownloadManager.h"
 
+#include <QDebug>
 #include <QTextStream>
 
 #include <cstdio>
@@ -7,7 +8,7 @@
 using namespace std;
 
 DownloadManager::DownloadManager(QObject *parent)
-    : QObject(parent)
+    : QObject(parent), downloadedCount(0), totalCount(0)
 {
 }
 
@@ -70,27 +71,27 @@ void DownloadManager::startNextDownload()
         output->setFileName(filename);
         fileNames->append(output->fileName());
 
-//        if (!output->open(QIODevice::WriteOnly)) {
-//            fprintf(stderr, "Problem opening save file '%s' for download '%s': %s\n",
-//                    qPrintable(filename), url.toEncoded().constData(),
-//                    qPrintable(output->errorString()));
+        if (!output->open(QIODevice::WriteOnly)) {
+            fprintf(stderr, "Problem opening save file '%s' for download '%s': %s\n",
+                    qPrintable(filename), url.toEncoded().constData(),
+                    qPrintable(output->errorString()));
 
-//            startNextDownload();
-//            return;                 // skip this download
-//        }
+            startNextDownload();
+            return;                 // skip this download
+        }
 
-//        QNetworkRequest request(url);
-    //    currentDownload = manager.get(request);
-    //    connect(currentDownload, SIGNAL(downloadProgress(qint64,qint64)),
-    //            SLOT(downloadProgress(qint64,qint64)));
-    //    connect(currentDownload, SIGNAL(finished()),
-    //            SLOT(downloadFinished()));
-    //    connect(currentDownload, SIGNAL(readyRead()),
-    //            SLOT(downloadReadyRead()));
+        QNetworkRequest request(url);
+        currentDownload = manager.get(request);
+        connect(currentDownload, SIGNAL(downloadProgress(qint64,qint64)),
+                SLOT(downloadProgress(qint64,qint64)));
+        connect(currentDownload, SIGNAL(finished()),
+                SLOT(downloadFinished()));
+        connect(currentDownload, SIGNAL(readyRead()),
+                SLOT(downloadReadyRead()));
 
-        // prepare the output
-//        printf("Downloading %s...\n", url.toEncoded().constData());
-//        downloadTime.start();
+//          prepare the output
+        printf("Downloading %s...\n", url.toEncoded().constData());
+        downloadTime.start();
     }
 }
 

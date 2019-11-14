@@ -8,8 +8,8 @@ ModulesModel::ModulesModel()
 
 void ModulesModel::init()
 {
-    setTable("modules");
     createTable("modules", "modules_group");
+    setTable("modules");
     select();
 }
 

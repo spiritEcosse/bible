@@ -23,6 +23,7 @@ set(Headers
     ${SRC_PATH}/ModulesGroupModel.h
     ${SRC_PATH}/ModulesModel.h
     ${SRC_PATH}/dbmanager.h
+    ${SRC_PATH}/TextProgressBar.h
 )
 
 set(Sources
@@ -30,6 +31,7 @@ set(Sources
     ${SRC_PATH}/ModulesGroupModel.cpp
     ${SRC_PATH}/ModulesModel.cpp
     ${SRC_PATH}/dbmanager.cpp
+    ${SRC_PATH}/TextProgressBar.cpp
 )
 
 add_executable(DownloadModules tst_downloadmodules.cpp main.cpp ${Sources} ${Headers})
