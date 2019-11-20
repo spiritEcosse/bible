@@ -2,6 +2,7 @@
 #define QSQLDATABASE_H
 
 #include <QStringList>
+#include <QSqlError>
 
 class QSqlDatabase
 {
@@ -10,11 +11,11 @@ public:
 
     static const char *defaultConnection;
     virtual bool isValid() const { return false; }
-//    static QSqlDatabase database(const QString& connectionName = QLatin1String(defaultConnection),
-//                                 bool open = true);
-//    static QSqlDatabase addDatabase(const QString& type,
-//                                    const QString& connectionName = QLatin1String(defaultConnection));
-//    virtual QSqlError lastError() const {}
+    static QSqlDatabase database(const QString& connectionName = QLatin1String(defaultConnection),
+                                 bool open = true);
+    static QSqlDatabase addDatabase(const QString& type,
+                                    const QString& connectionName = QLatin1String(defaultConnection));
+    virtual QSqlError lastError() const {}
 
 //    QSqlDatabase &operator=(const QSqlDatabase &other);
 

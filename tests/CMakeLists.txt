@@ -41,34 +41,98 @@ if(CMAKE_VERSION VERSION_LESS 2.8.11)
     )
 endif()
 
+set(SRC_PATH ../../src)
+
 set(Headers
     mock_downloadmanager.h
+    mock_modulesmodel.h
+    mock_modulesgroupmodel.h
+    mock_downloadmanager.h
+    mock_qfile.h
+    mock_qfileinfo.h
+    mock_qnetworkreply.h
+    ${SRC_PATH}/DownloadManager.h
+    ${SRC_PATH}/TextProgressBar.h
+    ${SRC_PATH}/ModulesModel.h
+    ${SRC_PATH}/ModulesGroupModel.h
+    QtSql/QSqlDatabase
+    QtSql/qsqldatabase.h
+    QtSql/QSqlError
+    QtSql/qsqlerror.h
+    QtSql/QSqlQuery
+    QtSql/qsqlquery.h
+    QtSql/QSqlRecord
+    QtSql/qsqlrecord.h
+    QtSql/qsqlquerymodel.h
+    QtSql/QSqlQueryModel
+    QtSql/QSqlTableModel
+    QtSql/qsqltablemodel.h
+    QtNetwork/qnetworkrequest.h
+    QtCore/QQueue
+    QtCore/QtCore
+    QtCore/qqueue.h
+    QtCore/qurl.h
+    QtCore/QUrl
+    QtCore/QFile
+    QtCore/qfile.h
+    QtCore/QVariant
+    QtCore/qvariant.h
+    QtCore/QFileInfo
+    QtCore/qfileinfo.h
+    QtNetwork/QNetworkReply
+    QtNetwork/qnetworkreply.h
+    QtNetwork/qsslerror.h
+    QtNetwork/QSslError
+    QtCore/QStringList
+    QtCore/qstringlist.h
+    quazip/quazip.h
+    quazip/JlCompress.h
+    mock_qstringlist.h
+    mock_qtimer.h
+    mock_qnetworkrequest.h
+    mock_qsqlquery.h
+    mock_qsqldatabase.h
+    mock_qsqlrecord.h
+    mock_qsqlerror.h
+    gtest_global.h
+    mock_qqueue.h
+    mock_qurl.h
+    mock_qvariant.h
+    mock_textprogressbar.h
+    mock_qsqltablemodel.h
 )
 
 set(Sources
+    modulesgroupmodel-test.cpp
+    modulesmodel-test.cpp
+    textprogressbar-test.cpp
     main.cpp
     downloadmanager-test.cpp
+    ${SRC_PATH}/DownloadManager.cpp
+    ${SRC_PATH}/TextProgressBar.cpp
+    ${SRC_PATH}/dbmanager.cpp
+    ${SRC_PATH}/ModulesModel.cpp
+    ${SRC_PATH}/ModulesGroupModel.cpp
 )
 
 include_directories(
     QtCore
     QtNetwork
     QtSql
+    quazip
 )
 
 add_executable(${CMAKE_PROJECT_NAME} ${Sources} ${Headers})
 
 find_package(Qt5Core REQUIRED)
-find_package(Qt5Sql REQUIRED)
-find_package(Qt5Network REQUIRED)
 
 target_link_libraries(
     ${CMAKE_PROJECT_NAME}
     gtest
     gmock
     Qt5::Core
-    Qt5::Sql
-    Qt5::Network
+#    remove quazip5
+    quazip5
 )
 
 find_package(Qt5 COMPONENTS Core REQUIRED)
