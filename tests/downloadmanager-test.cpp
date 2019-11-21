@@ -71,23 +71,23 @@ protected:
 
 TEST_F(DownloadManagerTest, append)
 {
-//    ON_CALL(mockDownloadManager, append(url))
-//            .WillByDefault(
-//                    Invoke(&mockDownloadManager, &MockDownloadManager::parentAppend)
-//                );
+    ON_CALL(mockDownloadManager, append(url))
+            .WillByDefault(
+                    Invoke(&mockDownloadManager, &MockDownloadManager::parentAppend)
+                );
 
-//    EXPECT_EQ(NULL, mockDownloadManager.totalCount);
+    EXPECT_EQ(NULL, mockDownloadManager.totalCount);
 
-//    {
-//        InSequence s;
+    {
+        InSequence s;
 
-//        EXPECT_CALL(mockQqueue, isEmpty())
-//                .WillOnce(Return(true));
-//        EXPECT_CALL(mockQTimer, singleShot(0, downloadManager, _)); // WARNING: add SLOT
-//        EXPECT_CALL(mockQqueue, enqueue(url));
-//    }
-//    mockDownloadManager.append(url);
-//    EXPECT_EQ(1, mockDownloadManager.totalCount);
+        EXPECT_CALL(mockQqueue, isEmpty())
+                .WillOnce(Return(true));
+        EXPECT_CALL(mockQTimer, singleShot(0, downloadManager, _)); // WARNING: add SLOT
+        EXPECT_CALL(mockQqueue, enqueue(url));
+    }
+    mockDownloadManager.append(url);
+    EXPECT_EQ(1, mockDownloadManager.totalCount);
 }
 
 TEST_F(DownloadManagerTest, appendUrls)

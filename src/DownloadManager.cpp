@@ -81,7 +81,7 @@ void DownloadManager::startNextDownload()
         }
 
         QNetworkRequest request(url);
-        currentDownload = manager.get(request);
+//        currentDownload = manager.get(request);
         connect(currentDownload, SIGNAL(downloadProgress(qint64,qint64)),
                 SLOT(downloadProgress(qint64,qint64)));
         connect(currentDownload, SIGNAL(finished()),

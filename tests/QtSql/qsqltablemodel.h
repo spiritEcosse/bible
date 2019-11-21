@@ -12,7 +12,7 @@ class QSqlTableModel : public QSqlQueryModel
 public:
     enum EditStrategy {OnFieldChange, OnRowChange, OnManualSubmit};
     QSqlDatabase db;
-    virtual ~QSqlTableModel() {}
+    virtual ~QSqlTableModel() override {}
     explicit QSqlTableModel(QObject *parent = nullptr) {}
 
     inline virtual void setTable(const QString &) {}
@@ -30,9 +30,18 @@ public:
     inline virtual bool select() { return true; }
     inline virtual bool submitAll() { return true; }
     inline virtual QSqlDatabase& database() { return db; }
-    virtual bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
-    virtual void setEditStrategy(EditStrategy strategy);
-    virtual QString tableName() const;
+    virtual bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) {
+        Q_UNUSED(row)
+        Q_UNUSED(count)
+        Q_UNUSED(parent)
+        return true;
+    }
+    virtual void setEditStrategy(EditStrategy strategy) {
+        Q_UNUSED(strategy)
+    }
+    virtual QString tableName() const {
+        return QString();
+    }
 };
 
 #endif // QSQLTABLEMODEL_H

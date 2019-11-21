@@ -1,6 +1,3 @@
-#include <QDebug>
-#include <QString>
-
 #include "dbmanager.h"
 
 DbManager::DbManager()

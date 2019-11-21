@@ -68,8 +68,12 @@ set(Headers
     QtSql/QSqlTableModel
     QtSql/qsqltablemodel.h
     QtNetwork/qnetworkrequest.h
+    QtNetwork/QNetworkAccessManager
+    QtNetwork/qnetworkaccessmanager.h
     QtCore/QQueue
     QtCore/QtCore
+#    QtCore/QAbstractItemModel
+#    QtCore/qabstractitemmodel.h
     QtCore/qqueue.h
     QtCore/qurl.h
     QtCore/QUrl
@@ -83,6 +87,7 @@ set(Headers
     QtNetwork/qnetworkreply.h
     QtNetwork/qsslerror.h
     QtNetwork/QSslError
+    QtNetwork/qtnetworkglobal.h
     QtCore/QStringList
     QtCore/qstringlist.h
     quazip/quazip.h

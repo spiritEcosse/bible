@@ -1,16 +1,14 @@
 #ifndef QNETWORKREPLY_H
 #define QNETWORKREPLY_H
 
-#include <QtNetwork/qtnetworkglobal.h>
+#include <qtnetworkglobal.h>
 #include <QtCore/QIODevice>
 #include <QtCore/QString>
 #include <QtCore/QVariant>
 
-#include <QtNetwork/QNetworkRequest>
-#include <QtNetwork/QNetworkAccessManager>
+#include <QNetworkRequest>
 #include <QSslError>
-
-QT_BEGIN_NAMESPACE
+#include <QNetworkAccessManager>
 
 
 class QUrl;
@@ -21,7 +19,7 @@ class QSslError;
 class QSslPreSharedKeyAuthenticator;
 
 class QNetworkReplyPrivate;
-class Q_NETWORK_EXPORT QNetworkReply: public QIODevice
+class QNetworkReply: public QIODevice
 {
     Q_OBJECT
 public:
@@ -159,8 +157,6 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QNetworkReply)
 };
-
-QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(QNetworkReply::NetworkError)
 

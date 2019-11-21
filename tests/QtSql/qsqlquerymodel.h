@@ -1,54 +1,48 @@
 #ifndef QSQLQUERYMODEL_H
 #define QSQLQUERYMODEL_H
 
-#include <QtSql/qtsqlglobal.h>
-#include <QtCore/qabstractitemmodel.h>
-#include <QtSql/qsqldatabase.h>
+//#include <QtSql/qtsqlglobal.h>
+//#include <QAbstractItemModel>
+#include <QObject>
+#include <QSqlError>
+#include <QModelIndex>
+//#include <QSqlDatabase>
 
-QT_REQUIRE_CONFIG(sqlmodel);
+//QT_REQUIRE_CONFIG(sqlmodel);
 
-QT_BEGIN_NAMESPACE
-
-class QSqlQueryModelPrivate;
-class QSqlError;
-class QSqlRecord;
-class QSqlQuery;
-
-class Q_SQL_EXPORT QSqlQueryModel: public QAbstractTableModel
+class QSqlQueryModel : public QObject
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(QSqlQueryModel)
-
 public:
-    explicit QSqlQueryModel(QObject *parent = nullptr);
-    virtual ~QSqlQueryModel();
+    explicit QSqlQueryModel(QObject *parent = nullptr) {}
+    virtual ~QSqlQueryModel() {}
 
-    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
-    QSqlRecord record(int row) const;
-    QSqlRecord record() const;
+//    int rowCount(const QModelIndex &parent = QModelIndex()) const ;
+//    int columnCount(const QModelIndex &parent = QModelIndex()) const ;
+//    QSqlRecord record(int row) const;
+//    QSqlRecord record() const;
 
-    QVariant data(const QModelIndex &item, int role = Qt::DisplayRole) const override;
+    QVariant data(const QModelIndex &item, int role = Qt::DisplayRole) const ;
     QVariant headerData(int section, Qt::Orientation orientation,
-                        int role = Qt::DisplayRole) const override;
+                        int role = Qt::DisplayRole) const ;
     bool setHeaderData(int section, Qt::Orientation orientation, const QVariant &value,
-                       int role = Qt::EditRole) override;
+                       int role = Qt::EditRole) ;
 
-    bool insertColumns(int column, int count, const QModelIndex &parent = QModelIndex()) override;
-    bool removeColumns(int column, int count, const QModelIndex &parent = QModelIndex()) override;
+//    bool insertColumns(int column, int count, const QModelIndex &parent = QModelIndex()) ;
+//    bool removeColumns(int column, int count, const QModelIndex &parent = QModelIndex()) ;
 
-    void setQuery(const QSqlQuery &query);
-    void setQuery(const QString &query, const QSqlDatabase &db = QSqlDatabase());
-    QSqlQuery query() const;
+//    void setQuery(const QSqlQuery &query);
+//    void setQuery(const QString &query, const QSqlDatabase &db = QSqlDatabase());
+//    QSqlQuery query() const;
 
-    virtual void clear();
+    virtual void clear() {}
 
-    virtual QSqlError lastError() const;
+    virtual QSqlError lastError() const {}
 
-    void fetchMore(const QModelIndex &parent = QModelIndex()) override;
-    bool canFetchMore(const QModelIndex &parent = QModelIndex()) const override;
+//    void fetchMore(const QModelIndex &parent = QModelIndex()) ;
+//    bool canFetchMore(const QModelIndex &parent = QModelIndex()) const ;
 
-    QHash<int, QByteArray> roleNames() const override;
+    QHash<int, QByteArray> roleNames() const ;
 
 protected:
     void beginInsertRows(const QModelIndex &parent, int first, int last);
@@ -65,13 +59,11 @@ protected:
 
     void beginResetModel();
     void endResetModel();
-    virtual void queryChange();
+    virtual void queryChange() {}
 
-    virtual QModelIndex indexInQuery(const QModelIndex &item) const;
-    void setLastError(const QSqlError &error);
-    QSqlQueryModel(QSqlQueryModelPrivate &dd, QObject *parent = nullptr);
+    virtual QModelIndex indexInQuery(const QModelIndex &item) const {}
+//    void setLastError(const QSqlError &error);
+//    QSqlQueryModel(QSqlQueryModelPrivate &dd, QObject *parent = nullptr);
 };
-
-QT_END_NAMESPACE
 
 #endif // QSQLQUERYMODEL_H
