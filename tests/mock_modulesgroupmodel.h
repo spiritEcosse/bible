@@ -29,7 +29,7 @@ public:
     MOCK_METHOD0(select, bool());
     MOCK_METHOD0(decompressRegistry, void());
     MOCK_METHOD0(updateModules, void());
-
+    MOCK_METHOD1(setEditStrategy, void(EditStrategy strategy));
     MOCK_CONST_METHOD0(record, QSqlRecord());
     MOCK_CONST_METHOD1(record, QSqlRecord(int row));
     MOCK_METHOD2(insertRecord, bool(int row, const QSqlRecord &record));

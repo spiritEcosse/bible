@@ -1,11 +1,11 @@
 #include "ModulesGroupModel.h"
 
 ModulesGroupModel::ModulesGroupModel(QObject *parent)
-    : QSqlTableModel(parent) {}
+    : QSqlTableModel(parent), countOldRows(0) {} // FIXME: test downloadedCount
 
 void ModulesGroupModel::decompressRegistry()
 {
-    registryArchive.setFileName(manager->fileNames->last());
+//    registryArchive.setFileName(manager->fileNames->last());
     QString registryName = JlCompress::extractFile(registryArchive.fileName(), registry.fileName());
     QFileInfo fileInfo(registryName);
 
@@ -45,13 +45,13 @@ void ModulesGroupModel::updateTable()
         return;
 
     QJsonArray downloads = document.object().value("downloads").toArray();
-    newRows(downloads);
+//    newRows(downloads);
 }
 
 void ModulesGroupModel::compareVersions()
 {
     QFile registry_json;
-    registry_json.setFileName(manager->fileNames->last());
+//    registry_json.setFileName(manager->fileNames->last());
     if (!registry_json.open(QIODevice::ReadOnly | QIODevice::Text))
         return ;
 
@@ -63,14 +63,14 @@ void ModulesGroupModel::compareVersions()
         return;
 
     int version = document.object().value("version").toInt();
-    QSettings settings;
-    bool newModules = version > settings.value("modulesVersion").toInt();
+//    QSettings settings;
+//    bool newModules = version > settings.value("modulesVersion").toInt();
 
-    if (newModules) {
-        settings.setValue("modulesVersion", version);
-    }
+//    if (newModules) {
+//        settings.setValue("modulesVersion", version);
+//    }
 
-    emit availabilityNewModules(newModules);
+//    emit availabilityNewModules(newModules);
 }
 
 void ModulesGroupModel::init()
@@ -78,8 +78,8 @@ void ModulesGroupModel::init()
     createTable("modules_group");
     setTable("modules_group");
     select();
-    setEditStrategy(QSqlTableModel::OnManualSubmit);
-    registry.setFileName("registry.json");
+//    setEditStrategy(QSqlTableModel::OnManualSubmit);
+//    registry.setFileName("registry.json");
 }
 
 bool ModulesGroupModel::execLastError(const QString& query)
@@ -111,8 +111,8 @@ bool ModulesGroupModel::createTable(const QString &tableName)
 
 void ModulesGroupModel::updateModules()
 {
-    manager->append(urlRegistry);
-    connect(manager, SIGNAL (successfully()), SLOT (decompressRegistry()));
+//    manager->append(urlRegistry);
+//    connect(manager, SIGNAL (successfully()), SLOT (decompressRegistry()));
     connect(this, SIGNAL (decompressSuccess()), SLOT (updateTable()));
 
     setCountOldRows();
@@ -172,8 +172,8 @@ void ModulesGroupModel::newRows(QJsonArray &downloads)
 
 void ModulesGroupModel::checkAvailabilityNewModules()
 {
-    manager->append(urlRegistryInfo);
-    connect(manager, SIGNAL (successfully()), this, SLOT (compareVersions()));
+//    manager->append(urlRegistryInfo);
+//    connect(manager, SIGNAL (successfully()), this, SLOT (compareVersions()));
 }
 
 QMap<QString, QString>

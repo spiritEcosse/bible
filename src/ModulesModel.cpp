@@ -1,7 +1,7 @@
 #include "ModulesModel.h"
 
-ModulesModel::ModulesModel()
-    : QSqlTableModel()
+ModulesModel::ModulesModel(QObject *parent)
+    : QSqlTableModel(parent)
 {
 }
 

@@ -19,7 +19,7 @@ class ModulesModel : public QSqlTableModel
 {
     Q_OBJECT
 public:
-    ModulesModel();
+    ModulesModel(QObject *parent = nullptr);
     virtual ~ModulesModel() {}
 
     QSqlQuery* query_ = new QSqlQuery();

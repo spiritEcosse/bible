@@ -14,6 +14,7 @@
 
 #include <QRegularExpression>
 
+#include <QDebug>
 #include <QFile>
 #include <qmath.h>
 #include <quazip/JlCompress.h>
@@ -21,11 +22,13 @@
 
 #define MODULES_SPLIT_NAME "^(.+)\\.(.+)$"
 
-#include "DownloadManager.h"
+//#include "DownloadManager.h"
 #include "LocaleDesc.h"
+#include "gtest/gtest_prod.h"
 
 #define REGISTRY "aHR0cDovL215YmlibGUuaW50ZXJiaWJsaWEub3JnL3JlZ2lzdHJ5X3Rlc3Quemlw"
 #define REGISTRY_INFO ""
+#include <iostream>
 
 class ModulesGroupModel : public QSqlTableModel
 {
@@ -35,7 +38,7 @@ public:
     virtual ~ModulesGroupModel() {}
 
     QSqlQuery* query_ = new QSqlQuery();
-    DownloadManager* manager = new DownloadManager();
+//    DownloadManager* manager = new DownloadManager();
 
     virtual void init();
     virtual bool createTable(const QString &tableName);
@@ -52,8 +55,8 @@ public:
 
 //    QUrl urlRegistry = QUrl::fromEncoded(QByteArray::fromBase64(REGISTRY));
 //    QUrl urlRegistryInfo = QUrl::fromEncoded(QByteArray::fromBase64(REGISTRY_INFO));
-    QUrl urlRegistry;
-    QUrl urlRegistryInfo;
+//    QUrl urlRegistry;
+//    QUrl urlRegistryInfo;
 
 private:
     QFile registry;

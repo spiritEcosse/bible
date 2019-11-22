@@ -131,8 +131,8 @@ TEST_F(DownloadManagerTest, saveFileName)
 
 TEST_F(DownloadManagerTest, startNextDownload)
 {
-    QObject::connect(downloadManager, &DownloadManager::successfully,
-                     modulesGroupModel, &ModulesGroupModel::decompressRegistry);
+//    QObject::connect(downloadManager, &DownloadManager::successfully,
+//                     modulesGroupModel, &ModulesGroupModel::decompressRegistry);
     QObject::connect(downloadManager, &DownloadManager::finished,
                      &DownloadManager::downloadFinished);
 
