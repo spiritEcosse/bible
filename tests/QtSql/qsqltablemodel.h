@@ -9,11 +9,13 @@
 
 class QSqlTableModel : public QSqlQueryModel
 {
+    Q_OBJECT
 public:
     enum EditStrategy {OnFieldChange, OnRowChange, OnManualSubmit};
     QSqlDatabase db;
-    virtual ~QSqlTableModel() override {}
-    explicit QSqlTableModel(QObject *parent = nullptr) {}
+    virtual ~QSqlTableModel() {}
+    explicit QSqlTableModel(QObject *parent = nullptr)
+        : QSqlQueryModel(parent) {}
 
     inline virtual void setTable(const QString &) {}
     inline virtual QSqlRecord record(int) const { return QSqlRecord(); }

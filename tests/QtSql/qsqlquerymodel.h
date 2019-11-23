@@ -5,7 +5,7 @@
 //#include <QAbstractItemModel>
 #include <QObject>
 #include <QSqlError>
-#include <QModelIndex>
+//#include <QModelIndex>
 //#include <QSqlDatabase>
 
 //QT_REQUIRE_CONFIG(sqlmodel);
@@ -61,7 +61,7 @@ protected:
     void endResetModel();
     virtual void queryChange() {}
 
-    virtual QModelIndex indexInQuery(const QModelIndex &item) const {}
+//    virtual QModelIndex indexInQuery(const QModelIndex &item) const {}
 //    void setLastError(const QSqlError &error);
 //    QSqlQueryModel(QSqlQueryModelPrivate &dd, QObject *parent = nullptr);
 };

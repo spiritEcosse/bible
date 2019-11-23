@@ -24,6 +24,8 @@ HEADERS += $$PROJECT_HEADERS \
     QtSql/qsqlerror.h \
     QtSql/QSqlQuery \
     QtSql/qsqlquery.h \
+    QtSql/QSqlQueryModel \
+    QtSql/qsqlquerymodel.h \
     QtSql/QSqlRecord \
     QtSql/qsqlrecord.h \
     QtSql/QSqlTableModel \
