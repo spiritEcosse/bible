@@ -93,7 +93,7 @@ public:
     bool copy(const QString &newName);
     static bool copy(const QString &fileName, const QString &newName);
 
-    bool open(OpenMode flags) override;
+    virtual bool open(OpenMode flags) override;
     bool open(FILE *f, OpenMode ioFlags, FileHandleFlags handleFlags=DontCloseHandle);
     bool open(int fd, OpenMode ioFlags, FileHandleFlags handleFlags=DontCloseHandle);
 

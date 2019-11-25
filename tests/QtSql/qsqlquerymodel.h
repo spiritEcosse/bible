@@ -37,7 +37,10 @@ public:
 
     virtual void clear() {}
 
-    virtual QSqlError lastError() const {}
+    QSqlError* error;
+    inline virtual QSqlError& lastError() const {
+        return *error;
+    }
 
 //    void fetchMore(const QModelIndex &parent = QModelIndex()) ;
 //    bool canFetchMore(const QModelIndex &parent = QModelIndex()) const ;

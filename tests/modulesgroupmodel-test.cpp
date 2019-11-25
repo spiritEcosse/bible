@@ -5,6 +5,7 @@
 #include "mock_qsqlquery.h"
 #include "mock_qsqlerror.h"
 #include "mock_qstringlist.h"
+#include "mock_qjsonarray.h"
 
 
 // The fixture for testing class ModulesGroupModelTest.
@@ -60,11 +61,12 @@ static QHash<const char *, int> sizes = {
     { "65700", 65700 },
 };
 
-//TEST_P(ModulesGroupModelTest, correctSize) {
-//    EXPECT_EQ(mockModulesGroupModel.correctSize(GetParam()), sizes.value(GetParam()));
-//}
+TEST_P(ModulesGroupModelTest, correctSize) {
+    EXPECT_EQ(mockModulesGroupModel.correctSize(GetParam()), sizes.value(GetParam()));
+}
 
-//INSTANTIATE_TEST_CASE_P(PossibleIncomingSizes, ModulesGroupModelTest, ValuesIn(sizes.keys()));
+INSTANTIATE_TEST_CASE_P(PossibleIncomingSizes, ModulesGroupModelTest, ValuesIn(sizes.keys()));
+
 
 TEST_F(ModulesGroupModelTest, init)
 {
@@ -146,5 +148,12 @@ TEST_F(ModulesGroupModelTest, execLastError)
                 .WillOnce(ReturnPointee(&mockQSqlError));
         EXPECT_CALL(mockQSqlError, text());
     }
+
     EXPECT_FALSE(mockModulesGroupModel.execLastError(query));
+}
+
+TEST_F(ModulesGroupModelTest, newRows) {
+//    ON_CALL(mockModulesGroupModel, newRows())
+//            .WillByDefault(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::parentNewRows));
+
 }

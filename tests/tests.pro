@@ -50,6 +50,8 @@ HEADERS += $$PROJECT_HEADERS \
     mock_downloadmanager.h \
     mock_qfile.h \
     mock_qfileinfo.h \
+    mock_qjsonarray.h \
+    mock_qnetworkaccessmanager.h \
     mock_qnetworkreply.h \
     QtCore/QStringList \
     QtCore/qstringlist.h \
@@ -64,7 +66,11 @@ HEADERS += $$PROJECT_HEADERS \
     mock_qqueue.h \
     mock_qurl.h \
     mock_qvariant.h \
-    mock_textprogressbar.h
+    mock_textprogressbar.h \
+    QtCore/qjsonarray.h \
+    QtNetwork/QNetworkAccessManager \
+    QtNetwork/qnetworkaccessmanager.h
+
 
 SOURCES += $$PROJECT_SOURCES \
     modulesgroupmodel-test.cpp \

@@ -6,7 +6,6 @@
 
 class QNetworkReply;
 
-
 class QNetworkAccessManager
 {
 public:
@@ -21,10 +20,12 @@ public:
         UnknownOperation = 0
     };
 
-    explicit QNetworkAccessManager(QObject *parent = nullptr);
-    ~QNetworkAccessManager();
+    explicit QNetworkAccessManager(QObject *parent = nullptr) {}
+    virtual ~QNetworkAccessManager() {}
 
-    QNetworkReply *get(const QNetworkRequest &request);
+//    QNetworkReply qNetworkReply;
+    virtual QNetworkReply *get(const QNetworkRequest &request) {
+    }
 };
 
 #endif // QNETWORKACCESSMANAGER_H

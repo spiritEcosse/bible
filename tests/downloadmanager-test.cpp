@@ -12,6 +12,7 @@
 #include "mock_qstringlist.h"
 #include "mock_qnetworkrequest.h"
 #include "mock_textprogressbar.h"
+#include "mock_qnetworkaccessmanager.h"
 
 
 class DownloadManagerTest : public ::testing::Test
@@ -33,6 +34,7 @@ protected:
       mockDownloadManager.qFileInfo = &mockQFileInfo;
       mockDownloadManager.fileNames = &mockQStringList;
       mockDownloadManager.progressBar = &mockTextProgressBar;
+      mockDownloadManager.manager = &mockQNetworkAccessManager;
   }
 
   void TearDown() override {
@@ -51,6 +53,7 @@ protected:
   MockQUrl mockQurl;
   MockQFile mockQFile;
   MockQNetworkReply mockQNetworkReply;
+  MockQNetworkAccessManager mockQNetworkAccessManager;
   MockQVariant mockQVariant;
   MockQFileInfo mockQFileInfo;
   MockQStringList mockQStringList;
@@ -131,8 +134,8 @@ TEST_F(DownloadManagerTest, saveFileName)
 
 TEST_F(DownloadManagerTest, startNextDownload)
 {
-//    QObject::connect(downloadManager, &DownloadManager::successfully,
-//                     modulesGroupModel, &ModulesGroupModel::decompressRegistry);
+    QObject::connect(downloadManager, &DownloadManager::successfully,
+                     modulesGroupModel, &ModulesGroupModel::decompressRegistry);
     QObject::connect(downloadManager, &DownloadManager::finished,
                      &DownloadManager::downloadFinished);
 
@@ -166,6 +169,8 @@ TEST_F(DownloadManagerTest, startNextDownload)
         EXPECT_CALL(mockQFile, fileName())
                 .WillOnce(Return(filename));
         EXPECT_CALL(mockQStringList, append(filename));
+        EXPECT_CALL(mockQFile, open(_))
+                .WillOnce(Return(true));
     }
 
     mockDownloadManager.startNextDownload();

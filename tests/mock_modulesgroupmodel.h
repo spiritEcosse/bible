@@ -35,6 +35,8 @@ public:
     MOCK_METHOD2(insertRecord, bool(int row, const QSqlRecord &record));
     MOCK_METHOD0(submitAll, bool());
     MOCK_METHOD0(database, QSqlDatabase&());
+    MOCK_CONST_METHOD0(lastError, QSqlError&());
+
     bool ParentCreateTable(const QString &tableName) {
         return ModulesGroupModel::createTable(tableName);
     }
@@ -43,6 +45,9 @@ public:
     }
     bool parentExecLastError(const QString& query) {
         return ModulesGroupModel::execLastError(query);
+    }
+    void parentNewRows(QJsonArray &downloads) {
+        return ModulesGroupModel::newRows(downloads);
     }
 };
 
