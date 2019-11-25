@@ -103,7 +103,7 @@ TEST_F(DownloadManagerTest, appendUrls)
     {
         InSequence s;
 
-        EXPECT_CALL(mockQurl, fromEncodedImpl(_, QUrl::TolerantMode));V
+        EXPECT_CALL(mockQurl, fromEncodedImpl(_, QUrl::TolerantMode));
 //                .WillOnce(Return(url)); // WARNING: add Return(url)
         EXPECT_CALL(mockDownloadManager, append(_)); // pass url instead _
         EXPECT_CALL(mockQqueue, isEmpty())
