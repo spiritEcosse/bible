@@ -1,3 +1,6 @@
+#include <QDebug>
+#include <QString>
+
 #include "dbmanager.h"
 
 DbManager::DbManager()
@@ -23,7 +26,7 @@ DbManager::DbManager()
 //    db.setDatabaseName(db_name);
 
 //    if (!db.open()) {
-//        qDebug() << "Error: connection with Bible database failed";V
+//        qDebug() << "Error: connection with Bible database failed";
 //    } else {
 //        qDebug() << "Bible database: Connection OK";
 //    }

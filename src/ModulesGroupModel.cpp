@@ -45,7 +45,7 @@ void ModulesGroupModel::updateTable()
         return;
 
     QJsonArray downloads = document.object().value("downloads").toArray();
-//    newRows(downloads);
+    newRows(downloads);
 }
 
 void ModulesGroupModel::compareVersions()
@@ -63,14 +63,14 @@ void ModulesGroupModel::compareVersions()
         return;
 
     int version = document.object().value("version").toInt();
-//    QSettings settings;
-//    bool newModules = version > settings.value("modulesVersion").toInt();
+    QSettings settings;
+    bool newModules = version > settings.value("modulesVersion").toInt();
 
-//    if (newModules) {
-//        settings.setValue("modulesVersion", version);
-//    }
+    if (newModules) {
+        settings.setValue("modulesVersion", version);
+    }
 
-//    emit availabilityNewModules(newModules);
+    emit availabilityNewModules(newModules);
 }
 
 void ModulesGroupModel::init()
@@ -78,8 +78,8 @@ void ModulesGroupModel::init()
     createTable("modules_group");
     setTable("modules_group");
     select();
-//    setEditStrategy(QSqlTableModel::OnManualSubmit);
-//    registry.setFileName("registry.json");
+    setEditStrategy(QSqlTableModel::OnManualSubmit);
+    registry.setFileName("registry.json");
 }
 
 bool ModulesGroupModel::execLastError(const QString& query)

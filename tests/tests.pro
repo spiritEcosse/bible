@@ -13,6 +13,7 @@ PROJECT_SOURCES = \
 PROJECT_HEADERS = \
     $$PROJECT_DIR/src/DownloadManager.h \
     $$PROJECT_DIR/src/TextProgressBar.h \
+    $$PROJECT_DIR/src/dbmanager.h \
     $$PROJECT_DIR/src/ModulesModel.h \
     $$PROJECT_DIR/src/ModulesGroupModel.h
 

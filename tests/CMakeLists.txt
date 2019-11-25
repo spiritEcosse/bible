@@ -53,6 +53,7 @@ set(Headers
     mock_qnetworkreply.h
     ${SRC_PATH}/DownloadManager.h
     ${SRC_PATH}/TextProgressBar.h
+    ${SRC_PATH}/dbmanager.h
     ${SRC_PATH}/ModulesModel.h
     ${SRC_PATH}/ModulesGroupModel.h
     QtSql/QSqlDatabase
@@ -105,6 +106,8 @@ set(Headers
     mock_qvariant.h
     mock_textprogressbar.h
     mock_qsqltablemodel.h
+    mock_qjsonarray.h
+    mock_qnetworkaccessmanager.h
 )
 
 set(Sources

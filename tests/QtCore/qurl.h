@@ -78,7 +78,7 @@ class QUrl;
 // qHash is a friend, but we can't use default arguments for friends (§8.3.6.4)
 Q_CORE_EXPORT uint qHash(const QUrl &url, uint seed = 0) Q_DECL_NOTHROW;
 
-class Q_CORE_EXPORT QUrl
+class QUrl
 {
 public:
     virtual ~QUrl() {}
@@ -158,10 +158,8 @@ public:
     Q_REQUIRED_RESULT QUrl adjusted(FormattingOptions options) const;
 
     QByteArray toEncoded(FormattingOptions options = FullyEncoded) const;
+
     virtual QUrl fromEncoded(const QByteArray &url, ParsingMode mode = TolerantMode) {
-        Q_UNUSED(url)
-        Q_UNUSED(mode)
-        return QUrl();
     }
 
     enum UserInputResolutionOption {
