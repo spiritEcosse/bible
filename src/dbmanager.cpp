@@ -23,7 +23,7 @@ DbManager::DbManager()
 //    db.setDatabaseName(db_name);
 
 //    if (!db.open()) {
-//        qDebug() << "Error: connection with Bible database failed";
+//        qDebug() << "Error: connection with Bible database failed";V
 //    } else {
 //        qDebug() << "Bible database: Connection OK";
 //    }

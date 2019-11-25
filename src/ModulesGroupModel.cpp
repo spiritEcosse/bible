@@ -5,7 +5,7 @@ ModulesGroupModel::ModulesGroupModel(QObject *parent)
 
 void ModulesGroupModel::decompressRegistry()
 {
-//    registryArchive.setFileName(manager->fileNames->last());
+    registryArchive.setFileName(manager->fileNames->last());
     QString registryName = JlCompress::extractFile(registryArchive.fileName(), registry.fileName());
     QFileInfo fileInfo(registryName);
 
@@ -51,7 +51,7 @@ void ModulesGroupModel::updateTable()
 void ModulesGroupModel::compareVersions()
 {
     QFile registry_json;
-//    registry_json.setFileName(manager->fileNames->last());
+    registry_json.setFileName(manager->fileNames->last());
     if (!registry_json.open(QIODevice::ReadOnly | QIODevice::Text))
         return ;
 
@@ -87,7 +87,7 @@ bool ModulesGroupModel::execLastError(const QString& query)
     if (!query_->exec(query))
     {
         qWarning() << query << query_->lastError().text();
-        qPrintable(query_->lastError().text());
+        // qPrintable(query_->lastError().text());
         return false;
     }
     return true;
@@ -111,8 +111,8 @@ bool ModulesGroupModel::createTable(const QString &tableName)
 
 void ModulesGroupModel::updateModules()
 {
-//    manager->append(urlRegistry);
-//    connect(manager, SIGNAL (successfully()), SLOT (decompressRegistry()));
+    manager->append(urlRegistry);
+    connect(manager, SIGNAL (successfully()), SLOT (decompressRegistry()));
     connect(this, SIGNAL (decompressSuccess()), SLOT (updateTable()));
 
     setCountOldRows();
@@ -172,8 +172,8 @@ void ModulesGroupModel::newRows(QJsonArray &downloads)
 
 void ModulesGroupModel::checkAvailabilityNewModules()
 {
-//    manager->append(urlRegistryInfo);
-//    connect(manager, SIGNAL (successfully()), this, SLOT (compareVersions()));
+    manager->append(urlRegistryInfo);
+    connect(manager, SIGNAL (successfully()), this, SLOT (compareVersions()));
 }
 
 QMap<QString, QString>

@@ -22,7 +22,7 @@
 
 #define MODULES_SPLIT_NAME "^(.+)\\.(.+)$"
 
-//#include "DownloadManager.h"
+#include "DownloadManager.h"
 #include "LocaleDesc.h"
 #include "gtest/gtest_prod.h"
 
@@ -38,7 +38,7 @@ public:
     virtual ~ModulesGroupModel() {}
 
     QSqlQuery* query_ = new QSqlQuery();
-//    DownloadManager* manager = new DownloadManager();
+    DownloadManager* manager = new DownloadManager();
 
     virtual void init();
     virtual bool createTable(const QString &tableName);
@@ -55,8 +55,8 @@ public:
 
 //    QUrl urlRegistry = QUrl::fromEncoded(QByteArray::fromBase64(REGISTRY));
 //    QUrl urlRegistryInfo = QUrl::fromEncoded(QByteArray::fromBase64(REGISTRY_INFO));
-//    QUrl urlRegistry;
-//    QUrl urlRegistryInfo;
+    QUrl urlRegistry;
+    QUrl urlRegistryInfo;
 
 private:
     QFile registry;
