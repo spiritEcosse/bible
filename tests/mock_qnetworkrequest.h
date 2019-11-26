@@ -9,6 +9,7 @@ class MockQNetworkRequest : public QNetworkRequest
 {
 public:
     MOCK_METHOD0(url, QUrl&());
+    MOCK_METHOD(void, setUrl, (const QUrl &url), (override));
 };
 
 #endif // MOCK_QNETWORKREQUEST_H

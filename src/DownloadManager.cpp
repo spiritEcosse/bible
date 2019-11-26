@@ -72,27 +72,26 @@ void DownloadManager::startNextDownload()
         output->setFileName(filename);
         fileNames->append(output->fileName());
 
-        if (!output->open(QIODevice::WriteOnly)) {
+        if (!output->open(QFile::WriteOnly)) {
             fprintf(stderr, "Problem opening save file '%s' for download '%s': %s\n",
                     qPrintable(filename), url.toEncoded().constData(),
                     qPrintable(output->errorString()));
 
             startNextDownload();
-            return;                 // skip this download
+        } else {
+            request->setUrl(url);
+            currentDownload = manager->get(*request);
+            connect(currentDownload, SIGNAL(downloadProgress(qint64,qint64)),
+                    SLOT(downloadProgress(qint64,qint64)));
+            connect(currentDownload, SIGNAL(finished()),
+                    SLOT(downloadFinished()));
+            connect(currentDownload, SIGNAL(readyRead()),
+                    SLOT(downloadReadyRead()));
+
+    //          prepare the output
+            printf("Downloading %s...\n", url.toEncoded().constData());
+            downloadTime->start();
         }
-
-        QNetworkRequest request(url);
-        currentDownload = manager->get(request);
-        connect(currentDownload, SIGNAL(downloadProgress(qint64,qint64)),
-                SLOT(downloadProgress(qint64,qint64)));
-        connect(currentDownload, SIGNAL(finished()),
-                SLOT(downloadFinished()));
-        connect(currentDownload, SIGNAL(readyRead()),
-                SLOT(downloadReadyRead()));
-
-//          prepare the output
-        printf("Downloading %s...\n", url.toEncoded().constData());
-        downloadTime.start();
     }
 }
 
@@ -101,7 +100,7 @@ void DownloadManager::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)
     progressBar->setStatus(bytesReceived, bytesTotal);
 
     // calculate the download speed
-    double speed = bytesReceived * 1000.0 / downloadTime.elapsed();
+    double speed = bytesReceived * 1000.0 / downloadTime->elapsed();
     QString unit;
     if (speed < 1024) {
         unit = "bytes/sec";

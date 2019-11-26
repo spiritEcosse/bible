@@ -39,6 +39,7 @@ private:
     QUrl* qurl = new QUrl();
     QQueue<QUrl> *downloadQueue = new QQueue<QUrl>();
     QFileInfo* qFileInfo = new QFileInfo();
+    QNetworkRequest* request = new QNetworkRequest();
 
     QNetworkAccessManager* manager = new QNetworkAccessManager();
     friend class DownloadManagerTest;
@@ -51,7 +52,7 @@ private:
 
     QNetworkReply *currentDownload = nullptr;
     QFile* output = new QFile();
-    QTime downloadTime;
+    QTime* downloadTime = new QTime();
     TextProgressBar* progressBar = new TextProgressBar();
 
     int downloadedCount = 0;

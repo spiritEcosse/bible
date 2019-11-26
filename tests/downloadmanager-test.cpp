@@ -13,6 +13,7 @@
 #include "mock_qnetworkrequest.h"
 #include "mock_textprogressbar.h"
 #include "mock_qnetworkaccessmanager.h"
+#include "mock_qtime.h"
 
 
 class DownloadManagerTest : public ::testing::Test
@@ -33,8 +34,10 @@ protected:
       mockDownloadManager.currentDownload = &mockQNetworkReply;
       mockDownloadManager.qFileInfo = &mockQFileInfo;
       mockDownloadManager.fileNames = &mockQStringList;
+      mockDownloadManager.request = &mockQNetworkRequest;
       mockDownloadManager.progressBar = &mockTextProgressBar;
       mockDownloadManager.manager = &mockQNetworkAccessManager;
+      mockDownloadManager.downloadTime = &mockQTime;
   }
 
   void TearDown() override {
@@ -59,6 +62,7 @@ protected:
   MockQStringList mockQStringList;
   MockQNetworkRequest mockQNetworkRequest;
   MockTextProgressBar mockTextProgressBar;
+  MockQTime mockQTime;
 
   const QUrl url = BuiltInDefaultValue<const QUrl>::Get();
   const QStringList urls = {"url1"};
@@ -69,6 +73,7 @@ protected:
   int bytesReceived = BuiltInDefaultValue<int>::Get();
   int bytesTotal = BuiltInDefaultValue<int>::Get();
   const QString message = BuiltInDefaultValue<QString>::Get();
+  QFile::OpenMode qFileWriteMode = QFile::WriteOnly;
 };
 
 
@@ -188,8 +193,9 @@ TEST_F(DownloadManagerTest, startNextDownload)
     QObject::connect(downloadManager, &DownloadManager::finished,
                      &DownloadManager::downloadFinished);
 
-    ON_CALL(mockDownloadManager, startNextDownload())
-            .WillByDefault(
+    EXPECT_CALL(mockDownloadManager, startNextDownload())
+            .Times(3)
+            .WillRepeatedly(
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentStartNextDownload)
                 );
 
@@ -212,14 +218,38 @@ TEST_F(DownloadManagerTest, startNextDownload)
                 .WillOnce(Return(false));
         EXPECT_CALL(mockQqueue, dequeue())
                 .WillOnce(ReturnPointee(&url));
-        EXPECT_CALL(mockDownloadManager, saveFileName(_))
+        EXPECT_CALL(mockDownloadManager, saveFileName(_)) // WARNING : pass url instead _
+                .WillOnce(Return(filename));
+        EXPECT_CALL(mockQFile, setFileName(filename));
+        EXPECT_CALL(mockQFile, fileName())
+                .WillOnce(Return(filename));
+        EXPECT_CALL(mockQStringList, append(filename));
+        EXPECT_CALL(mockQFile, open(qFileWriteMode))
+                .WillOnce(Return(true));
+        EXPECT_CALL(mockQNetworkRequest, setUrl(_)); // WARNING : pass url instead _
+        EXPECT_CALL(mockQNetworkAccessManager, get(_));
+        EXPECT_CALL(mockQTime, start());
+    }
+
+    mockDownloadManager.startNextDownload();
+
+
+    {
+        InSequence s;
+
+        EXPECT_CALL(mockQqueue, isEmpty())
+                .WillOnce(Return(false));
+        EXPECT_CALL(mockQqueue, dequeue())
+                .WillOnce(ReturnPointee(&url));
+        EXPECT_CALL(mockDownloadManager, saveFileName(_)) // WARNING : pass url instead _
                 .WillOnce(Return(filename));
         EXPECT_CALL(mockQFile, setFileName(filename));
         EXPECT_CALL(mockQFile, fileName())
                 .WillOnce(Return(filename));
         EXPECT_CALL(mockQStringList, append(filename));
         EXPECT_CALL(mockQFile, open(_))
-                .WillOnce(Return(true));
+                .WillOnce(Return(false));
+        EXPECT_CALL(mockDownloadManager, startNextDownload());
     }
 
     mockDownloadManager.startNextDownload();

@@ -105,7 +105,7 @@ public:
     virtual QUrl& url() {
         return q;
     }
-    void setUrl(const QUrl &url);
+    virtual void setUrl(const QUrl &url) {}
 
     // "cooked" headers
     QVariant header(KnownHeaders header) const;

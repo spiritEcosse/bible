@@ -57,6 +57,7 @@ HEADERS += $$PROJECT_HEADERS \
     QtCore/QStringList \
     QtCore/qstringlist.h \
     mock_qstringlist.h \
+    mock_qtime.h \
     mock_qtimer.h \
     mock_qnetworkrequest.h \
     mock_qsqlquery.h \
@@ -70,7 +71,11 @@ HEADERS += $$PROJECT_HEADERS \
     mock_textprogressbar.h \
     QtCore/qjsonarray.h \
     QtNetwork/QNetworkAccessManager \
-    QtNetwork/qnetworkaccessmanager.h
+    QtNetwork/qnetworkaccessmanager.h \
+    QtCore/qiodevice.h \
+    QtCore/QIODevice \
+    QtCore/qdatetime.h \
+    QtCore/QTime
 
 
 SOURCES += $$PROJECT_SOURCES \
