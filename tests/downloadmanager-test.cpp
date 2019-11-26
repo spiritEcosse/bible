@@ -228,6 +228,8 @@ TEST_F(DownloadManagerTest, startNextDownload)
                 .WillOnce(Return(true));
         EXPECT_CALL(mockQNetworkRequest, setUrl(_)); // WARNING : pass url instead _
         EXPECT_CALL(mockQNetworkAccessManager, get(_));
+        // WARNING: EXPECT_CALL 3 * connect
+        // WARNING: EXPECT_CALL printf
         EXPECT_CALL(mockQTime, start());
     }
 
