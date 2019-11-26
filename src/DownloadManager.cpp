@@ -39,14 +39,15 @@ QString DownloadManager::saveFileName(const QUrl &url)
     qFileInfo->setFile(path);
     QString basename = qFileInfo->fileName();
 
-    if (basename.isEmpty())
-        basename = "download";
+//    if (basename.isEmpty()) { // WARNING: uncommet and tests
+//        basename = "download";
+//    }
 
-    if (QFile::exists(basename)) {
+    if (output->exists(basename)) {
         // already exists, don't overwrite
         int i = 0;
         basename += '.';
-        while (QFile::exists(basename + QString::number(i)))
+        while (output->exists(basename + QString::number(i)))
             ++i;
 
         basename += QString::number(i);

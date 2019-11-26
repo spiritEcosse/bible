@@ -82,8 +82,9 @@ TEST_F(DownloadManagerTest, appendUrls)
 
     {
         InSequence s;
+        // WARNING : add mock QString on toLocal8Bit
 
-        EXPECT_CALL(mockQurl, fromEncodedImpl(_, _))
+        EXPECT_CALL(mockQurl, fromEncodedImpl(_, _)) // WARNING : pass params instead _
                 .WillOnce(ReturnPointee(&url));
         EXPECT_CALL(mockDownloadManager, append(_)); // WARNING : pass url instead _
         EXPECT_CALL(mockQqueue, isEmpty())
@@ -95,8 +96,8 @@ TEST_F(DownloadManagerTest, appendUrls)
 
     {
         InSequence s;
-
-        EXPECT_CALL(mockQurl, fromEncodedImpl(_, _))
+        // WARNING : add mock QString on toLocal8Bit
+        EXPECT_CALL(mockQurl, fromEncodedImpl(_, _)) // WARNING : pass params instead _
                 .WillOnce(ReturnPointee(&url));
         EXPECT_CALL(mockDownloadManager, append(_)); // WARNING : pass url instead _
         EXPECT_CALL(mockQqueue, isEmpty())
@@ -152,9 +153,32 @@ TEST_F(DownloadManagerTest, saveFileName)
         EXPECT_CALL(mockQFileInfo, setFile(path));
         EXPECT_CALL(mockQFileInfo, fileName())
                 .WillOnce(Return(basename));
+        // WARNING : expect_call - basename.isEmpty()
+        EXPECT_CALL(mockQFile, exists(basename))
+                .WillOnce(Return(false));
     }
 
-    mockDownloadManager.saveFileName(mockQurl);
+    EXPECT_EQ(mockDownloadManager.saveFileName(mockQurl), basename);
+
+    {
+        InSequence s;
+        EXPECT_CALL(mockQurl, path(QUrl::FullyDecoded))
+                .WillOnce(Return(path));
+        EXPECT_CALL(mockQFileInfo, setFile(path));
+        EXPECT_CALL(mockQFileInfo, fileName())
+                .WillOnce(Return(basename));
+        // WARNING : expect_call - basename.isEmpty()
+        EXPECT_CALL(mockQFile, exists(basename))
+                .WillOnce(Return(true));
+        EXPECT_CALL(mockQFile, exists(QString(".0")))
+                .WillOnce(Return(true));
+        EXPECT_CALL(mockQFile, exists(QString(".1")))
+                .WillOnce(Return(true));
+        EXPECT_CALL(mockQFile, exists(QString(".2")))
+                .WillOnce(Return(false));
+    }
+    basename = ".2";
+    EXPECT_EQ(mockDownloadManager.saveFileName(mockQurl), basename);
 }
 
 TEST_F(DownloadManagerTest, startNextDownload)

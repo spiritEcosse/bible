@@ -5,6 +5,7 @@
 #include <gmock/gmock.h>
 
 using ::testing::_;
+using ::testing::ExpectationSet;
 using ::testing::TestWithParam;
 using ::testing::NotNull;
 using ::testing::SetArgPointee;
