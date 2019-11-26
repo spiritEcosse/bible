@@ -72,6 +72,40 @@ protected:
 };
 
 
+TEST_F(DownloadManagerTest, appendUrls)
+{
+    ON_CALL(mockDownloadManager, appendUrls(urls))
+            .WillByDefault(
+                    Invoke(&mockDownloadManager, &MockDownloadManager::parentAppendUrls)
+                );
+
+
+    {
+        InSequence s;
+
+        EXPECT_CALL(mockQurl, fromEncodedImpl(_, _))
+                .WillOnce(ReturnPointee(&url));
+        EXPECT_CALL(mockDownloadManager, append(_)); // WARNING : pass url instead _
+        EXPECT_CALL(mockQqueue, isEmpty())
+                .WillOnce(Return(true));
+        EXPECT_CALL(mockQTimer, singleShot(0, downloadManager, _)); // WARNING: add SIGNAL
+    }
+
+    mockDownloadManager.appendUrls(urls);
+
+    {
+        InSequence s;
+
+        EXPECT_CALL(mockQurl, fromEncodedImpl(_, _))
+                .WillOnce(ReturnPointee(&url));
+        EXPECT_CALL(mockDownloadManager, append(_)); // WARNING : pass url instead _
+        EXPECT_CALL(mockQqueue, isEmpty())
+                .WillOnce(Return(false));
+    }
+
+    mockDownloadManager.appendUrls(urls);
+}
+
 TEST_F(DownloadManagerTest, append)
 {
     ON_CALL(mockDownloadManager, append(url))
@@ -89,28 +123,19 @@ TEST_F(DownloadManagerTest, append)
         EXPECT_CALL(mockQTimer, singleShot(0, downloadManager, _)); // WARNING: add SLOT
         EXPECT_CALL(mockQqueue, enqueue(url));
     }
+
     mockDownloadManager.append(url);
     EXPECT_EQ(1, mockDownloadManager.totalCount);
-}
-
-TEST_F(DownloadManagerTest, appendUrls)
-{
-    ON_CALL(mockDownloadManager, appendUrls(urls))
-            .WillByDefault(
-                    Invoke(&mockDownloadManager, &MockDownloadManager::parentAppendUrls)
-                );
 
     {
         InSequence s;
 
-        EXPECT_CALL(mockQurl, fromEncodedImpl(_, QUrl::TolerantMode));
-//                .WillOnce(Return(url)); // WARNING: add Return(url)
-        EXPECT_CALL(mockDownloadManager, append(_)); // pass url instead _
         EXPECT_CALL(mockQqueue, isEmpty())
-                .WillOnce(Return(true));
-        EXPECT_CALL(mockQTimer, singleShot(0, downloadManager, _)); // WARNING: add SIGNAL
+                .WillOnce(Return(false));
+        EXPECT_CALL(mockQqueue, enqueue(url));
     }
-    mockDownloadManager.appendUrls(urls);
+
+    mockDownloadManager.append(url);
 }
 
 TEST_F(DownloadManagerTest, saveFileName)

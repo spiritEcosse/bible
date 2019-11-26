@@ -159,7 +159,8 @@ public:
 
     QByteArray toEncoded(FormattingOptions options = FullyEncoded) const;
 
-    virtual QUrl fromEncoded(const QByteArray &url, ParsingMode mode = TolerantMode) {
+    virtual QUrl fromEncoded(const QByteArray &url, ParsingMode mode) {
+        return QUrl();
     }
 
     enum UserInputResolutionOption {

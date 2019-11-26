@@ -6,6 +6,9 @@
 
 using ::testing::_;
 using ::testing::TestWithParam;
+using ::testing::NotNull;
+using ::testing::SetArgPointee;
+using ::testing::SetArgReferee;
 using ::testing::Test;
 using ::testing::ValuesIn;
 using ::testing::InSequence;
