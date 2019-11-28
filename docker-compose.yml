@@ -1,0 +1,8 @@
+version: '3.7'
+
+services:
+  qt:
+    image: shevchenkoigor/bible:latest
+    volumes:
+      - .:/app
+    command: sleep infinity

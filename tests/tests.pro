@@ -85,6 +85,10 @@ SOURCES += $$PROJECT_SOURCES \
     downloadmanager-test.cpp \
     textprogressbar-test.cpp
 
+
+QMAKE_CXXFLAGS += --coverage
+QMAKE_LFLAGS += --coverage
+
 INCLUDEPATH += $$PWD/QtNetwork + $$PWD/QtSql + $$PWD/QtCore
 DEPENDPATH += $$PWD/QtNetwork + $$PWD/QtSql + $$PWD/QtCore
 

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+./manage.py runserver 0.0.0.0:5000
+
+qmake tests/tests.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug LIBS+=-lquazip && \
+make qmake_all && \
+make -j4 && \
+./tests

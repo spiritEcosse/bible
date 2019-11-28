@@ -1,0 +1,16 @@
+setup:
+  # Replace with the http location of your Codecov
+  # https://docs.codecov.io/docs/configuration#section-codecov-url
+  codecov_url: null
+  # Replace with your Codecov Enterprise License key
+  # https://docs.codecov.io/docs/configuration#section-enterprise-license
+  enterprise_license: null
+  # Replace with a random string
+  # https://docs.codecov.io/docs/configuration#section-cookie-secret
+  http:
+    cookie_secret: null
+services:
+  minio:
+    client_uploads: true
+    host: minio
+    port: 9000
