@@ -3,6 +3,8 @@ version: '3.7'
 services:
   qt:
     image: shevchenkoigor/bible:latest
+    env_file:
+        - .env
     volumes:
       - .:/app
-    command: sleep infinity
+    command: /app/coverage.sh
