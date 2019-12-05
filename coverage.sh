@@ -5,6 +5,6 @@ make qmake_all && \
 make -j8 && \
 ./tests && \
 lcov -c -d . -o coverage.info && \
-lcov -r coverage.info "*Qt*.framework*" "*.moc" "*moc_*.cpp" "*/test/*" '/usr/include/*' '/usr/local/*' -o coverage-filtered.info && \
+lcov -r coverage.info "*Qt*.framework*" "*.moc" "*moc_*.cpp" "*/test/*" '/usr/include/*' '/usr/local/*' '**/tests*' -o coverage-filtered.info && \
 genhtml coverage-filtered.info -o ../../${HTML} && \
 lcov -d . -z
