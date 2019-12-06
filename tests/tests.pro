@@ -18,7 +18,6 @@ PROJECT_HEADERS = \
     $$PROJECT_DIR/src/ModulesGroupModel.h
 
 HEADERS += $$PROJECT_HEADERS \
-    mock_modulesmodel.h \
     QtSql/QSqlDatabase \
     QtSql/qsqldatabase.h \
     QtSql/QSqlError \
@@ -31,12 +30,22 @@ HEADERS += $$PROJECT_HEADERS \
     QtSql/qsqlrecord.h \
     QtSql/QSqlTableModel \
     QtSql/qsqltablemodel.h \
+    QtNetwork/QNetworkRequest \
     QtNetwork/qnetworkrequest.h \
     QtCore/QQueue \
-    QtCore/QtCore \
     QtCore/qqueue.h \
+    QtCore/QtCore \
+    QtCore/QJsonArray \
+    QtCore/qjsonarray.h \
+    QtNetwork/QNetworkAccessManager \
+    QtNetwork/qnetworkaccessmanager.h \
+    QtCore/QIODevice \
+    QtCore/qiodevice.h \
+    QtCore/QDateTime \
+    QtCore/qdatetime.h \
+    QtCore/QTime \
+    QtCore/QUrl \
     QtCore/qurl.h \
-    QtCore/Qurl \
     QtCore/QFile \
     QtCore/qfile.h \
     QtCore/QVariant \
@@ -45,8 +54,11 @@ HEADERS += $$PROJECT_HEADERS \
     QtCore/qfileinfo.h \
     QtNetwork/QNetworkReply \
     QtNetwork/qnetworkreply.h \
-    QtNetwork/qsslerror.h \
     QtNetwork/QSslError \
+    QtNetwork/qsslerror.h \
+    QtCore/QStringList \
+    QtCore/qstringlist.h \
+    mock_modulesmodel.h \
     mock_modulesgroupmodel.h \
     mock_downloadmanager.h \
     mock_qfile.h \
@@ -54,8 +66,6 @@ HEADERS += $$PROJECT_HEADERS \
     mock_qjsonarray.h \
     mock_qnetworkaccessmanager.h \
     mock_qnetworkreply.h \
-    QtCore/QStringList \
-    QtCore/qstringlist.h \
     mock_qstringlist.h \
     mock_qtime.h \
     mock_qtimer.h \
@@ -68,14 +78,8 @@ HEADERS += $$PROJECT_HEADERS \
     mock_qqueue.h \
     mock_qurl.h \
     mock_qvariant.h \
-    mock_textprogressbar.h \
-    QtCore/qjsonarray.h \
-    QtNetwork/QNetworkAccessManager \
-    QtNetwork/qnetworkaccessmanager.h \
-    QtCore/qiodevice.h \
-    QtCore/QIODevice \
-    QtCore/qdatetime.h \
-    QtCore/QTime
+    mock_textprogressbar.h
+
 
 
 SOURCES += $$PROJECT_SOURCES \
