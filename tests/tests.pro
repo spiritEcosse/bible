@@ -31,19 +31,22 @@ HEADERS += $$PROJECT_HEADERS \
     qt/QtSql/qsqlrecord.h \
     qt/QtSql/QSqlTableModel \
     qt/QtSql/qsqltablemodel.h \
+    qt/QtNetwork/QNetworkRequest \
     qt/QtNetwork/qnetworkrequest.h \
     qt/QtCore/QQueue \
+    qt/QtCore/qqueue.h \
     qt/QtCore/QtCore \
+    qt/QtCore/QJsonArray \
     qt/QtCore/qjsonarray.h \
     qt/QtNetwork/QNetworkAccessManager \
     qt/QtNetwork/qnetworkaccessmanager.h \
-    qt/QtCore/qiodevice.h \
     qt/QtCore/QIODevice \
+    qt/QtCore/qiodevice.h \
+    qt/QtCore/QDateTime \
     qt/QtCore/qdatetime.h \
     qt/QtCore/QTime \
-    qt/QtCore/qqueue.h \
+    qt/QtCore/QUrl \
     qt/QtCore/qurl.h \
-    qt/QtCore/Qurl \
     qt/QtCore/QFile \
     qt/QtCore/qfile.h \
     qt/QtCore/QVariant \
@@ -52,8 +55,8 @@ HEADERS += $$PROJECT_HEADERS \
     qt/QtCore/qfileinfo.h \
     qt/QtNetwork/QNetworkReply \
     qt/QtNetwork/qnetworkreply.h \
-    qt/QtNetwork/qsslerror.h \
     qt/QtNetwork/QSslError \
+    qt/QtNetwork/qsslerror.h \
     qt/QtCore/QStringList \
     qt/QtCore/qstringlist.h \
     mock_modulesgroupmodel.h \
