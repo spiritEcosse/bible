@@ -19,34 +19,43 @@ PROJECT_HEADERS = \
 
 HEADERS += $$PROJECT_HEADERS \
     mock_modulesmodel.h \
-    QtSql/QSqlDatabase \
-    QtSql/qsqldatabase.h \
-    QtSql/QSqlError \
-    QtSql/qsqlerror.h \
-    QtSql/QSqlQuery \
-    QtSql/qsqlquery.h \
-    QtSql/QSqlQueryModel \
-    QtSql/qsqlquerymodel.h \
-    QtSql/QSqlRecord \
-    QtSql/qsqlrecord.h \
-    QtSql/QSqlTableModel \
-    QtSql/qsqltablemodel.h \
-    QtNetwork/qnetworkrequest.h \
-    QtCore/QQueue \
-    QtCore/QtCore \
-    QtCore/qqueue.h \
-    QtCore/qurl.h \
-    QtCore/Qurl \
-    QtCore/QFile \
-    QtCore/qfile.h \
-    QtCore/QVariant \
-    QtCore/qvariant.h \
-    QtCore/QFileInfo \
-    QtCore/qfileinfo.h \
-    QtNetwork/QNetworkReply \
-    QtNetwork/qnetworkreply.h \
-    QtNetwork/qsslerror.h \
-    QtNetwork/QSslError \
+    qt/QtSql/QSqlDatabase \
+    qt/QtSql/qsqldatabase.h \
+    qt/QtSql/QSqlError \
+    qt/QtSql/qsqlerror.h \
+    qt/QtSql/QSqlQuery \
+    qt/QtSql/qsqlquery.h \
+    qt/QtSql/QSqlQueryModel \
+    qt/QtSql/qsqlquerymodel.h \
+    qt/QtSql/QSqlRecord \
+    qt/QtSql/qsqlrecord.h \
+    qt/QtSql/QSqlTableModel \
+    qt/QtSql/qsqltablemodel.h \
+    qt/QtNetwork/qnetworkrequest.h \
+    qt/QtCore/QQueue \
+    qt/QtCore/QtCore \
+    qt/QtCore/qjsonarray.h \
+    qt/QtNetwork/QNetworkAccessManager \
+    qt/QtNetwork/qnetworkaccessmanager.h \
+    qt/QtCore/qiodevice.h \
+    qt/QtCore/QIODevice \
+    qt/QtCore/qdatetime.h \
+    qt/QtCore/QTime \
+    qt/QtCore/qqueue.h \
+    qt/QtCore/qurl.h \
+    qt/QtCore/Qurl \
+    qt/QtCore/QFile \
+    qt/QtCore/qfile.h \
+    qt/QtCore/QVariant \
+    qt/QtCore/qvariant.h \
+    qt/QtCore/QFileInfo \
+    qt/QtCore/qfileinfo.h \
+    qt/QtNetwork/QNetworkReply \
+    qt/QtNetwork/qnetworkreply.h \
+    qt/QtNetwork/qsslerror.h \
+    qt/QtNetwork/QSslError \
+    qt/QtCore/QStringList \
+    qt/QtCore/qstringlist.h \
     mock_modulesgroupmodel.h \
     mock_downloadmanager.h \
     mock_qfile.h \
@@ -54,8 +63,6 @@ HEADERS += $$PROJECT_HEADERS \
     mock_qjsonarray.h \
     mock_qnetworkaccessmanager.h \
     mock_qnetworkreply.h \
-    QtCore/QStringList \
-    QtCore/qstringlist.h \
     mock_qstringlist.h \
     mock_qtime.h \
     mock_qtimer.h \
@@ -68,14 +75,7 @@ HEADERS += $$PROJECT_HEADERS \
     mock_qqueue.h \
     mock_qurl.h \
     mock_qvariant.h \
-    mock_textprogressbar.h \
-    QtCore/qjsonarray.h \
-    QtNetwork/QNetworkAccessManager \
-    QtNetwork/qnetworkaccessmanager.h \
-    QtCore/qiodevice.h \
-    QtCore/QIODevice \
-    QtCore/qdatetime.h \
-    QtCore/QTime
+    mock_textprogressbar.h
 
 
 SOURCES += $$PROJECT_SOURCES \
@@ -89,7 +89,7 @@ SOURCES += $$PROJECT_SOURCES \
 QMAKE_CXXFLAGS += --coverage
 QMAKE_LFLAGS += --coverage
 
-INCLUDEPATH += $$PWD/QtNetwork + $$PWD/QtSql + $$PWD/QtCore
-DEPENDPATH += $$PWD/QtNetwork + $$PWD/QtSql + $$PWD/QtCore
+INCLUDEPATH += $$PWD/qt/QtNetwork + $$PWD/qt/QtSql + $$PWD/qt/QtCore
+DEPENDPATH += $$PWD/qt/QtNetwork + $$PWD/qt/QtSql + $$PWD/qt/QtCore
 
 LIBS += -lgmock -lgtest -lpthread
