@@ -83,6 +83,12 @@ static QMap<int, bool> codes = {
     { 305, true },
     { 307, true },
     { 308, true },
+    { 306, false },
+    { 309, false },
+    { 310, false },
+    { 200, false },
+    { 400, false },
+    { 500, false },
 };
 
 TEST_P(DownloadManagerTest, isHttpRedirectParam) {
