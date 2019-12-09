@@ -16,7 +16,7 @@
 #include "mock_qtime.h"
 
 
-class DownloadManagerTest : public ::testing::Test
+class DownloadManagerTest : public TestWithParam<int>
 {
 protected:
   DownloadManagerTest()
@@ -75,6 +75,31 @@ protected:
   const QString message = BuiltInDefaultValue<QString>::Get();
   QFile::OpenMode qFileWriteMode = QFile::WriteOnly;
 };
+
+static QMap<int, bool> codes = {
+    { 301, true },
+    { 302, true },
+    { 303, true },
+    { 305, true },
+    { 307, true },
+    { 308, true },
+};
+
+TEST_P(DownloadManagerTest, isHttpRedirectParam) {
+    ON_CALL(mockDownloadManager, isHttpRedirect())
+            .WillByDefault(
+                    Invoke(&mockDownloadManager, &MockDownloadManager::parentIsHttpRedirect)
+                );
+
+    EXPECT_CALL(mockQNetworkReply, attribute(QNetworkRequest::HttpStatusCodeAttribute))
+            .WillOnce(ReturnPointee(&mockQVariant));
+    EXPECT_CALL(mockQVariant, toInt(nullptr))
+            .WillOnce(Return(GetParam()));
+
+    EXPECT_EQ(mockDownloadManager.isHttpRedirect(), codes.value(GetParam()));
+}
+
+INSTANTIATE_TEST_CASE_P(PossibleHttpRedirectCodes, DownloadManagerTest, ValuesIn(codes.keys()));
 
 
 TEST_F(DownloadManagerTest, appendUrls)
