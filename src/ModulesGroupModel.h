@@ -14,6 +14,7 @@
 
 #include <QRegularExpression>
 
+#include <QDebug>
 #include <QFile>
 #include <qmath.h>
 #include <quazip/JlCompress.h>
@@ -23,19 +24,21 @@
 
 #include "DownloadManager.h"
 #include "LocaleDesc.h"
+#include "gtest/gtest_prod.h"
 
 #define REGISTRY "aHR0cDovL215YmlibGUuaW50ZXJiaWJsaWEub3JnL3JlZ2lzdHJ5X3Rlc3Quemlw"
 #define REGISTRY_INFO ""
+#include <iostream>
 
 class ModulesGroupModel : public QSqlTableModel
 {
     Q_OBJECT
 public:
-    ModulesGroupModel();
+    ModulesGroupModel(QObject *parent = nullptr);
     virtual ~ModulesGroupModel() {}
 
-    QSqlQuery* query_;
-    DownloadManager* manager;
+    QSqlQuery* query_ = new QSqlQuery();
+    DownloadManager* manager = new DownloadManager();
 
     virtual void init();
     virtual bool createTable(const QString &tableName);

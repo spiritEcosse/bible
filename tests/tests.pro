@@ -13,28 +13,39 @@ PROJECT_SOURCES = \
 PROJECT_HEADERS = \
     $$PROJECT_DIR/src/DownloadManager.h \
     $$PROJECT_DIR/src/TextProgressBar.h \
+    $$PROJECT_DIR/src/dbmanager.h \
     $$PROJECT_DIR/src/ModulesModel.h \
     $$PROJECT_DIR/src/ModulesGroupModel.h
 
 HEADERS += $$PROJECT_HEADERS \
-    mock_modulesmodel.h \
     QtSql/QSqlDatabase \
     QtSql/qsqldatabase.h \
     QtSql/QSqlError \
     QtSql/qsqlerror.h \
     QtSql/QSqlQuery \
     QtSql/qsqlquery.h \
+    QtSql/QSqlQueryModel \
+    QtSql/qsqlquerymodel.h \
     QtSql/QSqlRecord \
     QtSql/qsqlrecord.h \
     QtSql/QSqlTableModel \
     QtSql/qsqltablemodel.h \
+    QtNetwork/QNetworkRequest \
     QtNetwork/qnetworkrequest.h \
     QtCore/QQueue \
-    QtCore/QtCore \
     QtCore/qqueue.h \
+    QtCore/QtCore \
+    QtCore/QJsonArray \
+    QtCore/qjsonarray.h \
+    QtNetwork/QNetworkAccessManager \
+    QtNetwork/qnetworkaccessmanager.h \
+    QtCore/QIODevice \
+    QtCore/qiodevice.h \
+    QtCore/QDateTime \
+    QtCore/qdatetime.h \
+    QtCore/QTime \
+    QtCore/QUrl \
     QtCore/qurl.h \
-    QtCore/Qurl \
-    mock_qstring.h \
     QtCore/QFile \
     QtCore/qfile.h \
     QtCore/QVariant \
@@ -43,16 +54,23 @@ HEADERS += $$PROJECT_HEADERS \
     QtCore/qfileinfo.h \
     QtNetwork/QNetworkReply \
     QtNetwork/qnetworkreply.h \
-    QtNetwork/qsslerror.h \
     QtNetwork/QSslError \
+    QtNetwork/qsslerror.h \
+    QtCore/QStringList \
+    QtCore/qstringlist.h \
+    QtCore/QString \
+    QtCore/qstring.h \
+    mock_qstring.h \
+    mock_modulesmodel.h \
     mock_modulesgroupmodel.h \
     mock_downloadmanager.h \
     mock_qfile.h \
     mock_qfileinfo.h \
+    mock_qjsonarray.h \
+    mock_qnetworkaccessmanager.h \
     mock_qnetworkreply.h \
-    QtCore/QStringList \
-    QtCore/qstringlist.h \
     mock_qstringlist.h \
+    mock_qtime.h \
     mock_qtimer.h \
     mock_qnetworkrequest.h \
     mock_qsqlquery.h \
@@ -62,13 +80,21 @@ HEADERS += $$PROJECT_HEADERS \
     gtest_global.h \
     mock_qqueue.h \
     mock_qurl.h \
-    mock_qvariant.h
+    mock_qvariant.h \
+    mock_textprogressbar.h
+
+
 
 SOURCES += $$PROJECT_SOURCES \
     modulesgroupmodel-test.cpp \
     modulesmodel-test.cpp \
     main.cpp \
-    downloadmanager-test.cpp
+    downloadmanager-test.cpp \
+    textprogressbar-test.cpp
+
+
+QMAKE_CXXFLAGS += --coverage
+QMAKE_LFLAGS += --coverage
 
 INCLUDEPATH += $$PWD/QtNetwork + $$PWD/QtSql + $$PWD/QtCore
 DEPENDPATH += $$PWD/QtNetwork + $$PWD/QtSql + $$PWD/QtCore

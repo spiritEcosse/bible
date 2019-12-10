@@ -2,21 +2,18 @@
 #define QSQLDATABASE_H
 
 #include <QStringList>
+#include <QSqlError>
+
+static const char *defaultConnection;
 
 class QSqlDatabase
 {
 public:
     virtual ~QSqlDatabase() {}
-
-    static const char *defaultConnection;
     virtual bool isValid() const { return false; }
-//    static QSqlDatabase database(const QString& connectionName = QLatin1String(defaultConnection),
-//                                 bool open = true);
-//    static QSqlDatabase addDatabase(const QString& type,
-//                                    const QString& connectionName = QLatin1String(defaultConnection));
-//    virtual QSqlError lastError() const {}
-
-//    QSqlDatabase &operator=(const QSqlDatabase &other);
+    static QSqlDatabase database(const QString& connectionName = QLatin1String(defaultConnection),
+                                 bool open = true) {}
+    virtual QSqlError lastError() const {}
 
     virtual bool open() { return false; }
 //    bool open(const QString& user, const QString& password);
@@ -55,8 +52,8 @@ public:
 
 //    QSqlDriver* driver() const;
 
-//    static QSqlDatabase addDatabase(const QString& type,
-//                                 const QString& connectionName = QLatin1String(defaultConnection));
+    static QSqlDatabase addDatabase(const QString& type,
+                                    const QString& connectionName = QLatin1String(defaultConnection)) {}
 //    static QSqlDatabase addDatabase(QSqlDriver* driver,
 //                                 const QString& connectionName = QLatin1String(defaultConnection));
 //    static QSqlDatabase cloneDatabase(const QSqlDatabase &other, const QString& connectionName);

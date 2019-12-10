@@ -78,7 +78,7 @@ class QUrl;
 // qHash is a friend, but we can't use default arguments for friends (§8.3.6.4)
 Q_CORE_EXPORT uint qHash(const QUrl &url, uint seed = 0) Q_DECL_NOTHROW;
 
-class Q_CORE_EXPORT QUrl
+class QUrl
 {
 public:
     virtual ~QUrl() {}
@@ -151,13 +151,15 @@ public:
     void setUrl(const QString &url, ParsingMode mode = TolerantMode);
     QString url(FormattingOptions options = FormattingOptions(PrettyDecoded)) const;
     QString toString(FormattingOptions options = FormattingOptions(PrettyDecoded)) const;
-    QString toDisplayString(FormattingOptions options = FormattingOptions(PrettyDecoded)) const;
+    virtual QString toDisplayString(FormattingOptions options = FormattingOptions(PrettyDecoded)) const {
+        Q_UNUSED(options)
+        return QString();
+    }
     Q_REQUIRED_RESULT QUrl adjusted(FormattingOptions options) const;
 
     QByteArray toEncoded(FormattingOptions options = FullyEncoded) const;
+
     virtual QUrl fromEncoded(const QByteArray &url, ParsingMode mode = TolerantMode) {
-        Q_UNUSED(url)
-        Q_UNUSED(mode)
         return QUrl();
     }
 
@@ -220,7 +222,9 @@ public:
 
     Q_REQUIRED_RESULT QUrl resolved(const QUrl &relative) const;
 
-    bool isRelative() const;
+    virtual bool isRelative() const {
+        return true;
+    }
     bool isParentOf(const QUrl &url) const;
 
     bool isLocalFile() const;

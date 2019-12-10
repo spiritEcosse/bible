@@ -36,6 +36,7 @@ public:
     {
         return 1;
     }
+    virtual void close() override {}
 
 #if defined(Q_OS_DARWIN)
     // Mac always expects filenames in UTF-8... and decomposed...
@@ -69,7 +70,7 @@ public:
 #endif
 
     bool exists() const;
-    static bool exists(const QString &fileName);
+    virtual bool exists(const QString &fileName);
 
 #if QT_DEPRECATED_SINCE(5, 13)
     QT_DEPRECATED_X("Use QFile::symLinkTarget() instead")
@@ -80,7 +81,7 @@ public:
     QString symLinkTarget() const;
     static QString symLinkTarget(const QString &fileName);
 
-    bool remove();
+    virtual bool remove();
     static bool remove(const QString &fileName);
 
     bool rename(const QString &newName);
@@ -92,7 +93,7 @@ public:
     bool copy(const QString &newName);
     static bool copy(const QString &fileName, const QString &newName);
 
-    bool open(OpenMode flags) override;
+    virtual bool open(OpenMode flags) override;
     bool open(FILE *f, OpenMode ioFlags, FileHandleFlags handleFlags=DontCloseHandle);
     bool open(int fd, OpenMode ioFlags, FileHandleFlags handleFlags=DontCloseHandle);
 

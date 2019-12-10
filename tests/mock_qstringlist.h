@@ -3,7 +3,7 @@
 
 #include <gmock/gmock.h>
 
-#include <QStringList>
+#include <QtCore/QStringList>
 
 class MockQStringList : public QStringList
 {

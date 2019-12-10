@@ -1,15 +1,15 @@
 #include "ModulesModel.h"
 
-ModulesModel::ModulesModel()
-    : QSqlTableModel()
+ModulesModel::ModulesModel(QObject *parent)
+    : QSqlTableModel(parent)
 {
 }
 
 
 void ModulesModel::init()
 {
-    setTable("modules");
     createTable("modules", "modules_group");
+    setTable("modules");
     select();
 }
 

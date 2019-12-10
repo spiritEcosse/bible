@@ -20,7 +20,7 @@ public:
     virtual void append(const QUrl &url);
     virtual void appendUrls(const QStringList &urls);
     virtual QString saveFileName(const QUrl &url);
-    QStringList* fileNames;
+    QStringList* fileNames = new QStringList();
 
 signals:
     void finished();
@@ -36,11 +36,12 @@ private:
     virtual bool isHttpRedirect() const;
     virtual void reportRedirect();
     QTimer* timer;
-    QUrl* qurl;
-    QQueue<QUrl> *downloadQueue;
-    QFileInfo* qFileInfo;
+    QUrl* qurl = new QUrl();
+    QQueue<QUrl> *downloadQueue = new QQueue<QUrl>();
+    QFileInfo* qFileInfo = new QFileInfo();
+    QNetworkRequest* request = new QNetworkRequest();
 
-//    QNetworkAccessManager manager;
+    QNetworkAccessManager* manager = new QNetworkAccessManager();
     friend class DownloadManagerTest;
     friend class MockDownloadManager;
     FRIEND_TEST(DownloadManagerTest, append);
@@ -50,9 +51,9 @@ private:
     FRIEND_TEST(DownloadManagerTest, saveFileName);
 
     QNetworkReply *currentDownload = nullptr;
-    QFile* output;
-    QTime downloadTime;
-    TextProgressBar progressBar;
+    QFile* output = new QFile();
+    QTime* downloadTime = new QTime();
+    TextProgressBar* progressBar = new TextProgressBar();
 
     int downloadedCount = 0;
     int totalCount = 0;

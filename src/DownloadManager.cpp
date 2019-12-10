@@ -1,5 +1,6 @@
 #include "DownloadManager.h"
 
+#include <QDebug>
 #include <QTextStream>
 
 #include <cstdio>
@@ -7,7 +8,7 @@
 using namespace std;
 
 DownloadManager::DownloadManager(QObject *parent)
-    : QObject(parent)
+    : QObject(parent), downloadedCount(0), totalCount(0)
 {
 }
 
@@ -39,14 +40,15 @@ QString DownloadManager::saveFileName(const QUrl &url)
     qFileInfo->setFile(path);
     QString basename = qFileInfo->fileName();
 
-    if (basename.isEmpty())
-        basename = "download";
+//    if (basename.isEmpty()) { // WARNING: uncommet and tests
+//        basename = "download";
+//    }
 
-    if (QFile::exists(basename)) {
+    if (output->exists(basename)) {
         // already exists, don't overwrite
         int i = 0;
         basename += '.';
-        while (QFile::exists(basename + QString::number(i)))
+        while (output->exists(basename + QString::number(i)))
             ++i;
 
         basename += QString::number(i);
@@ -71,36 +73,35 @@ void DownloadManager::startNextDownload()
         output->setFileName(filename);
         fileNames->append(output->fileName());
 
-//        if (!output->open(QIODevice::WriteOnly)) {
-//            fprintf(stderr, "Problem opening save file '%s' for download '%s': %s\n",
-//                    qPrintable(filename), url.toEncoded().constData(),
-//                    qPrintable(output->errorString()));
+        if (!output->open(QFile::WriteOnly)) {
+            fprintf(stderr, "Problem opening save file '%s' for download '%s': %s\n",
+                    qPrintable(filename), url.toEncoded().constData(),
+                    qPrintable(output->errorString()));
 
-//            startNextDownload();
-//            return;                 // skip this download
-//        }
+            startNextDownload();
+        } else {
+            request->setUrl(url);
+            currentDownload = manager->get(*request);
+            connect(currentDownload, SIGNAL(downloadProgress(qint64,qint64)),
+                    SLOT(downloadProgress(qint64,qint64)));
+            connect(currentDownload, SIGNAL(finished()),
+                    SLOT(downloadFinished()));
+            connect(currentDownload, SIGNAL(readyRead()),
+                    SLOT(downloadReadyRead()));
 
-//        QNetworkRequest request(url);
-    //    currentDownload = manager.get(request);
-    //    connect(currentDownload, SIGNAL(downloadProgress(qint64,qint64)),
-    //            SLOT(downloadProgress(qint64,qint64)));
-    //    connect(currentDownload, SIGNAL(finished()),
-    //            SLOT(downloadFinished()));
-    //    connect(currentDownload, SIGNAL(readyRead()),
-    //            SLOT(downloadReadyRead()));
-
-        // prepare the output
-//        printf("Downloading %s...\n", url.toEncoded().constData());
-//        downloadTime.start();
+    //          prepare the output
+            printf("Downloading %s...\n", url.toEncoded().constData());
+            downloadTime->start();
+        }
     }
 }
 
 void DownloadManager::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)
 {
-    progressBar.setStatus(bytesReceived, bytesTotal);
+    progressBar->setStatus(bytesReceived, bytesTotal);
 
     // calculate the download speed
-    double speed = bytesReceived * 1000.0 / downloadTime.elapsed();
+    double speed = bytesReceived * 1000.0 / downloadTime->elapsed();
     QString unit;
     if (speed < 1024) {
         unit = "bytes/sec";
@@ -112,19 +113,19 @@ void DownloadManager::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)
         unit = "MB/s";
     }
 
-    progressBar.setMessage(QString::fromLatin1("%1 %2")
+    progressBar->setMessage(QString::fromLatin1("%1 %2")
                            .arg(speed, 3, 'f', 1).arg(unit));
-    progressBar.update();
+    progressBar->update();
 }
 
 void DownloadManager::downloadFinished()
 {
-    progressBar.clear();
+    progressBar->clear();
     output->close();
 
     if (currentDownload->error()) {
         // download failed
-        fprintf(stderr, "Failed: %s\n", qPrintable(currentDownload->errorString()));
+        fprintf(stderr, "Failed: %s\n", qPrintable(currentDownload->errorString())); //WARNING: needed fprintf ?
         output->remove();
     } else {
         // let's check if it was actually a redirect
@@ -133,7 +134,7 @@ void DownloadManager::downloadFinished()
             output->remove();
         } else {
             printf("Succeeded (saved to %s)\n", qPrintable(output->fileName()));
-            ++downloadedCount;
+            ++downloadedCount; // WARNING: check this
         }
     }
 
@@ -156,17 +157,20 @@ bool DownloadManager::isHttpRedirect() const
 void DownloadManager::reportRedirect()
 {
     int statusCode = currentDownload->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-    QUrl requestUrl = currentDownload->request().url();
-    QTextStream(stderr) << "Request: " << requestUrl.toDisplayString()
+    const QUrl &requestUrl = currentDownload->request().url();
+    QTextStream(stderr) << "Request: " << requestUrl.toDisplayString() // WARNING: add mock QTextStream
                         << " was redirected with code: " << statusCode
                         << '\n';
 
-    QVariant target = currentDownload->attribute(QNetworkRequest::RedirectionTargetAttribute);
-    if (!target.isValid())
-        return;
-    QUrl redirectUrl = target.toUrl();
-    if (redirectUrl.isRelative())
-        redirectUrl = requestUrl.resolved(redirectUrl);
-    QTextStream(stderr) << "Redirected to: " << redirectUrl.toDisplayString()
-                        << '\n';
+    const QVariant& target = currentDownload->attribute(QNetworkRequest::RedirectionTargetAttribute);
+
+    if (target.isValid()) {
+        const QUrl &redirectUrl = target.toUrl();
+
+        if (redirectUrl.isRelative()) {
+//            redirectUrl = requestUrl.resolved(redirectUrl);
+        }
+//        QTextStream(stderr) << "Redirected to: " << redirectUrl.toDisplayString()
+//                            << '\n';
+    }
 }

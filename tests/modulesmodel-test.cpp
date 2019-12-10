@@ -53,10 +53,11 @@ TEST_F(ModulesModelTest, init)
 {
     ON_CALL(mockModulesModel, init())
             .WillByDefault(Invoke(&mockModulesModel, &MockModulesModel::parentInit));
+
     {
         InSequence s;
-        EXPECT_CALL(mockModulesModel, setTable(tableName));
         EXPECT_CALL(mockModulesModel, createTable(tableName, relatedTable));
+        EXPECT_CALL(mockModulesModel, setTable(tableName));
         EXPECT_CALL(mockModulesModel, select());
     }
 

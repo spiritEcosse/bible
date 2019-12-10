@@ -11,7 +11,7 @@
 //#include "qhostinfo.h"
 //#include "qhstspolicy.h"
 
-//#include "qnetworkaccessmanager.h"
+#include "qnetworkaccessmanager.h"
 //#include "qnetworkconfigmanager.h"
 //#include "qnetworkconfiguration.h"
 //#include "qnetworkcookie.h"

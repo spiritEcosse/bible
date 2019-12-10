@@ -1,11 +1,15 @@
-//#ifndef MOCK_QNETWORKREQUEST_H
-//#define MOCK_QNETWORKREQUEST_H
+#ifndef MOCK_QNETWORKREQUEST_H
+#define MOCK_QNETWORKREQUEST_H
 
-//#include <QNetworkRequest>
-//#include <gmock/gmock.h>
+#include <gmock/gmock.h>
 
-//class MockQNetworkRequest : public QNetworkRequest
-//{
-//};
+#include <QNetworkRequest>
 
-//#endif // MOCK_QNETWORKREQUEST_H
+class MockQNetworkRequest : public QNetworkRequest
+{
+public:
+    MOCK_METHOD0(url, QUrl&());
+    MOCK_METHOD(void, setUrl, (const QUrl &url), (override));
+};
+
+#endif // MOCK_QNETWORKREQUEST_H

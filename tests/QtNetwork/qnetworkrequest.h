@@ -101,11 +101,11 @@ public:
     inline bool operator!=(const QNetworkRequest &other) const
     { return !operator==(other); }
 
-//    QUrl url() const;
-    virtual QUrl url() const {
-        return QUrl();
+    QUrl q;
+    virtual QUrl& url() {
+        return q;
     }
-    void setUrl(const QUrl &url);
+    virtual void setUrl(const QUrl &url) {}
 
     // "cooked" headers
     QVariant header(KnownHeaders header) const;

@@ -4,31 +4,26 @@
 # You should edit the following 3 paths when necessary
 ############################################################################################################
 
-# SRC_DIR is the directory containing the .gcno files (%{buildDir} in Qt Creator)
+LCOV=lcov
+GENHTML=genhtml
+#BROWSER="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+
 SRC_DIR=`pwd`
+HTML_RESULTS="html"
 
-# COV_DIR is the directory where the coverage results will be stored
-COV_DIR="$SRC_DIR/coverage"
-
-############################################################################################################
-
-# Path where the HTML files should be saved
-HTML_RESULTS="${COV_DIR}""/html"
-
-# Create the html folder if it does not exists
 mkdir -p ${HTML_RESULTS}
+ 
+# generate our initial info
+"${LCOV}" -c -d "${SRC_DIR}" -c -o "${SRC_DIR}/coverage.info"
 
-# Generate our initial info
-lcov -d "${SRC_DIR}" -c -o "${COV_DIR}/coverage.info"
+# remove some paths
+"${LCOV}" -r "${SRC_DIR}/coverage.info" "*Qt*.framework*" "*Xcode.app*" "*.moc" "*moc_*.cpp" "*/test/*" -o "${SRC_DIR}/coverage-filtered.info"
  
-# Remove some paths/files which we don't want to calculate the code coverage (e.g. third party libraries) and generate a new coverage file filtered (feel free to edit it when necessary)
-lcov -r "${COV_DIR}/coverage.info" "*Qt*.framework*" "*.h" "*/tests/*" "*.moc" "*moc_*.cpp" "*/test/*" "*/build*/*" -o "${COV_DIR}/coverage-filtered.info"
+# generate our HTML
+"${GENHTML}" -o "${HTML_RESULTS}" "${SRC_DIR}/coverage-filtered.info"
  
-# Generate the HTML files
-genhtml -o "${HTML_RESULTS}" "${COV_DIR}/coverage-filtered.info"
+# reset our counts
+"${LCOV}" -d "${SRC_DIR}" -z
  
-# Reset our counts
-lcov -d "${COV_DIR}" -z
- 
-# Open the index.html
+# open in browser and bring to front
 xdg-open "${HTML_RESULTS}/index.html"

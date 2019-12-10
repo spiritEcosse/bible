@@ -29,12 +29,14 @@ public:
     MOCK_METHOD0(select, bool());
     MOCK_METHOD0(decompressRegistry, void());
     MOCK_METHOD0(updateModules, void());
-
+    MOCK_METHOD1(setEditStrategy, void(EditStrategy strategy));
     MOCK_CONST_METHOD0(record, QSqlRecord());
     MOCK_CONST_METHOD1(record, QSqlRecord(int row));
     MOCK_METHOD2(insertRecord, bool(int row, const QSqlRecord &record));
     MOCK_METHOD0(submitAll, bool());
     MOCK_METHOD0(database, QSqlDatabase&());
+    MOCK_CONST_METHOD0(lastError, QSqlError&());
+
     bool ParentCreateTable(const QString &tableName) {
         return ModulesGroupModel::createTable(tableName);
     }
@@ -43,6 +45,9 @@ public:
     }
     bool parentExecLastError(const QString& query) {
         return ModulesGroupModel::execLastError(query);
+    }
+    void parentNewRows(QJsonArray &downloads) {
+        return ModulesGroupModel::newRows(downloads);
     }
 };
 

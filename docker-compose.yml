@@ -1,0 +1,10 @@
+version: '3.7'
+
+services:
+  qt:
+    image: shevchenkoigor/bible:latest
+    env_file:
+        - .env
+    volumes:
+      - .:/app
+    command: /app/coverage.sh
