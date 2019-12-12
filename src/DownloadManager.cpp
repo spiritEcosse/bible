@@ -40,9 +40,9 @@ QString DownloadManager::saveFileName(const QUrl &url)
     qFileInfo->setFile(path);
     QString basename = qFileInfo->fileName();
 
-//    if (basename.isEmpty()) { // WARNING: uncommet and tests
+    if (basename.isEmpty()) { // WARNING: uncommet and tests
 //        basename = "download";
-//    }
+    }
 
     if (output->exists(basename)) {
         // already exists, don't overwrite
@@ -158,9 +158,9 @@ void DownloadManager::reportRedirect()
 {
     int statusCode = currentDownload->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     const QUrl &requestUrl = currentDownload->request().url();
-    QTextStream(stderr) << "Request: " << requestUrl.toDisplayString() // WARNING: add mock QTextStream
-                        << " was redirected with code: " << statusCode
-                        << '\n';
+    *qTextStream << "Request: " << requestUrl.toDisplayString() // WARNING: add mock QTextStream
+                << " was redirected with code: " << statusCode
+                << '\n';
 
     const QVariant& target = currentDownload->attribute(QNetworkRequest::RedirectionTargetAttribute);
 

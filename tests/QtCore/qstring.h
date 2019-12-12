@@ -204,7 +204,7 @@ public:
     inline int size() const { return d->size; }
     inline int count() const { return d->size; }
     inline int length() const;
-    inline bool isEmpty() const;
+    virtual inline bool isEmpty() const;
     void resize(int size);
     void resize(int size, QChar fillChar);
 

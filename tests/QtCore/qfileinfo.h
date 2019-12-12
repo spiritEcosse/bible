@@ -87,8 +87,9 @@ public:
     QString filePath() const;
     QString absoluteFilePath() const;
     QString canonicalFilePath() const;
-    virtual inline QString fileName() const {
-        return QString();
+    const QString* q;
+    virtual inline const QString &fileName() const {
+        return *q;
     }
     QString baseName() const;
     QString completeBaseName() const;

@@ -40,6 +40,7 @@ private:
     QQueue<QUrl> *downloadQueue = new QQueue<QUrl>();
     QFileInfo* qFileInfo = new QFileInfo();
     QNetworkRequest* request = new QNetworkRequest();
+    QTextStream* qTextStream = new QTextStream();
 
     QNetworkAccessManager* manager = new QNetworkAccessManager();
     friend class DownloadManagerTest;

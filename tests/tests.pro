@@ -60,6 +60,8 @@ HEADERS += $$PROJECT_HEADERS \
     QtCore/qstringlist.h \
     QtCore/QString \
     QtCore/qstring.h \
+    QtCore/QTextStream \
+    QtCore/qtextstream.h \
     mock_qstring.h \
     mock_modulesmodel.h \
     mock_modulesgroupmodel.h \
