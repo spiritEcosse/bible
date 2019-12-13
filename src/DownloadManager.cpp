@@ -38,22 +38,21 @@ QString DownloadManager::saveFileName(const QUrl &url)
 {
     QString path = url.path();
     qFileInfo->setFile(path);
-    QString basename = qFileInfo->fileName();
+    QString&& basename = std::move(qFileInfo->fileName());
 
-    if (basename.isEmpty()) { // WARNING: uncommet and tests
-//        basename = "download";
+    if (basename.isEmpty()) {
+        basename = "download";
     }
 
-    if (output->exists(basename)) {
+    if (output->exists(basename)) { // WARNING: basename to test
         // already exists, don't overwrite
         int i = 0;
         basename += '.';
-        while (output->exists(basename + QString::number(i)))
-            ++i;
+//        while (output->exists(basename + QString::number(i)))
+//            ++i;
 
-        basename += QString::number(i);
+//        basename += QString::number(i);
     }
-
     return basename;
 }
 

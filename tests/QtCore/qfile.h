@@ -70,7 +70,9 @@ public:
 #endif
 
     bool exists() const;
-    virtual bool exists(const QString &fileName);
+    virtual bool exists(const QString &fileName) {
+        return false;
+    }
 
 #if QT_DEPRECATED_SINCE(5, 13)
     QT_DEPRECATED_X("Use QFile::symLinkTarget() instead")

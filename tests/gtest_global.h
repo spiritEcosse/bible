@@ -7,6 +7,8 @@
 using ::testing::_;
 using ::testing::ExpectationSet;
 using ::testing::TestWithParam;
+using ::testing::ByMove;
+using testing::MockFunction;
 using ::testing::NotNull;
 using ::testing::SetArgPointee;
 using ::testing::SetArgReferee;
