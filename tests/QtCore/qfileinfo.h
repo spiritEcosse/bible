@@ -48,7 +48,7 @@ public:
     QString filePath() const;
     QString absoluteFilePath() const;
     QString canonicalFilePath() const;
-    QString *q = new QString();
+    QString *q;
     virtual inline QString& fileName() const {
         return *q;
     }

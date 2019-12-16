@@ -445,7 +445,7 @@ public:
     }
 
     inline QString &operator+=(QChar::SpecialCharacter c) { return append(QChar(c)); }
-    inline QString &operator+=(const QString &s) { return append(s); }
+    inline QString &operator+=(const QString &s) { }
     inline QString &operator+=(const QStringRef &s) { return append(s); }
     inline QString &operator+=(QLatin1String s) { return append(s); }
 
@@ -625,13 +625,13 @@ public:
     QString &setNum(float, char f='g', int prec=6);
     QString &setNum(double, char f='g', int prec=6);
 
-    static QString number(int, int base=10);
+    virtual QString number(int, int base=10) {}
     static QString number(uint, int base=10);
     static QString number(long, int base=10);
     static QString number(ulong, int base=10);
     static QString number(qlonglong, int base=10);
     static QString number(qulonglong, int base=10);
-    static QString number(double, char f='g', int prec=6);
+    static QString number(double, char f='g', int prec=6) {}
 
     friend Q_CORE_EXPORT bool operator==(const QString &s1, const QString &s2) Q_DECL_NOTHROW;
     friend Q_CORE_EXPORT bool operator<(const QString &s1, const QString &s2) Q_DECL_NOTHROW;
@@ -668,8 +668,7 @@ public:
     inline QT_ASCII_CAST_WARN QString(const QByteArray &a)
         : d(fromAscii_helper(a.constData(), qstrnlen(a.constData(), a.size())))
     {}
-    inline QT_ASCII_CAST_WARN QString &operator=(const char *ch)
-    { return (*this = fromUtf8(ch)); }
+    inline QT_ASCII_CAST_WARN QString &operator=(const char *ch) {}
     inline QT_ASCII_CAST_WARN QString &operator=(const QByteArray &a)
     { return (*this = fromUtf8(a)); }
     inline QT_ASCII_CAST_WARN QString &operator=(char c)
@@ -689,11 +688,11 @@ public:
     inline QT_ASCII_CAST_WARN QString &insert(int i, const QByteArray &s)
     { return insert(i, QString::fromUtf8(s)); }
     inline QT_ASCII_CAST_WARN QString &operator+=(const char *s)
-    { return append(QString::fromUtf8(s)); }
+    {  }
     inline QT_ASCII_CAST_WARN QString &operator+=(const QByteArray &s)
-    { return append(QString::fromUtf8(s)); }
+    {}
     inline QT_ASCII_CAST_WARN QString &operator+=(char c)
-    { return append(QChar::fromLatin1(c)); }
+    { }
 
     inline QT_ASCII_CAST_WARN bool operator==(const char *s) const;
     inline QT_ASCII_CAST_WARN bool operator!=(const char *s) const;
@@ -1313,22 +1312,22 @@ inline int QByteArray::lastIndexOf(const QString &s, int from) const
 inline const QString operator+(const QString &s1, const QString &s2)
 { QString t(s1); t += s2; return t; }
 inline const QString operator+(const QString &s1, QChar s2)
-{ QString t(s1); t += s2; return t; }
+{ }
 inline const QString operator+(QChar s1, const QString &s2)
-{ QString t(s1); t += s2; return t; }
+{ }
 #  if !defined(QT_NO_CAST_FROM_ASCII) && !defined(QT_RESTRICTED_CAST_FROM_ASCII)
 inline QT_ASCII_CAST_WARN const QString operator+(const QString &s1, const char *s2)
-{ QString t(s1); t += QString::fromUtf8(s2); return t; }
+{ }
 inline QT_ASCII_CAST_WARN const QString operator+(const char *s1, const QString &s2)
-{ QString t = QString::fromUtf8(s1); t += s2; return t; }
+{ }
 inline QT_ASCII_CAST_WARN const QString operator+(char c, const QString &s)
-{ QString t = s; t.prepend(QChar::fromLatin1(c)); return t; }
+{ }
 inline QT_ASCII_CAST_WARN const QString operator+(const QString &s, char c)
-{ QString t = s; t += QChar::fromLatin1(c); return t; }
+{ }
 inline QT_ASCII_CAST_WARN const QString operator+(const QByteArray &ba, const QString &s)
-{ QString t = QString::fromUtf8(ba); t += s; return t; }
+{ }
 inline QT_ASCII_CAST_WARN const QString operator+(const QString &s, const QByteArray &ba)
-{ QString t(s); t += QString::fromUtf8(ba); return t; }
+{ }
 #  endif // QT_NO_CAST_FROM_ASCII
 #endif // QT_USE_QSTRINGBUILDER
 
@@ -1807,19 +1806,19 @@ inline QString &QString::insert(int i, const QStringRef &s)
 
 #if !defined(QT_USE_FAST_OPERATOR_PLUS) && !defined(QT_USE_QSTRINGBUILDER)
 inline QString operator+(const QString &s1, const QStringRef &s2)
-{ QString t; t.reserve(s1.size() + s2.size()); t += s1; t += s2; return t; }
+{  }
 inline QString operator+(const QStringRef &s1, const QString &s2)
-{ QString t; t.reserve(s1.size() + s2.size()); t += s1; t += s2; return t; }
+{ }
 inline QString operator+(const QStringRef &s1, QLatin1String s2)
-{ QString t; t.reserve(s1.size() + s2.size()); t += s1; t += s2; return t; }
+{ }
 inline QString operator+(QLatin1String s1, const QStringRef &s2)
-{ QString t; t.reserve(s1.size() + s2.size()); t += s1; t += s2; return t; }
+{ }
 inline QString operator+(const QStringRef &s1, const QStringRef &s2)
-{ QString t; t.reserve(s1.size() + s2.size()); t += s1; t += s2; return t; }
+{ }
 inline QString operator+(const QStringRef &s1, QChar s2)
-{ QString t; t.reserve(s1.size() + 1); t += s1; t += s2; return t; }
+{ }
 inline QString operator+(QChar s1, const QStringRef &s2)
-{ QString t; t.reserve(1 + s2.size()); t += s1; t += s2; return t; }
+{ }
 #endif // !(QT_USE_FAST_OPERATOR_PLUS || QT_USE_QSTRINGBUILDER)
 
 namespace Qt {

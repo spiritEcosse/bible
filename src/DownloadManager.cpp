@@ -48,10 +48,10 @@ QString DownloadManager::saveFileName(const QUrl &url)
         // already exists, don't overwrite
         int i = 0;
         basename += '.';
-//        while (output->exists(basename + QString::number(i)))
-//            ++i;
+        while (output->exists(basename + basename.number(i, 10)))
+            ++i;
 
-//        basename += QString::number(i);
+        basename += basename.number(i, 10);
     }
     return basename;
 }

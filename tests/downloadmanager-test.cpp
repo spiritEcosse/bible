@@ -181,7 +181,7 @@ TEST_F(DownloadManagerTest, append)
 TEST_F(DownloadManagerTest, saveFileName)
 {
     EXPECT_CALL(mockDownloadManager, saveFileName(_))
-//            .Times(2)
+            .Times(2)
             .WillRepeatedly(
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentSaveFileName)
                 );
@@ -208,21 +208,32 @@ TEST_F(DownloadManagerTest, saveFileName)
                 .WillOnce(Return(path));
         EXPECT_CALL(mockQFileInfo, setFile(path));
         EXPECT_CALL(mockQFileInfo, fileName())
-                .WillOnce(ReturnPointee(&mockQString));
+                .WillOnce(ReturnRef(mockQString));
         EXPECT_CALL(mockQString, isEmpty())
                 .WillOnce(Return(false));
-//         WARNING : expect_call - basename.isEmpty()
         EXPECT_CALL(mockQFile, exists(_))
                 .WillOnce(Return(true));
-        EXPECT_CALL(mockQFile, exists(QString(".0")))
+
+        basename = "0";
+        EXPECT_CALL(mockQString, number(0, 10))
+                .WillOnce(Return(basename));
+        EXPECT_CALL(mockQFile, exists(QString(".") + basename))
                 .WillOnce(Return(true));
-        EXPECT_CALL(mockQFile, exists(QString(".1")))
+        basename = "1";
+        EXPECT_CALL(mockQString, number(1, 10))
+                .WillOnce(Return(QString(".") + basename));
+        EXPECT_CALL(mockQFile, exists(basename))
                 .WillOnce(Return(true));
-        EXPECT_CALL(mockQFile, exists(QString(".2")))
+        basename = "2";
+        EXPECT_CALL(mockQString, number(2, 10))
+                .WillOnce(Return(QString(".") + basename));
+        EXPECT_CALL(mockQFile, exists(basename))
                 .WillOnce(Return(false));
+        EXPECT_CALL(mockQString, number(2, 10))
+                .WillOnce(Return(basename));
     }
     basename = ".2";
-    EXPECT_EQ(mockDownloadManager.saveFileName(mockQurl), basename);
+    EXPECT_EQ(mockDownloadManager.saveFileName(mockQurl), basename); // WARNING: not work EXPECT_EQ
 }
 
 TEST_F(DownloadManagerTest, startNextDownload)
