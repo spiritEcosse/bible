@@ -9,9 +9,9 @@ void ModulesGroupModel::decompressRegistry()
     QString registryName = JlCompress::extractFile(registryArchive.fileName(), registry.fileName());
     QFileInfo fileInfo(registryName);
 
-//    if (fileInfo.fileName() == registry.fileName()) {
-//        emit decompressSuccess();
-//    }
+    if (fileInfo.fileName() == registry.fileName()) {
+        emit decompressSuccess();
+    }
 }
 
 void ModulesGroupModel::removeOldRows()

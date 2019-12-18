@@ -6,6 +6,8 @@
 #include <QtCore/qshareddata.h>
 #include <QtCore/qmetatype.h>
 #include <memory>
+#include <iostream>
+
 QT_BEGIN_NAMESPACE
 
 
@@ -48,9 +50,7 @@ public:
     QString filePath() const;
     QString absoluteFilePath() const;
     QString canonicalFilePath() const;
-    QString *q;
     virtual inline QString& fileName() const {
-        return *q;
     }
     QString baseName() const;
     QString completeBaseName() const;

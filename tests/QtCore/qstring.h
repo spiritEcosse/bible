@@ -196,7 +196,9 @@ public:
     QString &operator=(const QString &) Q_DECL_NOTHROW;
     QString &operator=(QLatin1String latin1);
 #ifdef Q_COMPILER_RVALUE_REFS
-    inline QString(QString && other) Q_DECL_NOTHROW : d(other.d) { other.d = Data::sharedNull(); }
+    inline QString(QString && other) Q_DECL_NOTHROW : d(other.d) {
+        other.d = Data::sharedNull();
+    }
     inline QString &operator=(QString &&other) Q_DECL_NOTHROW
     { qSwap(d, other.d); return *this; }
 #endif

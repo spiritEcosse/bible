@@ -15,13 +15,12 @@ DownloadManager::DownloadManager(QObject *parent)
 void DownloadManager::appendUrls(const QStringList &urls)
 {
     for (QString urlAsString : urls) {
-//        std::cout << "";
-        urlAsString.toLocal8Bit();
+        append(qurl->fromEncoded(urlAsString.toLocal8Bit()));
     }
 
-//    if (downloadQueue->isEmpty()) {
-//        timer->singleShot(0, this, SIGNAL(finished()));
-//    }
+    if (downloadQueue->isEmpty()) {
+        timer->singleShot(0, this, SIGNAL(finished()));
+    }
 }
 
 void DownloadManager::append(const QUrl &url)
@@ -38,7 +37,7 @@ QString DownloadManager::saveFileName(const QUrl &url)
 {
     QString path = url.path();
     qFileInfo->setFile(path);
-    QString&& basename = std::move(qFileInfo->fileName());
+    QString&& basename(std::move(qFileInfo->fileName()));
 
     if (basename.isEmpty()) {
         basename = "download";
