@@ -177,8 +177,9 @@ TEST_F(DownloadManagerTest, append)
 
 TEST_F(DownloadManagerTest, saveFileName)
 {
-    ON_CALL(mockDownloadManager, saveFileName(_))
-            .WillByDefault(
+    EXPECT_CALL(mockDownloadManager, saveFileName(_))
+            .Times(2)
+            .WillRepeatedly(
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentSaveFileName)
                 );
 
@@ -368,7 +369,7 @@ TEST_F(DownloadManagerTest, downloadReadyRead)
     QByteArray array;
     {
         InSequence s;
-        
+
         EXPECT_CALL(mockQNetworkReply, readAll())
                 .WillOnce(Return(array));
         EXPECT_CALL(mockQFile, write(array));
