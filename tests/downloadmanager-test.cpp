@@ -68,7 +68,7 @@ protected:
   const QStringList urls = {"url1"};
   QString filename = BuiltInDefaultValue<QString>::Get();
   QString path = BuiltInDefaultValue<QString>::Get();
-  QString basename = BuiltInDefaultValue<QString>::Get();
+  QString basename;
   int statusCode = BuiltInDefaultValue<int>::Get();
   int bytesReceived = BuiltInDefaultValue<int>::Get();
   int bytesTotal = BuiltInDefaultValue<int>::Get();
@@ -177,42 +177,40 @@ TEST_F(DownloadManagerTest, append)
 
 TEST_F(DownloadManagerTest, saveFileName)
 {
-    ON_CALL(mockDownloadManager, saveFileName(_))
-            .WillByDefault(
+    EXPECT_CALL(mockDownloadManager, saveFileName(_))
+            .Times(2)
+            .WillRepeatedly(
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentSaveFileName)
                 );
 
-    {
-        InSequence s;
-        EXPECT_CALL(mockQurl, path(QUrl::FullyDecoded))
-                .WillOnce(Return(path));
-        EXPECT_CALL(mockQFileInfo, setFile(path));
-        EXPECT_CALL(mockQFileInfo, fileName())
-                .WillOnce(Return(basename));
-        // WARNING : expect_call - basename.isEmpty()
-        EXPECT_CALL(mockQFile, exists(basename))
-                .WillOnce(Return(false));
-    }
+    Sequence s1, s2;
+
+    EXPECT_CALL(mockQurl, path(QUrl::FullyDecoded))
+            .Times(2)
+            .WillRepeatedly(Return(path));
+    EXPECT_CALL(mockQFileInfo, setFile(path))
+            .Times(2);
+    EXPECT_CALL(mockQFileInfo, fileName())
+            .Times(2)
+            .WillRepeatedly(Return(basename));
+    // WARNING : expect_call - basename.isEmpty()
+    EXPECT_CALL(mockQFile, exists(basename))
+            .Times(2)
+            .InSequence(s1, s2)
+            .WillOnce(Return(false))
+            .WillOnce(Return(true));
+
+    EXPECT_CALL(mockQFile, exists(QString(".0")))
+            .InSequence(s2)
+            .WillOnce(Return(true));
+    EXPECT_CALL(mockQFile, exists(QString(".1")))
+            .InSequence(s2)
+            .WillOnce(Return(true));
+    EXPECT_CALL(mockQFile, exists(QString(".2")))
+            .InSequence(s2)
+            .WillRepeatedly(Return(false));
 
     EXPECT_EQ(mockDownloadManager.saveFileName(mockQurl), basename);
-
-    {
-        InSequence s;
-        EXPECT_CALL(mockQurl, path(QUrl::FullyDecoded))
-                .WillOnce(Return(path));
-        EXPECT_CALL(mockQFileInfo, setFile(path));
-        EXPECT_CALL(mockQFileInfo, fileName())
-                .WillOnce(Return(basename));
-        // WARNING : expect_call - basename.isEmpty()
-        EXPECT_CALL(mockQFile, exists(basename))
-                .WillOnce(Return(true));
-        EXPECT_CALL(mockQFile, exists(QString(".0")))
-                .WillOnce(Return(true));
-        EXPECT_CALL(mockQFile, exists(QString(".1")))
-                .WillOnce(Return(true));
-        EXPECT_CALL(mockQFile, exists(QString(".2")))
-                .WillOnce(Return(false));
-    }
     basename = ".2";
     EXPECT_EQ(mockDownloadManager.saveFileName(mockQurl), basename);
 }
@@ -368,7 +366,7 @@ TEST_F(DownloadManagerTest, downloadReadyRead)
     QByteArray array;
     {
         InSequence s;
-        
+
         EXPECT_CALL(mockQNetworkReply, readAll())
                 .WillOnce(Return(array));
         EXPECT_CALL(mockQFile, write(array));

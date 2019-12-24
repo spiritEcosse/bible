@@ -25,5 +25,6 @@ using ::testing::ReturnPointee;
 using ::testing::Property;
 using ::testing::internal::BuiltInDefaultValue;
 using ::testing::StrictMock;
+using ::testing::Sequence;
 
 #endif // GTEST_GLOBAL_H
