@@ -670,7 +670,8 @@ public:
     inline QT_ASCII_CAST_WARN QString(const QByteArray &a)
         : d(fromAscii_helper(a.constData(), qstrnlen(a.constData(), a.size())))
     {}
-    inline QT_ASCII_CAST_WARN QString &operator=(const char *ch) {}
+    inline QT_ASCII_CAST_WARN QString &operator=(const char *ch) {
+    }
     inline QT_ASCII_CAST_WARN QString &operator=(const QByteArray &a)
     { return (*this = fromUtf8(a)); }
     inline QT_ASCII_CAST_WARN QString &operator=(char c)

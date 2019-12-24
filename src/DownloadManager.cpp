@@ -37,7 +37,7 @@ QString DownloadManager::saveFileName(const QUrl &url)
 {
     QString path = url.path();
     qFileInfo->setFile(path);
-    QString&& basename(std::move(qFileInfo->fileName()));
+    QString& basename = qFileInfo->fileName();
 
     if (basename.isEmpty()) {
         basename = "download";
@@ -47,10 +47,10 @@ QString DownloadManager::saveFileName(const QUrl &url)
         // already exists, don't overwrite
         int i = 0;
         basename += '.';
-        while (output->exists(basename + basename.number(i, 10)))
+        while (output->exists(basename + basename.number(i)))
             ++i;
 
-        basename += basename.number(i, 10);
+        basename += basename.number(i);
     }
     return basename;
 }
