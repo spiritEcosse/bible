@@ -45,7 +45,7 @@ protected:
 
   // Objects declared here can be used by all tests in the test case for Foo.
 //  StrictMock<MockDownloadManager> mockDownloadManager;
-  MockDownloadManager mockDownloadManager;
+  StrictMock<MockDownloadManager> mockDownloadManager;
   DownloadManager* downloadManager;
 
   MockModulesGroupModel mockModulesGroupModel;
