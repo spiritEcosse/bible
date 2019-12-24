@@ -39,9 +39,9 @@ QString DownloadManager::saveFileName(const QUrl &url)
     qFileInfo->setFile(path);
     QString basename = qFileInfo->fileName();
 
-//    if (basename.isEmpty()) { // WARNING: uncommet and tests
-//        basename = "download";
-//    }
+    if (basename.isEmpty()) { // WARNING: uncommet and tests
+        basename = "download";
+    }
 
     if (output->exists(basename)) {
         // already exists, don't overwrite
