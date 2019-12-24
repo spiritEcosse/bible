@@ -167,7 +167,7 @@ void DownloadManager::reportRedirect()
         QUrl& redirectUrl = target.toUrl();
 
         if (redirectUrl.isRelative()) {
-            redirectUrl = requestUrl.resolved(redirectUrl);
+            redirectUrl = requestUrl.resolved(redirectUrl); // WARNING: add to EXPECT_CALL
         }
         QTextStream(stderr) << "Redirected to: " << redirectUrl.toDisplayString()
                             << '\n';

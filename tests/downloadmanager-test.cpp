@@ -65,7 +65,7 @@ protected:
   MockQTime mockQTime;
 
   const QUrl url = BuiltInDefaultValue<const QUrl>::Get();
-  const QStringList urls = {"url1"};
+  const QStringList urls = {QString()};
   QString filename = BuiltInDefaultValue<QString>::Get();
   QString path = BuiltInDefaultValue<QString>::Get();
   QString basename = BuiltInDefaultValue<QString>::Get();
@@ -92,8 +92,8 @@ static QMap<int, bool> codes = {
 };
 
 TEST_P(DownloadManagerTest, isHttpRedirectParam) {
-    ON_CALL(mockDownloadManager, isHttpRedirect())
-            .WillByDefault(
+    EXPECT_CALL(mockDownloadManager, isHttpRedirect())
+            .WillOnce(
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentIsHttpRedirect)
                 );
 
@@ -110,8 +110,9 @@ INSTANTIATE_TEST_CASE_P(PossibleHttpRedirectCodes, DownloadManagerTest, ValuesIn
 
 TEST_F(DownloadManagerTest, appendUrls)
 {
-    ON_CALL(mockDownloadManager, appendUrls(urls))
-            .WillByDefault(
+    EXPECT_CALL(mockDownloadManager, appendUrls(urls))
+            .Times(2)
+            .WillRepeatedly(
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentAppendUrls)
                 );
 
@@ -145,8 +146,9 @@ TEST_F(DownloadManagerTest, appendUrls)
 
 TEST_F(DownloadManagerTest, append)
 {
-    ON_CALL(mockDownloadManager, append(url))
-            .WillByDefault(
+    EXPECT_CALL(mockDownloadManager, append(url))
+            .Times(2)
+            .WillRepeatedly(
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentAppend)
                 );
 
@@ -291,8 +293,9 @@ TEST_F(DownloadManagerTest, startNextDownload)
 
 TEST_F(DownloadManagerTest, downloadProgress)
 {
-    ON_CALL(mockDownloadManager, downloadProgress(_, _))
-            .WillByDefault(
+    EXPECT_CALL(mockDownloadManager, downloadProgress(_, _))
+            .Times(1)
+            .WillOnce(
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentDownloadProgress)
                 );
 
@@ -308,8 +311,9 @@ TEST_F(DownloadManagerTest, downloadProgress)
 
 TEST_F(DownloadManagerTest, downloadFinished)
 {
-    ON_CALL(mockDownloadManager, downloadFinished())
-            .WillByDefault(
+    EXPECT_CALL(mockDownloadManager, downloadFinished())
+            .Times(3)
+            .WillRepeatedly(
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentDownloadFinished)
                 );
 
@@ -361,8 +365,9 @@ TEST_F(DownloadManagerTest, downloadFinished)
 
 TEST_F(DownloadManagerTest, downloadReadyRead)
 {
-    ON_CALL(mockDownloadManager, downloadReadyRead())
-            .WillByDefault(
+    EXPECT_CALL(mockDownloadManager, downloadReadyRead())
+            .Times(1)
+            .WillOnce(
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentDownloadReadyRead)
                 );
 
@@ -380,8 +385,9 @@ TEST_F(DownloadManagerTest, downloadReadyRead)
 
 TEST_F(DownloadManagerTest, isHttpRedirect)
 {
-    ON_CALL(mockDownloadManager, isHttpRedirect())
-            .WillByDefault(
+    EXPECT_CALL(mockDownloadManager, isHttpRedirect())
+            .Times(1)
+            .WillOnce(
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentIsHttpRedirect)
                 );
 
@@ -398,8 +404,9 @@ TEST_F(DownloadManagerTest, isHttpRedirect)
 
 TEST_F(DownloadManagerTest, reportRedirect)
 {
-    ON_CALL(mockDownloadManager, reportRedirect())
-            .WillByDefault(
+    EXPECT_CALL(mockDownloadManager, reportRedirect())
+            .Times(3)
+            .WillRepeatedly(
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentReportRedirect)
                 );
 
@@ -446,7 +453,33 @@ TEST_F(DownloadManagerTest, reportRedirect)
                 .WillOnce(Return(true));
         EXPECT_CALL(mockQVariantTarget, toUrl())
                 .WillOnce(ReturnRef(mockQurlRedirect));
-        EXPECT_CALL(mockQurlRedirect, isRelative());
+        EXPECT_CALL(mockQurlRedirect, isRelative())
+                .WillOnce(Return(false));
+    }
+
+    mockDownloadManager.reportRedirect();
+
+    {
+        InSequence s;
+
+        EXPECT_CALL(mockQNetworkReply, attribute(QNetworkRequest::HttpStatusCodeAttribute))
+                .WillOnce(ReturnPointee(&mockQVariant));
+        EXPECT_CALL(mockQVariant, toInt(nullptr))
+                .WillOnce(Return(statusCode));
+        EXPECT_CALL(mockQNetworkReply, request())
+                .WillOnce(ReturnPointee(&mockQNetworkRequest));
+        EXPECT_CALL(mockQNetworkRequest, url())
+                .WillOnce(ReturnRef(mockQurl));
+        EXPECT_CALL(mockQurl, toDisplayString(QUrl::FormattingOptions(QUrl::PrettyDecoded)));
+        EXPECT_CALL(mockQNetworkReply, attribute(QNetworkRequest::RedirectionTargetAttribute))
+                .WillOnce(ReturnPointee(&mockQVariantTarget));
+        EXPECT_CALL(mockQVariantTarget, isValid())
+                .WillOnce(Return(true));
+        EXPECT_CALL(mockQVariantTarget, toUrl())
+                .WillOnce(ReturnRef(mockQurlRedirect));
+        EXPECT_CALL(mockQurlRedirect, isRelative())
+                .WillOnce(Return(true));
+        EXPECT_CALL(mockQurl, resolved(_)); // WARNING: add redirectUrl
     }
 
     mockDownloadManager.reportRedirect();

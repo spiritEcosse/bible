@@ -8,6 +8,7 @@
 class MockQUrl : public QUrl
 {
 public:
+    MOCK_METHOD(QUrl, resolved, (const QUrl &relative), (const));
     MOCK_CONST_METHOD1(toDisplayString, QString(FormattingOptions options));
     MOCK_METHOD(bool, isRelative, (), (const));
     MOCK_METHOD(QUrl, fromEncodedImpl, (QByteArray, ParsingMode));

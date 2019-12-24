@@ -220,7 +220,7 @@ public:
     QString fragment(ComponentFormattingOptions options = PrettyDecoded) const;
     void setFragment(const QString &fragment, ParsingMode mode = TolerantMode);
 
-    Q_REQUIRED_RESULT QUrl resolved(const QUrl &relative) const;
+    virtual inline Q_REQUIRED_RESULT QUrl resolved(const QUrl &relative) const {}
 
     virtual bool isRelative() const {
         return true;
