@@ -1,4 +1,4 @@
 #/bin/bash
 
-sed -i 's!QVariant target!QVariant\& target!g' ../src/DownloadManager.cpp
-sed -i 's!QUrl redirectUrl!QUrl\& redirectUrl!g' ../src/DownloadManager.cpp
+sed -i '164s!QVariant!QVariant\&!' ../src/DownloadManager.cpp
+sed -i '167s!QUrl!QUrl\&!' ../src/DownloadManager.cpp
