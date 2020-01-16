@@ -5,7 +5,7 @@ export $(shell sed 's/=.*//' .env)
 
 coverage:
 	docker-compose up
-	xdg-open ${HTML}/index.html
+	xdg-open tests/${HTML}/index.html
 
 tests:
 	cd tests && \

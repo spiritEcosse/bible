@@ -13,4 +13,4 @@ RUN git clone https://github.com/google/googletest.git /googletest && \
 
 COPY . /app
 RUN mkdir -p /app/tests/build
-WORKDIR /app/tests/build
+WORKDIR /app/tests
