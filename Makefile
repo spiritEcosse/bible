@@ -31,10 +31,9 @@ build_push:
 	docker push ${REPO}:${TAG}
 
 commit:
-	git remote show origin && \
 	git add . && \
 	git commit -m '${COMMIT_MESSAGE}' && \
 	git push  && \
-	git branch track && \
+	git branch --set-upstream-to=origin/`git rev-parse --abbrev-ref HEAD` `git rev-parse --abbrev-ref HEAD` && \
 	docker build -t ${REPO}:${TAG} . && \
 	docker push ${REPO}:${TAG}
