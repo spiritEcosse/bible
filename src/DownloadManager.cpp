@@ -133,7 +133,7 @@ void DownloadManager::downloadFinished()
             output->remove();
         } else {
             printf("Succeeded (saved to %s)\n", qPrintable(output->fileName()));
-            ++downloadedCount; // WARNING: check this
+            ++downloadedCount;
         }
     }
 

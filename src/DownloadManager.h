@@ -47,6 +47,7 @@ private:
     FRIEND_TEST(DownloadManagerTest, append);
     FRIEND_TEST(DownloadManagerTest, appendUrls);
     FRIEND_TEST(DownloadManagerTest, startNextDownload);
+    FRIEND_TEST(DownloadManagerTest, downloadFinished);
     FRIEND_TEST(MockDownloadManager, parentStartNextDownload);
     FRIEND_TEST(DownloadManagerTest, saveFileName);
 

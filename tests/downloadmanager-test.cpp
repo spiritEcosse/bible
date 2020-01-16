@@ -360,7 +360,9 @@ TEST_F(DownloadManagerTest, downloadFinished)
         EXPECT_CALL(mockDownloadManager, startNextDownload());
     }
 
+    EXPECT_EQ(mockDownloadManager.downloadedCount, mockDownloadManager.totalCount);
     mockDownloadManager.downloadFinished();
+    EXPECT_EQ(mockDownloadManager.downloadedCount, 1);
 }
 
 TEST_F(DownloadManagerTest, downloadReadyRead)
