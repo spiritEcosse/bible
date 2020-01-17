@@ -101,4 +101,4 @@ QMAKE_LFLAGS += --coverage
 INCLUDEPATH += $$PWD/QtNetwork + $$PWD/QtSql + $$PWD/QtCore
 DEPENDPATH += $$PWD/QtNetwork + $$PWD/QtSql + $$PWD/QtCore
 
-LIBS += -lgmock -lgtest -lpthread
+LIBS += -lgmock -lgtest -lpthread -lquazip5
