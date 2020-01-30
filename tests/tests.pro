@@ -85,6 +85,7 @@ HEADERS += $$PROJECT_HEADERS \
     mock_qvariant.h \
     mock_textprogressbar.h
 
+QMAKE_POST_LINK += ../scripts/post_unit_tests.sh
 
 
 SOURCES += $$PROJECT_SOURCES \
