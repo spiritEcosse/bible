@@ -52,7 +52,6 @@ public:
     virtual void updateModules();
     virtual QVariant data(const QModelIndex &index, int role) const override;
     virtual QHash<int, QByteArray> roleNames() const;
-
 //    QUrl urlRegistry = QUrl::fromEncoded(QByteArray::fromBase64(REGISTRY));
 //    QUrl urlRegistryInfo = QUrl::fromEncoded(QByteArray::fromBase64(REGISTRY_INFO));
     QUrl urlRegistry;

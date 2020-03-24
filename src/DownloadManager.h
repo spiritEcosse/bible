@@ -18,7 +18,7 @@ public:
     virtual ~DownloadManager() {}
 
     virtual void append(const QUrl &url);
-    virtual void appendUrls(const QStringList &urls);
+    virtual void appendUrls(QList<QString*> &urls);
     virtual QString saveFileName(const QUrl &url);
     QStringList* fileNames = new QStringList();
 
@@ -36,6 +36,7 @@ private:
     virtual bool isHttpRedirect() const;
     virtual void reportRedirect();
     QTimer* timer;
+    QString* qString;
     QUrl* qurl = new QUrl();
     QQueue<QUrl> *downloadQueue = new QQueue<QUrl>();
     QFileInfo* qFileInfo = new QFileInfo();

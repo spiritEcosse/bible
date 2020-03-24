@@ -8,7 +8,7 @@
 class MockDownloadManager : public DownloadManager
 {
 public:
-    MOCK_METHOD1(appendUrls, void(const QStringList &urls));
+    MOCK_METHOD1(appendUrls, void(QList<QString*> &urls));
     MOCK_METHOD1(append, void(const QUrl &url));
     MOCK_METHOD0(startNextDownload, void());
     MOCK_METHOD2(downloadProgress, void(qint64 bytesReceived, qint64 bytesTotal));
@@ -22,7 +22,7 @@ public:
     {
         return DownloadManager::append(url);
     }
-    void parentAppendUrls(const QStringList &urls)
+    void parentAppendUrls(QList<QString*> &urls)
     {
         return DownloadManager::appendUrls(urls);
     }

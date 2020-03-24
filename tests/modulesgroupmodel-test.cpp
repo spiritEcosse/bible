@@ -7,7 +7,6 @@
 #include "mock_qstringlist.h"
 #include "mock_qjsonarray.h"
 
-
 // The fixture for testing class ModulesGroupModelTest.
 class ModulesGroupModelTest : public TestWithParam<const char*> {
  protected:
@@ -42,7 +41,7 @@ class ModulesGroupModelTest : public TestWithParam<const char*> {
   MockQSqlDatabase mockQSqlDatabase;
   MockQStringList mockQStringList;
 
-  MockModulesGroupModel mockModulesGroupModel;
+  StrictMock<MockModulesGroupModel> mockModulesGroupModel;
   ModulesGroupModel* modulesGroupModel;
 
   const QString tableName = "modules_group";
@@ -90,12 +89,11 @@ TEST_F(ModulesGroupModelTest, createTable)
                 "   'id'        INTEGER PRIMARY KEY AUTOINCREMENT, "
                 "   'language'  CHAR(50), "
                 "   'type'      CHAR(50), "
-                "   'region'    CHAR(50) "
+                "   'region'    CHAR(5) "
                 ")"
-                ).arg(tableName);
-
-    ON_CALL(mockModulesGroupModel, createTable(tableName))
-            .WillByDefault(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::ParentCreateTable));
+                );
+    EXPECT_CALL(mockModulesGroupModel, createTable(tableName))
+            .WillOnce(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::ParentCreateTable));
 
     {
         InSequence s;
@@ -114,8 +112,8 @@ TEST_F(ModulesGroupModelTest, createTable)
 
 TEST_F(ModulesGroupModelTest, createTableReturnFalse)
 {
-    ON_CALL(mockModulesGroupModel, createTable(tableName))
-            .WillByDefault(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::ParentCreateTable));
+    EXPECT_CALL(mockModulesGroupModel, createTable(tableName))
+            .WillOnce(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::ParentCreateTable));
 
     {
         InSequence s;
@@ -132,8 +130,8 @@ TEST_F(ModulesGroupModelTest, execLastError)
 {
     mockModulesGroupModel.query_ = &mockQSqlQuery;
 
-    ON_CALL(mockModulesGroupModel, execLastError(query))
-            .WillByDefault(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::parentExecLastError));
+    EXPECT_CALL(mockModulesGroupModel, execLastError(query))
+            .WillOnce(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::parentExecLastError));
 
     EXPECT_CALL(mockQSqlQuery, exec(query))
             .WillOnce(Return(true));

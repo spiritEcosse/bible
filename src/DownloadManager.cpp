@@ -2,6 +2,7 @@
 
 #include <QDebug>
 #include <QTextStream>
+#include "mock_qstring.h"
 
 #include <cstdio>
 
@@ -12,10 +13,10 @@ DownloadManager::DownloadManager(QObject *parent)
 {
 }
 
-void DownloadManager::appendUrls(const QStringList &urls)
+void DownloadManager::appendUrls(QList<QString*> &urls)
 {
-    for (QString urlAsString : urls) {
-        append(qurl->fromEncoded(urlAsString.toLocal8Bit()));
+    for (QString* urlAsString : urls) {
+        append(qurl->fromEncoded(urlAsString->toLocal8Bit()));
     }
 
     if (downloadQueue->isEmpty()) {
@@ -47,7 +48,7 @@ QString DownloadManager::saveFileName(const QUrl &url)
         // already exists, don't overwrite
         int i = 0;
         basename += '.';
-        while (output->exists(basename + basename.number(i)))
+        while (output->exists(basename.number(i)))
             ++i;
 
         basename += basename.number(i);
@@ -58,7 +59,7 @@ QString DownloadManager::saveFileName(const QUrl &url)
 void DownloadManager::startNextDownload()
 {
     if (downloadQueue->isEmpty()) {
-        printf("%d/%d files downloaded successfully\n", downloadedCount, totalCount);
+//        printf("%d/%d files downloaded successfully\n", downloadedCount, totalCount); //WARNING: needed fprintf ?
         emit finished();
 
         if (downloadedCount == totalCount) {
@@ -72,9 +73,9 @@ void DownloadManager::startNextDownload()
         fileNames->append(output->fileName());
 
         if (!output->open(QFile::WriteOnly)) {
-            fprintf(stderr, "Problem opening save file '%s' for download '%s': %s\n",
-                    qPrintable(filename), url.toEncoded().constData(),
-                    qPrintable(output->errorString()));
+//            fprintf(stderr, "Problem opening save file '%s' for download '%s': %s\n", //WARNING: needed fprintf ?
+//                    qPrintable(filename), url.toEncoded().constData(),
+//                    qPrintable(output->errorString()));
 
             startNextDownload();
         } else {
@@ -87,8 +88,8 @@ void DownloadManager::startNextDownload()
             connect(currentDownload, SIGNAL(readyRead()),
                     SLOT(downloadReadyRead()));
 
-    //          prepare the output
-            printf("Downloading %s...\n", url.toEncoded().constData());
+//              prepare the output
+//            printf("Downloading %s...\n", url.toEncoded().constData()); //WARNING: needed fprintf ?
             downloadTime->start();
         }
     }
@@ -101,6 +102,7 @@ void DownloadManager::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)
     // calculate the download speed
     double speed = bytesReceived * 1000.0 / downloadTime->elapsed();
     QString unit;
+    //start WARNING: check this
     if (speed < 1024) {
         unit = "bytes/sec";
     } else if (speed < 1024*1024) {
@@ -110,9 +112,8 @@ void DownloadManager::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)
         speed /= 1024*1024;
         unit = "MB/s";
     }
-
-    progressBar->setMessage(QString::fromLatin1("%1 %2")
-                           .arg(speed, 3, 'f', 1).arg(unit));
+    //end WARNING: check this
+    progressBar->setMessage(qString->fromLatin1("%1 %2").arg(speed, 3, 'f', 1).arg(unit));
     progressBar->update();
 }
 
@@ -123,7 +124,7 @@ void DownloadManager::downloadFinished()
 
     if (currentDownload->error()) {
         // download failed
-        fprintf(stderr, "Failed: %s\n", qPrintable(currentDownload->errorString())); //WARNING: needed fprintf ?
+//        fprintf(stderr, "Failed: %s\n", qPrintable(currentDownload->errorString())); //WARNING: needed fprintf ?
         output->remove();
     } else {
         // let's check if it was actually a redirect
@@ -131,7 +132,7 @@ void DownloadManager::downloadFinished()
             reportRedirect();
             output->remove();
         } else {
-            printf("Succeeded (saved to %s)\n", qPrintable(output->fileName()));
+//            printf("Succeeded (saved to %s)\n", qPrintable(output->fileName())); //WARNING: needed fprintf ?
             ++downloadedCount; // WARNING: check this
         }
     }
@@ -160,15 +161,15 @@ void DownloadManager::reportRedirect()
                 << " was redirected with code: " << statusCode
                 << '\n';
 
-    const QVariant& target = currentDownload->attribute(QNetworkRequest::RedirectionTargetAttribute);
+    const QVariant target = currentDownload->attribute(QNetworkRequest::RedirectionTargetAttribute);
 
     if (target.isValid()) {
-        const QUrl &redirectUrl = target.toUrl();
+        QUrl redirectUrl = target.toUrl();
 
         if (redirectUrl.isRelative()) {
-//            redirectUrl = requestUrl.resolved(redirectUrl);
+            redirectUrl = requestUrl.resolved(redirectUrl);
         }
-//        QTextStream(stderr) << "Redirected to: " << redirectUrl.toDisplayString()
-//                            << '\n';
+        *qTextStream << "Redirected to: " << redirectUrl.toDisplayString()
+                            << '\n';
     }
 }

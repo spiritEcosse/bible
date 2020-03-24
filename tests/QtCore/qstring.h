@@ -180,11 +180,6 @@ class Q_CORE_EXPORT QString
 public:
     typedef QStringData Data;
 
-    QByteArray qb;
-    virtual QByteArray toLocal8Bit() const {
-        return QByteArray();
-    }
-
     inline QString() Q_DECL_NOTHROW;
     explicit QString(const QChar *unicode, int size = -1);
     QString(QChar c);
@@ -207,6 +202,7 @@ public:
     inline int count() const { return d->size; }
     inline int length() const;
     virtual inline bool isEmpty() const;
+    virtual QByteArray toLocal8Bit() const {}
     void resize(int size);
     void resize(int size, QChar fillChar);
 
@@ -255,20 +251,29 @@ public:
                 QChar fillChar = QLatin1Char(' ')) const;
     Q_REQUIRED_RESULT QString arg(ushort a, int fieldWidth = 0, int base = 10,
                 QChar fillChar = QLatin1Char(' ')) const;
-    Q_REQUIRED_RESULT QString arg(double a, int fieldWidth = 0, char fmt = 'g', int prec = -1,
-                QChar fillChar = QLatin1Char(' ')) const;
+    Q_REQUIRED_RESULT virtual QString& arg(double a, int fieldWidth = 0, char fmt = 'g', int prec = -1,
+                                          QChar fillChar = QChar()) const {
+        QString q;
+        return q;
+    }
     Q_REQUIRED_RESULT QString arg(char a, int fieldWidth = 0,
                 QChar fillChar = QLatin1Char(' ')) const;
     Q_REQUIRED_RESULT QString arg(QChar a, int fieldWidth = 0,
                 QChar fillChar = QLatin1Char(' ')) const;
 #if QT_STRINGVIEW_LEVEL < 2
     Q_REQUIRED_RESULT QString arg(const QString &a, int fieldWidth = 0,
-                QChar fillChar = QLatin1Char(' ')) const;
+                                  QChar fillChar = QLatin1Char(' ')) const {
+        return QString();
+    }
 #endif
     Q_REQUIRED_RESULT QString arg(QStringView a, int fieldWidth = 0,
-                QChar fillChar = QLatin1Char(' ')) const;
+                                  QChar fillChar = QLatin1Char(' ')) const {
+        return QString();
+    }
     Q_REQUIRED_RESULT QString arg(QLatin1String a, int fieldWidth = 0,
-                QChar fillChar = QLatin1Char(' ')) const;
+                                  QChar fillChar = QLatin1Char(' ')) const {
+        return QString();
+    }
     Q_REQUIRED_RESULT QString arg(const QString &a1, const QString &a2) const;
     Q_REQUIRED_RESULT QString arg(const QString &a1, const QString &a2, const QString &a3) const;
     Q_REQUIRED_RESULT QString arg(const QString &a1, const QString &a2, const QString &a3,
@@ -447,7 +452,9 @@ public:
     }
 
     inline QString &operator+=(QChar::SpecialCharacter c) { return append(QChar(c)); }
-    inline QString &operator+=(const QString &s) { }
+    inline QString &operator+=(const QString &s) {
+        //return append(s);
+    }
     inline QString &operator+=(const QStringRef &s) { return append(s); }
     inline QString &operator+=(QLatin1String s) { return append(s); }
 
@@ -530,10 +537,10 @@ public:
     Q_REQUIRED_RESULT QVector<uint> toUcs4() const;
 
     // note - this are all inline so we can benefit from strlen() compile time optimizations
-    static inline QString fromLatin1(const char *str, int size = -1)
+    virtual inline QString& fromLatin1(const char *str, int size = -1)
     {
-        QStringDataPtr dataPtr = { fromLatin1_helper(str, (str && size == -1) ? int(strlen(str)) : size) };
-        return QString(dataPtr);
+        QString q;
+        return q;
     }
     static inline QString fromUtf8(const char *str, int size = -1)
     {
@@ -543,7 +550,7 @@ public:
     {
         return fromLocal8Bit_helper(str, (str && size == -1) ? int(strlen(str)) : size);
     }
-    static inline QString fromLatin1(const QByteArray &str)
+    virtual inline QString fromLatin1(const QByteArray &str)
     { return str.isNull() ? QString() : fromLatin1(str.data(), qstrnlen(str.constData(), str.size())); }
     static inline QString fromUtf8(const QByteArray &str)
     { return str.isNull() ? QString() : fromUtf8(str.data(), qstrnlen(str.constData(), str.size())); }
@@ -695,7 +702,8 @@ public:
     inline QT_ASCII_CAST_WARN QString &operator+=(const QByteArray &s)
     {}
     inline QT_ASCII_CAST_WARN QString &operator+=(char c)
-    { }
+    { //return append(QChar::fromLatin1(c));
+    }
 
     inline QT_ASCII_CAST_WARN bool operator==(const char *s) const;
     inline QT_ASCII_CAST_WARN bool operator!=(const char *s) const;
@@ -879,6 +887,7 @@ private:
         }
         return T(val);
     }
+
 
 public:
     typedef Data * DataPtr;

@@ -28,5 +28,6 @@ using ::testing::ReturnPointee;
 using ::testing::Property;
 using ::testing::internal::BuiltInDefaultValue;
 using ::testing::StrictMock;
+using ::testing::ElementsAre;
 
 #endif // GTEST_GLOBAL_H

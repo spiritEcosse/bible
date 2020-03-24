@@ -298,9 +298,7 @@ class Q_CORE_EXPORT QVariant
 #endif // QT_CONFIG(regularexpression)
 #ifndef QT_BOOTSTRAPPED
 
-    QUrl qurl;
-    virtual const QUrl& toUrl() const {
-        return qurl;
+    virtual QUrl& toUrl() const {
     }
     QEasingCurve toEasingCurve() const;
     QUuid toUuid() const;
