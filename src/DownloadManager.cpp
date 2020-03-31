@@ -43,15 +43,15 @@ QString DownloadManager::saveFileName(const QUrl &url)
 //        basename = "download";
 //    }
 
-    if (output->exists(basename)) {
-        // already exists, don't overwrite
-        int i = 0;
-        basename += '.';
-        while (output->exists(basename + QString::number(i)))
-            ++i;
+//    if (output->exists(basename)) {
+//        // already exists, don't overwrite
+//        int i = 0;
+//        basename += '.';
+//        while (output->exists(basename + QString::number(i)))
+//            ++i;
 
-        basename += QString::number(i);
-    }
+//        basename += QString::number(i);
+//    }
 
     return basename;
 }
@@ -112,8 +112,8 @@ void DownloadManager::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)
         unit = "MB/s";
     }
 
-    progressBar->setMessage(QString::fromLatin1("%1 %2")
-                           .arg(speed, 3, 'f', 1).arg(unit));
+//    progressBar->setMessage(QString::fromLatin1("%1 %2")
+//                           .arg(speed, 3, 'f', 1).arg(unit));
     progressBar->update();
 }
 
@@ -161,15 +161,15 @@ void DownloadManager::reportRedirect()
                         << " was redirected with code: " << statusCode
                         << '\n';
 
-    QVariant target = currentDownload->attribute(QNetworkRequest::RedirectionTargetAttribute);
+//    QVariant&& target = currentDownload->attribute(QNetworkRequest::RedirectionTargetAttribute);
 
-    if (target.isValid()) {
-        QUrl redirectUrl = target.toUrl();
+//    if (target.isValid()) {
+//        QUrl&& redirectUrl = target.toUrl();
 
-        if (redirectUrl.isRelative()) {
-            redirectUrl = requestUrl.resolved(redirectUrl); // WARNING: add to EXPECT_CALL
-        }
-        QTextStream(stderr) << "Redirected to: " << redirectUrl.toDisplayString()
-                            << '\n';
-    }
+//        if (redirectUrl.isRelative()) {
+//            redirectUrl = requestUrl.resolved(redirectUrl); // WARNING: add to EXPECT_CALL
+//        }
+//        QTextStream(stderr) << "Redirected to: " << redirectUrl.toDisplayString()
+//                            << '\n';
+//    }
 }

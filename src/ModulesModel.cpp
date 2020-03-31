@@ -44,7 +44,7 @@ bool ModulesModel::createTable(const QString &tableName, const QString &relatedT
                     "   'hidden'            NUMERIC DEFAULT 0, "
                     "   'copyright'         TEXT, "
                     "   '%2_id'             NUMERIC NOT NULL, "
-                    "FOREIGN KEY ('%2_id')  REFERENCES %2(id)"
+                    "FOREIGN  ('%2_id')  REFERENCES %2(id)"
                     ")"
                     ).arg(tableName, relatedTable);
         return execLastError(sql);

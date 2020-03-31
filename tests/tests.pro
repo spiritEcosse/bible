@@ -67,6 +67,8 @@ HEADERS += $$PROJECT_HEADERS \
     mock_qnetworkaccessmanager.h \
     mock_qnetworkreply.h \
     mock_qstringlist.h \
+    mock_qstring.h \
+    qstring.h \
     mock_qtime.h \
     mock_qtimer.h \
     mock_qnetworkrequest.h \

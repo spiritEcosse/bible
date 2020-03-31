@@ -5,7 +5,7 @@
 #include "mock_qsqlquery.h"
 #include "mock_qsqlerror.h"
 #include "mock_qstringlist.h"
-
+#include "mock_qstring.h"
 
 // The fixture for testing class ModulesModel.
 class ModulesModelTest : public TestWithParam<const char*> {
@@ -87,27 +87,35 @@ TEST_F(ModulesModelTest, createTable)
                 "FOREIGN KEY ('%2_id')  REFERENCES %2(id)"
                 ")"
                 ).arg(tableName, relatedTable);
-    ON_CALL(mockModulesModel, createTable(tableName, relatedTable))
-            .WillByDefault(Invoke(&mockModulesModel, &MockModulesModel::ParentCreateTable));
+    EXPECT_CALL(mockModulesModel, createTable(tableName, relatedTable))
+            .Times(2)
+            .WillRepeatedly(Invoke(&mockModulesModel, &MockModulesModel::ParentCreateTable));
+
     {
         InSequence s;
         EXPECT_CALL(mockModulesModel, database())
                 .WillOnce(ReturnPointee(&mockQSqlDatabase));
         EXPECT_CALL(mockQSqlDatabase, tables())
                 .WillOnce(ReturnPointee(&mockQStringList));
+        EXPECT_CALL(mockQStringList, contains(tableName, Qt::CaseSensitive))
+                .WillOnce(Return(false));
         EXPECT_CALL(mockModulesModel, execLastError(sql))
-                .WillRepeatedly(Return(true));
+                .WillOnce(Return(true));
     }
 
     EXPECT_TRUE(mockModulesModel.createTable(tableName, relatedTable));
-//    {
-//        InSequence s;
-//        EXPECT_CALL(mockModulesModel, database())
-//                .WillOnce(ReturnPointee(&mockQSqlDatabase));
-//        EXPECT_CALL(mockQSqlDatabase, tables())
-//                .WillRepeatedly(Return(QStringList{tableName}));
-//    }
-//    EXPECT_FALSE(mockModulesModel.createTable(tableName, relatedTable));
+
+    {
+        InSequence s;
+        EXPECT_CALL(mockModulesModel, database())
+                .WillOnce(ReturnPointee(&mockQSqlDatabase));
+        EXPECT_CALL(mockQSqlDatabase, tables())
+                .WillRepeatedly(ReturnPointee(&mockQStringList));
+        EXPECT_CALL(mockQStringList, contains(tableName, Qt::CaseSensitive))
+                .WillOnce(Return(true));
+    }
+
+    EXPECT_FALSE(mockModulesModel.createTable(tableName, relatedTable));
 }
 
 TEST_F(ModulesModelTest, execLastError)
