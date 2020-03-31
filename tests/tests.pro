@@ -58,6 +58,11 @@ HEADERS += $$PROJECT_HEADERS \
     QtNetwork/qsslerror.h \
     QtCore/QStringList \
     QtCore/qstringlist.h \
+    QtCore/QString \
+    QtCore/qstring.h \
+    QtCore/QTextStream \
+    QtCore/qtextstream.h \
+    mock_qstring.h \
     mock_modulesmodel.h \
     mock_modulesgroupmodel.h \
     mock_downloadmanager.h \

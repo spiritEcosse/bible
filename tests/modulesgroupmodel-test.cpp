@@ -6,7 +6,7 @@
 #include "mock_qsqlerror.h"
 #include "mock_qstringlist.h"
 #include "mock_qjsonarray.h"
-
+#include "mock_qfile.h"
 
 // The fixture for testing class ModulesGroupModelTest.
 class ModulesGroupModelTest : public TestWithParam<const char*> {
@@ -30,6 +30,7 @@ class ModulesGroupModelTest : public TestWithParam<const char*> {
   void SetUp() override {
      // Code here will be called immediately after the constructor (right
      // before each test).
+      mockModulesGroupModel.registry = &mockQFile;
   }
 
   void TearDown() override {
@@ -42,42 +43,33 @@ class ModulesGroupModelTest : public TestWithParam<const char*> {
   MockQSqlDatabase mockQSqlDatabase;
   MockQStringList mockQStringList;
 
-  MockModulesGroupModel mockModulesGroupModel;
+  StrictMock<MockModulesGroupModel> mockModulesGroupModel;
   ModulesGroupModel* modulesGroupModel;
 
+  MockQFile mockQFile;
   const QString tableName = "modules_group";
+  const QString registryFileName = "registry.json";
   const QString query = BuiltInDefaultValue<const QString>::Get();
 
   // Objects declared here can be used by all tests in the test case for Foo.
 };
 
-static QHash<const char *, int> sizes = {
-    { "100.0K", 102400 },
-    { "1K", 1024 },
-    { "12.32M", 12918456 },
-    { "1m", 1048576 },
-    { "0.05G", 53687091 },
-    { "1g", 1073741824 },
-    { "65700", 65700 },
-};
-
-TEST_P(ModulesGroupModelTest, correctSize) {
-    EXPECT_EQ(mockModulesGroupModel.correctSize(GetParam()), sizes.value(GetParam()));
-}
-
-INSTANTIATE_TEST_CASE_P(PossibleIncomingSizes, ModulesGroupModelTest, ValuesIn(sizes.keys()));
-
-
 TEST_F(ModulesGroupModelTest, init)
 {
-    ON_CALL(mockModulesGroupModel, init())
-            .WillByDefault(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::parentInit));
+    EXPECT_CALL(mockModulesGroupModel, init())
+            .WillOnce(
+               Invoke(
+                    &mockModulesGroupModel, &MockModulesGroupModel::parentInit
+                    )
+                );
 
     {
         InSequence s;
-        EXPECT_CALL(mockModulesGroupModel, createTable(tableName));
+        EXPECT_CALL(mockModulesGroupModel, createTable());
         EXPECT_CALL(mockModulesGroupModel, setTable(tableName));
         EXPECT_CALL(mockModulesGroupModel, select());
+        EXPECT_CALL(mockModulesGroupModel, setEditStrategy(QSqlTableModel::OnManualSubmit));
+        EXPECT_CALL(mockQFile, setFileName(registryFileName));
     }
 
     mockModulesGroupModel.init();
@@ -85,17 +77,9 @@ TEST_F(ModulesGroupModelTest, init)
 
 TEST_F(ModulesGroupModelTest, createTable)
 {
-    QString sql = QString(
-                "CREATE TABLE IF NOT EXISTS '%1' ("
-                "   'id'        INTEGER PRIMARY KEY AUTOINCREMENT, "
-                "   'language'  CHAR(50), "
-                "   'type'      CHAR(50), "
-                "   'region'    CHAR(50) "
-                ")"
-                ).arg(tableName);
-
-    ON_CALL(mockModulesGroupModel, createTable(tableName))
-            .WillByDefault(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::ParentCreateTable));
+    EXPECT_CALL(mockModulesGroupModel, createTable())
+            .Times(2)
+            .WillRepeatedly(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::ParentCreateTable));
 
     {
         InSequence s;
@@ -103,19 +87,13 @@ TEST_F(ModulesGroupModelTest, createTable)
                 .WillOnce(ReturnPointee(&mockQSqlDatabase));
         EXPECT_CALL(mockQSqlDatabase, tables())
                 .WillOnce(ReturnPointee(&mockQStringList));
-        EXPECT_CALL(mockQStringList, contains(tableName, _))
+        EXPECT_CALL(mockQStringList, contains(tableName, Qt::CaseSensitive))
                 .WillOnce(Return(false));
-        EXPECT_CALL(mockModulesGroupModel, execLastError(sql))
+        EXPECT_CALL(mockModulesGroupModel, execLastError(QString()))
                 .WillOnce(Return(true));
     }
 
-    EXPECT_TRUE(mockModulesGroupModel.createTable(tableName));
-}
-
-TEST_F(ModulesGroupModelTest, createTableReturnFalse)
-{
-    ON_CALL(mockModulesGroupModel, createTable(tableName))
-            .WillByDefault(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::ParentCreateTable));
+    EXPECT_TRUE(mockModulesGroupModel.createTable());
 
     {
         InSequence s;
@@ -123,17 +101,20 @@ TEST_F(ModulesGroupModelTest, createTableReturnFalse)
                 .WillOnce(ReturnPointee(&mockQSqlDatabase));
         EXPECT_CALL(mockQSqlDatabase, tables())
                 .WillRepeatedly(ReturnPointee(&mockQStringList));
+        EXPECT_CALL(mockQStringList, contains(tableName, Qt::CaseSensitive))
+                .WillOnce(Return(true));
     }
 
-    EXPECT_FALSE(mockModulesGroupModel.createTable(tableName));
+    EXPECT_FALSE(mockModulesGroupModel.createTable());
 }
 
 TEST_F(ModulesGroupModelTest, execLastError)
 {
     mockModulesGroupModel.query_ = &mockQSqlQuery;
 
-    ON_CALL(mockModulesGroupModel, execLastError(query))
-            .WillByDefault(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::parentExecLastError));
+    EXPECT_CALL(mockModulesGroupModel, execLastError(query))
+            .Times(2)
+            .WillRepeatedly(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::parentExecLastError));
 
     EXPECT_CALL(mockQSqlQuery, exec(query))
             .WillOnce(Return(true));

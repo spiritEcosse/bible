@@ -6,10 +6,10 @@ ModulesGroupModel::ModulesGroupModel(QObject *parent)
 void ModulesGroupModel::decompressRegistry()
 {
     registryArchive.setFileName(manager->fileNames->last());
-    QString registryName = JlCompress::extractFile(registryArchive.fileName(), registry.fileName());
+    QString registryName = JlCompress::extractFile(registryArchive.fileName(), registry->fileName());
     QFileInfo fileInfo(registryName);
 
-    if (fileInfo.fileName() == registry.fileName()) {
+    if (fileInfo.fileName() == registry->fileName()) {
         emit decompressSuccess();
     }
 }
@@ -34,12 +34,12 @@ void ModulesGroupModel::removeRegistryFile()
 
 void ModulesGroupModel::updateTable()
 {
-    if (!registry.open(QIODevice::ReadOnly | QIODevice::Text))
+    if (!registry->open(QIODevice::ReadOnly | QIODevice::Text))
         return ;
 
     QJsonParseError jsonError;
-    QJsonDocument document = QJsonDocument::fromJson(registry.readAll(), &jsonError);
-    registry.close();
+    QJsonDocument document = QJsonDocument::fromJson(registry->readAll(), &jsonError);
+    registry->close();
 
     if(jsonError.error != QJsonParseError::NoError)
         return;
@@ -75,11 +75,11 @@ void ModulesGroupModel::compareVersions()
 
 void ModulesGroupModel::init()
 {
-    createTable("modules_group");
-    setTable("modules_group");
+    createTable();
+    setTable(tableNameString);
     select();
     setEditStrategy(QSqlTableModel::OnManualSubmit);
-    registry.setFileName("registry.json");
+    registry->setFileName("registry.json");
 }
 
 bool ModulesGroupModel::execLastError(const QString& query)
@@ -93,9 +93,9 @@ bool ModulesGroupModel::execLastError(const QString& query)
     return true;
 }
 
-bool ModulesGroupModel::createTable(const QString &tableName)
+bool ModulesGroupModel::createTable()
 {
-    if ( !database().tables().contains(tableName) ) {
+    if ( !database().tables().contains(tableNameString) ) {
         QString sql = QString(
                     "CREATE TABLE IF NOT EXISTS '%1' ("
                     "   'id'        INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -103,7 +103,7 @@ bool ModulesGroupModel::createTable(const QString &tableName)
                     "   'type'      CHAR(50), "
                     "   'region'    CHAR(50) "
                     ")"
-                    ).arg(tableName);
+                    ).arg(tableNameString);
         return execLastError(sql);
     }
     return false;

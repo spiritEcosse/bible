@@ -30,18 +30,18 @@ void TextProgressBar::update() // FIXME: test all method
         if (percent % 2)
             progressbar += '>';
 
-        printf("\r[%-50s] %3d%% %s     ",
-               progressbar.constData(),
-               percent,
-               qPrintable(message));
+//        printf("\r[%-50s] %3d%% %s     ", // WARNING: pass printf to ui
+//               progressbar.constData(),
+//               percent,
+//               qPrintable(message));
     } else {
         // we don't know the maximum, so we can't draw a progress bar
         int center = (iteration % 48) + 1; // 50 spaces, minus 2
         QByteArray before(qMax(center - 2, 0), ' ');
         QByteArray after(qMin(center + 2, 50), ' ');
 
-        printf("\r[%s###%s]      %s      ",
-               before.constData(), after.constData(), qPrintable(message));
+//        printf("\r[%s###%s]      %s      ", // WARNING: pass printf to ui
+//               before.constData(), after.constData(), qPrintable(message));
     }
 }
 

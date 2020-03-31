@@ -5,6 +5,7 @@
 #include "mock_qtimer.h"
 #include "mock_qqueue.h"
 #include "mock_qurl.h"
+#include "mock_qstring.h"
 #include "mock_qfile.h"
 #include "mock_qnetworkreply.h"
 #include "mock_qvariant.h"
@@ -14,7 +15,6 @@
 #include "mock_textprogressbar.h"
 #include "mock_qnetworkaccessmanager.h"
 #include "mock_qtime.h"
-
 
 class DownloadManagerTest : public TestWithParam<int>
 {
@@ -38,13 +38,13 @@ protected:
       mockDownloadManager.progressBar = &mockTextProgressBar;
       mockDownloadManager.manager = &mockQNetworkAccessManager;
       mockDownloadManager.downloadTime = &mockQTime;
+      mockDownloadManager.qString = &mockQString;
   }
 
   void TearDown() override {
   }
 
   // Objects declared here can be used by all tests in the test case for Foo.
-//  StrictMock<MockDownloadManager> mockDownloadManager;
   StrictMock<MockDownloadManager> mockDownloadManager;
   DownloadManager* downloadManager;
 
@@ -54,6 +54,8 @@ protected:
   MockQQueue<QUrl> mockQqueue;
   MockQTimer mockQTimer;
   MockQUrl mockQurl;
+  StrictMock<MockQString> mockQString;
+
   MockQFile mockQFile;
   MockQNetworkReply mockQNetworkReply;
   MockQNetworkAccessManager mockQNetworkAccessManager;
@@ -65,15 +67,17 @@ protected:
   MockQTime mockQTime;
 
   const QUrl url = BuiltInDefaultValue<const QUrl>::Get();
-  const QStringList urls = {QString()};
+  QList<QString*> urls = {&mockQString};
   QString filename = BuiltInDefaultValue<QString>::Get();
   QString path = BuiltInDefaultValue<QString>::Get();
   QString basename = BuiltInDefaultValue<QString>::Get();
   int statusCode = BuiltInDefaultValue<int>::Get();
   int bytesReceived = BuiltInDefaultValue<int>::Get();
   int bytesTotal = BuiltInDefaultValue<int>::Get();
+  QByteArray qByteArray = BuiltInDefaultValue<QByteArray>::Get();
   const QString message = BuiltInDefaultValue<QString>::Get();
   QFile::OpenMode qFileWriteMode = QFile::WriteOnly;
+  QUrl::ParsingMode parsingMode = QUrl::ParsingMode::TolerantMode;
 };
 
 static QMap<int, bool> codes = {
@@ -116,25 +120,24 @@ TEST_F(DownloadManagerTest, appendUrls)
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentAppendUrls)
                 );
 
-
     {
         InSequence s;
-        // WARNING : add mock QString on toLocal8Bit
-
-        EXPECT_CALL(mockQurl, fromEncodedImpl(_, _)) // WARNING : pass params instead _
+        EXPECT_CALL(mockQString, toLocal8Bit())
+                .WillOnce(Return(qByteArray));
+        EXPECT_CALL(mockQurl, fromEncodedImpl(qByteArray, parsingMode))
                 .WillOnce(ReturnPointee(&url));
         EXPECT_CALL(mockDownloadManager, append(_)); // WARNING : pass url instead _
         EXPECT_CALL(mockQqueue, isEmpty())
                 .WillOnce(Return(true));
         EXPECT_CALL(mockQTimer, singleShot(0, downloadManager, _)); // WARNING: add SIGNAL
     }
-
     mockDownloadManager.appendUrls(urls);
 
     {
         InSequence s;
-        // WARNING : add mock QString on toLocal8Bit
-        EXPECT_CALL(mockQurl, fromEncodedImpl(_, _)) // WARNING : pass params instead _
+        EXPECT_CALL(mockQString, toLocal8Bit())
+                .WillOnce(Return(qByteArray));
+        EXPECT_CALL(mockQurl, fromEncodedImpl(qByteArray, parsingMode)) // WARNING : pass params instead _
                 .WillOnce(ReturnPointee(&url));
         EXPECT_CALL(mockDownloadManager, append(_)); // WARNING : pass url instead _
         EXPECT_CALL(mockQqueue, isEmpty())
@@ -191,13 +194,14 @@ TEST_F(DownloadManagerTest, saveFileName)
                 .WillOnce(Return(path));
         EXPECT_CALL(mockQFileInfo, setFile(path));
         EXPECT_CALL(mockQFileInfo, fileName())
-                .WillOnce(Return(basename));
-        // WARNING : expect_call - basename.isEmpty()
-        EXPECT_CALL(mockQFile, exists(basename))
+                .WillOnce(ReturnRef(mockQString));
+        EXPECT_CALL(mockQString, isEmpty())
+                .WillOnce(Return(false));
+        EXPECT_CALL(mockQFile, exists(_))
                 .WillOnce(Return(false));
     }
 
-    EXPECT_EQ(mockDownloadManager.saveFileName(mockQurl), basename);
+    mockDownloadManager.saveFileName(mockQurl);
 
     {
         InSequence s;
@@ -205,19 +209,28 @@ TEST_F(DownloadManagerTest, saveFileName)
                 .WillOnce(Return(path));
         EXPECT_CALL(mockQFileInfo, setFile(path));
         EXPECT_CALL(mockQFileInfo, fileName())
-                .WillOnce(Return(basename));
-        // WARNING : expect_call - basename.isEmpty()
-        EXPECT_CALL(mockQFile, exists(basename))
+                .WillOnce(ReturnRef(mockQString));
+        EXPECT_CALL(mockQString, isEmpty())
+                .WillOnce(Return(false));
+        EXPECT_CALL(mockQFile, exists(_))
                 .WillOnce(Return(true));
+
+        EXPECT_CALL(mockQString, number(0, 10))
+                .WillOnce(Return(QString("0")));
         EXPECT_CALL(mockQFile, exists(QString(".0")))
                 .WillOnce(Return(true));
+        EXPECT_CALL(mockQString, number(1, 10))
+                .WillOnce(Return(QString("1")));
         EXPECT_CALL(mockQFile, exists(QString(".1")))
                 .WillOnce(Return(true));
+        EXPECT_CALL(mockQString, number(2, 10))
+                .WillOnce(Return(QString("2")));
         EXPECT_CALL(mockQFile, exists(QString(".2")))
                 .WillOnce(Return(false));
+        EXPECT_CALL(mockQString, number(2, 10))
+                .WillOnce(Return(QString("2")));
     }
-    basename = ".2";
-    EXPECT_EQ(mockDownloadManager.saveFileName(mockQurl), basename);
+    mockDownloadManager.saveFileName(mockQurl);
 }
 
 TEST_F(DownloadManagerTest, startNextDownload)
@@ -269,7 +282,6 @@ TEST_F(DownloadManagerTest, startNextDownload)
 
     mockDownloadManager.startNextDownload();
 
-
     {
         InSequence s;
 
@@ -294,15 +306,22 @@ TEST_F(DownloadManagerTest, startNextDownload)
 TEST_F(DownloadManagerTest, downloadProgress)
 {
     EXPECT_CALL(mockDownloadManager, downloadProgress(_, _))
-            .Times(1)
             .WillOnce(
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentDownloadProgress)
                 );
 
+
+    MockQString mqArg;
+    MockQString mqArg2;
     {
         InSequence s;
         EXPECT_CALL(mockTextProgressBar, setStatus(bytesReceived, bytesTotal));
-        EXPECT_CALL(mockTextProgressBar, setMessage(_)); // FIXME: pass message
+        EXPECT_CALL(mockQString, fromLatin1(_, _))
+                .WillOnce(ReturnPointee(&mqArg));
+        EXPECT_CALL(mqArg, arg(_, 3, 'f', 1, _))
+                .WillOnce(ReturnPointee(&mqArg));
+//        EXPECT_CALL(mqArg2, arg(_, _, _)); // WARNING: add this
+        EXPECT_CALL(mockTextProgressBar, setMessage(_)); // WARNING: pass message
         EXPECT_CALL(mockTextProgressBar, update());
     }
 
@@ -316,6 +335,7 @@ TEST_F(DownloadManagerTest, downloadFinished)
             .WillRepeatedly(
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentDownloadFinished)
                 );
+
 
     {
         InSequence s;
@@ -348,6 +368,7 @@ TEST_F(DownloadManagerTest, downloadFinished)
     mockDownloadManager.downloadFinished();
 
     // NotRedirect
+
     {
         InSequence s;
         EXPECT_CALL(mockTextProgressBar, clear());
@@ -393,6 +414,7 @@ TEST_F(DownloadManagerTest, isHttpRedirect)
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentIsHttpRedirect)
                 );
 
+
     {
         InSequence s;
 
@@ -411,6 +433,7 @@ TEST_F(DownloadManagerTest, reportRedirect)
             .WillRepeatedly(
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentReportRedirect)
                 );
+
 
     MockQVariant mockQVariantTarget;
 
@@ -457,6 +480,7 @@ TEST_F(DownloadManagerTest, reportRedirect)
                 .WillOnce(ReturnRef(mockQurlRedirect));
         EXPECT_CALL(mockQurlRedirect, isRelative())
                 .WillOnce(Return(false));
+        EXPECT_CALL(mockQurlRedirect, toDisplayString(QUrl::FormattingOptions(QUrl::PrettyDecoded)));
     }
 
     mockDownloadManager.reportRedirect();
@@ -482,6 +506,7 @@ TEST_F(DownloadManagerTest, reportRedirect)
         EXPECT_CALL(mockQurlRedirect, isRelative())
                 .WillOnce(Return(true));
         EXPECT_CALL(mockQurl, resolved(_)); // WARNING: add redirectUrl
+        EXPECT_CALL(mockQurlRedirect, toDisplayString(QUrl::FormattingOptions(QUrl::PrettyDecoded)));
     }
 
     mockDownloadManager.reportRedirect();

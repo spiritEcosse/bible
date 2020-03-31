@@ -42,8 +42,8 @@ protected:
 
 TEST_F(TextProgressBarTest, clear)
 {
-    ON_CALL(mockTextProgressBar, clear())
-            .WillByDefault(
+    EXPECT_CALL(mockTextProgressBar, clear())
+            .WillOnce(
                     Invoke(&mockTextProgressBar, &MockTextProgressBar::parentClear)
                 );
 
@@ -55,8 +55,8 @@ TEST_F(TextProgressBarTest, clear)
 
 TEST_F(TextProgressBarTest, update)
 {
-    ON_CALL(mockTextProgressBar, update())
-            .WillByDefault(
+    EXPECT_CALL(mockTextProgressBar, update())
+            .WillOnce(
                     Invoke(&mockTextProgressBar, &MockTextProgressBar::parentUpdate)
                 );
 
@@ -66,8 +66,8 @@ TEST_F(TextProgressBarTest, update)
 
 TEST_F(TextProgressBarTest, setMessage)
 {
-    ON_CALL(mockTextProgressBar, setMessage(m))
-            .WillByDefault(
+    EXPECT_CALL(mockTextProgressBar, setMessage(m))
+            .WillOnce(
                     Invoke(&mockTextProgressBar, &MockTextProgressBar::parentSetMessage)
                 );
 
@@ -77,8 +77,8 @@ TEST_F(TextProgressBarTest, setMessage)
 
 TEST_F(TextProgressBarTest, setStatus)
 {
-    ON_CALL(mockTextProgressBar, setStatus(value, maximum))
-            .WillByDefault(
+    EXPECT_CALL(mockTextProgressBar, setStatus(value, maximum))
+            .WillOnce(
                 Invoke(&mockTextProgressBar, &MockTextProgressBar::parentSetStatus)
                 );
 

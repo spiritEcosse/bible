@@ -9,7 +9,7 @@
 class MockQFileInfo : public QFileInfo
 {
 public:
-    MOCK_CONST_METHOD0(fileName, QString());
+    MOCK_CONST_METHOD0(fileName, QString&());
     MOCK_METHOD1(setFile, void(const QString &file));
 };
 

@@ -160,7 +160,6 @@ public:
     QByteArray toEncoded(FormattingOptions options = FullyEncoded) const;
 
     virtual QUrl fromEncoded(const QByteArray &url, ParsingMode mode = TolerantMode) {
-        return QUrl();
     }
 
     enum UserInputResolutionOption {
@@ -220,7 +219,9 @@ public:
     QString fragment(ComponentFormattingOptions options = PrettyDecoded) const;
     void setFragment(const QString &fragment, ParsingMode mode = TolerantMode);
 
-    virtual inline Q_REQUIRED_RESULT QUrl resolved(const QUrl &relative) const {}
+    Q_REQUIRED_RESULT virtual QUrl resolved(const QUrl &relative) const {
+        return relative;
+    }
 
     virtual bool isRelative() const {
         return true;
@@ -318,7 +319,7 @@ private:
     }
 #endif
 private:
-    static QString fromEncodedComponent_helper(const QByteArray &ba);
+//    static QString fromEncodedComponent_helper(const QByteArray &ba);
 
 public:
     static QString fromAce(const QByteArray &);

@@ -41,7 +41,7 @@ public:
     DownloadManager* manager = new DownloadManager();
 
     virtual void init();
-    virtual bool createTable(const QString &tableName);
+    virtual bool createTable();
     virtual bool execLastError(const QString& query);
     virtual void checkAvailabilityNewModules();
     virtual QString correctTitle(const QString &name, const QString &language="", const QString &region="") const;
@@ -52,16 +52,16 @@ public:
     virtual void updateModules();
     virtual QVariant data(const QModelIndex &index, int role) const override;
     virtual QHash<int, QByteArray> roleNames() const;
-
 //    QUrl urlRegistry = QUrl::fromEncoded(QByteArray::fromBase64(REGISTRY));
 //    QUrl urlRegistryInfo = QUrl::fromEncoded(QByteArray::fromBase64(REGISTRY_INFO));
     QUrl urlRegistry;
     QUrl urlRegistryInfo;
 
 private:
-    QFile registry;
+    QFile* registry = new QFile();
     QFile registryArchive;
     int countOldRows = 0;
+    QString tableNameString = "modules_group";
     int correctSize(const QString &str) const;
 
     friend class ModulesGroupModelTest;
@@ -77,7 +77,6 @@ signals:
     void decompressSuccess();
     void removeRegistryFileSuccess();
     void removeOldRowsSuccess();
-
 private slots:
     void updateTable();
     void compareVersions();
