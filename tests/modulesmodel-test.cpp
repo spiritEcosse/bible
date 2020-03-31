@@ -29,6 +29,7 @@ protected:
     void SetUp() override {
      // Code here will be called immediately after the constructor (right
      // before each test).
+        mockModulesModel.qStringSql = &qStringSql;
     }
 
     void TearDown() override {
@@ -44,6 +45,7 @@ protected:
 
     StrictMock<MockModulesModel> mockModulesModel;
     ModulesModel* modulesModel;
+    StrictMock<MockQString> qStringSql;
 
     const QString tableName = "modules";
     const QString relatedTable = "modules_group";
@@ -68,11 +70,31 @@ TEST_F(ModulesModelTest, init)
 
 TEST_F(ModulesModelTest, createTable)
 {
+    QString sql(
+                "CREATE TABLE IF NOT EXISTS '%1' ("
+                "   'id'                INTEGER PRIMARY KEY AUTOINCREMENT, "
+                "   'name'              CHAR(200) NOT NULL, "
+                "   'description'       TEXT, "
+                "   'abbreviation'      CHAR(50), "
+                "   'information'       TEXT, "
+                "   'language'          CHAR(50), "
+                "   'language_show'     CHAR(50), "
+                "   'update'            TEXT, "
+                "   'urls'              TEXT, "
+                "   'comment'           TEXT, "
+                "   'size'              NUMERIC NOT NULL, "
+                "   'region'            TEXT, "
+                "   'default_download'  NUMERIC DEFAULT 0, "
+                "   'hidden'            NUMERIC DEFAULT 0, "
+                "   'copyright'         TEXT, "
+                "   '%2_id'             NUMERIC NOT NULL, "
+                "FOREIGN ('%2_id')  REFERENCES %2(id)"
+                ")"
+                );
     EXPECT_CALL(mockModulesModel, createTable())
             .Times(2)
             .WillRepeatedly(Invoke(&mockModulesModel, &MockModulesModel::ParentCreateTable));
 
-    const QString q("ff");
     {
         InSequence s;
         EXPECT_CALL(mockModulesModel, database())
@@ -81,12 +103,9 @@ TEST_F(ModulesModelTest, createTable)
                 .WillOnce(ReturnPointee(&mockQStringList));
         EXPECT_CALL(mockQStringList, contains(tableName, Qt::CaseSensitive))
                 .WillOnce(Return(false));
-        EXPECT_CALL(mockModulesModel, sqlCreateTable())
-                .WillOnce(Return(q));
+        EXPECT_CALL(qStringSql, arg(_, _));
         EXPECT_CALL(mockModulesModel, execLastError(_))
-//                .WillOnce(DoAll(SaveArg<0>(q), Return(true)));
                 .WillOnce(Return(true));
-//        EXPECT_THAT(q, QString("ewewe"));
     }
 
     EXPECT_TRUE(mockModulesModel.createTable());

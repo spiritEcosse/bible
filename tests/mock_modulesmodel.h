@@ -11,7 +11,6 @@ class MockModulesModel : public ModulesModel
 public:
     MOCK_CONST_METHOD2(data, QVariant(const QModelIndex &index, int role));
     MOCK_METHOD0(init, void());
-    MOCK_METHOD0(sqlCreateTable, QString());
     MOCK_METHOD1(setEditStrategy, void(EditStrategy strategy));
     MOCK_METHOD0(createTable, bool());
     MOCK_METHOD1(execLastError, bool(const QString& query));

@@ -274,7 +274,7 @@ public:
                                   QChar fillChar = QLatin1Char(' ')) const {
         return QString();
     }
-    Q_REQUIRED_RESULT QString arg(const QString &a1, const QString &a2) const;
+    Q_REQUIRED_RESULT QString virtual arg(const QString &a1, const QString &a2) const {}
     Q_REQUIRED_RESULT QString arg(const QString &a1, const QString &a2, const QString &a3) const;
     Q_REQUIRED_RESULT QString arg(const QString &a1, const QString &a2, const QString &a3,
                 const QString &a4) const;
@@ -959,9 +959,6 @@ inline QString QString::arg(short a, int fieldWidth, int base, QChar fillChar) c
 { return arg(qlonglong(a), fieldWidth, base, fillChar); }
 inline QString QString::arg(ushort a, int fieldWidth, int base, QChar fillChar) const
 { return arg(qulonglong(a), fieldWidth, base, fillChar); }
-inline QString QString::arg(const QString &, const QString &) const {
-    return QString();
-}
 inline QString QString::arg(const QString &a1, const QString &a2, const QString &a3) const
 { const QString *args[3] = { &a1, &a2, &a3 }; return multiArg(3, args); }
 inline QString QString::arg(const QString &a1, const QString &a2, const QString &a3,

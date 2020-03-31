@@ -2,6 +2,7 @@ TEMPLATE = app
 PROJECT_DIR = $$PWD/../
 
 QT -= gui
+QT += core
 
 PROJECT_SOURCES = \
     $$PROJECT_DIR/src/DownloadManager.cpp \
@@ -58,8 +59,8 @@ HEADERS += $$PROJECT_HEADERS \
     QtNetwork/qsslerror.h \
     QtCore/QStringList \
     QtCore/qstringlist.h \
-    QtCore/QString \
-    QtCore/qstring.h \
+#    QtCore/QString \
+#    QtCore/qstring.h \
     QtCore/QTextStream \
     QtCore/qtextstream.h \
     mock_qstring.h \
