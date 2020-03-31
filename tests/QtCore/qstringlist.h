@@ -81,6 +81,7 @@ public:
 
 #if QT_STRINGVIEW_LEVEL < 2
     virtual inline bool contains(const QString &str, Qt::CaseSensitivity cs = Qt::CaseSensitive) const {
+
         return true;
     }
 #endif

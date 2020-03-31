@@ -40,7 +40,7 @@ public:
     bool operator==(const QFileInfo &fileinfo) const;
     inline bool operator!=(const QFileInfo &fileinfo) const { return !(operator==(fileinfo)); }
 
-    virtual inline void setFile(const QString &file) { Q_UNUSED(file) }
+    virtual inline void setFile(const QString &) {}
     void setFile(const QFile &file);
     void setFile(const QDir &dir, const QString &file);
     bool exists() const;

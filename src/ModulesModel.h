@@ -6,6 +6,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QSqlDatabase>
+#include <QDebug>
 
 #include <qmath.h>
 
@@ -26,12 +27,17 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
     QHash<int, QByteArray> roleNames() const;
     virtual void init();
-    virtual bool createTable(const QString &tableName, const QString &relatedTable);
+    virtual bool createTable();
     virtual bool execLastError(const QString& query);
 
 private:
     friend class ModulesGroupModelTest;
+    friend class ModulesModelTest;
     FRIEND_TEST(ModulesModelTest, createTable);
+    QString tableNameString = "modules";
+    QString tableNameGroup = "modules_group";
+
+    virtual QString sqlCreateTable();
 };
 
 

@@ -5,6 +5,7 @@
 #include "mock_qsqlquery.h"
 #include "mock_qsqlerror.h"
 #include "mock_qstringlist.h"
+#include "mock_qstring.h"
 
 
 // The fixture for testing class ModulesModel.
@@ -41,7 +42,7 @@ protected:
     MockQSqlDatabase mockQSqlDatabase;
     MockQStringList mockQStringList;
 
-    MockModulesModel mockModulesModel;
+    StrictMock<MockModulesModel> mockModulesModel;
     ModulesModel* modulesModel;
 
     const QString tableName = "modules";
@@ -51,14 +52,15 @@ protected:
 
 TEST_F(ModulesModelTest, init)
 {
-    ON_CALL(mockModulesModel, init())
-            .WillByDefault(Invoke(&mockModulesModel, &MockModulesModel::parentInit));
+    EXPECT_CALL(mockModulesModel, init())
+            .WillOnce(Invoke(&mockModulesModel, &MockModulesModel::parentInit));
 
     {
         InSequence s;
-        EXPECT_CALL(mockModulesModel, createTable(tableName, relatedTable));
+        EXPECT_CALL(mockModulesModel, createTable());
         EXPECT_CALL(mockModulesModel, setTable(tableName));
         EXPECT_CALL(mockModulesModel, select());
+        EXPECT_CALL(mockModulesModel, setEditStrategy(QSqlTableModel::OnManualSubmit));
     }
 
     mockModulesModel.init();
@@ -66,56 +68,49 @@ TEST_F(ModulesModelTest, init)
 
 TEST_F(ModulesModelTest, createTable)
 {
-    QString sql = QString(
-                "CREATE TABLE IF NOT EXISTS '%1' ("
-                "   'id'                INTEGER PRIMARY KEY AUTOINCREMENT, "
-                "   'name'              CHAR(200) NOT NULL, "
-                "   'description'       TEXT, "
-                "   'abbreviation'      CHAR(50), "
-                "   'information'       TEXT, "
-                "   'language'          CHAR(50), "
-                "   'language_show'     CHAR(50), "
-                "   'update'            TEXT, "
-                "   'urls'              TEXT, "
-                "   'comment'           TEXT, "
-                "   'size'              NUMERIC NOT NULL, "
-                "   'region'            TEXT, "
-                "   'default_download'  NUMERIC DEFAULT 0, "
-                "   'hidden'            NUMERIC DEFAULT 0, "
-                "   'copyright'         TEXT, "
-                "   '%2_id'             NUMERIC NOT NULL, "
-                "FOREIGN KEY ('%2_id')  REFERENCES %2(id)"
-                ")"
-                ).arg(tableName, relatedTable);
-    ON_CALL(mockModulesModel, createTable(tableName, relatedTable))
-            .WillByDefault(Invoke(&mockModulesModel, &MockModulesModel::ParentCreateTable));
+    EXPECT_CALL(mockModulesModel, createTable())
+            .Times(2)
+            .WillRepeatedly(Invoke(&mockModulesModel, &MockModulesModel::ParentCreateTable));
+
+    const QString q("ff");
     {
         InSequence s;
         EXPECT_CALL(mockModulesModel, database())
                 .WillOnce(ReturnPointee(&mockQSqlDatabase));
         EXPECT_CALL(mockQSqlDatabase, tables())
                 .WillOnce(ReturnPointee(&mockQStringList));
-        EXPECT_CALL(mockModulesModel, execLastError(sql))
-                .WillRepeatedly(Return(true));
+        EXPECT_CALL(mockQStringList, contains(tableName, Qt::CaseSensitive))
+                .WillOnce(Return(false));
+        EXPECT_CALL(mockModulesModel, sqlCreateTable())
+                .WillOnce(Return(q));
+        EXPECT_CALL(mockModulesModel, execLastError(_))
+//                .WillOnce(DoAll(SaveArg<0>(q), Return(true)));
+                .WillOnce(Return(true));
+//        EXPECT_THAT(q, QString("ewewe"));
     }
 
-    EXPECT_TRUE(mockModulesModel.createTable(tableName, relatedTable));
-//    {
-//        InSequence s;
-//        EXPECT_CALL(mockModulesModel, database())
-//                .WillOnce(ReturnPointee(&mockQSqlDatabase));
-//        EXPECT_CALL(mockQSqlDatabase, tables())
-//                .WillRepeatedly(Return(QStringList{tableName}));
-//    }
-//    EXPECT_FALSE(mockModulesModel.createTable(tableName, relatedTable));
+    EXPECT_TRUE(mockModulesModel.createTable());
+
+    {
+        InSequence s;
+        EXPECT_CALL(mockModulesModel, database())
+                .WillOnce(ReturnPointee(&mockQSqlDatabase));
+        EXPECT_CALL(mockQSqlDatabase, tables())
+                .WillRepeatedly(ReturnPointee(&mockQStringList));
+        EXPECT_CALL(mockQStringList, contains(tableName, Qt::CaseSensitive))
+                .WillOnce(Return(true));
+    }
+
+    EXPECT_FALSE(mockModulesModel.createTable());
 }
 
 TEST_F(ModulesModelTest, execLastError)
 {
     mockModulesModel.query_ = &mockQSqlQuery;
 
-    ON_CALL(mockModulesModel, execLastError(query))
-            .WillByDefault(Invoke(&mockModulesModel, &MockModulesModel::parentExecLastError));
+    EXPECT_CALL(mockModulesModel, execLastError(query))
+            .Times(2)
+            .WillRepeatedly(Invoke(&mockModulesModel, &MockModulesModel::parentExecLastError));
 
     EXPECT_CALL(mockQSqlQuery, exec(query))
             .WillOnce(Return(true));
@@ -130,5 +125,6 @@ TEST_F(ModulesModelTest, execLastError)
                 .WillOnce(ReturnPointee(&mockQSqlError));
         EXPECT_CALL(mockQSqlError, text());
     }
+
     EXPECT_FALSE(mockModulesModel.execLastError(query));
 }

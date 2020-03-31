@@ -188,7 +188,7 @@ public:
     inline QString(const QString &) Q_DECL_NOTHROW;
     virtual ~QString() {}
     QString &operator=(QChar c);
-    QString &operator=(const QString &) Q_DECL_NOTHROW;
+    QString &operator=(const QString &) Q_DECL_NOTHROW {}
     QString &operator=(QLatin1String latin1);
 #ifdef Q_COMPILER_RVALUE_REFS
     inline QString(QString && other) Q_DECL_NOTHROW : d(other.d) {
@@ -959,8 +959,9 @@ inline QString QString::arg(short a, int fieldWidth, int base, QChar fillChar) c
 { return arg(qlonglong(a), fieldWidth, base, fillChar); }
 inline QString QString::arg(ushort a, int fieldWidth, int base, QChar fillChar) const
 { return arg(qulonglong(a), fieldWidth, base, fillChar); }
-inline QString QString::arg(const QString &a1, const QString &a2) const
-{ const QString *args[2] = { &a1, &a2 }; return multiArg(2, args); }
+inline QString QString::arg(const QString &, const QString &) const {
+    return QString();
+}
 inline QString QString::arg(const QString &a1, const QString &a2, const QString &a3) const
 { const QString *args[3] = { &a1, &a2, &a3 }; return multiArg(3, args); }
 inline QString QString::arg(const QString &a1, const QString &a2, const QString &a3,

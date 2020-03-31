@@ -10,7 +10,7 @@ class MockModulesGroupModel : public ModulesGroupModel
 {
 public:
     MOCK_METHOD0(init, void());
-    MOCK_METHOD1(createTable, bool(const QString &tableName));
+    MOCK_METHOD0(createTable, bool());
     MOCK_METHOD1(execLastError, bool(const QString& query));
     MOCK_METHOD0(checkAvailabilityNewModules, void());
     MOCK_CONST_METHOD3(correctTitle, QString(QString, QString, QString));
@@ -37,8 +37,8 @@ public:
     MOCK_METHOD0(database, QSqlDatabase&());
     MOCK_CONST_METHOD0(lastError, QSqlError&());
 
-    bool ParentCreateTable(const QString &tableName) {
-        return ModulesGroupModel::createTable(tableName);
+    bool ParentCreateTable() {
+        return ModulesGroupModel::createTable();
     }
     void parentInit() {
         return ModulesGroupModel::init();

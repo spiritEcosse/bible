@@ -8,46 +8,52 @@ ModulesModel::ModulesModel(QObject *parent)
 
 void ModulesModel::init()
 {
-    createTable("modules", "modules_group");
-    setTable("modules");
+    createTable();
+    setTable(tableNameString);
     select();
+    setEditStrategy(QSqlTableModel::OnManualSubmit);
 }
 
 bool ModulesModel::execLastError(const QString& query)
 {
     if (!query_->exec(query))
     {
-        qPrintable(query_->lastError().text());
+        qWarning() << query << query_->lastError().text();
+//        qPrintable(query_->lastError().text());
         return false;
     }
     return true;
 }
 
-bool ModulesModel::createTable(const QString &tableName, const QString &relatedTable)
+QString ModulesModel::sqlCreateTable() {
+    return QString(
+                "CREATE TABLE IF NOT EXISTS '%1' ("
+                "   'id'                INTEGER PRIMARY KEY AUTOINCREMENT, "
+                "   'name'              CHAR(200) NOT NULL, "
+                "   'description'       TEXT, "
+                "   'abbreviation'      CHAR(50), "
+                "   'information'       TEXT, "
+                "   'language'          CHAR(50), "
+                "   'language_show'     CHAR(50), "
+                "   'update'            TEXT, "
+                "   'urls'              TEXT, "
+                "   'comment'           TEXT, "
+                "   'size'              NUMERIC NOT NULL, "
+                "   'region'            TEXT, "
+                "   'default_download'  NUMERIC DEFAULT 0, "
+                "   'hidden'            NUMERIC DEFAULT 0, "
+                "   'copyright'         TEXT, "
+                "   '%2_id'             NUMERIC NOT NULL, "
+                "FOREIGN KEY ('%2_id')  REFERENCES %2(id)"
+                ")"
+                ).arg(tableNameString, tableNameGroup);
+}
+
+bool ModulesModel::createTable()
 {
-    if ( !database().tables().contains(tableName, Qt::CaseSensitive) ) {
-        QString sql = QString(
-                    "CREATE TABLE IF NOT EXISTS '%1' ("
-                    "   'id'                INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    "   'name'              CHAR(200) NOT NULL, "
-                    "   'description'       TEXT, "
-                    "   'abbreviation'      CHAR(50), "
-                    "   'information'       TEXT, "
-                    "   'language'          CHAR(50), "
-                    "   'language_show'     CHAR(50), "
-                    "   'update'            TEXT, "
-                    "   'urls'              TEXT, "
-                    "   'comment'           TEXT, "
-                    "   'size'              NUMERIC NOT NULL, "
-                    "   'region'            TEXT, "
-                    "   'default_download'  NUMERIC DEFAULT 0, "
-                    "   'hidden'            NUMERIC DEFAULT 0, "
-                    "   'copyright'         TEXT, "
-                    "   '%2_id'             NUMERIC NOT NULL, "
-                    "FOREIGN KEY ('%2_id')  REFERENCES %2(id)"
-                    ")"
-                    ).arg(tableName, relatedTable);
-        return execLastError(sql);
+    if ( !database().tables().contains(tableNameString) ) {
+        sqlCreateTable();
+        return execLastError(QString("ffert"));
     }
     return false;
 }

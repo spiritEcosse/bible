@@ -19,6 +19,8 @@ using ::testing::Return;
 using ::testing::ReturnRef;
 using ::testing::Mock;
 using ::testing::Invoke;
+using ::testing::TypedEq;
+using ::testing::SaveArg;
 using ::testing::DefaultValue;
 using ::testing::ExpectationSet;
 using ::testing::Eq;

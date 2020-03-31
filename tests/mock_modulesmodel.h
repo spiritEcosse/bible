@@ -11,7 +11,9 @@ class MockModulesModel : public ModulesModel
 public:
     MOCK_CONST_METHOD2(data, QVariant(const QModelIndex &index, int role));
     MOCK_METHOD0(init, void());
-    MOCK_METHOD2(createTable, bool(const QString &tableName, const QString &relatedTable));
+    MOCK_METHOD0(sqlCreateTable, QString());
+    MOCK_METHOD1(setEditStrategy, void(EditStrategy strategy));
+    MOCK_METHOD0(createTable, bool());
     MOCK_METHOD1(execLastError, bool(const QString& query));
     MOCK_METHOD1(setTable, void(const QString &tableName));
     MOCK_METHOD0(select, bool());
@@ -21,8 +23,8 @@ public:
     MOCK_METHOD0(submitAll, bool());
     MOCK_METHOD0(database, QSqlDatabase&());
 
-    bool ParentCreateTable(const QString &tableName, const QString &relatedTable) {
-        return ModulesModel::createTable(tableName, relatedTable);
+    bool ParentCreateTable() {
+        return ModulesModel::createTable();
     }
     void parentInit() {
         return ModulesModel::init();

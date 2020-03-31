@@ -14,6 +14,7 @@ public:
     MOCK_METHOD(QString, number, (int, int base));
     MOCK_METHOD(QString&, arg, (double a, int fieldWidth, char fmt, int prec, QChar fillChar), (const));
     MOCK_METHOD(QString, arg, (const QString a, int fieldWidth, QChar fillChar), (const));
+    MOCK_METHOD(QString, arg, (const QString &, const QString &), (const));
 };
 
 #endif // MOCK_QSTRING_H
