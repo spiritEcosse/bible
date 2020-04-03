@@ -16,6 +16,7 @@ using ::testing::Test;
 using ::testing::ValuesIn;
 using ::testing::InSequence;
 using ::testing::Return;
+using ::testing::HasSubstr;
 using ::testing::ReturnRef;
 using ::testing::Mock;
 using ::testing::Invoke;
@@ -31,5 +32,10 @@ using ::testing::Property;
 using ::testing::internal::BuiltInDefaultValue;
 using ::testing::StrictMock;
 using ::testing::ElementsAre;
+using ::testing::ByRef;
+using ::testing::Matcher;
+using ::testing::Pointee;
+
+using testing::internal::Strings;
 
 #endif // GTEST_GLOBAL_H

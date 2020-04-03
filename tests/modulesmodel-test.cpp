@@ -88,7 +88,7 @@ TEST_F(ModulesModelTest, createTable)
                 "   'hidden'            NUMERIC DEFAULT 0, "
                 "   'copyright'         TEXT, "
                 "   '%2_id'             NUMERIC NOT NULL, "
-                "FOREIGN ('%2_id')  REFERENCES %2(id)"
+                "FOREIGN KEY ('%2_id')  REFERENCES %2(id)"
                 ")"
                 );
     EXPECT_CALL(mockModulesModel, createTable())
@@ -103,8 +103,9 @@ TEST_F(ModulesModelTest, createTable)
                 .WillOnce(ReturnPointee(&mockQStringList));
         EXPECT_CALL(mockQStringList, contains(tableName, Qt::CaseSensitive))
                 .WillOnce(Return(false));
-        EXPECT_CALL(qStringSql, arg(_, _));
-        EXPECT_CALL(mockModulesModel, execLastError(_))
+        EXPECT_CALL(qStringSql, arg(tableName, relatedTable))
+                .WillOnce(Return(sql));
+        EXPECT_CALL(mockModulesModel, execLastError(sql))
                 .WillOnce(Return(true));
     }
 
@@ -121,6 +122,9 @@ TEST_F(ModulesModelTest, createTable)
     }
 
     EXPECT_FALSE(mockModulesModel.createTable());
+    QString* qStringSql = new QString("");
+    ModulesModel f;
+    EXPECT_THAT(f.qStringSql, qStringSql);
 }
 
 TEST_F(ModulesModelTest, execLastError)
