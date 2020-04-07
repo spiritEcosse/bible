@@ -96,15 +96,7 @@ bool ModulesGroupModel::execLastError(const QString& query)
 bool ModulesGroupModel::createTable()
 {
     if ( !database().tables().contains(tableNameString) ) {
-        QString sql = QString(
-                    "CREATE TABLE IF NOT EXISTS '%1' ("
-                    "   'id'        INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    "   'language'  CHAR(50), "
-                    "   'type'      CHAR(50), "
-                    "   'region'    CHAR(50) "
-                    ")"
-                    ).arg(tableNameString);
-        return execLastError(sql);
+        return execLastError(qStringSql->arg(tableNameString));
     }
     return false;
 }

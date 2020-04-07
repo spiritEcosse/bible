@@ -44,15 +44,15 @@ QString DownloadManager::saveFileName(const QUrl &url)
         basename = "download";
     }
 
-    if (output->exists(basename)) { // WARNING: basename to test
-        // already exists, don't overwrite
-        int i = 0;
-        basename += '.';
-        while (output->exists(basename + basename.number(i)))
-            ++i;
-
-        basename += basename.number(i);
+    for (int index = 0; output->exists(basename); index++) {
+        basename = qString->arg(index);
     }
+
+
+
+
+
+
     return basename;
 }
 

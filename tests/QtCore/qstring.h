@@ -188,14 +188,14 @@ public:
     inline QString(const QString &) Q_DECL_NOTHROW;
     virtual ~QString() {}
     QString &operator=(QChar c);
-    QString &operator=(const QString &) Q_DECL_NOTHROW {}
+//    QString &operator=(const QString &) Q_DECL_NOTHROW { }
     QString &operator=(QLatin1String latin1);
 #ifdef Q_COMPILER_RVALUE_REFS
-    inline QString(QString && other) Q_DECL_NOTHROW : d(other.d) {
-        other.d = Data::sharedNull();
-    }
-    inline QString &operator=(QString &&other) Q_DECL_NOTHROW
-    { qSwap(d, other.d); return *this; }
+//    inline QString(QString && other) Q_DECL_NOTHROW : d(other.d) {
+//        other.d = Data::sharedNull();
+//    }
+//    inline QString &operator=(QString &&other) Q_DECL_NOTHROW
+//    { qSwap(d, other.d); return *this; }
 #endif
     inline void swap(QString &other) Q_DECL_NOTHROW { qSwap(d, other.d); }
     inline int size() const { return d->size; }
@@ -243,37 +243,31 @@ public:
                 QChar fillChar = QLatin1Char(' ')) const;
     Q_REQUIRED_RESULT QString arg(ulong a, int fieldwidth=0, int base=10,
                 QChar fillChar = QLatin1Char(' ')) const;
-    Q_REQUIRED_RESULT QString arg(int a, int fieldWidth = 0, int base = 10,
-                QChar fillChar = QLatin1Char(' ')) const;
+    Q_REQUIRED_RESULT virtual QString arg(int a, int fieldWidth = 0, int base = 10,
+                                  QChar fillChar = QLatin1Char(' ')) const {
+    }
     Q_REQUIRED_RESULT QString arg(uint a, int fieldWidth = 0, int base = 10,
                 QChar fillChar = QLatin1Char(' ')) const;
     Q_REQUIRED_RESULT QString arg(short a, int fieldWidth = 0, int base = 10,
                 QChar fillChar = QLatin1Char(' ')) const;
     Q_REQUIRED_RESULT QString arg(ushort a, int fieldWidth = 0, int base = 10,
                 QChar fillChar = QLatin1Char(' ')) const;
-    Q_REQUIRED_RESULT virtual QString& arg(double a, int fieldWidth = 0, char fmt = 'g', int prec = -1,
-                                          QChar fillChar = QChar()) const {
-        QString q;
-        return q;
-    }
-    Q_REQUIRED_RESULT QString arg(char a, int fieldWidth = 0,
-                QChar fillChar = QLatin1Char(' ')) const;
+    Q_REQUIRED_RESULT virtual QString arg(double a, int fieldWidth = 0, char fmt = 'g', int prec = -1,
+                                          QChar fillChar = QChar()) const {}
+    Q_REQUIRED_RESULT virtual QString arg(char a, int fieldWidth = 0,
+                                          QChar fillChar = QLatin1Char(' ')) const {}
     Q_REQUIRED_RESULT QString arg(QChar a, int fieldWidth = 0,
                 QChar fillChar = QLatin1Char(' ')) const;
 #if QT_STRINGVIEW_LEVEL < 2
-    Q_REQUIRED_RESULT QString arg(const QString &a, int fieldWidth = 0,
+    Q_REQUIRED_RESULT virtual QString arg(const QString &a, int fieldWidth = 0,
                                   QChar fillChar = QLatin1Char(' ')) const {
-        return QString();
     }
 #endif
     Q_REQUIRED_RESULT QString arg(QStringView a, int fieldWidth = 0,
                                   QChar fillChar = QLatin1Char(' ')) const {
-        return QString();
     }
     Q_REQUIRED_RESULT QString arg(QLatin1String a, int fieldWidth = 0,
-                                  QChar fillChar = QLatin1Char(' ')) const {
-        return QString();
-    }
+                                  QChar fillChar = QLatin1Char(' ')) const {}
     Q_REQUIRED_RESULT QString virtual arg(const QString &a1, const QString &a2) const {}
     Q_REQUIRED_RESULT QString arg(const QString &a1, const QString &a2, const QString &a3) const;
     Q_REQUIRED_RESULT QString arg(const QString &a1, const QString &a2, const QString &a3,
@@ -947,8 +941,8 @@ inline QString &QString::setNum(ulong n, int base)
 { return setNum(qulonglong(n), base); }
 inline QString &QString::setNum(float n, char f, int prec)
 { return setNum(double(n),f,prec); }
-inline QString QString::arg(int a, int fieldWidth, int base, QChar fillChar) const
-{ return arg(qlonglong(a), fieldWidth, base, fillChar); }
+//inline QString QString::arg(int a, int fieldWidth, int base, QChar fillChar) const
+//{ return arg(qlonglong(a), fieldWidth, base, fillChar); }
 inline QString QString::arg(uint a, int fieldWidth, int base, QChar fillChar) const
 { return arg(qulonglong(a), fieldWidth, base, fillChar); }
 inline QString QString::arg(long a, int fieldWidth, int base, QChar fillChar) const
@@ -1329,7 +1323,7 @@ inline const QString operator+(QChar s1, const QString &s2)
 inline QT_ASCII_CAST_WARN const QString operator+(const QString &s1, const char *s2)
 { }
 inline QT_ASCII_CAST_WARN const QString operator+(const char *s1, const QString &s2)
-{ }
+{ QString t = QString::fromUtf8(s1); t += s2; return t; }
 inline QT_ASCII_CAST_WARN const QString operator+(char c, const QString &s)
 { }
 inline QT_ASCII_CAST_WARN const QString operator+(const QString &s, char c)

@@ -63,6 +63,14 @@ private:
     int countOldRows = 0;
     QString tableNameString = "modules_group";
     int correctSize(const QString &str) const;
+    QString* qStringSql = new QString(
+                "CREATE TABLE IF NOT EXISTS '%1' ("
+                "   'id'        INTEGER PRIMARY KEY AUTOINCREMENT, "
+                "   'language'  CHAR(50), "
+                "   'type'      CHAR(50), "
+                "   'region'    CHAR(50) "
+                ")"
+                );
 
     friend class ModulesGroupModelTest;
     FRIEND_TEST(ModulesGroupModelTest, createTable);

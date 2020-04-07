@@ -122,9 +122,7 @@ TEST_F(ModulesModelTest, createTable)
     }
 
     EXPECT_FALSE(mockModulesModel.createTable());
-    QString* qStringSql = new QString("");
-    ModulesModel f;
-    EXPECT_THAT(f.qStringSql, qStringSql);
+    EXPECT_THAT(*ModulesModel().qStringSql, sql);
 }
 
 TEST_F(ModulesModelTest, execLastError)
