@@ -185,9 +185,12 @@ TEST_F(DownloadManagerTest, append)
 TEST_F(DownloadManagerTest, saveFileName)
 {
     EXPECT_CALL(mockDownloadManager, saveFileName(_))
+            .Times(2)
             .WillRepeatedly(
                     Invoke(&mockDownloadManager, &MockDownloadManager::parentSaveFileName)
                 );
+
+    QString result;
 
     {
         InSequence s;
@@ -198,22 +201,14 @@ TEST_F(DownloadManagerTest, saveFileName)
                 .WillOnce(ReturnRef(mockQString));
         EXPECT_CALL(mockQString, isEmpty())
                 .WillOnce(Return(false));
-        EXPECT_CALL(mockQFile, exists(_))
+        EXPECT_CALL(mockQFile, exists(result))
                 .WillOnce(Return(false));
     }
 
-    mockDownloadManager.saveFileName(mockQurl);
-}
+    EXPECT_THAT(result, mockDownloadManager.saveFileName(mockQurl));
 
-TEST_F(DownloadManagerTest, saveFileNameRenameBaseName)
-{
-    EXPECT_CALL(mockDownloadManager, saveFileName(_))
-            .WillRepeatedly(
-                    Invoke(&mockDownloadManager, &MockDownloadManager::parentSaveFileName)
-                );
+    result = "download.2";
 
-
-    QString result("download.2");
     {
         InSequence s;
         EXPECT_CALL(mockQurl, path(QUrl::FullyDecoded))
