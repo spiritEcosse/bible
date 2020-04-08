@@ -252,7 +252,7 @@ public:
                 QChar fillChar = QLatin1Char(' ')) const;
     Q_REQUIRED_RESULT QString arg(ushort a, int fieldWidth = 0, int base = 10,
                 QChar fillChar = QLatin1Char(' ')) const;
-    Q_REQUIRED_RESULT virtual QString arg(double a, int fieldWidth = 0, char fmt = 'g', int prec = -1,
+    Q_REQUIRED_RESULT virtual QString& arg(double a, int fieldWidth = 0, char fmt = 'g', int prec = -1,
                                           QChar fillChar = QChar()) const {}
     Q_REQUIRED_RESULT virtual QString arg(char a, int fieldWidth = 0,
                                           QChar fillChar = QLatin1Char(' ')) const {}

@@ -319,17 +319,19 @@ TEST_F(DownloadManagerTest, downloadProgress)
                 );
 
 
-    MockQString mqArg;
-    MockQString mqArg2;
+    StrictMock<MockQString> mqArg;
+    StrictMock<MockQString> mqArg2;
+    QString qstring;
     {
         InSequence s;
         EXPECT_CALL(mockTextProgressBar, setStatus(bytesReceived, bytesTotal));
         EXPECT_CALL(mockQString, fromLatin1(_, _))
                 .WillOnce(ReturnPointee(&mqArg));
         EXPECT_CALL(mqArg, arg(_, 3, 'f', 1, _))
-                .WillOnce(ReturnPointee(&mqArg));
-//        EXPECT_CALL(mqArg2, arg(_, _, _)); // WARNING: add this
-        EXPECT_CALL(mockTextProgressBar, setMessage(_)); // WARNING: pass message
+                .WillOnce(ReturnPointee(&mqArg2));
+        EXPECT_CALL(mqArg2, arg(QString(), 0, QChar(' ')))
+                .WillOnce(Return(qstring));
+        EXPECT_CALL(mockTextProgressBar, setMessage(qstring));
         EXPECT_CALL(mockTextProgressBar, update());
     }
 
