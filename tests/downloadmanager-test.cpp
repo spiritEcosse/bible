@@ -39,6 +39,7 @@ protected:
       mockDownloadManager.manager = &mockQNetworkAccessManager;
       mockDownloadManager.downloadTime = &mockQTime;
       mockDownloadManager.qString = &mockQString;
+      mockDownloadManager.baseName = &baseName;
   }
 
   void TearDown() override {
@@ -47,6 +48,7 @@ protected:
   // Objects declared here can be used by all tests in the test case for Foo.
   StrictMock<MockDownloadManager> mockDownloadManager;
   DownloadManager* downloadManager;
+  StrictMock<MockQString> baseName;
 
   MockModulesGroupModel mockModulesGroupModel;
   ModulesGroupModel* modulesGroupModel;
@@ -211,7 +213,7 @@ TEST_F(DownloadManagerTest, saveFileNameRenameBaseName)
                 );
 
 
-    QString result(".2");
+    QString result("download.2");
     {
         InSequence s;
         EXPECT_CALL(mockQurl, path(QUrl::FullyDecoded))
@@ -223,22 +225,22 @@ TEST_F(DownloadManagerTest, saveFileNameRenameBaseName)
                 .WillOnce(Return(false));
         EXPECT_CALL(mockQFile, exists(mockQString))
                 .WillOnce(Return(true));
-
-        EXPECT_CALL(mockQString, arg(0, 0, 10, QChar(' ')))
-                .WillOnce(Return(QString(".0")));
-        EXPECT_CALL(mockQFile, exists(QString(".0")))
+        EXPECT_CALL(baseName, arg(0, 0, 10, QChar(' ')))
+                .WillOnce(Return(QString("download.0")));
+        EXPECT_CALL(mockQFile, exists(QString("download.0")))
                 .WillOnce(Return(true));
-        EXPECT_CALL(mockQString, arg(1, 0, 10, QChar(' ')))
-                .WillOnce(Return(QString(".1")));
-        EXPECT_CALL(mockQFile, exists(QString(".1")))
+        EXPECT_CALL(baseName, arg(1, 0, 10, QChar(' ')))
+                .WillOnce(Return(QString("download.1")));
+        EXPECT_CALL(mockQFile, exists(QString("download.1")))
                 .WillOnce(Return(true));
-        EXPECT_CALL(mockQString, arg(2, 0, 10, QChar(' ')))
-                .WillOnce(Return(QString(".2")));
+        EXPECT_CALL(baseName, arg(2, 0, 10, QChar(' ')))
+                .WillOnce(Return(result));
         EXPECT_CALL(mockQFile, exists(result))
                 .WillOnce(Return(false));
     }
 
     EXPECT_THAT(result, mockDownloadManager.saveFileName(mockQurl));
+    EXPECT_THAT(QString("download.%1"), *DownloadManager().baseName);
 }
 
 TEST_F(DownloadManagerTest, startNextDownload)
@@ -325,7 +327,7 @@ TEST_F(DownloadManagerTest, downloadProgress)
     {
         InSequence s;
         EXPECT_CALL(mockTextProgressBar, setStatus(bytesReceived, bytesTotal));
-        EXPECT_CALL(mockQString, fromLatin1(_, _))
+        EXPECT_CALL(mockQString, fromLatin1(_, -1)) // WARNING: add "%1 %2" instead _
                 .WillOnce(ReturnPointee(&mqArg));
         EXPECT_CALL(mqArg, arg(_, 3, 'f', 1, _))
                 .WillOnce(ReturnPointee(&mqArg2));

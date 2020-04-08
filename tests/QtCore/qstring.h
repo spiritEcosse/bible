@@ -260,8 +260,7 @@ public:
                 QChar fillChar = QLatin1Char(' ')) const;
 #if QT_STRINGVIEW_LEVEL < 2
     Q_REQUIRED_RESULT virtual QString arg(const QString &a, int fieldWidth = 0,
-                                  QChar fillChar = QLatin1Char(' ')) const {
-    }
+                                  QChar fillChar = QLatin1Char(' ')) const {}
 #endif
     Q_REQUIRED_RESULT QString arg(QStringView a, int fieldWidth = 0,
                                   QChar fillChar = QLatin1Char(' ')) const {
@@ -531,11 +530,7 @@ public:
     Q_REQUIRED_RESULT QVector<uint> toUcs4() const;
 
     // note - this are all inline so we can benefit from strlen() compile time optimizations
-    virtual inline QString& fromLatin1(const char *str, int size = -1)
-    {
-        QString q;
-        return q;
-    }
+    virtual inline QString& fromLatin1(const char *str, int size = -1) {}
     static inline QString fromUtf8(const char *str, int size = -1)
     {
         return fromUtf8_helper(str, (str && size == -1) ? int(strlen(str)) : size);

@@ -45,7 +45,7 @@ QString DownloadManager::saveFileName(const QUrl &url)
     }
 
     for (int index = 0; output->exists(basename); index++) {
-        basename = qString->arg(index);
+        basename = baseName->arg(index);
     }
 
 

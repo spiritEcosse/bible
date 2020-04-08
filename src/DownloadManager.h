@@ -37,6 +37,7 @@ private:
     virtual void reportRedirect();
     QTimer* timer;
     QString* qString;
+    QString* baseName = new QString("download.%1");
     QUrl* qurl = new QUrl();
     QQueue<QUrl> *downloadQueue = new QQueue<QUrl>();
     QFileInfo* qFileInfo = new QFileInfo();
@@ -52,6 +53,7 @@ private:
     FRIEND_TEST(DownloadManagerTest, downloadFinished);
     FRIEND_TEST(MockDownloadManager, parentStartNextDownload);
     FRIEND_TEST(DownloadManagerTest, saveFileName);
+    FRIEND_TEST(DownloadManagerTest, saveFileNameRenameBaseName);
 
     QNetworkReply *currentDownload = nullptr;
     QFile* output = new QFile();
