@@ -63,6 +63,8 @@ HEADERS += $$PROJECT_HEADERS \
     QtCore/QTextStream \
     QtCore/qtextstream.h \
     mock_qjsondocument.h \
+    QtCore/QJsonObject \
+    mock_qjsonobject.h \
     mock_qstring.h \
     mock_modulesmodel.h \
     mock_modulesgroupmodel.h \

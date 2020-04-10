@@ -2,6 +2,7 @@
 #define QJSONDOCUMENT_H
 
 #include <QtCore/qjsonvalue.h>
+#include <QJsonObject>
 
 QT_BEGIN_NAMESPACE
 
@@ -101,7 +102,7 @@ public:
     bool isArray() const;
     bool isObject() const;
 
-    virtual QJsonObject& object() const;
+    virtual QJsonObject& object() const {}
     QJsonArray array() const;
 
     void setObject(const QJsonObject &object);
