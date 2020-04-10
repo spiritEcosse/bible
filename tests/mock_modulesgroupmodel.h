@@ -36,6 +36,7 @@ public:
     MOCK_METHOD0(submitAll, bool());
     MOCK_METHOD0(database, QSqlDatabase&());
     MOCK_CONST_METHOD0(lastError, QSqlError&());
+    MOCK_METHOD(void, updateTable, ());
 
     bool ParentCreateTable() {
         return ModulesGroupModel::createTable();
@@ -48,6 +49,9 @@ public:
     }
     void parentNewRows(QJsonArray &downloads) {
         return ModulesGroupModel::newRows(downloads);
+    }
+    void parentUpdateTable() {
+        return ModulesGroupModel::updateTable();
     }
 };
 

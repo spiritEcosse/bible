@@ -37,11 +37,10 @@ void ModulesGroupModel::updateTable()
     if (!registry->open(QIODevice::ReadOnly | QIODevice::Text))
         return ;
 
-    QJsonParseError jsonError;
-    QJsonDocument document = QJsonDocument::fromJson(registry->readAll(), &jsonError);
+    QJsonDocument document = qJsonDocument->fromJson(registry->readAll(), qJsonParserError);
     registry->close();
 
-    if(jsonError.error != QJsonParseError::NoError)
+    if (qJsonParserError->error != QJsonParseError::NoError)
         return;
 
     QJsonArray downloads = document.object().value("downloads").toArray();
@@ -56,7 +55,7 @@ void ModulesGroupModel::compareVersions()
         return ;
 
     QJsonParseError jsonError;
-    QJsonDocument document = QJsonDocument::fromJson(registry_json.readAll(), &jsonError);
+    QJsonDocument document = qJsonDocument->fromJson(registry_json.readAll(), &jsonError);
     registry_json.close();
 
     if(jsonError.error != QJsonParseError::NoError)

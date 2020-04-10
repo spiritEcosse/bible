@@ -54,4 +54,3 @@ QHash<int, QByteArray> ModulesModel::roleNames() const {
     names[Qt::UserRole + 6] = "language";
     return names;
 }
-

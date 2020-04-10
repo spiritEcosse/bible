@@ -62,6 +62,7 @@ HEADERS += $$PROJECT_HEADERS \
     QtCore/qstring.h \
     QtCore/QTextStream \
     QtCore/qtextstream.h \
+    mock_qjsondocument.h \
     mock_qstring.h \
     mock_modulesmodel.h \
     mock_modulesgroupmodel.h \
@@ -83,7 +84,8 @@ HEADERS += $$PROJECT_HEADERS \
     mock_qqueue.h \
     mock_qurl.h \
     mock_qvariant.h \
-    mock_textprogressbar.h
+    mock_textprogressbar.h \
+    qjsondocument.h
 
 QMAKE_POST_LINK += ../scripts/post_unit_tests.sh
 
@@ -102,3 +104,7 @@ INCLUDEPATH += $$PWD/QtNetwork + $$PWD/QtSql + $$PWD/QtCore
 DEPENDPATH += $$PWD/QtNetwork + $$PWD/QtSql + $$PWD/QtCore
 
 LIBS += -lgmock -lgtest -lpthread -lquazip5
+
+DISTFILES += \
+    QtCore/QJsonParseError \
+    QtCore/QJsonDocument
