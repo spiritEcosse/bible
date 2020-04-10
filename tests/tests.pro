@@ -65,6 +65,7 @@ HEADERS += $$PROJECT_HEADERS \
     mock_qjsondocument.h \
     QtCore/QJsonObject \
     mock_qjsonobject.h \
+    mock_qjsonvalue.h \
     mock_qstring.h \
     mock_modulesmodel.h \
     mock_modulesgroupmodel.h \
@@ -109,4 +110,5 @@ LIBS += -lgmock -lgtest -lpthread -lquazip5
 
 DISTFILES += \
     QtCore/QJsonParseError \
-    QtCore/QJsonDocument
+    QtCore/QJsonDocument \
+    QtCore/QJsonValue

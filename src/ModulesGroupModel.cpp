@@ -37,14 +37,14 @@ void ModulesGroupModel::updateTable()
     if (!registry->open(QIODevice::ReadOnly | QIODevice::Text))
         return ;
 
-    QJsonDocument document = qJsonDocument->fromJson(registry->readAll(), qJsonParserError);
+    QJsonDocumentdocument = qJsonDocument->fromJson(
+                registry->readAll(), qJsonParserError);
     registry->close();
 
     if (qJsonParserError->error != QJsonParseError::NoError)
         return;
 
-//    QJsonArray downloads = document.object().value("downloads").toArray();
-//    newRows(downloads);
+    newRows(document.object().value(QString("downloads")).toArray());
 }
 
 void ModulesGroupModel::compareVersions()

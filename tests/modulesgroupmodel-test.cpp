@@ -10,6 +10,7 @@
 #include "mock_qstring.h"
 #include "mock_qjsondocument.h"
 #include "mock_qjsonobject.h"
+#include "mock_qjsonvalue.h"
 
 // The fixture for testing class ModulesGroupModelTest.
 class ModulesGroupModelTest : public TestWithParam<const char*> {
@@ -162,22 +163,18 @@ TEST_F(ModulesGroupModelTest, newRows) {
 
 TEST_F(ModulesGroupModelTest, updateTable) {
     EXPECT_CALL(mockModulesGroupModel, updateTable())
-            .Times(2)
+            .Times(3)
             .WillRepeatedly(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::parentUpdateTable));
+
+    MockQJsonDocument mockQJsonDocumentData;
+    MockQJsonObject mockQJsonObject;
+    MockQJsonValue mockQJsonValue;
+    MockQJsonArray mockQJsonArray;
 
     {
         InSequence s;
         EXPECT_CALL(mockQFile, open(qFileReadMode))
                 .WillOnce(Return(false));
-        EXPECT_CALL(mockQFile, readAll())
-                .Times(0)
-                .WillOnce(Return(data));
-        EXPECT_CALL(mockQJsonDocument, fromJson(data, mockModulesGroupModel.qJsonParserError))
-                .Times(0);
-        EXPECT_CALL(mockQFile, close())
-                .Times(0);
-        EXPECT_CALL(mockModulesGroupModel, newRows(_))
-                .Times(0);
     }
 
     mockModulesGroupModel.updateTable();
@@ -190,8 +187,15 @@ TEST_F(ModulesGroupModelTest, updateTable) {
                 .WillOnce(Return(true));
         EXPECT_CALL(mockQFile, readAll())
                 .WillOnce(Return(data));
-        EXPECT_CALL(mockQJsonDocument, fromJson(data, mockModulesGroupModel.qJsonParserError));
+        EXPECT_CALL(mockQJsonDocument, fromJson(data, mockModulesGroupModel.qJsonParserError))
+                .WillOnce(ReturnPointee(&mockQJsonDocumentData));
         EXPECT_CALL(mockQFile, close());
+        EXPECT_CALL(mockQJsonDocumentData, object())
+                .Times(0);
+        EXPECT_CALL(mockQJsonObject, value(QString("downloads")))
+                .Times(0);
+        EXPECT_CALL(mockQJsonValue, toArray())
+                .Times(0);
         EXPECT_CALL(mockModulesGroupModel, newRows(_))
                 .Times(0);
     }
@@ -199,21 +203,24 @@ TEST_F(ModulesGroupModelTest, updateTable) {
     mockModulesGroupModel.updateTable();
 
     mockModulesGroupModel.qJsonParserError->error = QJsonParseError::NoError;
-    MockQJsonDocument mockQJsonDocumentData;
-    MockQJsonObject mockQJsonObject;
 
-//    {
-//        InSequence s;
-//        EXPECT_CALL(mockQFile, open(qFileReadMode))
-//                .WillOnce(Return(true));
-//        EXPECT_CALL(mockQFile, readAll())
-//                .WillOnce(Return(data));
-//        EXPECT_CALL(mockQJsonDocument, fromJson(data, mockModulesGroupModel.qJsonParserError));
-//        EXPECT_CALL(mockQFile, close());
-////        EXPECT_CALL(mockQJsonDocumentData, object())
-////                .WillOnce(ReturnPointee(&mockQJsonObject));
-//        EXPECT_CALL(mockModulesGroupModel, newRows(_));
-//    }
+    {
+        InSequence s;
+        EXPECT_CALL(mockQFile, open(qFileReadMode))
+                .WillOnce(Return(true));
+        EXPECT_CALL(mockQFile, readAll())
+                .WillOnce(Return(data));
+        EXPECT_CALL(mockQJsonDocument, fromJson(data, mockModulesGroupModel.qJsonParserError))
+                .WillOnce(ReturnPointee(&mockQJsonDocumentData));
+        EXPECT_CALL(mockQFile, close());
+        EXPECT_CALL(mockQJsonDocumentData, object())
+                .WillOnce(ReturnPointee(&mockQJsonObject));
+        EXPECT_CALL(mockQJsonObject, value(QString("downloads")))
+                .WillOnce(ReturnPointee(&mockQJsonValue));
+        EXPECT_CALL(mockQJsonValue, toArray())
+                .WillOnce(ReturnPointee(&mockQJsonArray));
+        EXPECT_CALL(mockModulesGroupModel, newRows(mockQJsonArray));
+    }
 
-//    mockModulesGroupModel.updateTable();
+    mockModulesGroupModel.updateTable();
 }

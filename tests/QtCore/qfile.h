@@ -28,7 +28,7 @@ public:
     explicit QFile(QObject *parent);
     QFile(const QString &name, QObject *parent);
 #endif
-    virtual ~QFile();
+    virtual ~QFile() {}
 
     QString fileName() const override;
     virtual void setFileName(const QString &name);
