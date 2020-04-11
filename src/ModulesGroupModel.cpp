@@ -37,7 +37,7 @@ void ModulesGroupModel::updateTable()
     if (!registry->open(QIODevice::ReadOnly | QIODevice::Text))
         return ;
 
-    QJsonDocumentdocument = qJsonDocument->fromJson(
+    QJsonDocument document = qJsonDocument->fromJson(
                 registry->readAll(), qJsonParserError);
     registry->close();
 
