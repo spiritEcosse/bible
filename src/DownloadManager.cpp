@@ -38,7 +38,7 @@ QString DownloadManager::saveFileName(const QUrl &url)
 {
     QString path = url.path();
     qFileInfo->setFile(path);
-    QString basename = qFileInfo->fileName();
+    QString& basename = qFileInfo->fileName();
 
     if (basename.isEmpty()) {
         basename = "download";
@@ -161,10 +161,10 @@ void DownloadManager::reportRedirect()
                 << " was redirected with code: " << statusCode
                 << '\n';
 
-    const QVariant target = currentDownload->attribute(QNetworkRequest::RedirectionTargetAttribute);
+    const QVariant& target = currentDownload->attribute(QNetworkRequest::RedirectionTargetAttribute);
 
     if (target.isValid()) {
-        QUrl redirectUrl = target.toUrl();
+        QUrl& redirectUrl = target.toUrl();
 
         if (redirectUrl.isRelative()) {
             redirectUrl = requestUrl.resolved(redirectUrl);

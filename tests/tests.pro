@@ -68,6 +68,7 @@ HEADERS += $$PROJECT_HEADERS \
     mock_qjsonobject.h \
     mock_qjsonvalue.h \
     mock_qlist.h \
+    mock_qobject.h \
     mock_qsettings.h \
     mock_qstring.h \
     mock_modulesmodel.h \
@@ -92,7 +93,8 @@ HEADERS += $$PROJECT_HEADERS \
     mock_qvariant.h \
     mock_textprogressbar.h \
     QtCore/qjsondocument.h \
-    QtCore/qsettings.h
+    QtCore/qsettings.h \
+    QtCore/qobject.h
 
 
 QMAKE_POST_LINK += ../scripts/post_unit_tests.sh
@@ -118,4 +120,5 @@ DISTFILES += \
     QtCore/QJsonDocument \
     QtCore/QJsonValue \
     QtCore/QList \
-    QtCore/QSettings
+    QtCore/QSettings \
+    QtCore/QObject

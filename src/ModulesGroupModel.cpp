@@ -37,7 +37,7 @@ void ModulesGroupModel::updateTable()
     if (!registry->open(QIODevice::ReadOnly | QIODevice::Text))
         return ;
 
-    QJsonDocument document = qJsonDocument->fromJson(
+    QJsonDocument& document = qJsonDocument->fromJson(
                 registry->readAll(), qJsonParserError);
     registry->close();
 
@@ -54,7 +54,7 @@ void ModulesGroupModel::compareVersions()
     if ( !registryVersion->open(QIODevice::ReadOnly | QIODevice::Text) )
         return ;
 
-    QJsonDocument document = qJsonDocument->fromJson(registryVersion->readAll(), qJsonParserError);
+    QJsonDocument& document = qJsonDocument->fromJson(registryVersion->readAll(), qJsonParserError);
     registryVersion->close();
 
     if ( qJsonParserError->error != QJsonParseError::NoError ) // WARNING : test this
