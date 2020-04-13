@@ -10,6 +10,7 @@ class MockQJsonValue : public QJsonValue
 {
 public:
     MOCK_METHOD(QJsonArray&, toArray, (), (const));
+    MOCK_METHOD(int, toInt, (int defaultValue), (const));
 };
 
 #endif // MOCK_QJSONVALUE_H

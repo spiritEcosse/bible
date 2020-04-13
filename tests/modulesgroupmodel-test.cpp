@@ -1,6 +1,7 @@
 #include "gtest_global.h"
 
 #include "mock_modulesgroupmodel.h"
+#include "mock_downloadmanager.h"
 #include "mock_qsqldatabase.h"
 #include "mock_qsqlquery.h"
 #include "mock_qsqlerror.h"
@@ -11,6 +12,7 @@
 #include "mock_qjsondocument.h"
 #include "mock_qjsonobject.h"
 #include "mock_qjsonvalue.h"
+#include "mock_qsettings.h"
 
 // The fixture for testing class ModulesGroupModelTest.
 class ModulesGroupModelTest : public TestWithParam<const char*> {
@@ -35,9 +37,12 @@ class ModulesGroupModelTest : public TestWithParam<const char*> {
      // Code here will be called immediately after the constructor (right
      // before each test).
       mockModulesGroupModel.registry = &mockQFile;
+      mockModulesGroupModel.registryVersion = &mockRegistryVersion;
       mockModulesGroupModel.qStringSql = &qStringSql;
       mockModulesGroupModel.qJsonParserError = &mockQJsonParseError;
       mockModulesGroupModel.qJsonDocument = &mockQJsonDocument;
+      mockModulesGroupModel.manager = &mockManager;
+      mockModulesGroupModel.qSettings = &mockQSettings;
   }
 
   void TearDown() override {
@@ -52,12 +57,15 @@ class ModulesGroupModelTest : public TestWithParam<const char*> {
   StrictMock<MockQString> qStringSql;
   StrictMock<MockQJsonParseError> mockQJsonParseError;
   StrictMock<MockQJsonDocument> mockQJsonDocument;
-  QByteArray data;
+  QByteArray qByteArrea = "data";
 
   StrictMock<MockModulesGroupModel> mockModulesGroupModel;
   ModulesGroupModel* modulesGroupModel;
+  MockDownloadManager mockManager;
+  StrictMock<MockQSettings> mockQSettings;
 
   MockQFile mockQFile;
+  StrictMock<MockQFile> mockRegistryVersion;
   const QString tableName = "modules_group";
   const QString registryFileName = "registry.json";
   const QString query = BuiltInDefaultValue<const QString>::Get();
@@ -155,13 +163,15 @@ TEST_F(ModulesGroupModelTest, execLastError)
     EXPECT_FALSE(mockModulesGroupModel.execLastError(query));
 }
 
-TEST_F(ModulesGroupModelTest, newRows) {
+TEST_F(ModulesGroupModelTest, newRows)
+{
 //    ON_CALL(mockModulesGroupModel, newRows())
 //            .WillByDefault(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::parentNewRows));
 
 }
 
-TEST_F(ModulesGroupModelTest, updateTable) {
+TEST_F(ModulesGroupModelTest, updateTable)
+{
     EXPECT_CALL(mockModulesGroupModel, updateTable())
             .Times(3)
             .WillRepeatedly(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::parentUpdateTable));
@@ -179,6 +189,28 @@ TEST_F(ModulesGroupModelTest, updateTable) {
 
     mockModulesGroupModel.updateTable();
 
+    mockModulesGroupModel.qJsonParserError->error = QJsonParseError::NoError;
+
+    {
+        InSequence s;
+        EXPECT_CALL(mockQFile, open(qFileReadMode))
+                .WillOnce(Return(true));
+        EXPECT_CALL(mockQFile, readAll())
+                .WillOnce(Return(qByteArrea));
+        EXPECT_CALL(mockQJsonDocument, fromJson(qByteArrea, mockModulesGroupModel.qJsonParserError))
+                .WillOnce(ReturnPointee(&mockQJsonDocumentData));
+        EXPECT_CALL(mockQFile, close());
+        EXPECT_CALL(mockQJsonDocumentData, object())
+                .WillOnce(ReturnPointee(&mockQJsonObject));
+        EXPECT_CALL(mockQJsonObject, value(QString("downloads")))
+                .WillOnce(ReturnPointee(&mockQJsonValue));
+        EXPECT_CALL(mockQJsonValue, toArray())
+                .WillOnce(ReturnPointee(&mockQJsonArray));
+        EXPECT_CALL(mockModulesGroupModel, newRows(mockQJsonArray));
+    }
+
+    mockModulesGroupModel.updateTable();
+
     mockModulesGroupModel.qJsonParserError->error = QJsonParseError::UnterminatedObject;
 
     {
@@ -186,8 +218,8 @@ TEST_F(ModulesGroupModelTest, updateTable) {
         EXPECT_CALL(mockQFile, open(qFileReadMode))
                 .WillOnce(Return(true));
         EXPECT_CALL(mockQFile, readAll())
-                .WillOnce(Return(data));
-        EXPECT_CALL(mockQJsonDocument, fromJson(data, mockModulesGroupModel.qJsonParserError))
+                .WillOnce(Return(qByteArrea));
+        EXPECT_CALL(mockQJsonDocument, fromJson(qByteArrea, mockModulesGroupModel.qJsonParserError))
                 .WillOnce(ReturnPointee(&mockQJsonDocumentData));
         EXPECT_CALL(mockQFile, close());
         EXPECT_CALL(mockQJsonDocumentData, object())
@@ -201,26 +233,85 @@ TEST_F(ModulesGroupModelTest, updateTable) {
     }
 
     mockModulesGroupModel.updateTable();
+}
 
-    mockModulesGroupModel.qJsonParserError->error = QJsonParseError::NoError;
+TEST_F(ModulesGroupModelTest, compareVersions)
+{
+    EXPECT_CALL(mockModulesGroupModel, compareVersions())
+            .Times(3)
+            .WillRepeatedly(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::parentCompareVerions));
+
+    mockManager.fileNames = &mockQStringList;
+    QString registryVersion("registry_version.json");
+    MockQJsonDocument mockQJsonDocumentData;
+    MockQJsonObject mockQJsonObject;
+    MockQJsonValue mockQJsonValue;
+    MockQJsonArray mockQJsonArray;
+
 
     {
         InSequence s;
-        EXPECT_CALL(mockQFile, open(qFileReadMode))
-                .WillOnce(Return(true));
-        EXPECT_CALL(mockQFile, readAll())
-                .WillOnce(Return(data));
-        EXPECT_CALL(mockQJsonDocument, fromJson(data, mockModulesGroupModel.qJsonParserError))
-                .WillOnce(ReturnPointee(&mockQJsonDocumentData));
-        EXPECT_CALL(mockQFile, close());
-        EXPECT_CALL(mockQJsonDocumentData, object())
-                .WillOnce(ReturnPointee(&mockQJsonObject));
-        EXPECT_CALL(mockQJsonObject, value(QString("downloads")))
-                .WillOnce(ReturnPointee(&mockQJsonValue));
-        EXPECT_CALL(mockQJsonValue, toArray())
-                .WillOnce(ReturnPointee(&mockQJsonArray));
-        EXPECT_CALL(mockModulesGroupModel, newRows(mockQJsonArray));
+        EXPECT_CALL(mockQStringList, last())
+                .WillOnce(ReturnPointee(&registryVersion));
+        EXPECT_CALL(mockRegistryVersion, setFileName(registryVersion));
+        EXPECT_CALL(mockRegistryVersion, open(qFileReadMode))
+                .WillOnce(Return(false));
     }
 
-    mockModulesGroupModel.updateTable();
+    mockModulesGroupModel.compareVersions();
+
+    mockModulesGroupModel.qJsonParserError->error = QJsonParseError::UnterminatedObject;
+
+    {
+        InSequence s;
+        EXPECT_CALL(mockQStringList, last())
+                .WillOnce(ReturnPointee(&registryVersion));
+        EXPECT_CALL(mockRegistryVersion, setFileName(registryVersion));
+        EXPECT_CALL(mockRegistryVersion, open(qFileReadMode))
+                .WillOnce(Return(true));
+        EXPECT_CALL(mockRegistryVersion, readAll())
+                .WillOnce(Return(qByteArrea));
+        EXPECT_CALL(mockQJsonDocument, fromJson(qByteArrea, &mockQJsonParseError))
+                .WillOnce(ReturnPointee(&mockQJsonDocumentData));
+        EXPECT_CALL(mockRegistryVersion, close());
+    }
+
+    mockModulesGroupModel.compareVersions();
+
+    mockModulesGroupModel.qJsonParserError->error = QJsonParseError::NoError;
+
+
+    {
+        InSequence s;
+        EXPECT_CALL(mockQStringList, last())
+                .WillOnce(ReturnPointee(&registryVersion));
+        EXPECT_CALL(mockRegistryVersion, setFileName(registryVersion));
+        EXPECT_CALL(mockRegistryVersion, open(qFileReadMode))
+                .WillOnce(Return(true));
+        EXPECT_CALL(mockRegistryVersion, readAll())
+                .WillOnce(Return(qByteArrea));
+        EXPECT_CALL(mockQJsonDocument, fromJson(qByteArrea, &mockQJsonParseError))
+                .WillOnce(ReturnPointee(&mockQJsonDocumentData));
+        EXPECT_CALL(mockRegistryVersion, close());
+        EXPECT_CALL(mockQJsonDocumentData, object())
+                .WillOnce(ReturnPointee(&mockQJsonObject));
+        EXPECT_CALL(mockQJsonObject, value(QString("version")))
+                .WillOnce(ReturnPointee(&mockQJsonValue));
+        EXPECT_CALL(mockQJsonValue, toInt(0));
+    }
+
+    mockModulesGroupModel.compareVersions();
+}
+
+TEST_F(ModulesGroupModelTest, updateModules)
+{
+    EXPECT_CALL(mockModulesGroupModel, updateModules())
+            .WillRepeatedly(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::parentUpdateModules));
+
+    {
+        InSequence s;
+        EXPECT_CALL(mockModulesGroupModel, setCountOldRows());
+    }
+
+    mockModulesGroupModel.updateModules();
 }

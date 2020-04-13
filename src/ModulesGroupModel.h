@@ -59,9 +59,11 @@ public:
 
 private:
     QFile* registry = new QFile();
+    QFile* registryVersion = new QFile();
     QJsonParseError* qJsonParserError = new QJsonParseError();
     QJsonDocument* qJsonDocument;
     QFile registryArchive;
+    QSettings* qSettings = new QSettings();
     int countOldRows = 0;
     QString tableNameString = "modules_group";
     int correctSize(const QString &str) const;
@@ -78,6 +80,7 @@ private:
     FRIEND_TEST(ModulesGroupModelTest, createTable);
     FRIEND_TEST(DownloadManagerTest, startNextDownload);
     FRIEND_TEST(ModulesGroupModelTest, updateTable);
+    FRIEND_TEST(ModulesGroupModelTest, compareVersions);
 
     friend class MockModulesGroupModel;
     FRIEND_TEST(MockModulesGroupModel, updateTable);
@@ -93,7 +96,7 @@ signals:
     void removeOldRowsSuccess();
 private slots:
     virtual void updateTable();
-    void compareVersions();
+    virtual void compareVersions();
     virtual void decompressRegistry();
     void removeRegistryFile();
 

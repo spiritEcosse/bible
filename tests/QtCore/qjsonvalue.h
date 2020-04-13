@@ -89,7 +89,7 @@ public:
     inline bool isUndefined() const { return type() == Undefined; }
 
     bool toBool(bool defaultValue = false) const;
-    int toInt(int defaultValue = 0) const;
+    virtual int toInt(int defaultValue = 0) const {}
     double toDouble(double defaultValue = 0) const;
     QString toString() const;
     QString toString(const QString &defaultValue) const;

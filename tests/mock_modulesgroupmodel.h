@@ -37,6 +37,7 @@ public:
     MOCK_METHOD0(database, QSqlDatabase&());
     MOCK_CONST_METHOD0(lastError, QSqlError&());
     MOCK_METHOD(void, updateTable, ());
+    MOCK_METHOD(void, compareVersions, ());
 
     bool ParentCreateTable() {
         return ModulesGroupModel::createTable();
@@ -52,6 +53,12 @@ public:
     }
     void parentUpdateTable() {
         return ModulesGroupModel::updateTable();
+    }
+    void parentCompareVerions() {
+        return ModulesGroupModel::compareVersions();
+    }
+    void parentUpdateModules() {
+        return ModulesGroupModel::updateModules();
     }
 };
 

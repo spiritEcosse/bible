@@ -49,27 +49,19 @@ void ModulesGroupModel::updateTable()
 
 void ModulesGroupModel::compareVersions()
 {
-    QFile registry_json;
-    registry_json.setFileName(manager->fileNames->last());
-    if (!registry_json.open(QIODevice::ReadOnly | QIODevice::Text))
+    registryVersion->setFileName(manager->fileNames->last());
+
+    if ( !registryVersion->open(QIODevice::ReadOnly | QIODevice::Text) )
         return ;
 
-    QJsonParseError jsonError;
-    QJsonDocument document = qJsonDocument->fromJson(registry_json.readAll(), &jsonError);
-    registry_json.close();
+    QJsonDocument document = qJsonDocument->fromJson(registryVersion->readAll(), qJsonParserError);
+    registryVersion->close();
 
-    if(jsonError.error != QJsonParseError::NoError)
+    if ( qJsonParserError->error != QJsonParseError::NoError ) // WARNING : test this
         return;
 
-    int version = document.object().value("version").toInt();
-    QSettings settings;
-    bool newModules = version > settings.value("modulesVersion").toInt();
-
-    if (newModules) {
-        settings.setValue("modulesVersion", version);
-    }
-
-    emit availabilityNewModules(newModules);
+    document.object().value("version").toInt();
+//    emit availabilityNewModules(version > qSettings->value("modulesVersion").toInt());
 }
 
 void ModulesGroupModel::init()
