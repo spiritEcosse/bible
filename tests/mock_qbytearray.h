@@ -9,7 +9,6 @@ class MockQByteArray : public QByteArray
 {
 public:
     MOCK_METHOD(QByteArray, fromBase64, (const QByteArray &base64));
-//    MOCK_METHOD(QByteArray, fromBase64, (const QString &base64));
 };
 
 #endif // MOCK_QBYTEARRAY_H
