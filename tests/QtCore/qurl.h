@@ -138,13 +138,13 @@ public:
     explicit QUrl(const QString &url, ParsingMode mode = TolerantMode);
 #else
     QUrl(const QString &url, ParsingMode mode = TolerantMode);
-    QUrl &operator=(const QString &url);
+//    QUrl &operator=(const QString &url);
 #endif
 #ifdef Q_COMPILER_RVALUE_REFS
     QUrl(QUrl &&other) Q_DECL_NOTHROW : d(other.d)
     { other.d = nullptr; }
-    inline QUrl &operator=(QUrl &&other) Q_DECL_NOTHROW
-    { qSwap(d, other.d); return *this; }
+//    inline QUrl &operator=(QUrl &&other) Q_DECL_NOTHROW
+//    { qSwap(d, other.d); return *this; }
 #endif
     inline void swap(QUrl &other) Q_DECL_NOTHROW { qSwap(d, other.d); }
 
@@ -159,8 +159,7 @@ public:
 
     QByteArray toEncoded(FormattingOptions options = FullyEncoded) const;
 
-    virtual QUrl fromEncoded(const QByteArray &url, ParsingMode mode = TolerantMode) {
-    }
+    virtual QUrl fromEncoded(const QByteArray &, ParsingMode mode = TolerantMode) {}
 
     enum UserInputResolutionOption {
         DefaultResolution,

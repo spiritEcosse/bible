@@ -60,6 +60,9 @@ public:
     void parentUpdateModules() {
         return ModulesGroupModel::updateModules();
     }
+    void parentSetCountOldRows() {
+        return ModulesGroupModel::setCountOldRows();
+    }
 };
 
 #endif // MOCKMODULESGROUPMODEL_H

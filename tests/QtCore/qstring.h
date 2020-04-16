@@ -1274,8 +1274,8 @@ inline QT_ASCII_CAST_WARN bool QString::operator<=(const QByteArray &s) const
 inline QT_ASCII_CAST_WARN bool QString::operator>=(const QByteArray &s) const
 { return QString::compare_helper(constData(), size(), s.constData(), s.size()) >= 0; }
 
-inline bool QByteArray::operator==(const QString &s) const
-{ return QString::compare_helper(s.constData(), s.size(), constData(), qstrnlen(constData(), size())) == 0; }
+//inline bool QByteArray::operator==(const QString &s) const
+//{ return QString::compare_helper(s.constData(), s.size(), constData(), qstrnlen(constData(), size())) == 0; }
 inline bool QByteArray::operator!=(const QString &s) const
 { return QString::compare_helper(s.constData(), s.size(), constData(), qstrnlen(constData(), size())) != 0; }
 inline bool QByteArray::operator<(const QString &s) const

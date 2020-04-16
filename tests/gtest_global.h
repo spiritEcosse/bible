@@ -33,8 +33,11 @@ using ::testing::internal::BuiltInDefaultValue;
 using ::testing::StrictMock;
 using ::testing::ElementsAre;
 using ::testing::ByRef;
-using ::testing::Matcher;
 using ::testing::Pointee;
+using ::testing::MakeMatcher;
+using ::testing::Matcher;
+using ::testing::MatcherInterface;
+using ::testing::MatchResultListener;
 
 using testing::internal::Strings;
 

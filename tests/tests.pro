@@ -63,6 +63,7 @@ HEADERS += $$PROJECT_HEADERS \
     QtCore/qstring.h \
     QtCore/QTextStream \
     QtCore/qtextstream.h \
+    mock_qbytearray.h \
     mock_qjsondocument.h \
     QtCore/QJsonObject \
     mock_qjsonobject.h \
@@ -92,7 +93,8 @@ HEADERS += $$PROJECT_HEADERS \
     mock_qvariant.h \
     mock_textprogressbar.h \
     QtCore/qjsondocument.h \
-    QtCore/qsettings.h
+    QtCore/qsettings.h \
+    QtCore/qbytearray.h
 
 
 QMAKE_POST_LINK += ../scripts/post_unit_tests.sh
@@ -118,4 +120,5 @@ DISTFILES += \
     QtCore/QJsonDocument \
     QtCore/QJsonValue \
     QtCore/QList \
-    QtCore/QSettings
+    QtCore/QSettings \
+    QtCore/QByteArray

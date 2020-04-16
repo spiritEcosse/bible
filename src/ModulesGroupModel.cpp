@@ -94,22 +94,21 @@ bool ModulesGroupModel::createTable()
 
 void ModulesGroupModel::updateModules()
 {
-    manager->append(urlRegistry);
-    connect(manager, SIGNAL (successfully()), SLOT (decompressRegistry()));
-    connect(this, SIGNAL (decompressSuccess()), SLOT (updateTable()));
+    manager->append(urlRegistry->fromEncoded(qQByteArray->fromBase64(REGISTRY)));
+    connect(manager, SIGNAL (successfully()), SLOT (decompressRegistry())); // WARNING : add connect to test
+    connect(this, SIGNAL (decompressSuccess()), SLOT (updateTable())); // WARNING : add connect to test
 
     setCountOldRows();
 
-    connect(this, SIGNAL (updateTableSuccess()), SLOT (removeOldRows()));
-    connect(this, SIGNAL (updateTableSuccess()), SLOT (removeRegistryFile()));
+    connect(this, SIGNAL (updateTableSuccess()), SLOT (removeOldRows())); // WARNING : add connect to test
+    connect(this, SIGNAL (updateTableSuccess()), SLOT (removeRegistryFile())); // WARNING : add connect to test
 }
 
 void ModulesGroupModel::setCountOldRows()
 {
-    QSqlQuery query;
-    query.exec(QString("SELECT COUNT(*) as count FROM %1").arg(tableName()));
-    query.first();
-    countOldRows = query.value("count").toInt();
+    execLastError(qStringSelectSql->arg(tableNameString));
+    query_->first();
+    countOldRows = query_->value(QString("count")).toInt();
 }
 
 void ModulesGroupModel::newRows(QJsonArray &downloads)

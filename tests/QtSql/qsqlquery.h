@@ -15,8 +15,7 @@ public:
     inline virtual QSqlError& lastError() const {
         return *error;
     }
-    inline virtual bool exec(const QString& query) {
-        Q_UNUSED(query)
+    inline virtual bool exec(const QString&) {
         return true;
     }
     inline virtual bool exec() {

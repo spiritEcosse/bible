@@ -52,15 +52,15 @@ public:
     virtual void updateModules();
     virtual QVariant data(const QModelIndex &index, int role) const override;
     virtual QHash<int, QByteArray> roleNames() const;
-//    QUrl urlRegistry = QUrl::fromEncoded(QByteArray::fromBase64(REGISTRY));
 //    QUrl urlRegistryInfo = QUrl::fromEncoded(QByteArray::fromBase64(REGISTRY_INFO));
-    QUrl urlRegistry;
+    QUrl* urlRegistry = new QUrl();
     QUrl urlRegistryInfo;
 
 private:
     QFile* registry = new QFile();
     QFile* registryVersion = new QFile();
     QJsonParseError* qJsonParserError = new QJsonParseError();
+    QByteArray* qQByteArray = new QByteArray();
     QJsonDocument* qJsonDocument;
     QFile registryArchive;
     QSettings* qSettings = new QSettings();
@@ -75,12 +75,14 @@ private:
                 "   'region'    CHAR(50) "
                 ")"
                 );
-
+    QString* qStringSelectSql = new QString("SELECT COUNT(*) as count FROM %1");
     friend class ModulesGroupModelTest;
     FRIEND_TEST(ModulesGroupModelTest, createTable);
     FRIEND_TEST(DownloadManagerTest, startNextDownload);
     FRIEND_TEST(ModulesGroupModelTest, updateTable);
     FRIEND_TEST(ModulesGroupModelTest, compareVersions);
+    FRIEND_TEST(ModulesGroupModelTest, updateModules);
+    FRIEND_TEST(ModulesGroupModelTest, setCountOldRows);
 
     friend class MockModulesGroupModel;
     FRIEND_TEST(MockModulesGroupModel, updateTable);

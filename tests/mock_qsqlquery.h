@@ -13,6 +13,8 @@ public:
     MOCK_CONST_METHOD0(lastError, QSqlError&());
     MOCK_METHOD1(exec, bool(const QString& query));
     MOCK_METHOD0(exec, bool());
+    MOCK_METHOD(bool, first, ());
+    MOCK_METHOD(QVariant&, value, (const QString&), (const));
 };
 
 #endif // MOCK_IQSQLQUERY_H

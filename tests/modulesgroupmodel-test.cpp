@@ -13,7 +13,11 @@
 #include "mock_qjsonobject.h"
 #include "mock_qjsonvalue.h"
 #include "mock_qsettings.h"
+#include "mock_qvariant.h"
+#include "mock_qurl.h"
+#include "mock_qbytearray.h"
 
+#define REGISTRY "aHR0cDovL215YmlibGUuaW50ZXJiaWJsaWEub3JnL3JlZ2lzdHJ5X3Rlc3Quemlw"
 // The fixture for testing class ModulesGroupModelTest.
 class ModulesGroupModelTest : public TestWithParam<const char*> {
  protected:
@@ -39,10 +43,14 @@ class ModulesGroupModelTest : public TestWithParam<const char*> {
       mockModulesGroupModel.registry = &mockQFile;
       mockModulesGroupModel.registryVersion = &mockRegistryVersion;
       mockModulesGroupModel.qStringSql = &qStringSql;
+      mockModulesGroupModel.qStringSelectSql = &qStringSelectSql;
       mockModulesGroupModel.qJsonParserError = &mockQJsonParseError;
       mockModulesGroupModel.qJsonDocument = &mockQJsonDocument;
       mockModulesGroupModel.manager = &mockManager;
       mockModulesGroupModel.qSettings = &mockQSettings;
+      mockModulesGroupModel.query_ = &mockQSqlQuery;
+      mockModulesGroupModel.urlRegistry = &mockQUrlRegistry;
+      mockModulesGroupModel.qQByteArray = &mockQByteArray;
   }
 
   void TearDown() override {
@@ -55,21 +63,28 @@ class ModulesGroupModelTest : public TestWithParam<const char*> {
   MockQSqlDatabase mockQSqlDatabase;
   MockQStringList mockQStringList;
   StrictMock<MockQString> qStringSql;
+  StrictMock<MockQByteArray> mockQByteArray;
+  StrictMock<MockQString> qStringSelectSql;
   StrictMock<MockQJsonParseError> mockQJsonParseError;
   StrictMock<MockQJsonDocument> mockQJsonDocument;
   QByteArray qByteArrea = "data";
+  DownloadManager* downloadManager;
 
   StrictMock<MockModulesGroupModel> mockModulesGroupModel;
   ModulesGroupModel* modulesGroupModel;
   MockDownloadManager mockManager;
   StrictMock<MockQSettings> mockQSettings;
+  StrictMock<MockQUrl> mockQUrlRegistry;
 
   MockQFile mockQFile;
+  QByteArray qByteArray = BuiltInDefaultValue<QByteArray>::Get();
   StrictMock<MockQFile> mockRegistryVersion;
   const QString tableName = "modules_group";
+  const QUrl url = BuiltInDefaultValue<const QUrl>::Get();
   const QString registryFileName = "registry.json";
   const QString query = BuiltInDefaultValue<const QString>::Get();
   QFile::OpenMode qFileReadMode = QIODevice::ReadOnly | QIODevice::Text;
+  QUrl::ParsingMode parsingMode = QUrl::ParsingMode::TolerantMode;
 
   // Objects declared here can be used by all tests in the test case for Foo.
 };
@@ -140,8 +155,6 @@ TEST_F(ModulesGroupModelTest, createTable)
 
 TEST_F(ModulesGroupModelTest, execLastError)
 {
-    mockModulesGroupModel.query_ = &mockQSqlQuery;
-
     EXPECT_CALL(mockModulesGroupModel, execLastError(query))
             .Times(2)
             .WillRepeatedly(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::parentExecLastError));
@@ -303,15 +316,69 @@ TEST_F(ModulesGroupModelTest, compareVersions)
     mockModulesGroupModel.compareVersions();
 }
 
+//class DivisibleBy7Matcher : public MatcherInterface<int> {
+// public:
+//  bool MatchAndExplain(int n,
+//                       MatchResultListener* /* listener */) const override {
+//    return (n % 7) == 0;
+//  }
+
+//  void DescribeTo(std::ostream* os) const override {
+//    *os << "is divisible by 7";
+//  }
+
+//  void DescribeNegationTo(std::ostream* os) const override {
+//    *os << "is not divisible by 7";
+//  }
+//};
+
+//Matcher<int> DivisibleBy7() {
+//  return MakeMatcher(new DivisibleBy7Matcher);
+//}
+
+MATCHER_P(CheckQByteArrayChar, value, "") { return arg == value; }
+
 TEST_F(ModulesGroupModelTest, updateModules)
 {
     EXPECT_CALL(mockModulesGroupModel, updateModules())
             .WillRepeatedly(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::parentUpdateModules));
 
+
     {
         InSequence s;
+        EXPECT_CALL(mockQByteArray, fromBase64(CheckQByteArrayChar(REGISTRY))) // WARNING: if they not the same - will fatal without message
+                .WillOnce(Return(qByteArray));
+        EXPECT_CALL(mockQUrlRegistry, fromEncoded(qByteArray, parsingMode))  // WARNING: if they not the same - will fatal without message
+                .WillOnce(ReturnPointee(&url));
+        EXPECT_CALL(mockManager, append(_));  // WARNING: pass Qurl object
         EXPECT_CALL(mockModulesGroupModel, setCountOldRows());
     }
 
     mockModulesGroupModel.updateModules();
+}
+
+TEST_F(ModulesGroupModelTest, setCountOldRows)
+{
+    EXPECT_CALL(mockModulesGroupModel, setCountOldRows())
+            .WillRepeatedly(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::parentSetCountOldRows));
+
+    QString sql("SELECT COUNT(*) as count FROM %1");
+    MockQVariant var;
+    int countOldRows = 1000;
+
+    {
+        InSequence s;
+        EXPECT_CALL(qStringSelectSql, arg(tableName, 0, QChar(' ')))
+                .WillOnce(Return(sql));
+        EXPECT_CALL(mockModulesGroupModel, execLastError(sql));
+        EXPECT_CALL(mockQSqlQuery, first());
+        EXPECT_CALL(mockQSqlQuery, value(QString("count")))
+                .WillOnce(ReturnPointee(&var));
+        EXPECT_CALL(var, toInt(nullptr))
+                .WillOnce(Return(countOldRows));
+    }
+
+    mockModulesGroupModel.setCountOldRows();
+    EXPECT_THAT(mockModulesGroupModel.countOldRows, countOldRows);
+    EXPECT_THAT(*ModulesGroupModel().qStringSelectSql, sql);
 }
