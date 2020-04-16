@@ -4,7 +4,6 @@
 #include <QSqlError>
 #include <QVariant>
 
-
 class QSqlQuery
 {
 public:
@@ -12,21 +11,12 @@ public:
 
     QVariant* qVariant;
     QSqlError* error;
-    inline virtual QSqlError& lastError() const {
-        return *error;
-    }
-    inline virtual bool exec(const QString&) {
-        return true;
-    }
-    inline virtual bool exec() {
-        return true;
-    }
-    inline virtual bool first() {
-        return true;
-    }
-    inline virtual QVariant& value(const QString&) const {
-        return *qVariant;
-    }
+
+    inline virtual QSqlError& lastError() const { return *error; }
+    inline virtual bool exec(const QString& /* query */) { return true; }
+    inline virtual bool exec() { return true; }
+    inline virtual bool first() { return true; }
+    inline virtual QVariant& value(const QString& /* name */) const { return *qVariant; }
 };
 
 #endif // QSQLQUERY_H

@@ -133,7 +133,7 @@ public:
 
     QUrl();
     QUrl(const QUrl &copy);
-    QUrl &operator =(const QUrl &copy);
+    QUrl &operator =(const QUrl &copy) {}
 #ifdef QT_NO_URL_CAST_FROM_STRING
     explicit QUrl(const QString &url, ParsingMode mode = TolerantMode);
 #else

@@ -126,8 +126,8 @@ TEST_F(DownloadManagerTest, appendUrls)
         InSequence s;
         EXPECT_CALL(mockQString, toLocal8Bit())
                 .WillOnce(Return(qByteArray));
-//        EXPECT_CALL(mockQurl, fromEncodedImpl(qByteArray, parsingMode))
-//                .WillOnce(ReturnPointee(&url));
+        EXPECT_CALL(mockQurl, fromEncoded(qByteArray, parsingMode))
+                .WillOnce(ReturnPointee(&url));
         EXPECT_CALL(mockDownloadManager, append(_)); // WARNING : pass url instead _
         EXPECT_CALL(mockQqueue, isEmpty())
                 .WillOnce(Return(true));
@@ -139,8 +139,8 @@ TEST_F(DownloadManagerTest, appendUrls)
         InSequence s;
         EXPECT_CALL(mockQString, toLocal8Bit())
                 .WillOnce(Return(qByteArray));
-//        EXPECT_CALL(mockQurl, fromEncodedImpl(qByteArray, parsingMode)) // WARNING : pass params instead _
-//                .WillOnce(ReturnPointee(&url));
+        EXPECT_CALL(mockQurl, fromEncoded(qByteArray, parsingMode)) // WARNING : pass params instead _
+                .WillOnce(ReturnPointee(&url));
         EXPECT_CALL(mockDownloadManager, append(_)); // WARNING : pass url instead _
         EXPECT_CALL(mockQqueue, isEmpty())
                 .WillOnce(Return(false));

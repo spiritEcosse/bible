@@ -503,7 +503,7 @@ inline void QByteArray::detach()
 inline bool QByteArray::isDetached() const
 { return !d->ref.isShared(); }
 inline QByteArray::QByteArray(const QByteArray &a) Q_DECL_NOTHROW : d(a.d)
-{ d->ref.ref(); }
+{ }
 
 inline int QByteArray::capacity() const
 { return d->alloc ? d->alloc - 1 : 0; }
@@ -618,7 +618,7 @@ inline int QByteArray::compare(const QByteArray &a, Qt::CaseSensitivity cs) cons
                                      qstrnicmp(data(), size(), a.data(), a.size());
 }
 inline bool operator==(const QByteArray &a1, const QByteArray &a2) Q_DECL_NOTHROW
-{ return (a1.size() == a2.size()) && (memcmp(a1.constData(), a2.constData(), a1.size())==0); }
+{  }
 inline bool operator==(const QByteArray &a1, const char *a2) Q_DECL_NOTHROW
 { return a2 ? qstrcmp(a1,a2) == 0 : a1.isEmpty(); }
 inline bool operator==(const char *a1, const QByteArray &a2) Q_DECL_NOTHROW

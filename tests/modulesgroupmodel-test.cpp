@@ -67,7 +67,7 @@ class ModulesGroupModelTest : public TestWithParam<const char*> {
   StrictMock<MockQString> qStringSelectSql;
   StrictMock<MockQJsonParseError> mockQJsonParseError;
   StrictMock<MockQJsonDocument> mockQJsonDocument;
-  QByteArray qByteArrea = "data";
+  QByteArray qByteArray = "data";
   DownloadManager* downloadManager;
 
   StrictMock<MockModulesGroupModel> mockModulesGroupModel;
@@ -77,7 +77,6 @@ class ModulesGroupModelTest : public TestWithParam<const char*> {
   StrictMock<MockQUrl> mockQUrlRegistry;
 
   MockQFile mockQFile;
-  QByteArray qByteArray = BuiltInDefaultValue<QByteArray>::Get();
   StrictMock<MockQFile> mockRegistryVersion;
   const QString tableName = "modules_group";
   const QUrl url = BuiltInDefaultValue<const QUrl>::Get();
@@ -88,6 +87,31 @@ class ModulesGroupModelTest : public TestWithParam<const char*> {
 
   // Objects declared here can be used by all tests in the test case for Foo.
 };
+
+MATCHER_P(HasSameParam, value, "") {
+    if ( arg == value )
+        return true;
+    throw std::invalid_argument( "incorrect value" ); // WARNING: replace on custom Matcher
+//    class DivisibleBy7Matcher : public MatcherInterface<int> {
+//     public:
+//      bool MatchAndExplain(int n,
+//                           MatchResultListener* /* listener */) const override {
+//        return (n % 7) == 0;
+//      }
+
+//      void DescribeTo(std::ostream* os) const override {
+//        *os << "is divisible by 7";
+//      }
+
+//      void DescribeNegationTo(std::ostream* os) const override {
+//        *os << "is not divisible by 7";
+//      }
+//    };
+
+//    Matcher<int> DivisibleBy7() {
+//      return MakeMatcher(new DivisibleBy7Matcher);
+//    }
+}
 
 TEST_F(ModulesGroupModelTest, init)
 {
@@ -209,8 +233,8 @@ TEST_F(ModulesGroupModelTest, updateTable)
         EXPECT_CALL(mockQFile, open(qFileReadMode))
                 .WillOnce(Return(true));
         EXPECT_CALL(mockQFile, readAll())
-                .WillOnce(Return(qByteArrea));
-        EXPECT_CALL(mockQJsonDocument, fromJson(qByteArrea, mockModulesGroupModel.qJsonParserError))
+                .WillOnce(Return(qByteArray));
+        EXPECT_CALL(mockQJsonDocument, fromJson(qByteArray, mockModulesGroupModel.qJsonParserError))
                 .WillOnce(ReturnPointee(&mockQJsonDocumentData));
         EXPECT_CALL(mockQFile, close());
         EXPECT_CALL(mockQJsonDocumentData, object())
@@ -231,8 +255,8 @@ TEST_F(ModulesGroupModelTest, updateTable)
         EXPECT_CALL(mockQFile, open(qFileReadMode))
                 .WillOnce(Return(true));
         EXPECT_CALL(mockQFile, readAll())
-                .WillOnce(Return(qByteArrea));
-        EXPECT_CALL(mockQJsonDocument, fromJson(qByteArrea, mockModulesGroupModel.qJsonParserError))
+                .WillOnce(Return(qByteArray));
+        EXPECT_CALL(mockQJsonDocument, fromJson(qByteArray, mockModulesGroupModel.qJsonParserError))
                 .WillOnce(ReturnPointee(&mockQJsonDocumentData));
         EXPECT_CALL(mockQFile, close());
         EXPECT_CALL(mockQJsonDocumentData, object())
@@ -283,8 +307,8 @@ TEST_F(ModulesGroupModelTest, compareVersions)
         EXPECT_CALL(mockRegistryVersion, open(qFileReadMode))
                 .WillOnce(Return(true));
         EXPECT_CALL(mockRegistryVersion, readAll())
-                .WillOnce(Return(qByteArrea));
-        EXPECT_CALL(mockQJsonDocument, fromJson(qByteArrea, &mockQJsonParseError))
+                .WillOnce(Return(qByteArray));
+        EXPECT_CALL(mockQJsonDocument, fromJson(qByteArray, &mockQJsonParseError)) // WARNING: not right compare
                 .WillOnce(ReturnPointee(&mockQJsonDocumentData));
         EXPECT_CALL(mockRegistryVersion, close());
     }
@@ -302,8 +326,8 @@ TEST_F(ModulesGroupModelTest, compareVersions)
         EXPECT_CALL(mockRegistryVersion, open(qFileReadMode))
                 .WillOnce(Return(true));
         EXPECT_CALL(mockRegistryVersion, readAll())
-                .WillOnce(Return(qByteArrea));
-        EXPECT_CALL(mockQJsonDocument, fromJson(qByteArrea, &mockQJsonParseError))
+                .WillOnce(Return(qByteArray));
+        EXPECT_CALL(mockQJsonDocument, fromJson(qByteArray, &mockQJsonParseError)) // WARNING: not right compare
                 .WillOnce(ReturnPointee(&mockQJsonDocumentData));
         EXPECT_CALL(mockRegistryVersion, close());
         EXPECT_CALL(mockQJsonDocumentData, object())
@@ -316,31 +340,6 @@ TEST_F(ModulesGroupModelTest, compareVersions)
     mockModulesGroupModel.compareVersions();
 }
 
-MATCHER_P(HasSameParam, value, "") {
-    if ( arg == value )
-        return true;
-    throw std::invalid_argument( "incorrect value" ); // WARNING: replace on custom Matcher
-//    class DivisibleBy7Matcher : public MatcherInterface<int> {
-//     public:
-//      bool MatchAndExplain(int n,
-//                           MatchResultListener* /* listener */) const override {
-//        return (n % 7) == 0;
-//      }
-
-//      void DescribeTo(std::ostream* os) const override {
-//        *os << "is divisible by 7";
-//      }
-
-//      void DescribeNegationTo(std::ostream* os) const override {
-//        *os << "is not divisible by 7";
-//      }
-//    };
-
-//    Matcher<int> DivisibleBy7() {
-//      return MakeMatcher(new DivisibleBy7Matcher);
-//    }
-}
-
 TEST_F(ModulesGroupModelTest, updateModules)
 {
     EXPECT_CALL(mockModulesGroupModel, updateModules())
@@ -351,7 +350,7 @@ TEST_F(ModulesGroupModelTest, updateModules)
         InSequence s;
         EXPECT_CALL(mockQByteArray, fromBase64(HasSameParam(REGISTRY)))
                 .WillOnce(Return(qByteArray));
-        EXPECT_CALL(mockQUrlRegistry, fromEncoded(qByteArray, parsingMode))  // WARNING: if they not the same - will fatal without message
+        EXPECT_CALL(mockQUrlRegistry, fromEncoded(qByteArray, parsingMode)) // WARNING: not right compare
                 .WillOnce(ReturnPointee(&url));
         EXPECT_CALL(mockManager, append(_));  // WARNING: pass Qurl object
         EXPECT_CALL(mockModulesGroupModel, setCountOldRows());
