@@ -173,7 +173,7 @@ public:
     QByteArray(int size, char c);
     QByteArray(int size, Qt::Initialization);
     inline QByteArray(const QByteArray &) Q_DECL_NOTHROW;
-    inline ~QByteArray();
+    inline virtual ~QByteArray() {}
 
     QByteArray &operator=(const QByteArray &) Q_DECL_NOTHROW;
     QByteArray &operator=(const char *str);
@@ -382,7 +382,7 @@ public:
     Q_REQUIRED_RESULT static QByteArray number(double, char f = 'g', int prec = 6);
     Q_REQUIRED_RESULT static QByteArray fromRawData(const char *, int size);
     Q_REQUIRED_RESULT static QByteArray fromBase64(const QByteArray &base64, Base64Options options);
-    Q_REQUIRED_RESULT static QByteArray fromBase64(const QByteArray &base64); // ### Qt6 merge with previous
+    Q_REQUIRED_RESULT virtual QByteArray fromBase64(const QByteArray &base64) {} // ### Qt6 merge with previous
     Q_REQUIRED_RESULT static QByteArray fromHex(const QByteArray &hexEncoded);
     Q_REQUIRED_RESULT static QByteArray fromPercentEncoding(const QByteArray &pctEncoded, char percent = '%');
 
@@ -473,7 +473,7 @@ public:
 Q_DECLARE_OPERATORS_FOR_FLAGS(QByteArray::Base64Options)
 
 inline QByteArray::QByteArray() Q_DECL_NOTHROW : d(Data::sharedNull()) { }
-inline QByteArray::~QByteArray() { if (!d->ref.deref()) Data::deallocate(d); }
+//inline QByteArray::~QByteArray() { if (!d->ref.deref()) Data::deallocate(d); }
 inline int QByteArray::size() const
 { return d->size; }
 

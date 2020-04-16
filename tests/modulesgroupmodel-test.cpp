@@ -316,37 +316,23 @@ TEST_F(ModulesGroupModelTest, compareVersions)
     mockModulesGroupModel.compareVersions();
 }
 
-//class DivisibleBy7Matcher : public MatcherInterface<int> {
-// public:
-//  bool MatchAndExplain(int n,
-//                       MatchResultListener* /* listener */) const override {
-//    return (n % 7) == 0;
-//  }
-
-//  void DescribeTo(std::ostream* os) const override {
-//    *os << "is divisible by 7";
-//  }
-
-//  void DescribeNegationTo(std::ostream* os) const override {
-//    *os << "is not divisible by 7";
-//  }
-//};
-
-//Matcher<int> DivisibleBy7() {
-//  return MakeMatcher(new DivisibleBy7Matcher);
-//}
-
-MATCHER_P(CheckQByteArrayChar, value, "") { return arg == value; }
+MATCHER_P(HasSameParam, value, "") {
+    if ( arg == value )
+        return true;
+    throw std::invalid_argument( "received negative value" );
+}
 
 TEST_F(ModulesGroupModelTest, updateModules)
 {
     EXPECT_CALL(mockModulesGroupModel, updateModules())
             .WillRepeatedly(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::parentUpdateModules));
 
+//    ON_CALL(mockQByteArray, fromBase64(_))
+//            .WillByDefault(Invoke(&mockQByteArray, &MockQByteArray::));
 
     {
         InSequence s;
-        EXPECT_CALL(mockQByteArray, fromBase64(CheckQByteArrayChar(REGISTRY))) // WARNING: if they not the same - will fatal without message
+        EXPECT_CALL(mockQByteArray, fromBase64(HasSameParam(REGISTRY))) // WARNING: if they not the same - will fatal without message
                 .WillOnce(Return(qByteArray));
         EXPECT_CALL(mockQUrlRegistry, fromEncoded(qByteArray, parsingMode))  // WARNING: if they not the same - will fatal without message
                 .WillOnce(ReturnPointee(&url));

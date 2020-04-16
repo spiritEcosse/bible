@@ -38,7 +38,13 @@ using ::testing::MakeMatcher;
 using ::testing::Matcher;
 using ::testing::MatcherInterface;
 using ::testing::MatchResultListener;
-
+using ::testing::PolymorphicMatcher;
+using ::testing::MakePolymorphicMatcher;
+using ::testing::Truly;
+using ::testing::ExplainMatchResult;
+using ::testing::MakePolymorphicMatcher;
+using ::testing::MatchResultListener;
+using ::testing::PolymorphicMatcher;
 using testing::internal::Strings;
 
 #endif // GTEST_GLOBAL_H
