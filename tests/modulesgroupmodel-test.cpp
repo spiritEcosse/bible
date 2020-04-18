@@ -18,6 +18,7 @@
 #include "mock_qbytearray.h"
 
 #define REGISTRY "aHR0cDovL215YmlibGUuaW50ZXJiaWJsaWEub3JnL3JlZ2lzdHJ5X3Rlc3Quemlw"
+#define REGISTRY_INFO ""
 // The fixture for testing class ModulesGroupModelTest.
 class ModulesGroupModelTest : public TestWithParam<const char*> {
  protected:
@@ -50,6 +51,7 @@ class ModulesGroupModelTest : public TestWithParam<const char*> {
       mockModulesGroupModel.qSettings = &mockQSettings;
       mockModulesGroupModel.query_ = &mockQSqlQuery;
       mockModulesGroupModel.urlRegistry = &mockQUrlRegistry;
+      mockModulesGroupModel.urlRegistryInfo = &mockQUrlRegistryInfo;
       mockModulesGroupModel.qQByteArray = &mockQByteArray;
   }
 
@@ -75,6 +77,7 @@ class ModulesGroupModelTest : public TestWithParam<const char*> {
   MockDownloadManager mockManager;
   StrictMock<MockQSettings> mockQSettings;
   StrictMock<MockQUrl> mockQUrlRegistry;
+  StrictMock<MockQUrl> mockQUrlRegistryInfo;
 
   MockQFile mockQFile;
   StrictMock<MockQFile> mockRegistryVersion;
@@ -383,4 +386,21 @@ TEST_F(ModulesGroupModelTest, setCountOldRows)
     mockModulesGroupModel.setCountOldRows();
     EXPECT_THAT(mockModulesGroupModel.countOldRows, countOldRows);
     EXPECT_THAT(*ModulesGroupModel().qStringSelectSql, sql);
+}
+
+TEST_F(ModulesGroupModelTest, checkAvailabilityNewModules)
+{
+    EXPECT_CALL(mockModulesGroupModel, checkAvailabilityNewModules())
+            .WillRepeatedly(Invoke(&mockModulesGroupModel, &MockModulesGroupModel::parentCheckAvailabilityNewModules));
+
+    {
+        InSequence s;
+        EXPECT_CALL(mockQByteArray, fromBase64(HasSameParam(REGISTRY_INFO)))
+                .WillOnce(Return(qByteArray));
+        EXPECT_CALL(mockQUrlRegistryInfo, fromEncoded(qByteArray, parsingMode)) // WARNING: not right compare
+                .WillOnce(ReturnPointee(&url));
+        EXPECT_CALL(mockManager, append(_));  // WARNING: pass Qurl object
+    }
+
+    mockModulesGroupModel.checkAvailabilityNewModules();
 }

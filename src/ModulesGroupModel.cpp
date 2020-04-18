@@ -154,7 +154,7 @@ void ModulesGroupModel::newRows(QJsonArray &downloads)
 
 void ModulesGroupModel::checkAvailabilityNewModules()
 {
-    manager->append(urlRegistryInfo);
+    manager->append(urlRegistryInfo->fromEncoded(qQByteArray->fromBase64(REGISTRY_INFO)));
     connect(manager, SIGNAL (successfully()), this, SLOT (compareVersions()));
 }
 
