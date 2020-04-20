@@ -3,7 +3,7 @@
 
 #include <gmock/gmock.h>
 
-#include "../src/DownloadManager.h"
+#include "../../src/DownloadManager.h"
 
 class MockDownloadManager : public DownloadManager
 {

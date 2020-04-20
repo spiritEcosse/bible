@@ -24,7 +24,7 @@ static const char *tableName = "locale_desc";
 //    }
 //}
 
-LocaleDesc::LocaleDesc()
-{
+//LocaleDesc::LocaleDesc()
+//{
 
-}
+//}

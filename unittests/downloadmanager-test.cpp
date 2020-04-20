@@ -454,7 +454,7 @@ TEST_F(DownloadManagerTest, reportRedirect)
         EXPECT_CALL(mockQNetworkReply, request())
                 .WillOnce(ReturnPointee(&mockQNetworkRequest));
         EXPECT_CALL(mockQNetworkRequest, url())
-                .WillOnce(ReturnPointee(&mockQurl));
+                .WillOnce(ReturnRef(mockQurl));
         EXPECT_CALL(mockQurl, toDisplayString(QUrl::FormattingOptions(QUrl::PrettyDecoded)));
         EXPECT_CALL(mockQNetworkReply, attribute(QNetworkRequest::RedirectionTargetAttribute))
                 .WillOnce(ReturnPointee(&mockQVariantTarget));

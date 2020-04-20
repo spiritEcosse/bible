@@ -3,7 +3,7 @@
 
 #include <gmock/gmock.h>
 
-#include "../src/ModulesGroupModel.h"
+#include "../../src/ModulesGroupModel.h"
 
 
 class MockModulesGroupModel : public ModulesGroupModel

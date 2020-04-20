@@ -3,7 +3,7 @@
 
 #include <gmock/gmock.h>
 
-#include "../src/TextProgressBar.h"
+#include "../../src/TextProgressBar.h"
 
 
 class MockTextProgressBar : public TextProgressBar

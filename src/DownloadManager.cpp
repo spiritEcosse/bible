@@ -2,7 +2,6 @@
 
 #include <QDebug>
 #include <QTextStream>
-#include "mock_qstring.h"
 
 #include <cstdio>
 
@@ -33,6 +32,7 @@ void DownloadManager::append(const QUrl &url)
     downloadQueue->enqueue(url);
     ++totalCount;
 }
+
 
 QString DownloadManager::saveFileName(const QUrl &url)
 {
@@ -156,12 +156,12 @@ bool DownloadManager::isHttpRedirect() const
 void DownloadManager::reportRedirect()
 {
     int statusCode = currentDownload->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-    const QUrl &requestUrl = currentDownload->request().url();
+    QUrl requestUrl = currentDownload->request().url();
     *qTextStream << "Request: " << requestUrl.toDisplayString() // WARNING: add mock QTextStream
                 << " was redirected with code: " << statusCode
                 << '\n';
 
-    const QVariant target = currentDownload->attribute(QNetworkRequest::RedirectionTargetAttribute);
+    QVariant target = currentDownload->attribute(QNetworkRequest::RedirectionTargetAttribute);
 
     if (target.isValid()) {
         QUrl redirectUrl = target.toUrl();
