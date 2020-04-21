@@ -1,6 +1,13 @@
 TEMPLATE = app
 PROJECT_DIR = $$PWD/../../
 
+QT +=   sql \
+        testlib
+QT -=   gui
+
+CONFIG += qt console warn_on depend_includepath testcase
+CONFIG -= app_bundle
+
 PROJECT_SOURCES = \
     $$PROJECT_DIR/src/DownloadManager.cpp \
     $$PROJECT_DIR/src/TextProgressBar.cpp \
