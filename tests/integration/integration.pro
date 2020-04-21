@@ -28,3 +28,4 @@ SOURCES += $${PROJECT_SOURCES} \
     tst_downloadmodules.cpp \
     main.cpp
 
+LIBS += -lquazip5
