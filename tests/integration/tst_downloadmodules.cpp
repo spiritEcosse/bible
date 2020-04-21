@@ -28,7 +28,7 @@ public:
 private:
     const QString dirName = "files";
     const QString strUrl = QString("http://0.0.0.0:2443/%1/").arg(dirName);
-    const QString strUrlTest = QString("%1test").arg(strUrl);
+    QString strUrlTest = QString("%1test").arg(strUrl);
     const QString fileNameRegistry = "registry.json";
     const QString fileNameRegistryInfo = "registry_info.json";
     const QString fileNameRegistryZip = QString("%1.zip").arg(fileNameRegistry);
@@ -97,7 +97,7 @@ void DownloadModules::singleDownload()
 
 void DownloadModules::multiDownload()
 {
-    QStringList urls {strUrlTest, strUrlTest, strUrlTest, strUrlTest};
+    QList<QString*> urls {&strUrlTest, &strUrlTest, &strUrlTest, &strUrlTest};
 
     DownloadManager manager;
     QSignalSpy spy(&manager, &DownloadManager::successfully);
@@ -153,7 +153,7 @@ void DownloadModules::updateModules()
     QSignalSpy spy1(&modulesGroupModel, &ModulesGroupModel::updateTableSuccess);
     QSignalSpy spy2(&modulesGroupModel, &ModulesGroupModel::removeRegistryFileSuccess);
     QSignalSpy spy3(&modulesGroupModel, &ModulesGroupModel::removeOldRowsSuccess);
-    modulesGroupModel.urlRegistry = QUrl(QString("%1%2").arg(strUrl, fileNameRegistryZip));
+    modulesGroupModel.urlRegistry = new QUrl(QString("%1%2").arg(strUrl, fileNameRegistryZip));
     modulesGroupModel.updateModules();
 
     QVERIFY(spy2.wait());
@@ -197,7 +197,7 @@ void DownloadModules::newModulesAvailable()
 
     ModulesGroupModel modulesGroupModel;
     QSignalSpy spy(&modulesGroupModel, &ModulesGroupModel::availabilityNewModules);
-    modulesGroupModel.urlRegistryInfo = QUrl(QString("%1%2").arg(strUrl, fileRegistryInfo.fileName()));
+    modulesGroupModel.urlRegistryInfo = new QUrl(QString("%1%2").arg(strUrl, fileRegistryInfo.fileName()));
     modulesGroupModel.checkAvailabilityNewModules();
 
     QVERIFY(spy.wait());

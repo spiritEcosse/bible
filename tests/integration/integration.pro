@@ -27,3 +27,4 @@ HEADERS += $${PROJECT_HEADERS}
 SOURCES += $${PROJECT_SOURCES} \
     tst_downloadmodules.cpp \
     main.cpp
+

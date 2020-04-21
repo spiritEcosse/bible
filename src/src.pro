@@ -90,4 +90,4 @@ HEADERS += \
     TextProgressBar.h \
     ModulesGroupModel.h
 
-LIBS += -lquazip
+LIBS += -lquazip5
