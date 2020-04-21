@@ -44,7 +44,8 @@ void ModulesGroupModel::updateTable()
     if (qJsonParserError->error != QJsonParseError::NoError)
         return;
 
-    newRows(document.object().value(QString("downloads")).toArray());
+    QJsonArray data = document.object().value(QString("downloads")).toArray();
+    newRows(data);
 }
 
 void ModulesGroupModel::compareVersions()
