@@ -2,7 +2,8 @@ TEMPLATE = app
 PROJECT_DIR = $$PWD/../../
 
 QT +=   sql \
-        testlib
+        testlib \
+        network
 QT -=   gui
 
 CONFIG += qt console warn_on depend_includepath testcase
