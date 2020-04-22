@@ -17,3 +17,5 @@ SUBDIRS = tests \
 linux-g++ {
     message(Linux)
 }
+
+DISTFILES = docker-compose.yml

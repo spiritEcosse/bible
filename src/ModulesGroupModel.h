@@ -56,6 +56,8 @@ public:
     QUrl* urlRegistry = new QUrl();
 
 private:
+    const char* registryBase64 = "aHR0cDovL215YmlibGUuaW50ZXJiaWJsaWEub3JnL3JlZ2lzdHJ5X3Rlc3Quemlw";
+    const char* registryInfoBase64 = "";
     QFile* registry = new QFile();
     QFile* registryVersion = new QFile();
     QJsonParseError* qJsonParserError = new QJsonParseError();
@@ -76,6 +78,7 @@ private:
                 );
     QString* qStringSelectSql = new QString("SELECT COUNT(*) as count FROM %1");
     friend class ModulesGroupModelTest;
+    friend class DownloadModules;
     FRIEND_TEST(ModulesGroupModelTest, createTable);
     FRIEND_TEST(DownloadManagerTest, startNextDownload);
     FRIEND_TEST(ModulesGroupModelTest, updateTable);

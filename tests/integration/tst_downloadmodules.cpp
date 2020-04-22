@@ -27,6 +27,7 @@ public:
 
 private:
     const QString dirName = "files";
+    QString pathFiles = QString("../../../%1").arg(dirName);
     const QString strUrl = QString("http://0.0.0.0:2443/%1/").arg(dirName);
     QString strUrlTest = QString("%1test").arg(strUrl);
     const QString fileNameRegistry = "registry.json";
@@ -70,8 +71,14 @@ DownloadModules::~DownloadModules()
 
 void DownloadModules::initTestCase()
 {
+    // Will be called before the first test function is executed.
+
     dir.mkdir(dirName);
     QDir::setCurrent(dirName);
+    QFile test("test");
+    test.open(QFile::ReadOnly);
+    test.close();
+
     connectToDatabase();
     settings.setValue("modulesVersion", 0);
     fileRegistryInfo.setFileName(fileNameRegistryInfo);
@@ -153,7 +160,9 @@ void DownloadModules::updateModules()
     QSignalSpy spy1(&modulesGroupModel, &ModulesGroupModel::updateTableSuccess);
     QSignalSpy spy2(&modulesGroupModel, &ModulesGroupModel::removeRegistryFileSuccess);
     QSignalSpy spy3(&modulesGroupModel, &ModulesGroupModel::removeOldRowsSuccess);
-    modulesGroupModel.urlRegistry = new QUrl(QString("%1%2").arg(strUrl, fileNameRegistryZip));
+    QString registryUrl = QString("%1%2").arg(strUrl, fileNameRegistryZip);
+    QByteArray registry(registryUrl.toLocal8Bit());
+    modulesGroupModel.registryBase64 = registry.toBase64();
     modulesGroupModel.updateModules();
 
     QVERIFY(spy2.wait());
@@ -175,8 +184,8 @@ void DownloadModules::newModulesAvailable_data()
     QTest::addColumn<int>("version");
     QTest::addColumn<bool>("newModulesAvailable");
     QTest::addColumn<int>("versionInQSettings");
-    QTest::newRow("db not have any version") << 1 << true << 1;
-    QTest::newRow("current version") << 0 << false << 1;
+    QTest::newRow("QSettings has version is 0") << 1 << true << 1;
+    QTest::newRow("current version") << 1 << false << 1;
     QTest::newRow("true new version") << 2 << true << 2;
     QTest::newRow("If it is possible, the server version is lower than in the application.")
             << 0 << false << 2;
@@ -197,7 +206,9 @@ void DownloadModules::newModulesAvailable()
 
     ModulesGroupModel modulesGroupModel;
     QSignalSpy spy(&modulesGroupModel, &ModulesGroupModel::availabilityNewModules);
-    modulesGroupModel.urlRegistryInfo = new QUrl(QString("%1%2").arg(strUrl, fileRegistryInfo.fileName()));
+    QString registryUrlInfo = QString("%1%2").arg(strUrl, fileRegistryInfo.fileName());
+    QByteArray registryInfo(registryUrlInfo.toLocal8Bit());
+    modulesGroupModel.registryInfoBase64 = registryInfo.toBase64();
     modulesGroupModel.checkAvailabilityNewModules();
 
     QVERIFY(spy.wait());

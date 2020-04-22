@@ -29,3 +29,5 @@ SOURCES += $${PROJECT_SOURCES} \
     main.cpp
 
 LIBS += -lquazip5
+
+QT_TEST_SERVER_LIST = vsftpd

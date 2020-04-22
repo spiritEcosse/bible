@@ -59,7 +59,7 @@ QString DownloadManager::saveFileName(const QUrl &url)
 void DownloadManager::startNextDownload()
 {
     if (downloadQueue->isEmpty()) {
-//        printf("%d/%d files downloaded successfully\n", downloadedCount, totalCount); //WARNING: needed fprintf ?
+        printf("%d/%d files downloaded successfully\n", downloadedCount, totalCount); //WARNING: needed fprintf ?
         emit finished();
 
         if (downloadedCount == totalCount) {
@@ -73,9 +73,9 @@ void DownloadManager::startNextDownload()
         fileNames->append(output->fileName());
 
         if (!output->open(QFile::WriteOnly)) {
-//            fprintf(stderr, "Problem opening save file '%s' for download '%s': %s\n", //WARNING: needed fprintf ?
-//                    qPrintable(filename), url.toEncoded().constData(),
-//                    qPrintable(output->errorString()));
+            fprintf(stderr, "Problem opening save file '%s' for download '%s': %s\n", //WARNING: needed fprintf ?
+                    qPrintable(filename), url.toEncoded().constData(),
+                    qPrintable(output->errorString()));
 
             startNextDownload();
         } else {
@@ -89,7 +89,7 @@ void DownloadManager::startNextDownload()
                     SLOT(downloadReadyRead()));
 
 //              prepare the output
-//            printf("Downloading %s...\n", url.toEncoded().constData()); //WARNING: needed fprintf ?
+            printf("Downloading %s...\n", url.toEncoded().constData()); //WARNING: needed fprintf ?
             downloadTime->start();
         }
     }

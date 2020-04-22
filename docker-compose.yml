@@ -1,10 +1,17 @@
 version: '3.7'
 
 services:
-  qt:
-    image: shevchenkoigor/bible:latest
-    env_file:
-        - .env
-    volumes:
-      - .:/app
-    command: /app/coverage.sh
+    qt:
+        image: shevchenkoigor/bible:latest
+        env_file:
+            - .env
+        volumes:
+            - .:/app
+        command: /app/coverage.sh
+
+    test_server:
+        image: nginx:latest
+        ports:
+            - "2443:80"
+        volumes:
+            - ./files/:/usr/share/nginx/html/files/

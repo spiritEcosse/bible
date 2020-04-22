@@ -61,8 +61,14 @@ void ModulesGroupModel::compareVersions()
     if ( qJsonParserError->error != QJsonParseError::NoError ) // WARNING : test this
         return;
 
-    document.object().value("version").toInt();
-//    emit availabilityNewModules(version > qSettings->value("modulesVersion").toInt());
+    int version = document.object().value("version").toInt();
+    bool newModules = version > qSettings->value("modulesVersion").toInt();
+
+    if (newModules) {
+        qSettings->setValue("modulesVersion", version);
+    }
+
+    emit availabilityNewModules(newModules);
 }
 
 void ModulesGroupModel::init()
@@ -95,7 +101,7 @@ bool ModulesGroupModel::createTable()
 
 void ModulesGroupModel::updateModules()
 {
-    manager->append(urlRegistry->fromEncoded(qQByteArray->fromBase64(REGISTRY)));
+    manager->append(urlRegistry->fromEncoded(qQByteArray->fromBase64(registryBase64)));
     connect(manager, SIGNAL (successfully()), SLOT (decompressRegistry())); // WARNING : add connect to test
     connect(this, SIGNAL (decompressSuccess()), SLOT (updateTable())); // WARNING : add connect to test
 
@@ -155,7 +161,7 @@ void ModulesGroupModel::newRows(QJsonArray &downloads)
 
 void ModulesGroupModel::checkAvailabilityNewModules()
 {
-    manager->append(urlRegistryInfo->fromEncoded(qQByteArray->fromBase64(REGISTRY_INFO)));
+    manager->append(urlRegistryInfo->fromEncoded(qQByteArray->fromBase64(registryInfoBase64)));
     connect(manager, SIGNAL (successfully()), this, SLOT (compareVersions()));
 }
 
