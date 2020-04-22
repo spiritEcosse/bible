@@ -8,7 +8,6 @@
 #include <QSqlRecord>
 #include <QSqlQuery>
 #include <QSqlError>
-#include <QAbstractItemModelTester>
 
 #include "../../src/DownloadManager.h"
 #include "../../src/ModulesModel.h"
@@ -363,14 +362,14 @@ void DownloadModules::modulesGroupNewRows()
     modulesGroupModel.init();
     modulesGroupModel.newRows(jsonArray);
     QSqlRecord record = modulesGroupModel.record(0);
-    QCOMPARE(record.value("language"), "en");
-    QCOMPARE(record.value("type"), "");
-    QCOMPARE(record.value("region"), "");
+    QCOMPARE(record.value("language").toString(), QString("en"));
+    QCOMPARE(record.value("type").toString(), QString(""));
+    QCOMPARE(record.value("region").toString(), QString(""));
 
     QSqlRecord record1 = modulesGroupModel.record(1);
-    QCOMPARE(record1.value("language"), "");
-    QCOMPARE(record1.value("type"), "");
-    QCOMPARE(record1.value("region"), "Papua New Guinea");
+    QCOMPARE(record1.value("language").toString(), QString(""));
+    QCOMPARE(record1.value("type").toString(), QString(""));
+    QCOMPARE(record1.value("region").toString(), QString("Papua New Guinea"));
 }
 
 void DownloadModules::modulesModel_data()
