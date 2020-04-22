@@ -73,8 +73,8 @@ void DownloadModules::initTestCase()
 {
     // Will be called before the first test function is executed.
 
-    dir.mkdir(dirName);
-    QDir::setCurrent(dirName);
+    dir.mkdir(pathFiles);
+    QDir::setCurrent(pathFiles);
     QFile test("test");
     test.open(QFile::ReadOnly);
     test.close();

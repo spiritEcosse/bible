@@ -14,4 +14,4 @@ services:
         ports:
             - "2443:80"
         volumes:
-            - ./files/:/usr/share/nginx/html/files/
+            - .:/usr/share/nginx/html/
