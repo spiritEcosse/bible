@@ -90,4 +90,5 @@ HEADERS += \
     TextProgressBar.h \
     ModulesGroupModel.h
 
-LIBS += -lquazip5
+INCLUDEPATH += 3rdparty/quazip/include
+LIBS += -L"3rdparty/quazip/lib" -lquazip

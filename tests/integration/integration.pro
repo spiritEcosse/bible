@@ -28,6 +28,5 @@ SOURCES += $${PROJECT_SOURCES} \
     tst_downloadmodules.cpp \
     main.cpp
 
-LIBS += -lquazip5
-
-QT_TEST_SERVER_LIST = vsftpd
+INCLUDEPATH += 3rdparty/quazip/include
+LIBS += -L"3rdparty/quazip/lib" -lquazip
