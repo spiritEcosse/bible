@@ -3,8 +3,8 @@
 ModulesModel::ModulesModel(QObject *parent)
     : QSqlTableModel(parent)
 {
+    init();
 }
-
 
 void ModulesModel::init()
 {

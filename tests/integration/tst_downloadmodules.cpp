@@ -1,7 +1,5 @@
 #include <QtTest>
 
-// add necessary includes here
-
 #include <QtTest>
 #include <QCoreApplication>
 #include <quazip/JlCompress.h>
@@ -49,6 +47,8 @@ private slots:
     void newModulesAvailable();
     void modulesGroupCorrectTitle_data();
     void modulesGroupCorrectTitle();
+    void modulesGroupCorrectSize();
+    void modulesGroupCorrectSize_data();
     void modulesGroupRemoveOldRows_data();
     void modulesGroupRemoveOldRows();
     void modulesGroupMakeGroup();
@@ -152,7 +152,6 @@ void DownloadModules::updateModules_data()
 void DownloadModules::updateModules()
 {
     ModulesGroupModel modulesGroupModel;
-    modulesGroupModel.init();
     QVERIFY(QSqlDatabase::database().tables().contains("modules_group"));
 
     QSignalSpy spy(&modulesGroupModel, &ModulesGroupModel::decompressSuccess);
@@ -172,7 +171,6 @@ void DownloadModules::updateModules()
 
 
     ModulesGroupModel modulesGroupModelNew;
-    modulesGroupModelNew.init();
     QCOMPARE(modulesGroupModelNew.rowCount(), fileRegistryItems);
     modulesGroupModelNew.setCountOldRows();
     modulesGroupModelNew.removeOldRows();
@@ -253,6 +251,29 @@ void DownloadModules::modulesGroupCorrectTitle()
     QCOMPARE(modulesGroupModel.correctTitle(name, language, region), result);
 }
 
+void DownloadModules::modulesGroupCorrectSize_data()
+{
+    QTest::addColumn<QString>("in");
+    QTest::addColumn<int>("out");
+
+    QTest::newRow("100.0K") << "100.0K" << 102400;
+    QTest::newRow("1K") << "1K" << 1024;
+    QTest::newRow("12.32M") << "12.32M" << 12918456;
+    QTest::newRow("1m") << "1m" << 1048576;
+    QTest::newRow("0.05G") << "0.05G" << 53687091;
+    QTest::newRow("1g") << "1g" << 1073741824;
+    QTest::newRow("65700") << "65700" << 65700;
+}
+
+void DownloadModules::modulesGroupCorrectSize()
+{
+    QFETCH(QString, in);
+    QFETCH(int, out);
+
+    ModulesGroupModel modulesGroupModel;
+    QCOMPARE(modulesGroupModel.correctSize(in), out);
+}
+
 void DownloadModules::modulesGroupRemoveOldRows_data()
 {
     QTest::addColumn<int>("rowCount");
@@ -268,7 +289,6 @@ void DownloadModules::modulesGroupRemoveOldRows()
     QFETCH(int, addedRows);
 
     ModulesGroupModel modulesGroupModel;
-    modulesGroupModel.init();
     QCOMPARE(modulesGroupModel.rowCount(), rowCount);
 
     modulesGroupModel.setCountOldRows();
@@ -359,7 +379,6 @@ void DownloadModules::modulesGroupNewRows()
     });
 
     ModulesGroupModel modulesGroupModel;
-    modulesGroupModel.init();
     modulesGroupModel.newRows(jsonArray);
     QSqlRecord record = modulesGroupModel.record(0);
     QCOMPARE(record.value("language").toString(), QString("en"));
@@ -379,7 +398,6 @@ void DownloadModules::modulesModel_data()
 void DownloadModules::modulesModel()
 {
     ModulesModel modulesModel;
-    modulesModel.init();
     QVERIFY(QSqlDatabase::database().tables().contains("modules"));
 }
 

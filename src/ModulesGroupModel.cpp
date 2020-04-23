@@ -1,7 +1,10 @@
 #include "ModulesGroupModel.h"
 
 ModulesGroupModel::ModulesGroupModel(QObject *parent)
-    : QSqlTableModel(parent), countOldRows(0) {} // FIXME: test downloadedCount
+    : QSqlTableModel(parent), countOldRows(0)
+{
+    init();
+} // FIXME: test downloadedCount
 
 void ModulesGroupModel::decompressRegistry()
 {
