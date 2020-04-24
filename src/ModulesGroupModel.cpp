@@ -123,6 +123,7 @@ void ModulesGroupModel::setCountOldRows()
 
 void ModulesGroupModel::newRows(QJsonArray &downloads)
 {
+    int lastId = 0;
     foreach(const QJsonValue &jsonValue, downloads) {
         QJsonObject jsonObject = jsonValue.toObject();
         QSqlRecord newRecord = record();
@@ -136,26 +137,28 @@ void ModulesGroupModel::newRows(QJsonArray &downloads)
             newRecord.setValue(it.key(), it.value());
             ++it;
         }
-
-//        newRecord.setValue("name", jsonObject.value("fil").toString());
-//        newRecord.setValue("description", jsonObject.value("des").toString());
-//        newRecord.setValue("abbreviation", jsonObject.value("abr").toString());
-//        newRecord.setValue("information", jsonObject.value("inf").toString());
-//        newRecord.setValue("language", jsonObject.value("lng").toString());
-//        newRecord.setValue("language_show", jsonObject.value("aln").toString());
-//        newRecord.setValue("update", jsonObject.value("upd").toString());
-//        newRecord.setValue("urls", jsonObject.value("url").toString());
-//        newRecord.setValue("comment", jsonObject.value("cmt").toString());
-//        newRecord.setValue("size", correctSize(jsonObject.value("siz").toString()));
-//        newRecord.setValue("region", jsonObject.value("reg").toString());
-//        newRecord.setValue("default_download", jsonObject.value("def").toInt());
-//        newRecord.setValue("hidden", jsonObject.value("hid").toInt());
-//        newRecord.setValue("copyright", jsonObject.value("lic").toString());
+        QSqlRecord modulesModelRecord = modulesModel->record();
+        modulesModelRecord.setValue("name", jsonObject.value("fil").toString());
+        modulesModelRecord.setValue("description", jsonObject.value("des").toString());
+        modulesModelRecord.setValue("abbreviation", jsonObject.value("abr").toString());
+        modulesModelRecord.setValue("information", jsonObject.value("inf").toString());
+        modulesModelRecord.setValue("language", jsonObject.value("lng").toString());
+        modulesModelRecord.setValue("language_show", jsonObject.value("aln").toString());
+        modulesModelRecord.setValue("update", jsonObject.value("upd").toString());
+        modulesModelRecord.setValue("urls", jsonObject.value("url").toString());
+        modulesModelRecord.setValue("comment", jsonObject.value("cmt").toString());
+        modulesModelRecord.setValue("size", correctSize(jsonObject.value("siz").toString()));
+        modulesModelRecord.setValue("region", jsonObject.value("reg").toString());
+        modulesModelRecord.setValue("default_download", jsonObject.value("def").toInt());
+        modulesModelRecord.setValue("hidden", jsonObject.value("hid").toInt());
+        modulesModelRecord.setValue("copyright", jsonObject.value("lic").toString());
+        modulesModelRecord.setValue(QString("%1_id").arg(tableNameString), ++lastId);
         insertRecord(-1, newRecord); // FIXME: add to this lastError().text()
+        modulesModel->insertRecord(-1, modulesModelRecord);
     }
 
 // This allows transactions to be rolled back and resubmitted without losing data.
-    if (submitAll()) {
+    if (submitAll() && modulesModel->submitAll()) {
         emit updateTableSuccess();
     } else {
         qWarning() << "Failed to add new row: " << lastError().text();

@@ -6,7 +6,6 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QSqlTableModel>
-
 #include <QJsonValue>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -23,6 +22,7 @@
 #define MODULES_SPLIT_NAME "^(.+)\\.(.+)$"
 
 #include "DownloadManager.h"
+#include "ModulesModel.h"
 #include "LocaleDesc.h"
 #include "gtest/gtest_prod.h"
 
@@ -48,7 +48,7 @@ public:
     virtual void setCountOldRows();
     virtual void newRows(QJsonArray &downloads);
     virtual QMap<QString, QString> makeGroup(const QString &name, const QString &language="", const QString &region="") const;
-//    Q_INVOKABLE virtual void updateModules();
+    //    Q_INVOKABLE virtual void updateModules();
     virtual void updateModules();
     virtual QVariant data(const QModelIndex &index, int role) const override;
     virtual QHash<int, QByteArray> roleNames() const;
@@ -58,6 +58,7 @@ public:
 private:
     const char* registryBase64 = "aHR0cDovL215YmlibGUuaW50ZXJiaWJsaWEub3JnL3JlZ2lzdHJ5X3Rlc3Quemlw";
     const char* registryInfoBase64 = "";
+    ModulesModel* modulesModel = new ModulesModel();
     QFile* registry = new QFile();
     QFile* registryVersion = new QFile();
     QJsonParseError* qJsonParserError = new QJsonParseError();

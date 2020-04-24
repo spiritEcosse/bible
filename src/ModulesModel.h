@@ -2,6 +2,7 @@
 #define MODULESMODEL_H
 
 #include <QSqlTableModel>
+
 #include <QSqlRecord>
 #include <QSqlQuery>
 #include <QSqlError>
@@ -29,7 +30,6 @@ public:
     virtual void init();
     virtual bool createTable();
     virtual bool execLastError(const QString& query);
-
 private:
     friend class ModulesGroupModelTest;
     friend class ModulesModelTest;

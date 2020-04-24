@@ -31,6 +31,8 @@ private:
     const QString fileNameRegistryInfo = "registry_info.json";
     const QString fileNameRegistryZip = QString("%1.zip").arg(fileNameRegistry);
     const int fileRegistryItems = 5;
+    QString tableNameModules = "modules";
+    QString tableNameGroupModules = "modules_group";
     QFile fileRegistry;
     QFile fileRegistryInfo;
     QDir dir;
@@ -38,6 +40,8 @@ private:
 
 private slots:
     void initTestCase();
+    void init();
+    void cleanup();
     void cleanupTestCase();
     void singleDownload();
     void multiDownload();
@@ -53,8 +57,8 @@ private slots:
     void modulesGroupRemoveOldRows();
     void modulesGroupMakeGroup();
     void modulesGroupMakeGroup_data();
-    void modulesGroupNewRows_data();
-    void modulesGroupNewRows();
+    void modulesNewRows_data();
+    void modulesNewRows();
     void modulesModel_data();
     void modulesModel();
 
@@ -65,6 +69,14 @@ DownloadModules::DownloadModules()
 }
 
 DownloadModules::~DownloadModules()
+{
+}
+
+void DownloadModules::init()
+{
+}
+
+void DownloadModules::cleanup()
 {
 }
 
@@ -361,11 +373,11 @@ void DownloadModules::modulesGroupMakeGroup()
     QCOMPARE(group, result);
 }
 
-void DownloadModules::modulesGroupNewRows_data()
+void DownloadModules::modulesNewRows_data()
 {
 }
 
-void DownloadModules::modulesGroupNewRows()
+void DownloadModules::modulesNewRows()
 {
     QJsonArray jsonArray;
     jsonArray << QJsonObject({
@@ -379,16 +391,25 @@ void DownloadModules::modulesGroupNewRows()
     });
 
     ModulesGroupModel modulesGroupModel;
+    modulesGroupModel.modulesModel->setSort(0, Qt::SortOrder::DescendingOrder);
+    modulesGroupModel.modulesModel->select();
+
     modulesGroupModel.newRows(jsonArray);
     QSqlRecord record = modulesGroupModel.record(0);
     QCOMPARE(record.value("language").toString(), QString("en"));
     QCOMPARE(record.value("type").toString(), QString(""));
     QCOMPARE(record.value("region").toString(), QString(""));
 
+    QSqlRecord recordRelated = modulesGroupModel.modulesModel->record(1);
+    QCOMPARE(recordRelated.value("language").toString(), QString("en"));
+
     QSqlRecord record1 = modulesGroupModel.record(1);
     QCOMPARE(record1.value("language").toString(), QString(""));
     QCOMPARE(record1.value("type").toString(), QString(""));
     QCOMPARE(record1.value("region").toString(), QString("Papua New Guinea"));
+
+    recordRelated = modulesGroupModel.modulesModel->record(0);
+    QCOMPARE(recordRelated.value("language").toString(), QString("Auyana"));
 }
 
 void DownloadModules::modulesModel_data()

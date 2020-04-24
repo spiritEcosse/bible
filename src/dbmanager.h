@@ -34,7 +34,8 @@ static void connectToDatabase()
         qFatal("Failed to create writable directory at %s", qPrintable(writeDir.absolutePath()));
 
     // Ensure that we have a writable location on all devices.
-    const QString fileName = writeDir.absolutePath() + "/user-database.sqlite3";
+    const QString fileName = writeDir.absolutePath() + "/app.sqlite3";
+    qWarning() << fileName;
     // When using the SQLite driver, open() will create the SQLite database if it doesn't exist.
     database.setDatabaseName(fileName);
     if (!database.open()) {
