@@ -389,18 +389,25 @@ void DownloadModules::modulesNewRows()
                     qMakePair(QString("lng"), QJsonValue("Auyana")),
                     qMakePair(QString("reg"), QJsonValue("Papua New Guinea")),
     });
+    jsonArray << QJsonObject({
+                    qMakePair(QString("fil"), QJsonValue("AUY")),
+                    qMakePair(QString("lng"), QJsonValue("Auyana")),
+                    qMakePair(QString("reg"), QJsonValue("Papua New Guinea")),
+    });
 
     ModulesGroupModel modulesGroupModel;
     modulesGroupModel.modulesModel->setSort(0, Qt::SortOrder::DescendingOrder);
     modulesGroupModel.modulesModel->select();
 
     modulesGroupModel.newRows(jsonArray);
+    QCOMPARE(modulesGroupModel.rowCount(), 2);
+
     QSqlRecord record = modulesGroupModel.record(0);
     QCOMPARE(record.value("language").toString(), QString("en"));
     QCOMPARE(record.value("type").toString(), QString(""));
     QCOMPARE(record.value("region").toString(), QString(""));
 
-    QSqlRecord recordRelated = modulesGroupModel.modulesModel->record(1);
+    QSqlRecord recordRelated = modulesGroupModel.modulesModel->record(2);
     QCOMPARE(recordRelated.value("language").toString(), QString("en"));
 
     QSqlRecord record1 = modulesGroupModel.record(1);

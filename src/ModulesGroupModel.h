@@ -74,7 +74,8 @@ private:
                 "   'id'        INTEGER PRIMARY KEY AUTOINCREMENT, "
                 "   'language'  CHAR(50), "
                 "   'type'      CHAR(50), "
-                "   'region'    CHAR(50) "
+                "   'region'    CHAR(50), "
+                "   UNIQUE (language, type, region) "
                 ")"
                 );
     QString* qStringSelectSql = new QString("SELECT COUNT(*) as count FROM %1");

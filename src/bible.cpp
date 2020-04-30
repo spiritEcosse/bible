@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 //    qmlRegisterType<ModulesModel>("bible.ModulesModel", 1, 0, "ModulesModel");
 //    qmlRegisterType<HistoryModel>("bible.HistoryModel", 1, 0, "HistoryModel");
 
-    connectToDatabase();
+//    connectToDatabase();
 //    ModuleProxyModel moduleProxyModel;
 //    ModuleModel ModuleModel;
 //    moduleProxyModel.setSourceModel(&ModuleModel);

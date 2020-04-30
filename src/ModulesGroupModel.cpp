@@ -152,8 +152,13 @@ void ModulesGroupModel::newRows(QJsonArray &downloads)
         modulesModelRecord.setValue("default_download", jsonObject.value("def").toInt());
         modulesModelRecord.setValue("hidden", jsonObject.value("hid").toInt());
         modulesModelRecord.setValue("copyright", jsonObject.value("lic").toString());
-        modulesModelRecord.setValue(QString("%1_id").arg(tableNameString), ++lastId);
-        insertRecord(-1, newRecord); // FIXME: add to this lastError().text()
+        bool result = insertRecord(-1, newRecord); // FIXME: add to this lastError().text()
+
+        if (result) {
+            ++lastId;
+        }
+
+        modulesModelRecord.setValue(QString("%1_id").arg(tableNameString), lastId);
         modulesModel->insertRecord(-1, modulesModelRecord);
     }
 
