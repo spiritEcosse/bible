@@ -29,6 +29,12 @@
 #define REGISTRY "aHR0cDovL215YmlibGUuaW50ZXJiaWJsaWEub3JnL3JlZ2lzdHJ5X3Rlc3Quemlw"
 #define REGISTRY_INFO ""
 #include <iostream>
+#include <memory>
+
+namespace db
+{
+class Processor;
+}
 
 class ModulesGroupModel : public QSqlTableModel
 {

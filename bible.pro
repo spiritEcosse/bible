@@ -12,7 +12,8 @@
 TEMPLATE = subdirs
 
 SUBDIRS = tests \
-    src
+    Application \
+    DBManager
 
 linux-g++ {
     message(Linux)

@@ -1,5 +1,5 @@
 TEMPLATE = app
-PROJECT_DIR = $$PWD/../../
+PROJECT_DIR = $$PWD/../../Application/src/
 
 QT +=   sql \
         testlib \
@@ -10,18 +10,18 @@ CONFIG += qt console warn_on depend_includepath testcase
 CONFIG -= app_bundle
 
 PROJECT_SOURCES = \
-    $$PROJECT_DIR/src/DownloadManager.cpp \
-    $$PROJECT_DIR/src/TextProgressBar.cpp \
-    $$PROJECT_DIR/src/dbmanager.cpp \
-    $$PROJECT_DIR/src/ModulesModel.cpp \
-    $$PROJECT_DIR/src/ModulesGroupModel.cpp
+    $$PROJECT_DIR/DownloadManager.cpp \
+    $$PROJECT_DIR/TextProgressBar.cpp \
+    $$PROJECT_DIR/dbmanager.cpp \
+    $$PROJECT_DIR/ModulesModel.cpp \
+    $$PROJECT_DIR/ModulesGroupModel.cpp
 
 PROJECT_HEADERS = \
-    $$PROJECT_DIR/src/DownloadManager.h \
-    $$PROJECT_DIR/src/TextProgressBar.h \
-    $$PROJECT_DIR/src/dbmanager.h \
-    $$PROJECT_DIR/src/ModulesModel.h \
-    $$PROJECT_DIR/src/ModulesGroupModel.h
+    $$PROJECT_DIR/DownloadManager.h \
+    $$PROJECT_DIR/TextProgressBar.h \
+    $$PROJECT_DIR/dbmanager.h \
+    $$PROJECT_DIR/ModulesModel.h \
+    $$PROJECT_DIR/ModulesGroupModel.h
 
 HEADERS += $${PROJECT_HEADERS}
 SOURCES += $${PROJECT_SOURCES} \
@@ -30,3 +30,6 @@ SOURCES += $${PROJECT_SOURCES} \
 
 INCLUDEPATH += 3rdparty/quazip/include
 LIBS += -L"3rdparty/quazip/lib" -lquazip
+
+INCLUDEPATH = $$PROJECT_DIR
+DEPENDPATH = $$PROJECT_DIR

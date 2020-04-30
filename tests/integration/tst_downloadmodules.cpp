@@ -7,10 +7,10 @@
 #include <QSqlQuery>
 #include <QSqlError>
 
-#include "../../src/DownloadManager.h"
-#include "../../src/ModulesModel.h"
-#include "../../src/dbmanager.h"
-#include "../../src/ModulesGroupModel.h"
+#include "DownloadManager.h"
+#include "ModulesModel.h"
+#include "dbmanager.h"
+#include "ModulesGroupModel.h"
 
 typedef QMap<QString, QString> Group;
 
