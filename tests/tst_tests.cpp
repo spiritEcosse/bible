@@ -9,7 +9,7 @@
 #include "../src/DownloadManager.h"
 #include "../src/ModulesModel.h"
 #include "../src/dbmanager.h"
-#include "../src/ModulesGroupModel.h"
+#include "../src/modulesgroupmodel.h"
 
 typedef QMap<QString, QString> Group;
 

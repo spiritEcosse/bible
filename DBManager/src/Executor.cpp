@@ -1,13 +1,17 @@
 #include "Executor.h"
+#include "ConnectionManager.h"
 #include <QDebug>
 #include <QSqlError>
-
 
 namespace db
 {
 
 Executor::Executor()
     : m_connectionManager {new ConnectionManager {}}
+{}
+
+Executor::Executor(const QString& nameDb)
+    : m_connectionManager {new ConnectionManager {nameDb}}
 {}
 
 std::pair<DBResult, QSqlQuery> Executor::execute(const QString &queryText, const QVariantList &args)

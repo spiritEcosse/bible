@@ -12,8 +12,10 @@
 TEMPLATE = subdirs
 
 SUBDIRS = tests \
-    Application \
-    DBManager
+    DBManager \
+    Application
+
+CONFIG += ordered
 
 linux-g++ {
     message(Linux)

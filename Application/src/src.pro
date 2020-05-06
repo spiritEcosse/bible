@@ -8,7 +8,8 @@ CONFIG += sailfishapp
 QT += core \
     sql \
     widgets \
-    network
+    network \
+    quick
 
 DISTFILES += qml/bible.qml \
     qml/cover/CoverPage.qml \
@@ -60,6 +61,10 @@ TRANSLATIONS += translations/bible-ru.ts
 SOURCES += dbmanager.cpp \
     bible.cpp \
     booksmodel.cpp \
+    modulesgroups.cpp \
+    modulesgroupsmodel.cpp \
+    modulesgroupsreader.cpp \
+    modulesmodel.cpp \
     versesmodel.cpp \
     userdb.cpp \
     host.cpp \
@@ -68,14 +73,16 @@ SOURCES += dbmanager.cpp \
     historymodel.cpp \
     commentsmodel.cpp \
     LocaleDesc.cpp \
-    ModulesModel.cpp \
     DownloadManager.cpp \
-    TextProgressBar.cpp \
-    ModulesGroupModel.cpp
+    TextProgressBar.cpp
 
 HEADERS += \
     dbmanager.h \
     booksmodel.h \
+    modulesgroups.h \
+    modulesgroupsmodel.h \
+    modulesgroupsreader.h \
+    modulesmodel.h \
     versesmodel.h \
     userdb.h \
     host.h \
@@ -85,10 +92,12 @@ HEADERS += \
     historymodel.h \
     commentsmodel.h \
     LocaleDesc.h \
-    ModulesModel.h \
     DownloadManager.h \
-    TextProgressBar.h \
-    ModulesGroupModel.h
+    TextProgressBar.h
+
+INCLUDEPATH += $$PWD/../../shared/include
+
+LIBS += -L$$PWD/../../shared/lib -lDBManager
 
 INCLUDEPATH += 3rdparty/quazip/include
 LIBS += -L"3rdparty/quazip/lib" -lquazip

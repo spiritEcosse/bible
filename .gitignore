@@ -3,6 +3,7 @@ db
 registry
 **/logs/
 *.log
+shared/
 
 *.autosave
 *.user

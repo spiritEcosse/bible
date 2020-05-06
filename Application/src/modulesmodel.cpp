@@ -1,4 +1,4 @@
-#include "ModulesModel.h"
+#include "modulesmodel.h"
 
 ModulesModel::ModulesModel(QObject *parent)
     : QSqlTableModel(parent)

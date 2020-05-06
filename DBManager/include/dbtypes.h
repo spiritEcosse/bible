@@ -11,7 +11,8 @@ enum class DBResult
 
 enum class DBTables
 {
-    Modules
+    Modules,
+    ModulesGroups
 };
 
 enum class DBState
@@ -24,5 +25,6 @@ enum class DBState
 };
 
 using DBEntry = QVariantList;
+using DBIndex = int;
 
 }

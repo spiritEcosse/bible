@@ -16,7 +16,7 @@ namespace db {
 
 namespace
 {
-    class DBCloser {
+class DBCloser {
     public:
         void operator()(QSqlDatabase *db)
         {
@@ -29,14 +29,24 @@ namespace
 
 struct ConnectionManager::ConnectionManagerPrivate
 {
+    ConnectionManagerPrivate(const QString& nameDb = "user")
+        : m_nameDb {nameDb}
+    {}
     std::unique_ptr<QSqlDatabase, DBCloser> database;
     QString dbPath;
     bool isValid {true};
     DBState state {DBState::OK};
+    QString m_nameDb;
     bool setup();
     bool setupWorkspace();
     bool setupTables();
 };
+
+ConnectionManager::ConnectionManager(const QString& nameDb)
+    : m_d(new ConnectionManagerPrivate {nameDb})
+{
+    m_d->isValid = m_d->setup();
+}
 
 ConnectionManager::ConnectionManager()
     : m_d(new ConnectionManagerPrivate {})
@@ -55,7 +65,8 @@ bool ConnectionManager::isValid() const
 
 }
 
-bool ConnectionManager::ConnectionManagerPrivate::setup() // WARNING : using chain : https://en.wikipedia.org/wiki/Variadic_template
+// WARNING : using chain : https://en.wikipedia.org/wiki/Variadic_template
+bool ConnectionManager::ConnectionManagerPrivate::setup()
 {
     static const QString driver {"QSQLITE"};
 
@@ -87,12 +98,7 @@ bool ConnectionManager::ConnectionManagerPrivate::setup() // WARNING : using cha
 
 bool ConnectionManager::ConnectionManagerPrivate::setupWorkspace()
 {
-#ifdef BUILD_TESTS
-    const QString databaseName {"testDB"};
-#else
-    const QString databaseName {"registry"}; // WARNING : make dynamically
-#endif
-
+    const QString databaseName {QString("%1.sqlite").arg(m_nameDb)}; // WARNING : make dynamically
     const QString location {QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)};
     const QString fullPath {location + "/" + databaseName};
     dbPath = fullPath;
@@ -111,35 +117,42 @@ bool ConnectionManager::ConnectionManagerPrivate::setupTables()
 {
     bool result {true};
 
+    QString tableModules = "modules";
+    QString tableModulesGroup = "modules_groups";
+
     std::vector<QSqlQuery> creationQueries {
         QSqlQuery {
-            "CREATE TABLE IF NOT EXISTS '%1' ("
-            "   'id'        INTEGER PRIMARY KEY AUTOINCREMENT, "
-            "   'language'  CHAR(50), "
-            "   'type'      CHAR(50), "
-            "   'region'    CHAR(50) "
-            ")"
+            QString(
+                        "CREATE TABLE IF NOT EXISTS '%1' ("
+                        "   'id'        INTEGER PRIMARY KEY AUTOINCREMENT, "
+                        "   'language'  CHAR(50), "
+                        "   'type'      CHAR(50), "
+                        "   'region'    CHAR(50), "
+                        "   UNIQUE (language, type, region) "
+                        ")").arg(tableModulesGroup)
         },
         QSqlQuery {
-            "CREATE TABLE IF NOT EXISTS '%1' ("
-            "   'id'                INTEGER PRIMARY KEY AUTOINCREMENT, "
-            "   'name'              CHAR(200) NOT NULL, "
-            "   'description'       TEXT, "
-            "   'abbreviation'      CHAR(50), "
-            "   'information'       TEXT, "
-            "   'language'          CHAR(50), "
-            "   'language_show'     CHAR(50), "
-            "   'update'            TEXT, "
-            "   'urls'              TEXT, "
-            "   'comment'           TEXT, "
-            "   'size'              NUMERIC NOT NULL, "
-            "   'region'            TEXT, "
-            "   'default_download'  NUMERIC DEFAULT 0, "
-            "   'hidden'            NUMERIC DEFAULT 0, "
-            "   'copyright'         TEXT, "
-            "   '%2_id'             NUMERIC NOT NULL, "
-            "FOREIGN KEY ('%2_id')  REFERENCES %2(id)"
-            ")"
+            QString(
+                        "CREATE TABLE IF NOT EXISTS '%1' ("
+                        "   'id'                INTEGER PRIMARY KEY AUTOINCREMENT, "
+                        "   'name'              CHAR(200) NOT NULL, "
+                        "   'description'       TEXT, "
+                        "   'abbreviation'      CHAR(50), "
+                        "   'information'       TEXT, "
+                        "   'language'          CHAR(50), "
+                        "   'language_show'     CHAR(50), "
+                        "   'update'            TEXT, "
+                        "   'urls'              TEXT, "
+                        "   'comment'           TEXT, "
+                        "   'size'              NUMERIC NOT NULL, "
+                        "   'region'            TEXT, "
+                        "   'default_download'  NUMERIC DEFAULT 0, "
+                        "   'hidden'            NUMERIC DEFAULT 0, "
+                        "   'copyright'         TEXT, "
+                        "   '%2_id'             NUMERIC NOT NULL, "
+                        "FOREIGN KEY ('%2_id')  REFERENCES %2(id)"
+                        ")"
+                        ).arg(tableModules, tableModulesGroup)
         }
     };
 
