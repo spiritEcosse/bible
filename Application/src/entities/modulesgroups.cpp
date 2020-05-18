@@ -42,7 +42,7 @@ void ModulesGroups::cleanName(const QString &name)
     QRegularExpressionMatch match = re.match(name);
 
     if (match.hasMatch()) {
-        m_name = match.captured(2);
+        m_name = match.captured(2).trimmed();
         m_name[0] = m_name[0].toUpper();
     }
 }

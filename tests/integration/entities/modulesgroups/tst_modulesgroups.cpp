@@ -34,6 +34,8 @@ void tst_ModulesGroups::name_data()
             << "2016c-p.plan" << "Plan";
     QTest::newRow("name *.commentaries")
             << "AB-c.commentaries" << "Commentaries";
+    QTest::newRow("name with spaces *.commentaries")
+            << " AB-c.commentaries " << "Commentaries";
 }
 
 void tst_ModulesGroups::name()
