@@ -1,7 +1,7 @@
 #pragma once
 #include <QVariantList>
 
-namespace db
+namespace DBTypes
 {
 enum class DBResult
 {

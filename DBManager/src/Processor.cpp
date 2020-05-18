@@ -9,22 +9,35 @@ namespace db
 
 struct Processor::ProcessorPrivate
 {
-    Selector selector;
+    ProcessorPrivate(const QString& nameDb)
+        : m_selector {new Selector {nameDb}} {}
+    ProcessorPrivate() {}
+    std::unique_ptr<Selector> m_selector;
     Manipulator manipulator;
-#ifdef BUILD_TESTS
     std::once_flag initialized;
     void insertMockData();
-#endif
 };
 
 Processor::Processor()
     : m_d {new ProcessorPrivate {}}
-{}
+{
+//    auto inserter = [this] {
+//        m_d->insertMockData();
+//    };
+//    std::call_once(m_d->initialized, inserter);
+}
 
-Processor::~Processor()
-{}
+Processor::Processor(const QString& nameDb)
+    : m_d {new ProcessorPrivate {nameDb}}
+{
+//    auto inserter = [this] {
+//        m_d->insertMockData();
+//    };
+//    std::call_once(m_d->initialized, inserter);
+}
 
-#ifdef BUILD_TESTS
+Processor::~Processor() {}
+
 void Processor::ProcessorPrivate::insertMockData()
 {
     manipulator.insertRow("ModulesGroup", {{"Language1", "Type1", "Region1"}});
@@ -37,18 +50,13 @@ void Processor::ProcessorPrivate::insertMockData()
     manipulator.insertRow("ModulesGroup", {{"Language8", "Type8", "Region8"}});
     manipulator.insertRow("ModulesGroup", {{"Language9", "Type9", "Region9"}});
 }
-#endif
 
-std::pair<DBResult, std::vector<DBEntry> > Processor::requestTableData(DBTables table)
+std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry>>
+Processor::requestTableData(DBTypes::DBTables table)
 {
-#ifdef BUILD_TESTS
-    auto inserter = [this] {
-        m_d->insertMockData();
-    };
-    std::call_once(m_d->initialized, inserter);
-#endif
-    const auto &result {m_d->selector.selectAll(TableMapper.at(table))};
-    return result;
+    std::vector<QVariantList> result;
+    const DBTypes::DBResult resultState {m_d->m_selector->selectAll(tableMapper.at(table), result)};
+    return std::make_pair(resultState, std::move(result));
 }
 
 }

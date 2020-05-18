@@ -10,6 +10,11 @@ ModulesGroupsReader::ModulesGroupsReader()
 {
 }
 
+ModulesGroupsReader::ModulesGroupsReader(const QString& nameDb)
+    : m_dbProcessor {new db::Processor {nameDb}}
+{
+}
+
 ModulesGroupsReader::~ModulesGroupsReader()
 {
 }

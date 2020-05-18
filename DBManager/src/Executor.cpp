@@ -3,6 +3,8 @@
 #include <QDebug>
 #include <QSqlError>
 
+using namespace DBTypes;
+
 namespace db
 {
 
@@ -11,17 +13,15 @@ Executor::Executor()
 {}
 
 Executor::Executor(const QString& nameDb)
-    : m_connectionManager {new ConnectionManager {nameDb}}
-{}
+    : m_connectionManager {new ConnectionManager {nameDb}} {}
 
-std::pair<DBResult, QSqlQuery> Executor::execute(const QString &queryText, const QVariantList &args)
+std::pair<DBResult, QSqlQuery> Executor::execute(const std::string& queryText, const QVariantList &args)
 {
     if (!m_connectionManager->isValid()) {
         qCritical() << "Database is not valid, skip!";
         return {DBResult::FAIL, QSqlQuery{}};
     }
-
-    QSqlQuery query {queryText};
+    QSqlQuery query {QString::fromStdString(queryText)};
 
     for (int i = 0; i < args.size(); ++i)
     {

@@ -4,7 +4,7 @@
 #else
 #include <QtQuick>
 #endif
-
+#include <QDebug>
 
 ModulesGroupsModel::ModulesGroupsModel()
 {
@@ -24,7 +24,7 @@ void ModulesGroupsModel::registerMe(const std::string& moduleName)
 void ModulesGroupsModel::init()
 {
     if (!update()) {
-        qWarning() << "Update contacts failed!";
+        qWarning() << "Update groups failed!";
     }
 
     registry->setFileName("registry.json");
@@ -32,21 +32,18 @@ void ModulesGroupsModel::init()
 
 bool ModulesGroupsModel::update()
 {
-    bool requestResult {false};
-    std::vector<ModulesGroups> groupsResult;
-    std::tie(requestResult, groupsResult) = m_reader.requestModulesGroupsBrowse();
+    m_reader.reset(new ModulesGroupsReader());
 
-    if (requestResult) {
-        m_groups.swap(groupsResult);
-        emit dataChanged(createIndex(0, 0), createIndex(m_groups.size(), 0));
-    }
+//    bool requestResult {false};
+//    std::vector<ModulesGroups> groupsResult;
+//    std::tie(requestResult, groupsResult) = m_reader->requestModulesGroupsBrowse();
 
-    return requestResult;
-}
+//    if (requestResult) {
+//        m_groups.swap(groupsResult);
+//        emit dataChanged(createIndex(0, 0), createIndex(m_groups.size(), 0));
+//    }
 
-void ModulesGroupsModel::setNameDB(const QString& value)
-{
-    nameDB = value;
+//    return requestResult;
 }
 
 //void ModulesGroupsModel::decompressRegistry()
@@ -266,22 +263,6 @@ ModulesGroupsModel::roleNames() const {
     QHash<int, QByteArray> names;
     names[Qt::UserRole] = "title";
     return names;
-}
-
-int ModulesGroupsModel::correctSize(const QString &str) const
-{
-    QRegularExpression re("^([+-]?\\d*\\.?\\d+)(\\w{1})*$", QRegularExpression::CaseInsensitiveOption);
-    QRegularExpressionMatch match = re.match(str);
-    double size = 0;
-    QStringList dimensions = {"K", "M", "G"};
-
-    if (match.hasMatch()) {
-        size = match.captured(1).toDouble();
-        QString dimension = match.captured(2).toUpper();
-        size *= qPow(1024, dimensions.indexOf(dimension) + 1);
-    }
-//WARNING: replace on formattedDataSize
-    return size;
 }
 
 int ModulesGroupsModel::rowCount(const QModelIndex& /* parent */) const

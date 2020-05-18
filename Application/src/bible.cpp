@@ -3,11 +3,11 @@
 #endif
 
 //#include <sailfishapp.h>
-#include "booksmodel.h"
-#include "historymodel.h"
-#include "commentsmodel.h"
-#include "modulesmodel.h"
-#include <QDebug>
+//#include "booksmodel.h"
+//#include "historymodel.h"
+//#include "commentsmodel.h"
+//#include "modulesmodel.h"
+//#include <QDebug>
 
 int main(int argc, char *argv[])
 {

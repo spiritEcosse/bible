@@ -1,2 +1,2 @@
-TEMPLATE=subdirs
+TEMPLATE = subdirs
 SUBDIRS += integration

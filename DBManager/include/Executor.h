@@ -4,7 +4,7 @@
 #include <QVariantList>
 #include "ConnectionManager.h"
 
-class ConnectionManager;
+using namespace DBTypes;
 
 namespace db
 {
@@ -14,7 +14,7 @@ public:
     Executor();
     Executor(const QString& nameDb);
 
-    std::pair<DBResult, QSqlQuery> execute(const QString& queryText, const QVariantList& args = {});
+    std::pair<DBResult, QSqlQuery> execute(const std::string& queryText, const QVariantList& args = {});
 
 private:
     std::unique_ptr<ConnectionManager> m_connectionManager;

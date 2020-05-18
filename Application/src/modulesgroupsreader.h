@@ -12,6 +12,7 @@ class ModulesGroupsReader
 {
 public:
     ModulesGroupsReader();
+    ModulesGroupsReader(const QString& nameDb);
     std::pair<bool,
               std::vector<ModulesGroups>> requestModulesGroupsBrowse();
     ~ModulesGroupsReader();

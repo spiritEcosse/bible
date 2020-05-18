@@ -40,7 +40,9 @@ public:
     ModulesGroupsModel();
     virtual ~ModulesGroupsModel();
     static void registerMe(const std::string& moduleName);
-    int rowCount(const QModelIndex& parent = {}) const override;
+    virtual int rowCount(const QModelIndex& parent = {}) const override;
+    virtual QVariant data(const QModelIndex &index = {}, int role = Qt::DisplayRole) const override;
+    virtual QHash<int, QByteArray> roleNames() const override;
 
 //    QSqlQuery* query_ = new QSqlQuery();
 //    DownloadManager* manager = new DownloadManager();
@@ -52,18 +54,15 @@ public:
 //    virtual QMap<QString, QString> makeGroup(const QString &name, const QString &language="", const QString &region="") const;
 //    //    Q_INVOKABLE virtual void updateModules();
 //    virtual void updateModules();
-    virtual QVariant data(const QModelIndex &index = {}, int role = Qt::DisplayRole) const override;
-    virtual QHash<int, QByteArray> roleNames() const override;
 //    QUrl* urlRegistryInfo = new QUrl();
 //    QUrl* urlRegistry = new QUrl();
 
 private:
     virtual void newRows(QJsonArray &downloads);
     std::vector<ModulesGroups> m_groups;
-    ModulesGroupsReader m_reader;
+    std::unique_ptr<ModulesGroupsReader> m_reader;
     QString dbName = "registry_%1";
     bool update();
-    void setNameDB(const QString& value);
     QString nameDB;
 
 //    const char* registryBase64 = "aHR0cDovL215YmlibGUuaW50ZXJiaWJsaWEub3JnL3JlZ2lzdHJ5X3Rlc3Quemlw";
@@ -78,7 +77,6 @@ private:
 //    QSettings* qSettings = new QSettings();
 //    int countOldRows = 0;
 //    QString tableNameString = "modules_group";
-    int correctSize(const QString &str) const;
 //    QString* qStringSql = new QString(
 //                "CREATE TABLE IF NOT EXISTS '%1' ("
 //                "   'id'        INTEGER PRIMARY KEY AUTOINCREMENT, "

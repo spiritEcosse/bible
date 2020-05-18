@@ -11,9 +11,10 @@
 
 TEMPLATE = subdirs
 
-SUBDIRS = tests \
+SUBDIRS = \
     DBManager \
-    Application
+    Application \
+    tests
 
 CONFIG += ordered
 
@@ -21,4 +22,6 @@ linux-g++ {
     message(Linux)
 }
 
-DISTFILES = docker-compose.yml
+DISTFILES = \
+    docker-compose.yml \
+    conf.pri

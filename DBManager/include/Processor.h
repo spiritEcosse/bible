@@ -8,8 +8,10 @@ class Processor
 {
 public:
     Processor();
+    Processor(const QString& nameDb);
     ~Processor();
-    std::pair <DBResult, std::vector<DBEntry>> requestTableData(DBTables table);
+    std::pair<DBTypes::DBResult,
+              std::vector<DBTypes::DBEntry>> requestTableData(DBTypes::DBTables table);
 
 private:
     struct ProcessorPrivate;

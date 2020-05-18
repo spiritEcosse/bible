@@ -11,6 +11,7 @@
 #include <QStandardPaths>
 #include <QDir>
 
+using namespace DBTypes;
 
 namespace db {
 
@@ -30,8 +31,7 @@ class DBCloser {
 struct ConnectionManager::ConnectionManagerPrivate
 {
     ConnectionManagerPrivate(const QString& nameDb = "user")
-        : m_nameDb {nameDb}
-    {}
+        : m_nameDb {nameDb} {}
     std::unique_ptr<QSqlDatabase, DBCloser> database;
     QString dbPath;
     bool isValid {true};
@@ -62,7 +62,6 @@ ConnectionManager::~ConnectionManager()
 bool ConnectionManager::isValid() const
 {
     return m_d->isValid;
-
 }
 
 // WARNING : using chain : https://en.wikipedia.org/wiki/Variadic_template
@@ -82,8 +81,13 @@ bool ConnectionManager::ConnectionManagerPrivate::setup()
         return false;
     }
 
-    database.reset(new QSqlDatabase {QSqlDatabase::addDatabase(driver)});
-    database->setDatabaseName(dbPath);
+    if (!QSqlDatabase::contains(QSqlDatabase::defaultConnection)) {
+        database.reset(new QSqlDatabase {QSqlDatabase::addDatabase(driver)});
+        database->setDatabaseName(dbPath);
+    } else {
+        database.reset(new QSqlDatabase {QSqlDatabase::database(QSqlDatabase::defaultConnection)});
+        database->setDatabaseName(dbPath);
+    }
     qDebug() << "DatabaseName " << database->databaseName();
 
     if (!database->open()) {
