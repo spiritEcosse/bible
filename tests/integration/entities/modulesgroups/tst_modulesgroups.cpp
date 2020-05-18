@@ -30,7 +30,7 @@ void tst_ModulesGroups::name_data()
 {
     QTest::addColumn<QString>("name");
     QTest::addColumn<QString>("result");
-    QTest::newRow("only name *.plan")
+    QTest::newRow("name *.plan")
             << "2016c-p.plan" << "Plan";
     QTest::newRow("name *.commentaries")
             << "AB-c.commentaries" << "Commentaries";
