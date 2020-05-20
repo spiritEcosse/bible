@@ -1,19 +1,35 @@
 #include "modulesgroups.h"
-#include <QJsonObject>
-#include <QRegularExpression>
 #include "global.h"
 
-ModulesGroups::ModulesGroups(QJsonObject qJsonModule)
+#include <QString>
+#include <QRegularExpression>
+#include <QLocale>
+#include <QDebug>
+#include <QJsonObject>
+
+
+ModulesGroups::ModulesGroups(const QJsonObject& qJsonModule)
 {
-    cleanName(qJsonModule.value("fil").toString());
+    m_name = qJsonModule.value("fil").toString();
+    m_language.reset(new LocalLanguage { qJsonModule.value("lng").toString() });
 }
 
 ModulesGroups::ModulesGroups(QString language, QString type, QString region, DBTypes::DBIndex id)
-    : m_language {std::move(language)},
+    : m_language {new LocalLanguage {language} },
       m_type {std::move(type)},
       m_region {std::move(region)},
       m_id {id}
 {
+}
+
+QString ModulesGroups::nativeLanguageName() const
+{
+    return m_language->nativeLanguageName();
+}
+
+QString ModulesGroups::languageName() const
+{
+    return m_language->languageToString(m_language->language());
 }
 
 QString ModulesGroups::type() const
@@ -31,15 +47,15 @@ QString ModulesGroups::name()
     return m_name;
 }
 
-QString ModulesGroups::language() const
+void ModulesGroups::fullClean()
 {
-    return m_language;
+    cleanName();
 }
 
-void ModulesGroups::cleanName(const QString &name)
+void ModulesGroups::cleanName()
 {
     QRegularExpression re(MODULES_SPLIT_NAME);
-    QRegularExpressionMatch match = re.match(name);
+    QRegularExpressionMatch match = re.match(m_name);
 
     if (match.hasMatch()) {
         m_name = match.captured(2).trimmed();

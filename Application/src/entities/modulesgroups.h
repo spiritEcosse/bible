@@ -1,26 +1,35 @@
 #ifndef MODULESGROUPS_H
 #define MODULESGROUPS_H
 
-#include <QString>
-#include <QVariant>
 #include "dbtypes.h"
+#include <memory>
+#include "locallanguage.h"
+
+using namespace DBTypes;
+
+class QString;
 
 class ModulesGroups
 {
 public:
-    ModulesGroups(QJsonObject qJsonModule);
-    ModulesGroups(QString language, QString type, QString region, DBTypes::DBIndex id);
-    QString language() const;
+    ModulesGroups() = default;
+    ModulesGroups(const QJsonObject& qJsonModule);
+    ModulesGroups(QString language, QString type, QString region, DBIndex id);
+    QString nativeLanguageName() const;
+    QString languageName() const;
     QString type() const;
     QString region() const;
     QString name();
 private:
-    QString m_language;
+    friend class tst_ModulesGroups;
+
+    std::unique_ptr<LocalLanguage> m_language;
     QString m_name;
     QString m_type;
     QString m_region;
-    void cleanName(const QString &name);
     DBTypes::DBIndex m_id;
+    void fullClean();
+    void cleanName();
 };
 
 #endif // MODULESGROUPS_H
