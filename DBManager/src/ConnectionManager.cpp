@@ -129,10 +129,9 @@ bool ConnectionManager::ConnectionManagerPrivate::setupTables()
             QString(
                         "CREATE TABLE IF NOT EXISTS '%1' ("
                         "   'id'        INTEGER PRIMARY KEY AUTOINCREMENT, "
-                        "   'language'  CHAR(50), "
-                        "   'type'      CHAR(50), "
-                        "   'region'    CHAR(50), "
-                        "   UNIQUE (language, type, region) "
+                        "   'language'  CHAR(4), "
+                        "   'name'      CHAR(50), "
+                        "   UNIQUE (language, name) "
                         ")").arg(tableModulesGroup)
         },
         QSqlQuery {

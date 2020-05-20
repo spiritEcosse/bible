@@ -1,21 +1,25 @@
-#include "modules.h"
 #include <QJsonObject>
 #include <QRegularExpression>
 #include <qmath.h>
 
+#include "modules.h"
+
 Modules::Modules() {}
 
-Modules::Modules(QJsonObject qJsonModule)
+Modules::Modules(const QJsonObject& qJsonModule)
+    : m_name { qJsonModule.value("fil").toString() },
+      m_description { qJsonModule.value("des").toString() },
+      m_language { new LocalLanguage { qJsonModule.value("lng").toString() } }
 {
-    sizeToInt(qJsonModule.value("siz").toString());
+    convertSize(qJsonModule.value("siz").toString());
 }
 
-int Modules::size() const
+double Modules::size() const
 {
     return m_size;
 }
 
-void Modules::sizeToInt(const QString& str)
+void Modules::convertSize(const QString& str)
 {
     QRegularExpression re("^([+-]?\\d*\\.?\\d+)(\\w{1})*$", QRegularExpression::CaseInsensitiveOption);
     QRegularExpressionMatch match = re.match(str);

@@ -2,7 +2,6 @@
 
 #include "modulesgroups.h"
 
-
 class tst_ModulesGroups : public QObject
 {
     Q_OBJECT
@@ -12,10 +11,10 @@ public:
     ~tst_ModulesGroups();
 
 private slots:
-    void cleanName();
-    void cleanName_data();
-    void languageName();
-    void languageName_data();
+    void m_name();
+    void m_name_data();
+    void language();
+    void language_data();
 };
 
 tst_ModulesGroups::tst_ModulesGroups()
@@ -28,7 +27,7 @@ tst_ModulesGroups::~tst_ModulesGroups()
 
 }
 
-void tst_ModulesGroups::cleanName_data()
+void tst_ModulesGroups::m_name_data()
 {
     QTest::addColumn<QString>("name");
     QTest::addColumn<QString>("result");
@@ -41,7 +40,7 @@ void tst_ModulesGroups::cleanName_data()
             << " AB-c.commentaries " << "Commentaries";
 }
 
-void tst_ModulesGroups::cleanName()
+void tst_ModulesGroups::m_name()
 {
     QFETCH(QString, name);
     QFETCH(QString, result);
@@ -52,11 +51,10 @@ void tst_ModulesGroups::cleanName()
     };
 
     ModulesGroups modulesGroups { qJsonModule };
-    modulesGroups.cleanName();
     QCOMPARE(modulesGroups.m_name, result);
 }
 
-void tst_ModulesGroups::languageName_data()
+void tst_ModulesGroups::language_data()
 {
     QTest::addColumn<QString>("language");
     QTest::addColumn<QString>("languageName");
@@ -77,7 +75,7 @@ void tst_ModulesGroups::languageName_data()
     QTest::newRow("Assamese") << "as" << "Assamese" << "অসমীয়া";
 }
 
-void tst_ModulesGroups::languageName()
+void tst_ModulesGroups::language()
 {
     QFETCH(QString, language);
     QFETCH(QString, languageName);
@@ -88,7 +86,9 @@ void tst_ModulesGroups::languageName()
         {"lng", language}
     };
 
+    LocalLanguage localLanguage { language };
     ModulesGroups modulesGroups { qJsonModule };
+    QCOMPARE(*modulesGroups.m_language, localLanguage);
     QCOMPARE(modulesGroups.languageName(), languageName);
     QCOMPARE(modulesGroups.nativeLanguageName(), nativeLanguageName);
 }
