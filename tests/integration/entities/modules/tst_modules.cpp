@@ -12,6 +12,16 @@ public:
 private slots:
     void m_size_data();
     void m_size();
+    void m_description_data();
+    void m_description();
+    void m_name_data();
+    void m_name();
+    void m_languageShow_data();
+    void m_languageShow();
+    void m_update_data();
+    void m_update();
+//    void testValidator_data();
+//    void testValidator();
 };
 
 tst_Modules::tst_Modules()
@@ -50,6 +60,111 @@ void tst_Modules::m_size()
 
     Modules modules {qJsonModule};
     QCOMPARE(modules.m_size, out);
+}
+
+void tst_Modules::m_description_data()
+{
+    QTest::addColumn<QString>("in");
+    QTest::addColumn<QString>("out");
+
+    QTest::newRow("Standard") << "New Revised Standard Version" << "New Revised Standard Version";
+}
+
+void tst_Modules::m_description()
+{
+    QFETCH(QString, in);
+    QFETCH(QString, out);
+
+    QJsonObject qJsonModule
+    {
+        {"des", in},
+    };
+
+    Modules modules { qJsonModule };
+    QCOMPARE(modules.m_description, out);
+}
+
+void tst_Modules::m_name_data()
+{
+    QTest::addColumn<QString>("in");
+    QTest::addColumn<QString>("out");
+
+    QTest::newRow("Standard") << "10CD-p.plan" << "10CD-p.plan";
+}
+
+void tst_Modules::m_name()
+{
+    QFETCH(QString, in);
+    QFETCH(QString, out);
+
+    QJsonObject qJsonModule
+    {
+        {"fil", in},
+    };
+
+    Modules modules { qJsonModule };
+    QCOMPARE(modules.m_name, out);
+}
+
+void tst_Modules::m_languageShow_data()
+{
+    QTest::addColumn<QString>("language");
+    QTest::addColumn<QString>("languageName");
+    QTest::addColumn<QString>("nativeLanguageName");
+
+//    >1. Some ISO 639-1 languages are missing:
+//    >Aragonese (an), Avaric (av), Avestan (ae), Chamorro (ch)
+    QTest::newRow("Avaric") << "av" << "Avaric" << "Магӏарул мацӏ Maǥarul macʼ";
+    QTest::newRow("Aragonese") << "an" << "Aragonese" << "Aragonés";
+    QTest::newRow("Avestan") << "ae" << "Avestan" << "Avesta";
+    QTest::newRow("Chamorro") << "ch" << "Chamorro" << "Chamoru";
+
+    QTest::newRow("Chechen") << "ce" << "Chechen" << "";
+    QTest::newRow("Bambara") << "bm" << "Bambara" << "bamanakan";
+    QTest::newRow("American English") << "en" << "English" << "American English";
+    QTest::newRow("Arabic") << "ar" << "Arabic" << "العربية";
+    QTest::newRow("Russian") << "ru" << "Russian" << "русский";
+    QTest::newRow("Assamese") << "as" << "Assamese" << "অসমীয়া";
+}
+
+void tst_Modules::m_languageShow()
+{
+    QFETCH(QString, language);
+    QFETCH(QString, languageName);
+    QFETCH(QString, nativeLanguageName);
+
+    QJsonObject qJsonModule
+    {
+        {"aln", language}
+    };
+
+    LocalLanguage localLanguage { language };
+    Modules modules { qJsonModule };
+    QCOMPARE(*modules.m_languageShow, localLanguage);
+    QCOMPARE(modules.languageNameShow(), languageName);
+    QCOMPARE(modules.nativeLanguageNameShow(), nativeLanguageName);
+}
+
+void tst_Modules::m_update_data()
+{
+    QTest::addColumn<QString>("in");
+    QTest::addColumn<QDate>("out");
+    QTest::newRow("2017-03-31") << "2017-03-31" << QDate(2017, 03, 31);
+    QTest::newRow("2016-12-23") << "2016-12-23" << QDate(2016, 12, 23);
+}
+
+void tst_Modules::m_update()
+{
+    QFETCH(QString, in);
+    QFETCH(QDate, out);
+
+    QJsonObject qJsonModule
+    {
+        {"upd", in}
+    };
+
+    Modules modules { qJsonModule };
+    QCOMPARE(modules.m_update, out);
 }
 
 QTEST_APPLESS_MAIN(tst_Modules)
