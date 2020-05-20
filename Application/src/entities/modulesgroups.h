@@ -1,13 +1,12 @@
 #ifndef MODULESGROUPS_H
 #define MODULESGROUPS_H
 
-#include "dbtypes.h"
 #include <memory>
+
+#include "dbtypes.h"
 #include "locallanguage.h"
 
 using namespace DBTypes;
-
-class QString;
 
 class ModulesGroups
 {

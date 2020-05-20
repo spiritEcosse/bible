@@ -1,4 +1,5 @@
 #include <QtTest>
+
 #include "modulesgroups.h"
 
 

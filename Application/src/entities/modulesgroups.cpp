@@ -1,26 +1,20 @@
+#include <QRegularExpression>
+#include <QLocale>
+#include <QJsonObject>
+
 #include "modulesgroups.h"
 #include "global.h"
 
-#include <QString>
-#include <QRegularExpression>
-#include <QLocale>
-#include <QDebug>
-#include <QJsonObject>
-
 
 ModulesGroups::ModulesGroups(const QJsonObject& qJsonModule)
-{
-    m_name = qJsonModule.value("fil").toString();
-    m_language.reset(new LocalLanguage { qJsonModule.value("lng").toString() });
-}
+    : m_language { new LocalLanguage { qJsonModule.value("lng").toString() } },
+      m_name { qJsonModule.value("fil").toString() } {}
 
 ModulesGroups::ModulesGroups(QString language, QString type, QString region, DBTypes::DBIndex id)
     : m_language {new LocalLanguage {language} },
       m_type {std::move(type)},
       m_region {std::move(region)},
-      m_id {id}
-{
-}
+      m_id {id} {}
 
 QString ModulesGroups::nativeLanguageName() const
 {
