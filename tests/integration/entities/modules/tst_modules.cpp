@@ -20,8 +20,10 @@ private slots:
     void m_languageShow();
     void m_update_data();
     void m_update();
-//    void testValidator_data();
-//    void testValidator();
+    void m_abbreviation_data();
+    void m_abbreviation();
+    void m_information_data();
+    void m_information();
 };
 
 tst_Modules::tst_Modules()
@@ -67,7 +69,7 @@ void tst_Modules::m_description_data()
     QTest::addColumn<QString>("in");
     QTest::addColumn<QString>("out");
 
-    QTest::newRow("Standard") << "New Revised Standard Version" << "New Revised Standard Version";
+    QTest::newRow("New Revised Standard Version") << "New Revised Standard Version" << "New Revised Standard Version";
 }
 
 void tst_Modules::m_description()
@@ -89,7 +91,7 @@ void tst_Modules::m_name_data()
     QTest::addColumn<QString>("in");
     QTest::addColumn<QString>("out");
 
-    QTest::newRow("Standard") << "10CD-p.plan" << "10CD-p.plan";
+    QTest::newRow("10CD-p.plan") << "10CD-p.plan" << "10CD-p.plan";
 }
 
 void tst_Modules::m_name()
@@ -165,6 +167,56 @@ void tst_Modules::m_update()
 
     Modules modules { qJsonModule };
     QCOMPARE(modules.m_update, out);
+}
+
+void tst_Modules::m_abbreviation_data()
+{
+    QTest::addColumn<QString>("in");
+    QTest::addColumn<QString>("out");
+    QTest::newRow("10CD-p") << "10CD-p" << "10CD-p";
+    QTest::newRow("2000") << "2000" << "2000";
+    QTest::newRow("ABP-el+") << "ABP-el+" << "ABP-el+";
+    QTest::newRow("ACF'2007") << "ACF'2007" << "ACF'2007";
+    QTest::newRow("Apologét") << "Apologét" << "Apologét";
+}
+
+void tst_Modules::m_abbreviation()
+{
+    QFETCH(QString, in);
+    QFETCH(QString, out);
+
+    QJsonObject qJsonModule
+    {
+        {"abr", in}
+    };
+
+    Modules modules { qJsonModule };
+    QCOMPARE(modules.m_abbreviation, out);
+}
+
+void tst_Modules::m_information_data()
+{
+    QTest::addColumn<QString>("in");
+    QTest::addColumn<QString>("out");
+    QTest::newRow("10CD-p") << "10CD-p" << "10CD-p";
+    QTest::newRow("2000") << "2000" << "2000";
+    QTest::newRow("ABP-el+") << "ABP-el+" << "ABP-el+";
+    QTest::newRow("ACF'2007") << "ACF'2007" << "ACF'2007";
+    QTest::newRow("Apologét") << "Apologét" << "Apologét";
+}
+
+void tst_Modules::m_information()
+{
+    QFETCH(QString, in);
+    QFETCH(QString, out);
+
+    QJsonObject qJsonModule
+    {
+        {"inf", in}
+    };
+
+    Modules modules { qJsonModule };
+    QCOMPARE(modules.m_information, out);
 }
 
 QTEST_APPLESS_MAIN(tst_Modules)
