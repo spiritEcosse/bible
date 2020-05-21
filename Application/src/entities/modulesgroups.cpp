@@ -4,12 +4,13 @@
 
 #include "modulesgroups.h"
 #include "global.h"
-
+#include <QDebug>
 
 ModulesGroups::ModulesGroups(const QJsonObject& qJsonModule)
-    : m_language { new LocalLanguage { qJsonModule.value("lng").toString() } },
-      m_name { qJsonModule.value("fil").toString() }
+    : m_language { new LocalLanguage { qJsonModule.value("lng").toString() } }
 {
+    qJsonModule.value("fil").toString().swap(m_name);
+    qJsonModule.value("reg").toString().swap(m_region);
     cleanName();
 }
 

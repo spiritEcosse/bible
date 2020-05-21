@@ -15,6 +15,8 @@ private slots:
     void m_name_data();
     void language();
     void language_data();
+    void m_region_data();
+    void m_region();
 };
 
 tst_ModulesGroups::tst_ModulesGroups()
@@ -32,12 +34,9 @@ void tst_ModulesGroups::m_name_data()
     QTest::addColumn<QString>("name");
     QTest::addColumn<QString>("result");
 
-    QTest::newRow("name *.plan")
-            << "2016c-p.plan" << "Plan";
-    QTest::newRow("name *.commentaries")
-            << "AB-c.commentaries" << "Commentaries";
-    QTest::newRow("name with spaces *.commentaries")
-            << " AB-c.commentaries " << "Commentaries";
+    QTest::newRow("name *.plan") << "2016c-p.plan" << "Plan";
+    QTest::newRow("name *.commentaries") << "AB-c.commentaries" << "Commentaries";
+    QTest::newRow("name with spaces *.commentaries") << " AB-c.commentaries " << "Commentaries";
 }
 
 void tst_ModulesGroups::m_name()
@@ -59,6 +58,10 @@ void tst_ModulesGroups::language_data()
     QTest::addColumn<QString>("language");
     QTest::addColumn<QString>("languageName");
     QTest::addColumn<QString>("nativeLanguageName");
+
+    //Doesn't exist in qt
+    QTest::newRow("Garifuna - doesn't exist in qt") << "Garifuna" << "Garifuna" << "";
+    QTest::newRow("Caluyanon - doesn't exist in qt") << "Caluyanon" << "Caluyanon" << "";
 
 //    >1. Some ISO 639-1 languages are missing:
 //    >Aragonese (an), Avaric (av), Avestan (ae), Chamorro (ch)
@@ -91,6 +94,29 @@ void tst_ModulesGroups::language()
     QCOMPARE(*modulesGroups.m_language, localLanguage);
     QCOMPARE(modulesGroups.languageName(), languageName);
     QCOMPARE(modulesGroups.nativeLanguageName(), nativeLanguageName);
+}
+
+void tst_ModulesGroups::m_region_data()
+{
+    QTest::addColumn<QString>("in");
+    QTest::addColumn<QString>("out");
+
+    QTest::newRow("Philippines") << "Philippines" << "Philippines";
+    QTest::newRow("Guatemala") << "Guatemala" << "Guatemala";
+}
+
+void tst_ModulesGroups::m_region()
+{
+    QFETCH(QString, in);
+    QFETCH(QString, out);
+
+    QJsonObject qJsonModule
+    {
+        {"reg", in}
+    };
+
+    ModulesGroups modulesGroups { qJsonModule };
+    QCOMPARE(modulesGroups.m_region, out);
 }
 
 QTEST_APPLESS_MAIN(tst_ModulesGroups)

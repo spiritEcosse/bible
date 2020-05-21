@@ -24,6 +24,12 @@ private slots:
     void m_abbreviation();
     void m_information_data();
     void m_information();
+    void m_comment_data();
+    void m_comment();
+    void m_copyright_data();
+    void m_copyright();
+    void m_hidden_data();
+    void m_hidden();
 };
 
 tst_Modules::tst_Modules()
@@ -217,6 +223,76 @@ void tst_Modules::m_information()
 
     Modules modules { qJsonModule };
     QCOMPARE(modules.m_information, out);
+}
+
+void tst_Modules::m_comment_data()
+{
+    QTest::addColumn<QString>("in");
+    QTest::addColumn<QString>("out");
+    QString comment {"(2016-02-18) Code cleaning\n(2015-12-30) The module is renewed\n(2015-11-29) Code cleaning\n(2015-08-19) Published"};
+
+    QTest::newRow("(2016-02-18) Code cleaning\n(2015-12-30) The module is renewed\n(2015-11-29) Code cleaning\n(2015-08-19) Published")
+            << comment << comment;
+}
+
+void tst_Modules::m_comment()
+{
+    QFETCH(QString, in);
+    QFETCH(QString, out);
+
+    QJsonObject qJsonModule
+    {
+        {"cmt", in}
+    };
+
+    Modules modules { qJsonModule };
+    QCOMPARE(modules.m_comment, out);
+}
+
+void tst_Modules::m_copyright_data()
+{
+    QTest::addColumn<QString>("in");
+    QTest::addColumn<QString>("out");
+    const char* copright {"<br/><h4>Bible Society of South Africa</h4>\nKurt Mosselini\n<br/><a href='mailto:copyright@biblesociety.co.za'>copyright@biblesociety.co.za</a>"};
+
+    QTest::newRow(copright) << copright << copright;
+    QTest::newRow("*") << "*" << "*";
+}
+
+void tst_Modules::m_copyright()
+{
+    QFETCH(QString, in);
+    QFETCH(QString, out);
+
+    QJsonObject qJsonModule
+    {
+        {"lic", in}
+    };
+
+    Modules modules { qJsonModule };
+    QCOMPARE(modules.m_copyright, out);
+}
+
+void tst_Modules::m_hidden_data()
+{
+    QTest::addColumn<bool>("in");
+    QTest::addColumn<bool>("out");
+    QTest::newRow("1") << true << true;
+    QTest::newRow("0") << false << false;
+}
+
+void tst_Modules::m_hidden()
+{
+    QFETCH(bool, in);
+    QFETCH(bool, out);
+
+    QJsonObject qJsonModule
+    {
+        {"hid", in}
+    };
+
+    Modules modules { qJsonModule };
+    QCOMPARE(modules.m_hidden, out);
 }
 
 QTEST_APPLESS_MAIN(tst_Modules)

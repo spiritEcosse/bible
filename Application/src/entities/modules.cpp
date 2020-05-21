@@ -9,12 +9,16 @@
 Modules::Modules() {}
 
 Modules::Modules(const QJsonObject& qJsonModule)
-    : m_name { qJsonModule.value("fil").toString() },
-      m_description { qJsonModule.value("des").toString() },
-      m_abbreviation { qJsonModule.value("abr").toString() },
-      m_information { qJsonModule.value("inf").toString() },
-      m_languageShow { new LocalLanguage { qJsonModule.value("aln").toString() } }
+    : m_languageShow { new LocalLanguage { qJsonModule.value("aln").toString() } }
 {
+    qJsonModule.value("fil").toString().swap(m_name);
+    qJsonModule.value("abr").toString().swap(m_abbreviation);
+    qJsonModule.value("des").toString().swap(m_description);
+    qJsonModule.value("inf").toString().swap(m_information);
+    qJsonModule.value("cmt").toString().swap(m_comment);
+    qJsonModule.value("lic").toString().swap(m_copyright);
+    m_hidden = qJsonModule.value("hid").toBool();
+
     convertSize(qJsonModule.value("siz").toString());
     convertUpdate(qJsonModule.value("upd").toString());
 }

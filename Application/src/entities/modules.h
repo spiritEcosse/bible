@@ -25,7 +25,10 @@ private:
     QString m_description;
     QString m_abbreviation;
     QString m_information;
+    QString m_comment;
+    QString m_copyright;
     QDate m_update;
+    bool m_hidden;
     std::unique_ptr<LocalLanguage> m_languageShow;
 };
 

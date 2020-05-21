@@ -14,10 +14,11 @@ LocalLanguage::LocalLanguage(const QString& language)
 
 QString LocalLanguage::languageToString(QLocale::Language language)
 {
-    QString name;
+    QString name = m_language;
+
     if (language == QLocale::C)
     {
-        int in = languages.value(m_language);
+        int in = languages.value(m_language, -1);
         if (in != -1) {
             name = languagesNames[in];
         }
@@ -36,7 +37,7 @@ QString LocalLanguage::nativeLanguageName() const
 
     if (language() == QLocale::C)
     {
-        int in = languages.value(m_language);
+        int in = languages.value(m_language, -1);
         if (in != -1) {
             name = nativeLanguagesNames[in];
         }

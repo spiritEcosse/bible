@@ -22,6 +22,7 @@ private:
 
     std::unique_ptr<LocalLanguage> m_language;
     QString m_name;
+    QString m_region;
     DBTypes::DBIndex m_id;
     void cleanName();
 };

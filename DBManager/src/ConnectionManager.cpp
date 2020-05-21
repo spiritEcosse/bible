@@ -131,7 +131,8 @@ bool ConnectionManager::ConnectionManagerPrivate::setupTables()
                         "   'id'        INTEGER PRIMARY KEY AUTOINCREMENT, "
                         "   'language'  CHAR(4), "
                         "   'name'      CHAR(50), "
-                        "   UNIQUE (language, name) "
+                        "   'region'    CHAR(50), "
+                        "   UNIQUE (language, name, region) "
                         ")").arg(tableModulesGroup)
         },
         QSqlQuery {
@@ -147,9 +148,9 @@ bool ConnectionManager::ConnectionManagerPrivate::setupTables()
                         "   'urls'              TEXT, "
                         "   'comment'           TEXT, "
                         "   'size'              DOUBLE NOT NULL, "
-                        "   'region'            TEXT, "
+                        "   'region'            CHAR(50), "
                         "   'default_download'  NUMERIC DEFAULT 0, "
-                        "   'hidden'            NUMERIC DEFAULT 0, "
+                        "   'hidden'            INTEGER DEFAULT 0, "
                         "   'copyright'         TEXT, "
                         "   '%2_id'             NUMERIC NOT NULL, "
                         "FOREIGN KEY ('%2_id')  REFERENCES %2(id)"
