@@ -29,6 +29,7 @@ private:
     QString m_copyright;
     QDate m_update;
     bool m_hidden;
+    bool m_defaultDownload;
     std::unique_ptr<LocalLanguage> m_languageShow;
 };
 

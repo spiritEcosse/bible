@@ -18,6 +18,7 @@ Modules::Modules(const QJsonObject& qJsonModule)
     qJsonModule.value("cmt").toString().swap(m_comment);
     qJsonModule.value("lic").toString().swap(m_copyright);
     m_hidden = qJsonModule.value("hid").toBool();
+    m_defaultDownload = qJsonModule.value("def").toBool();
 
     convertSize(qJsonModule.value("siz").toString());
     convertUpdate(qJsonModule.value("upd").toString());
