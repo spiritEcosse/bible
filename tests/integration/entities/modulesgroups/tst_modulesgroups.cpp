@@ -76,6 +76,7 @@ void tst_ModulesGroups::language_data()
     QTest::newRow("Arabic") << "ar" << "Arabic" << "العربية";
     QTest::newRow("Russian") << "ru" << "Russian" << "русский";
     QTest::newRow("Assamese") << "as" << "Assamese" << "অসমীয়া";
+    QTest::newRow("Indonesian") << "id" << "Indonesian" << "Bahasa Indonesia";
 }
 
 void tst_ModulesGroups::language()

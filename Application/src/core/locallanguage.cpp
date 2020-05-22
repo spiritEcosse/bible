@@ -7,10 +7,8 @@ QVector<QString> languagesNames {"Avaric", "Aragonese", "Avestan", "Chamorro"};
 QVector<QString> nativeLanguagesNames {"Магӏарул мацӏ Maǥarul macʼ", "Aragonés", "Avesta", "Chamoru"};
 
 LocalLanguage::LocalLanguage(const QString& language)
-    : QLocale(language)
-{
-    m_language = language;
-}
+    : QLocale(language),
+      m_language { std::move(language) } {}
 
 QString LocalLanguage::languageToString(QLocale::Language language)
 {
