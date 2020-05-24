@@ -1,4 +1,4 @@
-#include "DownloadManager.h"
+#include "downloadmanager.h"
 
 #include <QDebug>
 #include <QTextStream>

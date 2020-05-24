@@ -1,6 +1,5 @@
 3rdparty
 db
-registry
 **/logs/
 *.log
 shared/

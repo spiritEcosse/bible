@@ -2,10 +2,12 @@
 #include "dbtypes.h"
 #include <vector>
 #include <QVariantList>
-#include "Executor.h"
+#include <memory>
 
 namespace db
 {
+class Executor;
+
 class Selector
 {
 public:

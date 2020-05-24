@@ -20,7 +20,6 @@
 
 #define MODULES_SPLIT_NAME "^(.+)\\.(.+)$"
 
-#include "DownloadManager.h"
 #include "modulesmodel.h"
 #include "LocaleDesc.h"
 #include "gtest/gtest_prod.h"
@@ -45,7 +44,6 @@ public:
     virtual QHash<int, QByteArray> roleNames() const override;
 
 //    QSqlQuery* query_ = new QSqlQuery();
-//    DownloadManager* manager = new DownloadManager();
 
     virtual void init();
 //    virtual bool execLastError(const QString& query);
@@ -54,8 +52,6 @@ public:
 //    virtual QMap<QString, QString> makeGroup(const QString &name, const QString &language="", const QString &region="") const;
 //    //    Q_INVOKABLE virtual void updateModules();
 //    virtual void updateModules();
-//    QUrl* urlRegistryInfo = new QUrl();
-//    QUrl* urlRegistry = new QUrl();
 
 private:
     virtual void newRows(QJsonArray &downloads);

@@ -1,3 +1,4 @@
 TEMPLATE = subdirs
 SUBDIRS = \
-    entities
+    entities \
+    network

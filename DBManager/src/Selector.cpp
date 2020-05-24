@@ -2,6 +2,8 @@
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QDebug>
+#include "Executor.h"
+
 using namespace DBTypes;
 
 namespace db
