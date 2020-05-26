@@ -1,4 +1,4 @@
-#include "TextProgressBar.h"
+#include "textprogressbar.h"
 
 #include <QByteArray>
 

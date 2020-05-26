@@ -46,17 +46,6 @@ bool ModulesGroupsModel::update()
 //    return requestResult;
 }
 
-//void ModulesGroupsModel::decompressRegistry()
-//{
-//    registryArchive.setFileName(manager->fileNames->last());
-//    QString registryName = JlCompress::extractFile(registryArchive.fileName(), registry->fileName());
-//    QFileInfo fileInfo(registryName);
-
-//    if (fileInfo.fileName() == registry->fileName()) {
-//        emit decompressSuccess();
-//    }
-//}
-
 //void ModulesGroupsModel::removeOldRows()
 //{
 ////    removeRows(0, countOldRows);
@@ -91,28 +80,6 @@ bool ModulesGroupsModel::update()
 //    newRows(data);
 //}
 
-//void ModulesGroupsModel::compareVersions()
-//{
-//    registryVersion->setFileName(manager->fileNames->last());
-
-//    if ( !registryVersion->open(QIODevice::ReadOnly | QIODevice::Text) )
-//        return ;
-
-//    QJsonDocument document = qJsonDocument->fromJson(registryVersion->readAll(), qJsonParserError);
-//    registryVersion->close();
-
-//    if ( qJsonParserError->error != QJsonParseError::NoError ) // WARNING : test this
-//        return;
-
-//    int version = document.object().value("version").toInt();
-//    bool newModules = version > qSettings->value("modulesVersion").toInt();
-
-//    if (newModules) {
-//        qSettings->setValue("modulesVersion", version);
-//    }
-
-//    emit availabilityNewModules(newModules);
-//}
 
 //bool ModulesGroupsModel::execLastError(const QString& query)
 //{
@@ -123,18 +90,6 @@ bool ModulesGroupsModel::update()
 //        return false;
 //    }
 //    return true;
-//}
-
-//void ModulesGroupsModel::updateModules()
-//{
-//    manager->append(urlRegistry->fromEncoded(qQByteArray->fromBase64(registryBase64)));
-////    connect(manager, SIGNAL (successfully()), SLOT (decompressRegistry())); // WARNING : add connect to test
-////    connect(this, SIGNAL (decompressSuccess()), SLOT (updateTable())); // WARNING : add connect to test
-
-//    setCountOldRows();
-
-////    connect(this, SIGNAL (updateTableSuccess()), SLOT (removeOldRows())); // WARNING : add connect to test
-////    connect(this, SIGNAL (updateTableSuccess()), SLOT (removeRegistryFile())); // WARNING : add connect to test
 //}
 
 void ModulesGroupsModel::newRows(QJsonArray &downloads)
