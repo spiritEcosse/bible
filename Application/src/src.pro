@@ -102,9 +102,6 @@ TEMPLATE = subdirs
 
 #LIBS += -L$$PWD/../../shared/lib -lDBManager
 
-#INCLUDEPATH += 3rdparty/quazip/include
-#LIBS += -L"3rdparty/quazip/lib" -lquazip
-
 SUBDIRS += \
     core \
     entities \

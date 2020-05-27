@@ -26,7 +26,7 @@ void DownloadManager::appendUrls(QList<QString*> &urls)
 void DownloadManager::append(const QUrl &url)
 {
     if (downloadQueue->isEmpty()) {
-        timer->singleShot(0, this, SLOT(startNextDownload()));
+        timer->singleShot(0, this, &DownloadManager::startNextDownload);
     }
 
     downloadQueue->enqueue(url);
@@ -38,7 +38,7 @@ QString DownloadManager::saveFileName(const QUrl &url)
 {
     QString path = url.path();
     qFileInfo->setFile(path);
-    QString basename = qFileInfo->fileName();
+    QString basename = QString("download/%1").arg(qFileInfo->fileName());
 
     if (basename.isEmpty()) {
         basename = "download";
@@ -68,7 +68,7 @@ void DownloadManager::startNextDownload()
     } else {
         const QUrl url = downloadQueue->dequeue();
 
-        QString filename = saveFileName(url);
+        QString filename = QString("%1").arg(saveFileName(url));
         output->setFileName(filename);
         fileNames->append(output->fileName());
 

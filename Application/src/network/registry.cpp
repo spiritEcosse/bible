@@ -3,13 +3,12 @@
 
 #include "registry.h"
 
-const char* registryBase64 { "aHR0cDovL215YmlibGUuaW50ZXJiaWJsaWEub3JnL3JlZ2lzdHJ5X3Rlc3Quemlw" };
 const char* registryInfoBase64 { "aHR0cDovL21waDQucnUvcmVnaXN0cnlfaW5mby5qc29u" };
 const char* registryFileName { "registry.json" };
 
 Registry::Registry() {}
 
-void Registry::download()
+void Registry::download(const QByteArray& registryBase64)
 {
     connect(&manager, SIGNAL (successfully()), SLOT (decompressRegistry())); // WARNING : add connect to test
     manager.append(QUrl::fromEncoded(QByteArray::fromBase64(registryBase64)));

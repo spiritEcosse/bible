@@ -8,7 +8,7 @@
 #include <QTimer>
 
 #include "textprogressbar.h"
-#include "gtest/gtest_prod.h"
+//#include "gtest/gtest_prod.h"
 
 class DownloadManager: public QObject
 {
@@ -47,13 +47,13 @@ private:
     QNetworkAccessManager* manager = new QNetworkAccessManager();
     friend class DownloadManagerTest;
     friend class MockDownloadManager;
-    FRIEND_TEST(DownloadManagerTest, append);
-    FRIEND_TEST(DownloadManagerTest, appendUrls);
-    FRIEND_TEST(DownloadManagerTest, startNextDownload);
-    FRIEND_TEST(DownloadManagerTest, downloadFinished);
-    FRIEND_TEST(MockDownloadManager, parentStartNextDownload);
-    FRIEND_TEST(DownloadManagerTest, saveFileName);
-    FRIEND_TEST(DownloadManagerTest, saveFileNameRenameBaseName);
+//    FRIEND_TEST(DownloadManagerTest, append);
+//    FRIEND_TEST(DownloadManagerTest, appendUrls);
+//    FRIEND_TEST(DownloadManagerTest, startNextDownload);
+//    FRIEND_TEST(DownloadManagerTest, downloadFinished);
+//    FRIEND_TEST(MockDownloadManager, parentStartNextDownload);
+//    FRIEND_TEST(DownloadManagerTest, saveFileName);
+//    FRIEND_TEST(DownloadManagerTest, saveFileNameRenameBaseName);
 
     QNetworkReply *currentDownload = nullptr;
     QFile* output = new QFile();

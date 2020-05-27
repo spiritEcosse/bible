@@ -10,9 +10,10 @@ class Registry : public QObject
     Q_OBJECT
 public:
     Registry();
-    virtual void download();
+    virtual void download(const QByteArray& registryBase64);
     virtual void checkNewVersion();
 private:
+    friend class tst_Registry;
     DownloadManager manager;
     QFile registryArchive;
     QFile registry { "registry.json" };

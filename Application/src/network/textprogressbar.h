@@ -1,7 +1,7 @@
 #ifndef TEXTPROGRESSBAR_H
 #define TEXTPROGRESSBAR_H
 
-#include <gtest/gtest_prod.h>
+//#include <gtest/gtest_prod.h>
 #include <QString>
 
 class TextProgressBar
@@ -20,10 +20,10 @@ private:
     int iteration = 0;
 
     friend class TextProgressBarTest;
-    FRIEND_TEST(TextProgressBarTest, clear);
-    FRIEND_TEST(TextProgressBarTest, update);
-    FRIEND_TEST(TextProgressBarTest, setMessage);
-    FRIEND_TEST(TextProgressBarTest, setStatus);
+//    FRIEND_TEST(TextProgressBarTest, clear);
+//    FRIEND_TEST(TextProgressBarTest, update);
+//    FRIEND_TEST(TextProgressBarTest, setMessage);
+//    FRIEND_TEST(TextProgressBarTest, setStatus);
 };
 
 #endif // TEXTPROGRESSBAR_H
