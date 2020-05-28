@@ -37,7 +37,7 @@ private:
     virtual void reportRedirect();
     QTimer* timer;
     QString* qString;
-    QString* baseName = new QString("download.%1");
+    QString* baseName = new QString("%1.%2");
     QUrl* qurl = new QUrl();
     QQueue<QUrl> *downloadQueue = new QQueue<QUrl>();
     QFileInfo* qFileInfo = new QFileInfo();

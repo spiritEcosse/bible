@@ -8,10 +8,3 @@ services:
         volumes:
             - .:/app
         command: /app/coverage.sh
-
-    test_server:
-        image: nginx:latest
-        ports:
-            - "2443:80"
-        volumes:
-            - .:/usr/share/nginx/html/

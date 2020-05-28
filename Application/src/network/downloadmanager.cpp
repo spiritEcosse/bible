@@ -41,12 +41,12 @@ QString DownloadManager::saveFileName(const QUrl &url)
     QString basename = QString("download/%1").arg(qFileInfo->fileName());
 
     if (basename.isEmpty()) {
-        basename = "download";
+        basename = "download/download";
     }
 
-    for (int index = 0; output->exists(basename); index++) {
-        basename = baseName->arg(index);
-    }
+//    for (int index = 0; output->exists(basename); index++) {
+//        basename = QString("%1.%2").arg(basename, index);
+//    }
 
 
 

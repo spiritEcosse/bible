@@ -11,30 +11,26 @@ public:
     ~tst_Registry();
 
 private:
-    const QString dirNameDownload = "download";
-    QString pathFiles { "../../../../files" };
+    const QString pathFiles { "files" };
+    const QString dirDownload = "download";
     const QString strUrl = "http://0.0.0.0:2443/files/";
-//    QString strUrlTest = QString("%1test").arg(strUrl);
-//    const QString fileNameRegistryInfo = "registry_info.json";
     QFile fileRegistry { "registry.json" };
-    QFile fileRegistryZip { QString("%1.zip").arg(fileRegistry.fileName()) };
+    const QFile fileRegistryArchive { "registry.zip" };
     const int fileRegistryItems = 5;
-//    QString tableNameModules = "modules";
-//    QString tableNameGroupModules = "modules_group";
-//    QFile fileRegistryInfo;
     QDir dir;
-//    QSettings settings;
 
 private slots:
     void initTestCase();
     void cleanupTestCase();
     void download_data();
     void download();
+    void removeRegistry_data();
+    void removeRegistry();
 };
 
 void tst_Registry::cleanupTestCase()
 {
-    dir.rmdir(dirNameDownload);
+    dir.rmdir(dirDownload);
 }
 
 void tst_Registry::initTestCase()
@@ -42,11 +38,7 @@ void tst_Registry::initTestCase()
     // Will be called before the first test function is executed.
     dir.mkdir(pathFiles);
     dir.setCurrent(pathFiles);
-    dir.mkdir(dirNameDownload);
-
-    QFile test("test");
-    test.open(QFile::ReadOnly);
-    test.close();
+    dir.mkdir(dirDownload);
 }
 
 tst_Registry::tst_Registry()
@@ -61,7 +53,7 @@ tst_Registry::~tst_Registry()
 
 void tst_Registry::download_data()
 {
-    if (!fileRegistryZip.exists()) {
+    if (!fileRegistryArchive.exists()) {
         QJsonArray jsonArray;
 
         auto downloads = QJsonObject(
@@ -94,7 +86,7 @@ void tst_Registry::download_data()
         fileRegistry.write(document.toJson());
         fileRegistry.close();
 
-        QVERIFY(JlCompress::compressFile(fileRegistryZip.fileName(), fileRegistry.fileName()));
+        QVERIFY(JlCompress::compressFile(fileRegistryArchive.fileName(), fileRegistry.fileName()));
     }
 }
 
@@ -104,12 +96,36 @@ void tst_Registry::download()
     QSignalSpy spy(&registry.manager, &DownloadManager::successfully);
     QSignalSpy spyLast(&registry, &Registry::decompressSuccess);
 
-    QString registryUrl = QString("%1%2").arg(strUrl, fileRegistryZip.fileName());
+    QString registryUrl = QString("%1%2").arg(strUrl, fileRegistryArchive.fileName());
     QByteArray registryQ(registryUrl.toLocal8Bit());
     registry.download(registryQ.toBase64());
     QVERIFY(spyLast.wait());
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spyLast.count(), 1);
+}
+
+void tst_Registry::removeRegistry_data()
+{
+    QFile fileRegistryArchiveD ( QString("%1/%2").arg(dirDownload, fileRegistryArchive.fileName()) );
+    fileRegistryArchiveD.open(QFile::WriteOnly);
+    fileRegistryArchiveD.close();
+
+    QFile fileRegistryD ( QString("%1/%2").arg(dirDownload, fileRegistry.fileName()) );
+    fileRegistryD.open(QFile::WriteOnly);
+    fileRegistryD.close();
+}
+
+void tst_Registry::removeRegistry()
+{
+    Registry registry;
+    QSignalSpy spy(&registry, &Registry::removeRegistrySuccess);
+    registry.registryArchive.setFileName(QString("%1/%2").arg(dirDownload, fileRegistryArchive.fileName()));
+    registry.registry.setFileName(QString("%1/%2").arg(dirDownload, fileRegistry.fileName()));
+    registry.removeRegistry();
+
+    QCOMPARE(spy.count(), 1);
+    QVERIFY(!registry.registryArchive.exists());
+    QVERIFY(!registry.registry.exists());
 }
 
 QTEST_MAIN(tst_Registry)

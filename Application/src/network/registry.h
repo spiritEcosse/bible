@@ -22,8 +22,8 @@ signals:
     void decompressSuccess();
 private slots:
     virtual void decompressRegistry();
-    virtual void removeRegistry();
     virtual void compareVersions();
+    virtual void removeRegistry();
 };
 
 #endif // DOWNLOADMODULES_H

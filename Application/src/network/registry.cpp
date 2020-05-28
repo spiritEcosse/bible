@@ -30,15 +30,15 @@ void Registry::decompressRegistry()
 
 void Registry::removeRegistry()
 {
-    if (registryArchive.remove()) {
+    if (registryArchive.remove() && registry.remove()) {
         emit removeRegistrySuccess();
     }
 }
 
 void Registry::checkNewVersion()
 {
+    connect(&manager, SIGNAL (successfully()), this, SLOT (compareVersions()));
     manager.append(QUrl::fromEncoded(QByteArray::fromBase64(registryInfoBase64)));
-//    connect(manager, SIGNAL (successfully()), this, SLOT (compareVersions()));
 }
 
 void Registry::compareVersions()

@@ -1,0 +1,9 @@
+version: '3.7'
+
+services:
+    test_server:
+        image: nginx:latest
+        ports:
+            - "2443:80"
+        volumes:
+            - .:/usr/share/nginx/html/
