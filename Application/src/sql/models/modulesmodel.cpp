@@ -8,10 +8,10 @@ ModulesModel::ModulesModel(QObject *parent)
 
 void ModulesModel::init()
 {
-    createTable();
-    setTable(tableNameString);
-    select();
-    setEditStrategy(QSqlTableModel::OnManualSubmit);
+//    createTable();
+//    setTable(tableNameString);
+//    select();
+//    setEditStrategy(QSqlTableModel::OnManualSubmit);
 }
 
 bool ModulesModel::execLastError(const QString& query)
@@ -27,20 +27,20 @@ bool ModulesModel::execLastError(const QString& query)
 
 bool ModulesModel::createTable()
 {
-    if ( !database().tables().contains(tableNameString) ) {
-        return execLastError(qStringSql->arg(tableNameString, tableNameGroup));
-    }
-    return false;
+//    if ( !database().tables().contains(tableNameString) ) {
+//        return execLastError(qStringSql->arg(tableNameString, tableNameGroup));
+//    }
+//    return false;
 }
 
 QVariant ModulesModel::data(const QModelIndex &index, int role) const
 {
-    if (role < Qt::UserRole) {
-        return QSqlTableModel::data(index, role);
-    }
+//    if (role < Qt::UserRole) {
+//        return QSqlTableModel::data(index, role);
+//    }
 
-    const QSqlRecord sqlRecord = record(index.row());
-    return sqlRecord.value(role - Qt::UserRole);
+//    const QSqlRecord sqlRecord = record(index.row());
+//    return sqlRecord.value(role - Qt::UserRole);
 }
 
 QHash<int, QByteArray> ModulesModel::roleNames() const {

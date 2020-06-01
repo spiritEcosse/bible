@@ -11,7 +11,7 @@ public:
     ~tst_Registry();
 
 private:
-    const QString pathFiles { "files" };
+    const QString pathFiles { "../../../files" };
     const QString dirDownload = "download";
     const QString strUrl = "http://0.0.0.0:2443/files/";
     QFile fileRegistry { "registry.json" };
@@ -120,12 +120,12 @@ void tst_Registry::removeRegistry()
     Registry registry;
     QSignalSpy spy(&registry, &Registry::removeRegistrySuccess);
     registry.registryArchive.setFileName(QString("%1/%2").arg(dirDownload, fileRegistryArchive.fileName()));
-    registry.registry.setFileName(QString("%1/%2").arg(dirDownload, fileRegistry.fileName()));
+    registry.file.setFileName(QString("%1/%2").arg(dirDownload, fileRegistry.fileName()));
     registry.removeRegistry();
 
     QCOMPARE(spy.count(), 1);
     QVERIFY(!registry.registryArchive.exists());
-    QVERIFY(!registry.registry.exists());
+    QVERIFY(!registry.file.exists());
 }
 
 QTEST_MAIN(tst_Registry)

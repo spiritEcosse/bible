@@ -3,7 +3,6 @@
 
 #include "registry.h"
 
-const char* registryInfoBase64 { "aHR0cDovL21waDQucnUvcmVnaXN0cnlfaW5mby5qc29u" };
 const char* registryFileName { "registry.json" };
 
 Registry::Registry() {}
@@ -20,46 +19,33 @@ void Registry::download(const QByteArray& registryBase64)
 void Registry::decompressRegistry()
 {
     registryArchive.setFileName(manager.fileNames->last());
-    QString registryName = JlCompress::extractFile(registryArchive.fileName(), registry.fileName());
-    QFileInfo fileInfo(registryName);
+    QStringList registryNames = JlCompress::extractFiles(registryArchive.fileName(), QStringList(file.fileName()), "download");
+    QFileInfo fileInfo(registryNames[0]);
 
-    if (fileInfo.fileName() == registry.fileName()) {
-        emit decompressSuccess();
+    if (fileInfo.fileName() == file.fileName()) {
+        QJsonDocument document;
+        QJsonParseError retriveResult;
+        retriveData(document, retriveResult);
+        bool error = retriveResult.error != QJsonParseError::NoError;
+
+        emit decompressSuccess(getDownloads(document));
     }
 }
 
 void Registry::removeRegistry()
 {
-    if (registryArchive.remove() && registry.remove()) {
+    if (registryArchive.remove() && file.remove()) {
         emit removeRegistrySuccess();
     }
 }
 
-void Registry::checkNewVersion()
+void Registry::tryDownload()
 {
-    connect(&manager, SIGNAL (successfully()), this, SLOT (compareVersions()));
-    manager.append(QUrl::fromEncoded(QByteArray::fromBase64(registryInfoBase64)));
+//    download();
 }
 
-void Registry::compareVersions()
+const QJsonArray Registry::getDownloads(const QJsonDocument& document)
 {
-//    registryVersion->setFileName(manager->fileNames->last());
-
-//    if ( !registryVersion->open(QIODevice::ReadOnly | QIODevice::Text) )
-//        return ;
-
-//    QJsonDocument document = qJsonDocument->fromJson(registryVersion->readAll(), qJsonParserError);
-//    registryVersion->close();
-
-//    if ( qJsonParserError->error != QJsonParseError::NoError ) // WARNING : test this
-//        return;
-
-//    int version = document.object().value("version").toInt();
-//    bool newModules = version > qSettings->value("modulesVersion").toInt();
-
-//    if (newModules) {
-//        qSettings->setValue("modulesVersion", version);
-//    }
-
-//    emit availabilityNewModules(newModules);
+    return document.object().value(QString("downloads")).toArray();
 }
+

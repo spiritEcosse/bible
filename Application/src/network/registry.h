@@ -2,27 +2,25 @@
 #define DOWNLOADMODULES_H
 
 #include <QObject>
-#include "downloadmanager.h"
+#include "registryinfo.h"
 
-
-class Registry : public QObject
+class Registry : public RegistryInfo
 {
     Q_OBJECT
 public:
     Registry();
-    virtual void download(const QByteArray& registryBase64);
-    virtual void checkNewVersion();
+    virtual void tryDownload();
 private:
     friend class tst_Registry;
-    DownloadManager manager;
     QFile registryArchive;
-    QFile registry { "registry.json" };
+    QFile file { "registry.json" };
+    virtual void download(const QByteArray& registryBase64) override;
+    virtual const QJsonArray getDownloads(const QJsonDocument& document);
 signals:
+    void decompressSuccess(const QJsonArray& document);
     void removeRegistrySuccess();
-    void decompressSuccess();
 private slots:
     virtual void decompressRegistry();
-    virtual void compareVersions();
     virtual void removeRegistry();
 };
 

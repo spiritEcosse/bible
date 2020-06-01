@@ -105,6 +105,7 @@ TEMPLATE = subdirs
 SUBDIRS += \
     core \
     entities \
-    network
+    network \
+    sql
 
 CONFIG += ordered

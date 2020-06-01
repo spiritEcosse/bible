@@ -15,17 +15,16 @@
 #include <QDebug>
 #include <QFile>
 #include <qmath.h>
-#include <quazip/JlCompress.h>
 #include <QLocale>
 
 #define MODULES_SPLIT_NAME "^(.+)\\.(.+)$"
 
 #include "modulesmodel.h"
-#include "LocaleDesc.h"
+//#include "LocaleDesc.h"
 #include "gtest/gtest_prod.h"
 #include <QAbstractListModel>
-#include "modulesgroups.h"
-#include "modulesgroupsreader.h"
+//#include "modulesgroups.h"
+//#include "modulesgroupsreader.h"
 
 #define REGISTRY "aHR0cDovL215YmlibGUuaW50ZXJiaWJsaWEub3JnL3JlZ2lzdHJ5X3Rlc3Quemlw"
 #define REGISTRY_INFO ""
@@ -55,8 +54,8 @@ public:
 
 private:
     virtual void newRows(QJsonArray &downloads);
-    std::vector<ModulesGroups> m_groups;
-    std::unique_ptr<ModulesGroupsReader> m_reader;
+//    std::vector<ModulesGroups> m_groups;
+//    std::unique_ptr<ModulesGroupsReader> m_reader;
     QString dbName = "registry_%1";
     bool update();
     QString nameDB;

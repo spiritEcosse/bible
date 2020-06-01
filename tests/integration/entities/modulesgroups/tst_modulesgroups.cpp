@@ -1,6 +1,7 @@
 #include <QtTest>
 
 #include "modulesgroups.h"
+#include "locallanguage.h"
 
 class tst_ModulesGroups : public QObject
 {

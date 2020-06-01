@@ -1,10 +1,10 @@
 #include <QRegularExpression>
 #include <QLocale>
 #include <QJsonObject>
+#include <QDebug>
 
 #include "modulesgroups.h"
 #include "global.h"
-#include <QDebug>
 
 ModulesGroups::ModulesGroups(const QJsonObject& qJsonModule)
     : m_language { new LocalLanguage { qJsonModule.value("lng").toString() } }

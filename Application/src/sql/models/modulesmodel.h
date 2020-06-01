@@ -14,7 +14,7 @@
 #include <QRegularExpression>
 
 #include "gtest/gtest_prod.h"
-#include "modules.h"
+//#include "modules.h"
 #include <iostream>
 
 class ModulesModel : public QSqlTableModel
@@ -31,7 +31,7 @@ public:
     virtual bool createTable();
     virtual bool execLastError(const QString& query);
 private:
-    std::vector<Modules> m_modules;
+//    std::vector<Modules> m_modules;
     friend class ModulesGroupModelTest;
     friend class ModulesModelTest;
     FRIEND_TEST(ModulesModelTest, createTable);

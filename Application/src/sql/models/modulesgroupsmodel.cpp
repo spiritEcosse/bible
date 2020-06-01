@@ -2,7 +2,7 @@
 #if (QT_VERSION > QT_VERSION_CHECK(5, 6, 3))
 #include <QQmlEngine>
 #else
-#include <QtQuick>
+//#include <QtQuick>
 #endif
 #include <QDebug>
 
@@ -11,14 +11,11 @@ ModulesGroupsModel::ModulesGroupsModel()
     init();
 }
 
-ModulesGroupsModel::~ModulesGroupsModel()
-{
-
-}
+ModulesGroupsModel::~ModulesGroupsModel() {}
 
 void ModulesGroupsModel::registerMe(const std::string& moduleName)
 {
-    qmlRegisterType<ModulesGroupsModel>(moduleName.c_str(), 1, 0, "ModulesGroupsModel");
+//    qmlRegisterType<ModulesGroupsModel>(moduleName.c_str(), 1, 0, "ModulesGroupsModel");
 }
 
 void ModulesGroupsModel::init()
@@ -32,7 +29,7 @@ void ModulesGroupsModel::init()
 
 bool ModulesGroupsModel::update()
 {
-    m_reader.reset(new ModulesGroupsReader());
+//    m_reader.reset(new ModulesGroupsReader());
 
 //    bool requestResult {false};
 //    std::vector<ModulesGroups> groupsResult;
@@ -45,24 +42,6 @@ bool ModulesGroupsModel::update()
 
 //    return requestResult;
 }
-
-//void ModulesGroupsModel::removeOldRows()
-//{
-////    removeRows(0, countOldRows);
-
-////    if (!submitAll()) {
-////        qWarning() << "Failed to remove rows: " << lastError().text();
-////    } else {
-////        emit removeOldRowsSuccess();
-////    }
-//}
-
-//void ModulesGroupsModel::removeRegistryFile()
-//{
-//    if (registryArchive.remove()) {
-//        emit removeRegistryFileSuccess();
-//    }
-//}
 
 //void ModulesGroupsModel::updateTable()
 //{
@@ -136,12 +115,6 @@ void ModulesGroupsModel::newRows(QJsonArray &downloads)
 ////    }
 }
 
-//void ModulesGroupsModel::checkAvailabilityNewModules()
-//{
-//    manager->append(urlRegistryInfo->fromEncoded(qQByteArray->fromBase64(registryInfoBase64)));
-////    connect(manager, SIGNAL (successfully()), this, SLOT (compareVersions()));
-//}
-
 //QMap<QString, QString>
 //ModulesGroupsModel
 //::makeGroup(const QString &name, const QString &language, const QString &region) const
@@ -169,39 +142,6 @@ void ModulesGroupsModel::newRows(QJsonArray &downloads)
 //    return group;
 //}
 
-//QString ModulesGroupsModel
-//::correctTitle(const QString &name, const QString &language, const QString &region) const
-//{
-//    QRegularExpression re(MODULES_SPLIT_NAME);
-//    QRegularExpressionMatch match = re.match(name);
-//    QString section;
-//    QLocale locale = language;
-//    QStringList sectionList;
-
-//    if (match.hasMatch()) {
-//        sectionList.append(match.captured(2));
-//    }
-
-//    if (!locale.nativeLanguageName().isEmpty()) {
-//        sectionList.append(locale.nativeLanguageName());
-//    }
-
-//    if (sectionList.empty() && !region.isEmpty()) {
-//        sectionList.append(region);
-//    }
-
-//    if (sectionList.empty()) {
-//        sectionList.append(language);
-//    }
-
-//    section = sectionList.join(", ").trimmed();
-
-//    if (!section.isEmpty()) {
-//        section[0] = section[0].toUpper();
-//    }
-//    return section;
-//}
-
 QVariant ModulesGroupsModel
 ::data(const QModelIndex &index, int role) const
 {
@@ -222,5 +162,5 @@ ModulesGroupsModel::roleNames() const {
 
 int ModulesGroupsModel::rowCount(const QModelIndex& /* parent */) const
 {
-    return static_cast<int>(m_groups.size());
+//    return static_cast<int>(m_groups.size());
 }

@@ -37,7 +37,8 @@ void Modules::convertSize(const QString& str)
 
     if (match.hasMatch()) {
         m_size = match.captured(1).toDouble();
-        QString dimension = match.captured(2).toUpper();
+        QString dimension;
+        match.captured(2).toUpper().swap(dimension);
         m_size *= qPow(1024, dimensions.indexOf(dimension) + 1);
     }
 //WARNING: replace on formattedDataSize. This function was introduced in Qt 5.10.

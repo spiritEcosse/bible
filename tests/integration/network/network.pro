@@ -1,4 +1,6 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    registry
+    registry \
+    registryinfo \
+    registryinfo

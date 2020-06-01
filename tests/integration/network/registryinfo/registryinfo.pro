@@ -7,4 +7,4 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 include($$PWD/../../../../conf.pri)
-SOURCES +=  tst_registry.cpp
+SOURCES +=  tst_registryinfo.cpp
