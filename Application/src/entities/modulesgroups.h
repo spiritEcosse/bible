@@ -17,6 +17,7 @@ public:
     QString nativeLanguageName() const;
     QString languageName() const;
     QString name();
+    static QString parseName(const QString& name);
 
 private:
     friend class tst_ModulesGroups;

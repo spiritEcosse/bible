@@ -12,7 +12,9 @@ class ModulesGroupsFiller : public QObject
 public:
     ModulesGroupsFiller();
 private:
+    friend class tst_ModulesGroupsFiller;
     Registry registry;
+    std::string hashKey(const QJsonObject& obj);
 private slots:
     void makeTransform(const QJsonArray& object);
 //    std::vector<ModulesGroups> transform;

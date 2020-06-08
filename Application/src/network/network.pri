@@ -3,7 +3,7 @@ QT += core network
 INCLUDEPATH += $$PWD
 
 HOME = $$PWD/../../../
-INCLUDEPATH += $$HOME/3rdparty/quazip
+INCLUDEPATH += $$HOME/3rdparty/quazip/
 LIBS += -L"$$HOME/3rdparty/quazip/quazip" -lquazip
 
 SOURCES += \

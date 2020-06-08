@@ -34,13 +34,16 @@ QString ModulesGroups::name()
     return m_name;
 }
 
-void ModulesGroups::cleanName()
+QString ModulesGroups::parseName(const QString& name)
 {
     QRegularExpression re(MODULES_SPLIT_NAME);
-    QRegularExpressionMatch match = re.match(m_name);
+    QRegularExpressionMatch match = re.match(name);
 
-    if (match.hasMatch()) {
-        m_name = match.captured(2).trimmed();
-        m_name[0] = m_name[0].toUpper();
-    }
+    return match.hasMatch() ? match.captured(2).trimmed() : name;
+}
+
+void ModulesGroups::cleanName()
+{
+    m_name = parseName(m_name);
+    m_name[0] = m_name[0].toUpper();
 }
