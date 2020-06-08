@@ -4,7 +4,7 @@ INCLUDEPATH += $$PWD
 
 HOME = $$PWD/../../../
 INCLUDEPATH += $$HOME/3rdparty/quazip/
-LIBS += -L"$$HOME/3rdparty/quazip/quazip" -lquazip
+LIBS += -L"$$HOME/3rdparty/quazip/quazip" -lQt5Quazip
 
 SOURCES += \
     $$PWD/modulesgroupsfiller.cpp \

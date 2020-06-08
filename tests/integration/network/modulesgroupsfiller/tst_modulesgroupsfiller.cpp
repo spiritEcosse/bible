@@ -1,6 +1,7 @@
 #include <QtTest>
 #include "modulesgroupsfiller.h"
 
+Q_DECLARE_METATYPE(std::string)
 // add necessary includes here
 
 class tst_ModulesGroupsFiller : public QObject
