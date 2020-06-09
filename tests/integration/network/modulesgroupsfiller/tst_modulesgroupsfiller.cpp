@@ -34,9 +34,9 @@ void tst_ModulesGroupsFiller::hashKey_data()
     QTest::addColumn<QString>("language");
     QTest::addColumn<QString>("region");
     QTest::addColumn<std::string>("out");
-    QTest::newRow("name language region") << "10CD-p.plan" << "en" << "region" << "planenregion";
-    QTest::newRow("name language") << "10CD-p.plan" << "en" << "" << "planen";
-    QTest::newRow("name") << "name" << "" << "name";
+    QTest::newRow("name language region") << "10CD-p.plan" << "en" << "region" << std::string("planenregion");
+    QTest::newRow("name language") << "10CD-p.plan" << "en" << "" << std::string("planen");
+    QTest::newRow("name") << "name" << "" << "" << std::string("name");
 }
 
 void tst_ModulesGroupsFiller::hashKey()
