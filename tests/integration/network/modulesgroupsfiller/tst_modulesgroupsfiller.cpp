@@ -15,7 +15,8 @@ public:
 private slots:
     void hashKey_data();
     void hashKey();
-
+//    void makeTransform_data();
+    void makeTransform();
 };
 
 tst_ModulesGroupsFiller::tst_ModulesGroupsFiller()
@@ -55,6 +56,20 @@ void tst_ModulesGroupsFiller::hashKey()
 
     ModulesGroupsFiller f;
     QCOMPARE(f.hashKey(obj), out);
+}
+
+void tst_ModulesGroupsFiller::makeTransform()
+{
+    ModulesGroupsFiller f;
+    QJsonArray array;
+    QJsonObject obj
+    {
+        {"fil", "name"},
+        {"lng", "en"},
+        {"reg", ""},
+    };
+    array << obj;
+    f.makeTransform(array);
 }
 
 QTEST_MAIN(tst_ModulesGroupsFiller)

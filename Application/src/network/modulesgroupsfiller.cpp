@@ -33,19 +33,13 @@ std::string ModulesGroupsFiller::hashKey(const QJsonObject& obj)
 
 void ModulesGroupsFiller::makeTransform(const QJsonArray& source)
 {
-    std::set<uint32_t> set;
-    std::vector<ModulesGroups> groups;
-    std::vector<Modules> modules;
+    std::map<uint32_t, ModulesGroups> modulesGroups;
 
     for (QJsonArray::const_iterator it = source.begin(); it != source.end(); it++)
     {
-        auto itSet = set.insert(hash(hashKey(it->toObject())));
-        if (itSet.second)
-        {
-            groups.push_back(ModulesGroups(it->toObject()));
-        }
-        modules.push_back(Modules(it->toObject()));
+        modulesGroups[hash(hashKey(it->toObject()))] = ModulesGroups(it->toObject());
     }
+    qDebug() << modulesGroups.size();
 
 //    std::vector<ModulesGroups> target;
 //    std::transform(source.begin(), source.end(), std::back_inserter(target),
