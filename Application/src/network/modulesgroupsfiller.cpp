@@ -37,7 +37,7 @@ void ModulesGroupsFiller::makeTransform(const QJsonArray& source)
 
     for (QJsonArray::const_iterator it = source.begin(); it != source.end(); it++)
     {
-        modulesGroups[hash(hashKey(it->toObject()))] = ModulesGroups(it->toObject());
+        modulesGroups[hash(hashKey(it->toObject()))] = ModulesGroups(it->toObject()); // use insert
     }
     qDebug() << modulesGroups.size();
 
