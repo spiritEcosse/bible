@@ -6,8 +6,9 @@
 #include "modulesgroups.h"
 #include "global.h"
 
+
 ModulesGroups::ModulesGroups(const QJsonObject& qJsonModule)
-    : m_language { new LocalLanguage { qJsonModule.value("lng").toString() } }
+    : m_language { qJsonModule.value("lng").toString() }
 {
     qJsonModule.value("fil").toString().swap(m_name);
     qJsonModule.value("reg").toString().swap(m_region);
@@ -15,18 +16,18 @@ ModulesGroups::ModulesGroups(const QJsonObject& qJsonModule)
 }
 
 ModulesGroups::ModulesGroups(QString language, QString name, DBTypes::DBIndex id)
-    : m_language {new LocalLanguage {language} },
+    : m_language { language },
       m_name {std::move(name)},
       m_id {id} {}
 
 QString ModulesGroups::nativeLanguageName() const
 {
-    return m_language->nativeLanguageName();
+    return m_language.nativeLanguageName();
 }
 
 QString ModulesGroups::languageName() const
 {
-    return m_language->languageToString(m_language->language());
+    return m_language.languageInString(m_language.language());
 }
 
 QString ModulesGroups::name()
@@ -46,4 +47,9 @@ void ModulesGroups::cleanName()
 {
     m_name = parseName(m_name);
     m_name[0] = m_name[0].toUpper();
+}
+
+void ModulesGroups::addModule(const Modules& modules)
+{
+    m_modules.push_back(modules);
 }

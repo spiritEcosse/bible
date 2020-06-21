@@ -10,7 +10,7 @@ LocalLanguage::LocalLanguage(const QString& language)
     : QLocale(language),
       m_language { std::move(language) } {}
 
-QString LocalLanguage::languageToString(QLocale::Language language)
+QString LocalLanguage::languageInString(QLocale::Language language) const
 {
     QString name = m_language;
 

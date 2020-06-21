@@ -93,7 +93,7 @@ void tst_ModulesGroups::language()
 
     LocalLanguage localLanguage { language };
     ModulesGroups modulesGroups { qJsonModule };
-    QCOMPARE(*modulesGroups.m_language, localLanguage);
+    QCOMPARE(modulesGroups.m_language, localLanguage);
     QCOMPARE(modulesGroups.languageName(), languageName);
     QCOMPARE(modulesGroups.nativeLanguageName(), nativeLanguageName);
 }

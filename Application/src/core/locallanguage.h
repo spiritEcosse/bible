@@ -6,8 +6,9 @@
 class LocalLanguage : public QLocale
 {
 public:
+    LocalLanguage() = default;
     LocalLanguage(const QString& language);
-    QString languageToString(Language language);
+    QString languageInString(Language language) const;
     QString nativeLanguageName() const;
 private:
     QString m_language;

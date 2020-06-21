@@ -37,13 +37,11 @@ void ModulesGroupsFiller::makeTransform(const QJsonArray& source)
 
     for (QJsonArray::const_iterator it = source.begin(); it != source.end(); it++)
     {
-        modulesGroups[hash(hashKey(it->toObject()))] = ModulesGroups(it->toObject()); // use insert
+        std::pair<std::map<uint32_t, ModulesGroups>::iterator, bool> itModules;
+        itModules = modulesGroups.insert({hash(hashKey(it->toObject())), ModulesGroups(it->toObject())});
+        itModules.first->second.addModule(Modules(it->toObject()));
+        qDebug() << itModules.first->second.m_modules[0].m_name;
+        // delete *it ?
     }
     qDebug() << modulesGroups.size();
-
-//    std::vector<ModulesGroups> target;
-//    std::transform(source.begin(), source.end(), std::back_inserter(target),
-//                   [](const QJsonValue& value) {
-//        return ModulesGroups(value.toObject());
-//    });
 }

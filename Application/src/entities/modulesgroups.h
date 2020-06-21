@@ -5,6 +5,7 @@
 
 #include "dbtypes.h"
 #include "locallanguage.h"
+#include "modules.h"
 
 using namespace DBTypes;
 
@@ -18,15 +19,17 @@ public:
     QString languageName() const;
     QString name();
     static QString parseName(const QString& name);
-
+    void addModule(const Modules& modules);
 private:
     friend class tst_ModulesGroups;
+    friend class ModulesGroupsFiller;
 
-    std::unique_ptr<LocalLanguage> m_language;
+    LocalLanguage m_language;
     QString m_name;
     QString m_region;
     DBTypes::DBIndex m_id;
     void cleanName();
+    std::vector<Modules> m_modules;
 };
 
 #endif // MODULESGROUPS_H

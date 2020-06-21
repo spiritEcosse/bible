@@ -6,10 +6,9 @@
 #include "global.h"
 #include "modules.h"
 
-Modules::Modules() {}
 
 Modules::Modules(const QJsonObject& qJsonModule)
-    : m_languageShow { new LocalLanguage { qJsonModule.value("aln").toString() } }
+    : m_languageShow { qJsonModule.value("aln").toString() }
 {
     qJsonModule.value("fil").toString().swap(m_name);
     qJsonModule.value("abr").toString().swap(m_abbreviation);
@@ -51,10 +50,10 @@ void Modules::convertUpdate(const QString& update)
 
 QString Modules::nativeLanguageNameShow() const
 {
-    return m_languageShow->nativeLanguageName();
+    return m_languageShow.nativeLanguageName();
 }
 
 QString Modules::languageNameShow() const
 {
-    return m_languageShow->languageToString(m_languageShow->language());
+    return m_languageShow.languageInString(m_languageShow.language());
 }

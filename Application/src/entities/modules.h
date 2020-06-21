@@ -7,16 +7,18 @@
 
 #include "locallanguage.h"
 
+
 class Modules
 {
 public:
-    Modules();
+    Modules() = default;
     Modules(const QJsonObject& qJsonModule);
     double size() const;
     QString nativeLanguageNameShow() const;
     QString languageNameShow() const;
 private:
     friend class tst_Modules;
+    friend class ModulesGroupsFiller;
 
     void convertSize(const QString& str);
     void convertUpdate(const QString& update);
@@ -30,7 +32,7 @@ private:
     QDate m_update;
     bool m_hidden;
     bool m_defaultDownload;
-    std::unique_ptr<LocalLanguage> m_languageShow;
+    LocalLanguage m_languageShow;
 };
 
 #endif // MODULES_H
