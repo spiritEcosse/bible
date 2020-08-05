@@ -17,7 +17,14 @@ public:
     ModulesGroups(QString language, QString name, DBIndex id);
     QString nativeLanguageName() const;
     QString languageName() const;
+    QLocale language() const;
+    QString region() const;
+    std::string regionToStdString() const;
+    QString languageCode() const;
+    std::string languageCodeToStdString() const;
     QString name();
+    uint modulesCount();
+    std::string nameToStdString();
     static QString parseName(const QString& name);
     void addModule(const Modules& modules);
 private:

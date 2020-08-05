@@ -55,5 +55,5 @@ QString Modules::nativeLanguageNameShow() const
 
 QString Modules::languageNameShow() const
 {
-    return m_languageShow.languageInString(m_languageShow.language());
+    return m_languageShow.languageInString();
 }

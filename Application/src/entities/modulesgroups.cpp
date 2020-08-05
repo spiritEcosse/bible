@@ -10,8 +10,8 @@
 ModulesGroups::ModulesGroups(const QJsonObject& qJsonModule)
     : m_language { qJsonModule.value("lng").toString() }
 {
-    qJsonModule.value("fil").toString().swap(m_name);
-    qJsonModule.value("reg").toString().swap(m_region);
+    m_name = qJsonModule.value("fil").toString();
+    m_region = qJsonModule.value("reg").toString();
     cleanName();
 }
 
@@ -27,12 +27,42 @@ QString ModulesGroups::nativeLanguageName() const
 
 QString ModulesGroups::languageName() const
 {
-    return m_language.languageInString(m_language.language());
+    return m_language.languageInString();
+}
+
+QLocale ModulesGroups::language() const
+{
+    return m_language;
+}
+
+QString ModulesGroups::region() const
+{
+    return m_region;
+}
+
+std::string ModulesGroups::regionToStdString() const
+{
+    return m_region.toStdString();
+}
+
+QString ModulesGroups::languageCode() const
+{
+    return m_language.code();
+}
+
+std::string ModulesGroups::languageCodeToStdString() const
+{
+    return languageCode().toStdString();
 }
 
 QString ModulesGroups::name()
 {
     return m_name;
+}
+
+std::string ModulesGroups::nameToStdString()
+{
+    return m_name.toStdString();
 }
 
 QString ModulesGroups::parseName(const QString& name)
@@ -52,4 +82,9 @@ void ModulesGroups::cleanName()
 void ModulesGroups::addModule(const Modules& modules)
 {
     m_modules.push_back(modules);
+}
+
+uint ModulesGroups::modulesCount()
+{
+    return static_cast<uint>(m_modules.size());
 }

@@ -10,11 +10,16 @@ LocalLanguage::LocalLanguage(const QString& language)
     : QLocale(language),
       m_language { std::move(language) } {}
 
-QString LocalLanguage::languageInString(QLocale::Language language) const
+QString LocalLanguage::code() const
+{
+    return language() == QLocale::C ? m_language : bcp47Name();
+}
+
+QString LocalLanguage::languageInString() const
 {
     QString name = m_language;
 
-    if (language == QLocale::C)
+    if (language() == QLocale::C)
     {
         int in = languages.value(m_language, -1);
         if (in != -1) {
@@ -23,7 +28,7 @@ QString LocalLanguage::languageInString(QLocale::Language language) const
     }
     else
     {
-        name = QLocale::languageToString(language);
+        name = QLocale::languageToString(language());
     }
 
     return name;

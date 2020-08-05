@@ -16,8 +16,8 @@ private slots:
     void m_name_data();
     void language();
     void language_data();
-    void m_region_data();
     void m_region();
+    void m_region_data();
 };
 
 tst_ModulesGroups::tst_ModulesGroups()
@@ -45,12 +45,7 @@ void tst_ModulesGroups::m_name()
     QFETCH(QString, name);
     QFETCH(QString, result);
 
-    QJsonObject qJsonModule
-    {
-        {"fil", name}
-    };
-
-    ModulesGroups modulesGroups { qJsonModule };
+    ModulesGroups modulesGroups { QJsonObject { {"fil", name} } };
     QCOMPARE(modulesGroups.m_name, result);
 }
 
@@ -86,16 +81,12 @@ void tst_ModulesGroups::language()
     QFETCH(QString, languageName);
     QFETCH(QString, nativeLanguageName);
 
-    QJsonObject qJsonModule
-    {
-        {"lng", language}
-    };
-
     LocalLanguage localLanguage { language };
-    ModulesGroups modulesGroups { qJsonModule };
+    ModulesGroups modulesGroups { QJsonObject { {"lng", language} } } ;
     QCOMPARE(modulesGroups.m_language, localLanguage);
     QCOMPARE(modulesGroups.languageName(), languageName);
     QCOMPARE(modulesGroups.nativeLanguageName(), nativeLanguageName);
+    QCOMPARE(modulesGroups.languageCode(), language);
 }
 
 void tst_ModulesGroups::m_region_data()
@@ -112,14 +103,10 @@ void tst_ModulesGroups::m_region()
     QFETCH(QString, in);
     QFETCH(QString, out);
 
-    QJsonObject qJsonModule
-    {
-        {"reg", in}
-    };
-
-    ModulesGroups modulesGroups { qJsonModule };
+    ModulesGroups modulesGroups {  QJsonObject { {"reg", in} } };
     QCOMPARE(modulesGroups.m_region, out);
 }
+
 
 QTEST_APPLESS_MAIN(tst_ModulesGroups)
 
