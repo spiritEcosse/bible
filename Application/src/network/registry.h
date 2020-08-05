@@ -9,7 +9,10 @@ class Registry : public RegistryInfo
     Q_OBJECT
 public:
     Registry();
+
+public slots:
     virtual void tryDownload();
+
 private:
     friend class tst_Registry;
     QFile registryArchive;

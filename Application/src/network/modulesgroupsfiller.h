@@ -2,10 +2,11 @@
 #define MODULESGROUPSTRANSFORM_H
 
 #include <QObject>
-//#include "registry.h"
+#include "registry.h"
 #include "modulesgroups.h"
 #include <unordered_map>
 
+// WARNING: replace this three on one class
 struct MGKey {
     std::string name;
     std::string language;
@@ -34,11 +35,21 @@ class ModulesGroupsFiller : public QObject
     Q_OBJECT
 public:
     ModulesGroupsFiller();
+
+public slots:
+    void downloadRegistry();
+
+signals:
+    void completed(std::unordered_map<MGKey, ModulesGroups, MGKeyHash, MGKeyEqual>);
+
 private:
     friend class tst_ModulesGroupsFiller;
-//    Registry registry;
+    Registry registry;
+    std::unordered_map<MGKey, ModulesGroups, MGKeyHash, MGKeyEqual> fill(const QJsonArray& object);
+
 private slots:
-    std::unordered_map<MGKey, ModulesGroups, MGKeyHash, MGKeyEqual> makeTransform(const QJsonArray& object);
+    void run(const QJsonArray& object);
+
 };
 
 #endif // MODULESGROUPSTRANSFORM_H

@@ -3,14 +3,20 @@
 #include "modules.h"
 #include <QJsonArray>
 #include <QJsonObject>
-#include <QDebug>
 
 ModulesGroupsFiller::ModulesGroupsFiller()
 {
-//    connect(&registry, &Registry::decompressSuccess, this, &ModulesGroupsFiller::makeTransform);
+    connect(&registry, &Registry::decompressSuccess,
+            this, &ModulesGroupsFiller::run);
 }
 
-std::unordered_map<MGKey, ModulesGroups, MGKeyHash, MGKeyEqual> ModulesGroupsFiller::makeTransform(const QJsonArray& source)
+void ModulesGroupsFiller::downloadRegistry()
+{
+    QTimer::singleShot(0, &registry, &Registry::tryDownload);
+}
+
+std::unordered_map<MGKey, ModulesGroups, MGKeyHash, MGKeyEqual>
+ModulesGroupsFiller::fill(const QJsonArray& source)
 {
     std::unordered_map<MGKey, ModulesGroups, MGKeyHash, MGKeyEqual> mGMap;
 
@@ -20,8 +26,13 @@ std::unordered_map<MGKey, ModulesGroups, MGKeyHash, MGKeyEqual> ModulesGroupsFil
         const MGKey mgKey {mg.nameToStdString(), mg.languageCodeToStdString(), mg.regionToStdString()};
         auto itMGMap = mGMap.insert({mgKey, mg});
         itMGMap.first->second.addModule(Modules(it->toObject()));
-        // delete *it ?
+        // delete *it ? // WARNING : need delete data where indicated it (it->toObject())
     }
 
     return mGMap;
+}
+
+void ModulesGroupsFiller::run(const QJsonArray& source)
+{
+    emit completed(fill(source));
 }

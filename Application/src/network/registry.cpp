@@ -9,8 +9,8 @@ Registry::Registry() {}
 
 void Registry::download(const QByteArray& registryBase64)
 {
-    connect(&manager, SIGNAL (successfully()), SLOT (decompressRegistry())); // WARNING : add connect to test
-    manager.append(QUrl::fromEncoded(QByteArray::fromBase64(registryBase64)));
+//    connect(&manager, SIGNAL (successfully()), SLOT (decompressRegistry())); // WARNING : add connect to test
+//    manager.append(QUrl::fromEncoded(QByteArray::fromBase64(registryBase64)));
 //    connect(this, SIGNAL (decompressSuccess()), SLOT (updateTable())); // WARNING : add connect to test
 //    connect(this, SIGNAL (updateTableSuccess()), SLOT (removeOldRows())); // WARNING : add connect to test
 //    connect(this, SIGNAL (updateTableSuccess()), SLOT (removeRegistry())); // WARNING : add connect to test
@@ -18,7 +18,7 @@ void Registry::download(const QByteArray& registryBase64)
 
 void Registry::decompressRegistry()
 {
-    registryArchive.setFileName(manager.fileNames->last());
+//    registryArchive.setFileName(manager.fileNames->last());
     QStringList registryNames = JlCompress::extractFiles(registryArchive.fileName(), QStringList(file.fileName()), "download");
     QFileInfo fileInfo(registryNames[0]);
 

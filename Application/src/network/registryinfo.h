@@ -15,7 +15,7 @@ private:
     virtual bool hasNewRegistry(int version);
 protected:
     QFile file;
-    DownloadManager manager;
+//    DownloadManager manager;
     virtual int getVersion(QJsonDocument& document);
     virtual void retriveData(QJsonDocument& document, QJsonParseError& error);
 signals:

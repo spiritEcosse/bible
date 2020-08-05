@@ -33,7 +33,6 @@ void DownloadManager::append(const QUrl &url)
     ++totalCount;
 }
 
-
 QString DownloadManager::saveFileName(const QUrl &url)
 {
     QString path = url.path();
