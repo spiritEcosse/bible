@@ -44,7 +44,7 @@ signals:
 
 private:
     friend class tst_ModulesGroupsFiller;
-    Registry registry;
+    std::unique_ptr<Registry> m_registry;
     std::unordered_map<MGKey, ModulesGroups, MGKeyHash, MGKeyEqual> fill(const QJsonArray& object);
 
 private slots:

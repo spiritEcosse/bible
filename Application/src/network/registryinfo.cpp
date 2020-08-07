@@ -7,13 +7,13 @@ RegistryInfo::RegistryInfo()
 
 void RegistryInfo::download(const QByteArray& registryInfoBase64)
 {
-//    connect(&manager, &DownloadManager::successfully, this, &RegistryInfo::newRegistry);
-//    manager.append(QUrl::fromEncoded(QByteArray::fromBase64(registryInfoBase64)));
+    connect(&manager, &DownloadManager::successfully, this, &RegistryInfo::newRegistry);
+    manager.append(QUrl::fromEncoded(QByteArray::fromBase64(registryInfoBase64)));
 }
 
 void RegistryInfo::retriveData(QJsonDocument& document, QJsonParseError& error)
 {
-//    file.setFileName(manager.fileNames->last());
+    file.setFileName(manager.fileNames->last());
 
     if ( !file.open(QIODevice::ReadOnly | QIODevice::Text) )
         return;

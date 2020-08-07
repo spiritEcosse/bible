@@ -20,5 +20,6 @@ HEADERS += \
     $$PWD/textprogressbar.h \
     $$PWD/downloadmanager.h
 
-include(../entities/entities.pri)
-include(../core/core.pri)
+include($$PWD/../sql/models/models.pri)
+include($$PWD/../entities/entities.pri)
+include($$PWD/../core/core.pri)

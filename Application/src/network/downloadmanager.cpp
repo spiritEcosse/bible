@@ -33,6 +33,7 @@ void DownloadManager::append(const QUrl &url)
     ++totalCount;
 }
 
+
 QString DownloadManager::saveFileName(const QUrl &url)
 {
     QString path = url.path();
@@ -79,7 +80,7 @@ void DownloadManager::startNextDownload()
             startNextDownload();
         } else {
             request->setUrl(url);
-            currentDownload = manager->get(*request);
+            currentDownload = manager.get(*request);
             connect(currentDownload, SIGNAL(downloadProgress(qint64,qint64)),
                     SLOT(downloadProgress(qint64,qint64)));
             connect(currentDownload, SIGNAL(finished()),

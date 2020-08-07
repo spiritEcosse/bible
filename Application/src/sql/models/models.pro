@@ -1,4 +1,4 @@
+include($$PWD/models.pri)
 TEMPLATE = lib
-include(models.pri)
 
 DISTFILES += models.pri

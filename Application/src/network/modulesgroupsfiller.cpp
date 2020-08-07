@@ -5,14 +5,15 @@
 #include <QJsonObject>
 
 ModulesGroupsFiller::ModulesGroupsFiller()
+    : m_registry { new Registry {} }
 {
-    connect(&registry, &Registry::decompressSuccess,
+    connect(&*m_registry, &Registry::decompressSuccess,
             this, &ModulesGroupsFiller::run);
 }
 
 void ModulesGroupsFiller::downloadRegistry()
 {
-    QTimer::singleShot(0, &registry, &Registry::tryDownload);
+    m_registry->tryOtherLinkDownload();
 }
 
 std::unordered_map<MGKey, ModulesGroups, MGKeyHash, MGKeyEqual>

@@ -13,7 +13,18 @@ public:
     tst_ModulesGroupsFiller();
     ~tst_ModulesGroupsFiller();
 
+private:
+    const QString pathFiles { "../../../files" };
+    const QString dirDownload = "download";
+    const QString strUrl = "http://0.0.0.0:2443/files/";
+    QFile fileRegistry { "registry.json" };
+    const QFile fileRegistryArchive { "registry.zip" };
+    const int fileRegistryItems = 5;
+    QDir dir;
+
 private slots:
+    void initTestCase();
+    void cleanupTestCase();
     void fill_data();
     void fill();
     void run_data();
@@ -29,6 +40,19 @@ tst_ModulesGroupsFiller::tst_ModulesGroupsFiller()
 tst_ModulesGroupsFiller::~tst_ModulesGroupsFiller()
 {
 
+}
+
+void tst_ModulesGroupsFiller::initTestCase()
+{
+    // Will be called before the first test function is executed.
+    dir.mkdir(pathFiles);
+    dir.setCurrent(pathFiles);
+    dir.mkdir(dirDownload);
+}
+
+void tst_ModulesGroupsFiller::cleanupTestCase()
+{
+    dir.rmdir(dirDownload);
 }
 
 void tst_ModulesGroupsFiller::fill_data()
@@ -104,10 +128,13 @@ void tst_ModulesGroupsFiller::run()
 void tst_ModulesGroupsFiller::downloadRegistry()
 {
     ModulesGroupsFiller filler;
-    QSignalSpy spy(&filler.registry, &Registry::decompressSuccess);
+    QSignalSpy spy(&*filler.m_registry, &Registry::decompressSuccess);
+    QSignalSpy spyСompleted(&filler, &ModulesGroupsFiller::completed);
 
     filler.downloadRegistry();
+    QVERIFY(spyСompleted.wait());
     QCOMPARE(spy.count(), 1);
+    QCOMPARE(spyСompleted.count(), 1);
 }
 
 

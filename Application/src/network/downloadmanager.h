@@ -6,6 +6,7 @@
 
 #include <QObject>
 #include <QTimer>
+#include <memory>
 
 #include "textprogressbar.h"
 //#include "gtest/gtest_prod.h"
@@ -44,7 +45,7 @@ private:
     QNetworkRequest* request = new QNetworkRequest();
     QTextStream* qTextStream = new QTextStream();
 
-    QNetworkAccessManager* manager = new QNetworkAccessManager();
+    QNetworkAccessManager manager; // WARNING: replace this because him need more time
     friend class DownloadManagerTest;
     friend class MockDownloadManager;
 //    FRIEND_TEST(DownloadManagerTest, append);
