@@ -241,7 +241,7 @@ TEST_F(DownloadManagerTest, saveFileName)
 TEST_F(DownloadManagerTest, startNextDownload)
 {
     QObject::connect(downloadManager, &DownloadManager::successfully,
-                     modulesGroupModel, &ModulesGroupModel::decompressRegistry);
+                     modulesGroupModel, &ModulesGroupModel::extractRegistry);
     QObject::connect(downloadManager, &DownloadManager::finished,
                      &DownloadManager::downloadFinished);
 
@@ -258,7 +258,7 @@ TEST_F(DownloadManagerTest, startNextDownload)
                 .WillOnce(Return(true));
         EXPECT_CALL(mockDownloadManager, downloadFinished());
         EXPECT_EQ(mockDownloadManager.downloadedCount, mockDownloadManager.totalCount);
-        EXPECT_CALL(mockModulesGroupModel, decompressRegistry());
+        EXPECT_CALL(mockModulesGroupModel, extractRegistry());
     }
 
     mockDownloadManager.startNextDownload();

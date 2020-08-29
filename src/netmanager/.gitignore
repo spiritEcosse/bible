@@ -1,17 +1,8 @@
-db
-**/logs/
-*.log
-shared/
-
-*.autosave
-*.user
-
-bible.creator.user
-
 # This file is used to ignore files which are generated
 # ----------------------------------------------------------------------------
-build*
 
+*~
+*.autosave
 *.a
 *.core
 *.moc
@@ -25,12 +16,14 @@ build*
 *_resource.rc
 *.qm
 .#*
+*.*#
 core
 !core/
 tags
 .DS_Store
 .directory
 *.debug
+Makefile*
 *.prl
 *.app
 moc_*.cpp
@@ -78,5 +71,3 @@ Thumbs.db
 *.dll
 *.exe
 
-.vscode/
-coverage/

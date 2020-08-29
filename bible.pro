@@ -12,8 +12,7 @@
 TEMPLATE = subdirs
 
 SUBDIRS = \
-    DBManager \
-    Application \
+    src \
     tests
 
 CONFIG += ordered

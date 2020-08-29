@@ -1,0 +1,33 @@
+project(dbmanager LANGUAGES CXX)
+
+include_directories(src/include)
+
+set(RESOURCES
+  dbmanager_global.h
+  src/include/Executor.h
+  src/include/Selector.h
+  src/include/dbmapper.h
+  src/include/ConnectionManager.h
+  src/ConnectionManager.cpp
+  src/Processor.cpp
+  src/Executor.cpp
+  src/Selector.cpp
+  src/include/manipulator.h
+  src/manipulator.cpp
+  include/Processor.h
+  include/dbtypes.h
+)
+
+add_library(${PROJECT_NAME} STATIC ${RESOURCES})
+
+find_package(Qt5 COMPONENTS Core Sql REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Sql)
+
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+        include
+    PRIVATE
+        src
+)
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE DBMANAGER_LIBRARY)

@@ -27,7 +27,7 @@ public:
     MOCK_CONST_METHOD0(roleNames, QHash<int, QByteArray>());
     MOCK_METHOD1(setTable, void(const QString &tableName));
     MOCK_METHOD0(select, bool());
-    MOCK_METHOD0(decompressRegistry, void());
+    MOCK_METHOD0(extractRegistry, void());
     MOCK_METHOD0(updateModules, void());
     MOCK_METHOD1(setEditStrategy, void(EditStrategy strategy));
     MOCK_CONST_METHOD0(record, QSqlRecord());

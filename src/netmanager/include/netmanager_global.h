@@ -1,0 +1,12 @@
+#ifndef NETMANAGER_GLOBAL_H
+#define NETMANAGER_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(NETMANAGER_LIBRARY)
+#  define NETMANAGER_EXPORT Q_DECL_EXPORT
+#else
+#  define NETMANAGER_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // NETMANAGER_GLOBAL_H
