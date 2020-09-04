@@ -8,17 +8,16 @@
 
 
 Module::Module(const QJsonObject& moduleJson)
-    : m_languageShow { moduleJson.value("aln").toString() }
+    : m_name { moduleJson.value("fil").toString() },
+      m_description { moduleJson.value("des").toString() },
+      m_abbreviation { moduleJson.value("abr").toString() },
+      m_information { moduleJson.value("inf").toString() },
+      m_comment { moduleJson.value("cmt").toString() },
+      m_copyright { moduleJson.value("lic").toString() },
+      m_hidden { moduleJson.value("hid").toBool() },
+      m_defaultDownload { moduleJson.value("def").toBool() },
+      m_languageShow { moduleJson.value("aln").toString() }
 {
-    m_name = moduleJson.value("fil").toString();
-    m_abbreviation = moduleJson.value("abr").toString();
-    m_description = moduleJson.value("des").toString();
-    m_information = moduleJson.value("inf").toString();
-    m_comment = moduleJson.value("cmt").toString();
-    m_copyright = moduleJson.value("lic").toString();
-    m_hidden = moduleJson.value("hid").toBool();
-    m_defaultDownload = moduleJson.value("def").toBool();
-
     convertSize(moduleJson.value("siz").toString());
     convertUpdate(moduleJson.value("upd").toString());
 }

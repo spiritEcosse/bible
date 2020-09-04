@@ -3,7 +3,8 @@
 
 #include <QObject>
 #include <unordered_map>
-#include "modelregistry.h"
+
+#include "managerregistry.h"
 #include "groupmodules.h"
 
 // WARNING: replace this three on one class
@@ -49,12 +50,11 @@ signals:
 
 private:
     friend class TestManagerGroup::tst_ManagerGroup;
-    std::unique_ptr<ModelRegistry> m_modelRegistry;
+    std::unique_ptr<ManagerRegistry> m_managerRegistry;
     std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual> addToCollection(const QJsonArray& object);
 
 private slots:
-    void run(const QJsonArray& object);
-
+    void makeGroup(const QJsonArray& object);
 };
 
 #endif // MANAGERGROUP_H

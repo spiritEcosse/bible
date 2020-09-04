@@ -1,16 +1,16 @@
+#include <QJsonArray>
+
 #include "modelregistry.h"
 
 
 ModelRegistry::ModelRegistry()
 {
-
 }
 
-void ModelRegistry::update()
+void ModelRegistry::update(const QJsonArray& array)
 {
-
+    emit updateSuccess();
 }
-
 
 int ModelRegistry::rowCount(const QModelIndex& parent) const
 {
@@ -50,4 +50,9 @@ QHash<int, QByteArray> ModelRegistry::roleNames() const
     roles[RegistryRoles::InfoUrlRole] = "info_url";
 
     return roles;
+}
+
+std::vector<Registry>::const_iterator ModelRegistry::getRegistry()
+{
+    return m_registriesIter++;
 }

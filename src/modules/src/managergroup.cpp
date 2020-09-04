@@ -1,18 +1,19 @@
-#include "managergroup.h"
-#include "module.h"
 #include <QJsonArray>
 #include <QJsonObject>
 
+#include "managergroup.h"
+#include "module.h"
+
 
 ManagerGroup::ManagerGroup(QObject *parent)
-    : QObject(parent), m_modelRegistry { new ModelRegistry {} }
+    : QObject(parent), m_managerRegistry { new ManagerRegistry {} }
 {
-    connect(&*m_modelRegistry, &ModelRegistry::updateDone, this, &ManagerGroup::run);
+    connect(&*m_managerRegistry, &ManagerRegistry::retrieveDataSuccess, this, &ManagerGroup::makeGroup);
 }
 
 void ManagerGroup::downloadRegistry()
 {
-//    m_registry->download();
+    m_managerRegistry->download();
 }
 
 std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual>
@@ -32,7 +33,7 @@ ManagerGroup::addToCollection(const QJsonArray& source)
     return mGMap;
 }
 
-void ManagerGroup::run(const QJsonArray& source)
+void ManagerGroup::makeGroup(const QJsonArray& source)
 {
     emit completed(addToCollection(source));
 }

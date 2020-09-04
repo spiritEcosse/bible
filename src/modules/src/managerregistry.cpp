@@ -11,15 +11,21 @@
 #include <JlCompress.h>
 
 ManagerRegistry::ManagerRegistry(QObject *parent)
-    : QObject(parent)
+    : QObject(parent), m_modelRegistry { new ModelRegistry {} }
 {
-    connect(&manager, SIGNAL (readyRead(QString)), SLOT (extractRegistry(QString)));
-    connect(this, SIGNAL (retrieveDataResult(QJsonArray, QString)), SLOT (removeRegistry()));
+    connect(&manager, &DownloadManager::readyRead, this, &ManagerRegistry::extractRegistry);
+    connect(&manager, &DownloadManager::failed, this, &ManagerRegistry::download);
+    connect(this, &ManagerRegistry::retrieveDataSuccess, &ManagerRegistry::removeRegistry);
+    connect(this, &ManagerRegistry::retrieveDataSuccess, &*m_modelRegistry, &ModelRegistry::update);
 }
 
-void ManagerRegistry::download(const QByteArray& registryBase64)
+void ManagerRegistry::download()
 {
-    manager.append(QUrl::fromEncoded(QByteArray::fromBase64(registryBase64)));
+    try {
+        auto registry = m_modelRegistry->getRegisry();
+        manager.append(registry->url());
+    } catch (const std::out_of_range&) {
+    }
 }
 
 void ManagerRegistry::extractRegistry(const QString& fileName)
@@ -29,8 +35,8 @@ void ManagerRegistry::extractRegistry(const QString& fileName)
 
     if (JlCompress::getFileList(registryArchive.fileName()).contains(nameFileRegistry)) {
         JlCompress::extractFile(registryArchive.fileName(), nameFileRegistry, fileRegistry.fileName());
+        retrieveData();
     }
-    retrieveData();
 }
 
 void ManagerRegistry::removeRegistry()
@@ -38,13 +44,6 @@ void ManagerRegistry::removeRegistry()
     registryArchive.exists() && registryArchive.remove();
     fileRegistry.exists() && fileRegistry.remove();
     emit removeRegistrySuccess();
-}
-
-void ManagerRegistry::tryOtherLinkDownload()
-{
-    QString fileUrl = "file:///home/igor/projects/bible/build-bible-Desktop_Qt_5_6_3_GCC_64bit-Debug/tests/integration/modules/files/registry.zip";
-    QByteArray registryQByte(fileUrl.toLocal8Bit());
-    download(registryQByte.toBase64());
 }
 
 const QJsonArray ManagerRegistry::getDownloads(const QJsonDocument& document)
@@ -65,7 +64,10 @@ void ManagerRegistry::retrieveData()
 
     error |= retrieveResult.error != QJsonParseError::NoError;
     const QJsonArray& array = error ? QJsonArray() : getDownloads(document);
-    emit retrieveDataResult(array, array.isEmpty() ? "Something wrong." : "");
+
+    if (!array.isEmpty()) {
+        emit retrieveDataSuccess(array);
+    }
 }
 
 // registryVersion

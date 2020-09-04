@@ -23,6 +23,7 @@ public:
 signals:
     void finished();
     void readyRead(const QString& fileName);
+    void failed();
 
 private slots:
     void startNextDownload();

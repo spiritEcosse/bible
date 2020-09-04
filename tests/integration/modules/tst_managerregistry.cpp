@@ -61,7 +61,7 @@ tst_ManagerRegistry::~tst_ManagerRegistry()
 void tst_ManagerRegistry::download_data()
 {
     fileRegistry.open(QFile::WriteOnly);
-    fileRegistry.write(QJsonDocument {QJsonObject { { "downloads", { } } } }.toJson());
+    fileRegistry.write(QJsonDocument {QJsonObject { { "downloads", {{"key", "val"}} } } }.toJson());
     fileRegistry.close();
 
     QVERIFY(JlCompress::compressFile(fileRegistryArchive.fileName(), fileRegistry.fileName()));
@@ -71,12 +71,18 @@ void tst_ManagerRegistry::download()
 {
     ManagerRegistry managerRegistry;
     QSignalSpy spyReadyRead(&managerRegistry.manager, &DownloadManager::readyRead);
-    QSignalSpy spyLast(&managerRegistry, &ManagerRegistry::retrieveDataResult);
+    QSignalSpy spyLast(&managerRegistry, &ManagerRegistry::retrieveDataSuccess);
     QSignalSpy spyRemoveRegistry(&managerRegistry, &ManagerRegistry::removeRegistrySuccess);
 
-    QString fileUrl = strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath();
-    QByteArray registryQByte(fileUrl.toLocal8Bit());
-    managerRegistry.download(registryQByte.toBase64());
+    managerRegistry.m_modelRegistry->m_registries = {
+        Registry{
+            "ZmlsZTovLy9ob21lL2lnb3IvcHJvamVjdHMvYmlibGUvYnVpbGQtYmlibGUtRGVza3RvcF9RdF81XzZfM19HQ0NfNjRiaXQtRGVidWcvdGVzdHMvaW50ZWdyYXRpb24vbW9kdWxlcy9maWxlcy9yZWdpc3RyeS56aXA=",
+            1,
+            "ZmlsZXM6Ly8vaG9tZS9pZ29yL3Byb2plY3RzL2JpYmxlL2J1aWxkLWJpYmxlLURlc2t0b3BfUXRfNV82XzNfR0NDXzY0Yml0LURlYnVnL3Rlc3RzL2ludGVncmF0aW9uL21vZHVsZXMvZmlsZXMvcmVnaXN0cnlfaW5mby5qc29u"
+        }
+    };
+
+    managerRegistry.download();
     QVERIFY(spyLast.wait());
     QCOMPARE(spyReadyRead.count(), 1);
     QCOMPARE(spyRemoveRegistry.count(), 1);
@@ -121,7 +127,7 @@ void tst_ManagerRegistry::retrieveData()
     QFETCH(QString, error);
 
     ManagerRegistry managerRegistry;
-    QSignalSpy spyLast(&managerRegistry, &ManagerRegistry::retrieveDataResult);
+    QSignalSpy spyLast(&managerRegistry, &ManagerRegistry::retrieveDataSuccess);
     QSignalSpy spyRemoveRegistry(&managerRegistry, &ManagerRegistry::removeRegistrySuccess);
 
     managerRegistry.fileRegistry.setFileName(fileName);

@@ -3,6 +3,7 @@
 #include "managergroup.h"
 #include "groupmodules.h"
 #include "managerregistry.h"
+#include "modelregistry.h"
 
 Q_DECLARE_METATYPE(std::string)
 Q_DECLARE_METATYPE(QJsonArray)
@@ -29,8 +30,8 @@ private slots:
     void cleanupTestCase();
     void addToCollection_data();
     void addToCollection();
-    void run_data();
-    void run();
+    void makeGroup_data();
+    void makeGroup();
     void downloadRegistry_data();
     void downloadRegistry();
 };
@@ -109,7 +110,7 @@ void tst_ManagerGroup::addToCollection()
     }
 }
 
-void tst_ManagerGroup::run_data()
+void tst_ManagerGroup::makeGroup_data()
 {
     QTest::addColumn<QJsonArray>("array");
 
@@ -117,14 +118,14 @@ void tst_ManagerGroup::run_data()
     QTest::newRow("simple case") << array;
 }
 
-void tst_ManagerGroup::run()
+void tst_ManagerGroup::makeGroup()
 {
     QFETCH(QJsonArray, array);
     qRegisterMetaType<std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual>>("std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual>"); // WARNING : make this simple
-    ManagerGroup filler;
-    QSignalSpy spy(&filler, &ManagerGroup::completed);
+    ManagerGroup managerGroup;
+    QSignalSpy spy(&managerGroup, &ManagerGroup::completed);
 
-    filler.run(array);
+    managerGroup.makeGroup(array);
     QCOMPARE(spy.count(), 1);
 }
 
@@ -138,15 +139,15 @@ void tst_ManagerGroup::downloadRegistry_data() {
 
 void tst_ManagerGroup::downloadRegistry()
 {
-//    qRegisterMetaType<std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual>>("std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual>"); // WARNING : make this simple
-//    ManagerGroup filler;
-//    QSignalSpy spy(&*filler.m_registry, &ManagerRegistry::retrieveDataResult);
-//    QSignalSpy spyСompleted(&filler, &ManagerGroup::completed);
+    qRegisterMetaType<std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual>>("std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual>"); // WARNING : make this simple
+    ManagerGroup managerGroup;
+    QSignalSpy spy(&*managerGroup.m_managerRegistry, &ManagerRegistry::retrieveDataSuccess);
+    QSignalSpy spyСompleted(&managerGroup, &ManagerGroup::completed);
 
-//    filler.downloadRegistry();
-//    QVERIFY(spyСompleted.wait());
-//    QCOMPARE(spy.count(), 1);
-//    QCOMPARE(spyСompleted.count(), 1);
+    managerGroup.downloadRegistry();
+    QVERIFY(spyСompleted.wait());
+    QCOMPARE(spy.count(), 1);
+    QCOMPARE(spyСompleted.count(), 1);
 }
 
 }
