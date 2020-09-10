@@ -2,6 +2,7 @@
 #define REGISTRY_H
 
 #include <QString>
+#include <QUrl>
 
 class QJsonObject;
 
@@ -9,11 +10,11 @@ class Registry
 {
 public:
     Registry(const QJsonObject& registryJson);
-    Registry(QString&& url, short && priority, QString&& infoUrl);
+    Registry(const char* url, short && priority, const char* infoUrl);
 
-    QString url() const;
+    QUrl url() const;
     short priority() const;
-    QString infoUrl() const;
+    QUrl infoUrl() const;
 private:
     QByteArray m_url;
     short int m_priority;

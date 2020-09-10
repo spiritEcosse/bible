@@ -1,7 +1,7 @@
-#include <QUrl>
 #include <QByteArray>
 #include <QJsonObject>
 
+#include <QDebug>
 #include "registry.h"
 
 
@@ -11,15 +11,16 @@ Registry::Registry(const QJsonObject& registryJson)
       m_infoUrl { registryJson.value("info_url").toString().toUtf8().toBase64() }
 {}
 
-Registry::Registry(QString &&url, short &&priority, QString &&infoUrl)
-    : m_url { url.toUtf8().toBase64() },
+Registry::Registry(const char* url, short &&priority, const char* infoUrl)
+    : m_url { url },
       m_priority { priority },
-      m_infoUrl { infoUrl.toUtf8().toBase64() }
-{}
-
-QString Registry::url() const
+      m_infoUrl { infoUrl }
 {
-    return QString(m_url);
+}
+
+QUrl Registry::url() const
+{
+    return QUrl::fromEncoded(QByteArray::fromBase64(m_url));
 }
 
 short Registry::priority() const
@@ -27,7 +28,7 @@ short Registry::priority() const
     return m_priority;
 }
 
-QString Registry::infoUrl() const
+QUrl Registry::infoUrl() const
 {
-    return QString(m_infoUrl);
+    return QUrl::fromEncoded(QByteArray::fromBase64(m_infoUrl));;
 }

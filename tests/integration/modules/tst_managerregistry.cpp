@@ -18,7 +18,9 @@ private:
     const QString strUrl { "file://" };
     QFile fileRegistry { "registry.json" };
     const QFile fileRegistryArchive { "registry.zip" };
+    const QFile fileRegistryInfo { "registry_info.json" };
     const QDir dir;
+    ManagerRegistry managerRegistry;
 
 private slots:
     void initTestCase();
@@ -69,20 +71,20 @@ void tst_ManagerRegistry::download_data()
 
 void tst_ManagerRegistry::download()
 {
-    ManagerRegistry managerRegistry;
-    QSignalSpy spyReadyRead(&managerRegistry.manager, &DownloadManager::readyRead);
+    QSignalSpy spyReadyRead(&*managerRegistry.m_manager, &DownloadManager::readyRead);
     QSignalSpy spyLast(&managerRegistry, &ManagerRegistry::retrieveDataSuccess);
     QSignalSpy spyRemoveRegistry(&managerRegistry, &ManagerRegistry::removeRegistrySuccess);
 
     managerRegistry.m_modelRegistry->m_registries = {
         Registry{
-            "ZmlsZTovLy9ob21lL2lnb3IvcHJvamVjdHMvYmlibGUvYnVpbGQtYmlibGUtRGVza3RvcF9RdF81XzZfM19HQ0NfNjRiaXQtRGVidWcvdGVzdHMvaW50ZWdyYXRpb24vbW9kdWxlcy9maWxlcy9yZWdpc3RyeS56aXA=",
+            QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
             1,
-            "ZmlsZXM6Ly8vaG9tZS9pZ29yL3Byb2plY3RzL2JpYmxlL2J1aWxkLWJpYmxlLURlc2t0b3BfUXRfNV82XzNfR0NDXzY0Yml0LURlYnVnL3Rlc3RzL2ludGVncmF0aW9uL21vZHVsZXMvZmlsZXMvcmVnaXN0cnlfaW5mby5qc29u"
+            QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
         }
     };
 
     managerRegistry.download();
+
     QVERIFY(spyLast.wait());
     QCOMPARE(spyReadyRead.count(), 1);
     QCOMPARE(spyRemoveRegistry.count(), 1);
@@ -93,7 +95,7 @@ void tst_ManagerRegistry::retrieveData_data()
 {
     QTest::addColumn<QString>("fileName");
     QTest::addColumn<QJsonArray>("array");
-    QTest::addColumn<QString>("error");
+    QTest::addColumn<int>("signalBit");
 
     QJsonArray array ({"key", "value"});
 
@@ -101,42 +103,44 @@ void tst_ManagerRegistry::retrieveData_data()
     fileRegistry.write(QJsonDocument {QJsonObject { { "downloads",  array } } }.toJson());
     fileRegistry.close();
 
-    QTest::newRow("success") << fileRegistry.fileName() << array << "";
+    QTest::newRow("success") << fileRegistry.fileName() << array << 1;
 
     QFile fileRegistryError { "registry_error.json" };
     fileRegistryError.open(QFile::WriteOnly);
     fileRegistryError.close();
 
-    QTest::newRow("error: empty file") << fileRegistryError.fileName() << QJsonArray() << "Something wrong.";
+    QTest::newRow("error: empty file") << fileRegistryError.fileName() << QJsonArray() << 0;
 
     QFile fileRegistryDoesntExistKey { "registry_doesnt_exist_key.json" };
     fileRegistryDoesntExistKey.open(QFile::WriteOnly);
     fileRegistryDoesntExistKey.write(QJsonDocument {QJsonObject { { "downloads-non",  "" } } }.toJson());
     fileRegistryDoesntExistKey.close();
 
-    QTest::newRow("error : doesnt exist key") << fileRegistryDoesntExistKey.fileName() << QJsonArray() << "Something wrong.";
+    QTest::newRow("error : doesnt exist key") << fileRegistryDoesntExistKey.fileName() << QJsonArray() << 0;
 
     QFile fileRegistryDoesntExist { "registry_doesnt_exist.json" };
-    QTest::newRow("error : doesnt exist file") << fileRegistryDoesntExist.fileName() << QJsonArray() << "Something wrong.";
+    QTest::newRow("error : doesnt exist file") << fileRegistryDoesntExist.fileName() << QJsonArray() << 0;
 }
 
 void tst_ManagerRegistry::retrieveData()
 {
     QFETCH(QString, fileName);
     QFETCH(QJsonArray, array);
-    QFETCH(QString, error);
+    QFETCH(int, signalBit);
 
-    ManagerRegistry managerRegistry;
     QSignalSpy spyLast(&managerRegistry, &ManagerRegistry::retrieveDataSuccess);
     QSignalSpy spyRemoveRegistry(&managerRegistry, &ManagerRegistry::removeRegistrySuccess);
 
     managerRegistry.fileRegistry.setFileName(fileName);
     managerRegistry.retrieveData();
-    QCOMPARE(spyLast.count(), 1);
-    QCOMPARE(spyRemoveRegistry.count(), 1);
-    QList<QVariant> arguments = spyLast.takeFirst();
-    QCOMPARE(arguments[1].toString(), error);
-    QCOMPARE(arguments[0].toJsonArray(), array);
+
+    QCOMPARE(spyLast.count(), signalBit);
+    QCOMPARE(spyRemoveRegistry.count(), signalBit);
+
+    if (signalBit) {
+        QList<QVariant> arguments = spyLast.takeFirst();
+        QCOMPARE(arguments[0].toJsonArray(), array);
+    }
 }
 
 void tst_ManagerRegistry::removeRegistry_data()
@@ -152,7 +156,6 @@ void tst_ManagerRegistry::removeRegistry_data()
 
 void tst_ManagerRegistry::removeRegistry()
 {
-    ManagerRegistry managerRegistry;
     QSignalSpy spy(&managerRegistry, &ManagerRegistry::removeRegistrySuccess);
     managerRegistry.registryArchive.setFileName(QString("%1/%2").arg(dirDownload, fileRegistryArchive.fileName()));
     managerRegistry.removeRegistry();
@@ -183,7 +186,6 @@ void tst_ManagerRegistry::hasNewRegistry()
     QSettings settings;
     settings.setValue("registryVersion", versionInApp);
 
-    ManagerRegistry managerRegistry;
     QCOMPARE(managerRegistry.hasNewRegistry(version), availableNewRegistry);
 }
 
@@ -210,7 +212,6 @@ void tst_ManagerRegistry::extractRegistry_data()
 void tst_ManagerRegistry::extractRegistry()
 {
     QFETCH(QString, fileName);
-    ManagerRegistry managerRegistry;
     managerRegistry.extractRegistry(fileName);
 }
 }

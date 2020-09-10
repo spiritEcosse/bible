@@ -70,6 +70,7 @@ void DownloadManager::startNextDownload()
                 qPrintable(output.errorString()));
 
         startNextDownload();
+        emit failed();
         return;                 // skip this download
     }
 
@@ -117,6 +118,7 @@ void DownloadManager::downloadFinished()
     if (currentDownload->error()) {
         // download failed
         fprintf(stderr, "Failed: %s\n", qPrintable(currentDownload->errorString()));
+        emit failed();
     } else {
         printf("Succeeded.\n");
         ++downloadedCount;

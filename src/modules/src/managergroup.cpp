@@ -1,5 +1,6 @@
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QTimer>
 
 #include "managergroup.h"
 #include "module.h"
@@ -13,7 +14,7 @@ ManagerGroup::ManagerGroup(QObject *parent)
 
 void ManagerGroup::downloadRegistry()
 {
-    m_managerRegistry->download();
+    QTimer::singleShot(0, &*m_managerRegistry, &ManagerRegistry::download);
 }
 
 std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual>

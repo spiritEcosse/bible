@@ -1,5 +1,6 @@
 #include <QJsonArray>
 
+#include <QDebug>
 #include "modelregistry.h"
 
 
@@ -52,7 +53,17 @@ QHash<int, QByteArray> ModelRegistry::roleNames() const
     return roles;
 }
 
-std::vector<Registry>::const_iterator ModelRegistry::getRegistry()
+std::pair<bool, std::vector<Registry>::const_iterator> ModelRegistry::getRegistry()
 {
-    return m_registriesIter++;
+    bool end = m_registriesIter == m_registries.end();
+
+    if (end) {
+        addRegistry();
+    }
+    return std::make_pair(end, m_registriesIter++);
+}
+
+void ModelRegistry::addRegistry()
+{
+
 }

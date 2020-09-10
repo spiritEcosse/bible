@@ -21,8 +21,10 @@ public:
 private:
     const QString pathFiles { "files" };
     const QString dirDownload = "download";
+    const QString strUrl { "file://" };
     QFile fileRegistry { "registry.json" };
     const QFile fileRegistryArchive { "registry.zip" };
+    const QFile fileRegistryInfo { "registry_info.json" };
     QDir dir;
 
 private slots:
@@ -131,7 +133,7 @@ void tst_ManagerGroup::makeGroup()
 
 void tst_ManagerGroup::downloadRegistry_data() {
     fileRegistry.open(QFile::WriteOnly);
-    fileRegistry.write(QJsonDocument {QJsonObject { { "downloads", { } } } }.toJson());
+    fileRegistry.write(QJsonDocument {QJsonObject { { "downloads", {{"key", "val"}} } } }.toJson());
     fileRegistry.close();
 
     QVERIFY(JlCompress::compressFile(fileRegistryArchive.fileName(), fileRegistry.fileName()));
@@ -144,7 +146,16 @@ void tst_ManagerGroup::downloadRegistry()
     QSignalSpy spy(&*managerGroup.m_managerRegistry, &ManagerRegistry::retrieveDataSuccess);
     QSignalSpy spyСompleted(&managerGroup, &ManagerGroup::completed);
 
+    managerGroup.m_managerRegistry->m_modelRegistry->m_registries = {
+        Registry{
+            QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
+            1,
+            QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
+        }
+    };
+
     managerGroup.downloadRegistry();
+
     QVERIFY(spyСompleted.wait());
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spyСompleted.count(), 1);

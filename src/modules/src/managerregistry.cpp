@@ -11,20 +11,24 @@
 #include <JlCompress.h>
 
 ManagerRegistry::ManagerRegistry(QObject *parent)
-    : QObject(parent), m_modelRegistry { new ModelRegistry {} }
+    : QObject(parent),
+      m_modelRegistry { new ModelRegistry {} },
+      m_manager { new DownloadManager {} }
 {
-    connect(&manager, &DownloadManager::readyRead, this, &ManagerRegistry::extractRegistry);
-    connect(&manager, &DownloadManager::failed, this, &ManagerRegistry::download);
+    connect(&*m_manager, &DownloadManager::readyRead, this, &ManagerRegistry::extractRegistry);
+    connect(&*m_manager, &DownloadManager::failed, this, &ManagerRegistry::download);
     connect(this, &ManagerRegistry::retrieveDataSuccess, &ManagerRegistry::removeRegistry);
     connect(this, &ManagerRegistry::retrieveDataSuccess, &*m_modelRegistry, &ModelRegistry::update);
 }
 
 void ManagerRegistry::download()
 {
-    try {
-        auto registry = m_modelRegistry->getRegisry();
-        manager.append(registry->url());
-    } catch (const std::out_of_range&) {
+    bool end;
+    std::vector<Registry>::const_iterator registry;
+    std::tie(end, registry) = m_modelRegistry->getRegistry();
+
+    if (!end) {
+        m_manager->append(registry->url());
     }
 }
 

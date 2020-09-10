@@ -15,6 +15,11 @@ namespace TestManagerRegistry
    class tst_ManagerRegistry;
 }
 
+namespace TestManagerGroup
+{
+   class tst_ManagerGroup;
+}
+
 class ManagerRegistry : public QObject
 {
     Q_OBJECT
@@ -27,12 +32,13 @@ public slots:
 
 private:
     friend class TestManagerRegistry::tst_ManagerRegistry;
+    friend class TestManagerGroup::tst_ManagerGroup;
 
     QFile registryArchive;
     QFile fileRegistryInfo;
     std::unique_ptr<ModelRegistry> m_modelRegistry;
     QFile fileRegistry { "download/registry.json" };
-    DownloadManager manager;
+    std::unique_ptr<DownloadManager> m_manager;
     virtual bool hasNewRegistry(int version);
     virtual const QJsonArray getDownloads(const QJsonDocument& document);
     virtual int getVersion(const QJsonDocument& document);
@@ -46,7 +52,7 @@ private slots:
     virtual void retrieveData();
     virtual void extractRegistry(const QString& fileName);
     virtual void removeRegistry();
-    void checkNewRegistry();
+    virtual void checkNewRegistry();
 };
 
 #endif // MANAGERREGISTRY_H
