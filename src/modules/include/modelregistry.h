@@ -28,7 +28,7 @@ public:
     int rowCount(const QModelIndex& parent = {}) const override;
     QVariant data(const QModelIndex& index = {}, int role = Qt::DisplayRole) const override;
     QHash<int, QByteArray> roleNames() const override;
-    std::pair<bool, std::vector<Registry>::const_iterator> getRegistry();
+    void getRegistry();
 private:
     friend class TestManagerRegistry::tst_ManagerRegistry;
     friend class TestManagerGroup::tst_ManagerGroup;
@@ -40,6 +40,7 @@ private:
             "aHR0cDovL21waDQucnUvcmVnaXN0cnlfaW5mby5qc29u"
         }
     };
+    int index = 0;
     std::vector<Registry>::iterator m_registriesIter = m_registries.begin();
     enum RegistryRoles
     {
@@ -50,6 +51,7 @@ private:
     void addRegistry();
 signals:
     void updateSuccess();
+    void registry(const Registry& registry);
 
 public slots:
     void update(const QJsonArray& array);

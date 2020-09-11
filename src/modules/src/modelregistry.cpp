@@ -53,14 +53,14 @@ QHash<int, QByteArray> ModelRegistry::roleNames() const
     return roles;
 }
 
-std::pair<bool, std::vector<Registry>::const_iterator> ModelRegistry::getRegistry()
+void ModelRegistry::getRegistry()
 {
-    bool end = m_registriesIter == m_registries.end();
+    try {
+        emit registry(m_registries.at(index));
+        ++index;
+    } catch (std::out_of_range) {
 
-    if (end) {
-        addRegistry();
     }
-    return std::make_pair(end, m_registriesIter++);
 }
 
 void ModelRegistry::addRegistry()

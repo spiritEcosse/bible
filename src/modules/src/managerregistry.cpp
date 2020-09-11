@@ -19,17 +19,17 @@ ManagerRegistry::ManagerRegistry(QObject *parent)
     connect(&*m_manager, &DownloadManager::failed, this, &ManagerRegistry::download);
     connect(this, &ManagerRegistry::retrieveDataSuccess, &ManagerRegistry::removeRegistry);
     connect(this, &ManagerRegistry::retrieveDataSuccess, &*m_modelRegistry, &ModelRegistry::update);
+    connect(&*m_modelRegistry, &ModelRegistry::registry, this, &ManagerRegistry::startDownload);
 }
 
 void ManagerRegistry::download()
 {
-    bool end;
-    std::vector<Registry>::const_iterator registry;
-    std::tie(end, registry) = m_modelRegistry->getRegistry();
+    m_modelRegistry->getRegistry();
+}
 
-    if (!end) {
-        m_manager->append(registry->url());
-    }
+void ManagerRegistry::startDownload(const Registry& registry)
+{
+    m_manager->append(registry.url());
 }
 
 void ManagerRegistry::extractRegistry(const QString& fileName)

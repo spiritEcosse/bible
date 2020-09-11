@@ -14,7 +14,7 @@ ManagerGroup::ManagerGroup(QObject *parent)
 
 void ManagerGroup::downloadRegistry()
 {
-    QTimer::singleShot(0, &*m_managerRegistry, &ManagerRegistry::download);
+    m_managerRegistry->download();
 }
 
 std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual>

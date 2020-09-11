@@ -49,6 +49,7 @@ signals:
     void removeRegistrySuccess();
 
 private slots:
+    virtual void startDownload(const Registry& registry);
     virtual void retrieveData();
     virtual void extractRegistry(const QString& fileName);
     virtual void removeRegistry();

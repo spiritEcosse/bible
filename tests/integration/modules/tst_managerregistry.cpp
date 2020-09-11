@@ -215,6 +215,7 @@ void tst_ManagerRegistry::extractRegistry()
     managerRegistry.extractRegistry(fileName);
 }
 }
+
 QTEST_MAIN(TestManagerRegistry::tst_ManagerRegistry)
 
 #include "tst_managerregistry.moc"
