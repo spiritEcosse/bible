@@ -1,6 +1,5 @@
 #include <QJsonArray>
 #include <QJsonObject>
-#include <QTimer>
 
 #include "managergroup.h"
 #include "module.h"

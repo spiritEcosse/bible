@@ -132,8 +132,11 @@ void tst_ManagerGroup::makeGroup()
 }
 
 void tst_ManagerGroup::downloadRegistry_data() {
+    QSettings settings;
+    settings.setValue("registryVersion", 0);
+
     fileRegistry.open(QFile::WriteOnly);
-    fileRegistry.write(QJsonDocument {QJsonObject { { "downloads", {{"key", "val"}} } } }.toJson());
+    fileRegistry.write(QJsonDocument {QJsonObject { { "downloads", {{"key", "val"}} }, {"version", 1} } }.toJson());
     fileRegistry.close();
 
     QVERIFY(JlCompress::compressFile(fileRegistryArchive.fileName(), fileRegistry.fileName()));
