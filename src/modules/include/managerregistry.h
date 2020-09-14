@@ -29,6 +29,7 @@ public:
 
 public slots:
     virtual void download() const;
+    virtual void checkNewVesion() const;
 
 private:
     friend class TestManagerRegistry::tst_ManagerRegistry;
@@ -39,7 +40,8 @@ private:
     std::unique_ptr<ModelRegistry> m_modelRegistry;
     QFile fileRegistry { "download/registry.json" };
     std::unique_ptr<DownloadManager> m_manager;
-    virtual bool hasNewRegistry(int version);
+    std::unique_ptr<Registry> m_registry;
+    virtual bool hasNewRegistry(int version) const;
     virtual const QJsonArray getDownloads(const QJsonDocument& document) const;
     virtual int getVersion(const QJsonDocument& document) const;
     virtual void getDocument(QFile& file);
@@ -48,15 +50,18 @@ signals:
     void newRegistryAvailable(bool available, int version);
     void retrieveDataSuccess(const QJsonArray& array);
     void removeRegistrySuccess();
+    void removeRegistryInfoSuccess();
     void getDocumentSuccess(const QJsonDocument& document);
 
 private slots:
-    virtual void startDownload(const Registry& registry) const;
+    virtual void downloadRegistry(const Registry& registry);
+    virtual void downloadInfo(const Registry& registry);
     virtual void retrieveData(const QJsonDocument& document);
     virtual void retrieveDataInfo(const QJsonDocument& document);
     virtual void extractRegistry(const QString& fileName);
     virtual void removeRegistry();
-    virtual void checkNewRegistry();
+    virtual void removeRegistryInfo();
+    virtual void retrieveVersion(const QString& fileName);
 };
 
 #endif // MANAGERREGISTRY_H

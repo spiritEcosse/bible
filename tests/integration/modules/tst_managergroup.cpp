@@ -149,13 +149,12 @@ void tst_ManagerGroup::downloadRegistry()
     QSignalSpy spy(&*managerGroup.m_managerRegistry, &ManagerRegistry::retrieveDataSuccess);
     QSignalSpy spyСompleted(&managerGroup, &ManagerGroup::completed);
 
-    managerGroup.m_managerRegistry->m_modelRegistry->m_registries = {
-        Registry{
-            QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
-            1,
-            QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
-        }
-    };
+    managerGroup.m_managerRegistry->m_registry.reset(
+                new Registry {
+                    QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
+                    1,
+                    QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
+                });
 
     managerGroup.downloadRegistry();
 

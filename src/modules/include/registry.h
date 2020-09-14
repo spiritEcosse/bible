@@ -9,6 +9,7 @@ class QJsonObject;
 class Registry
 {
 public:
+    Registry();
     Registry(const QJsonObject& registryJson);
     Registry(const char* url, short && priority, const char* infoUrl);
 

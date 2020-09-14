@@ -15,21 +15,25 @@ ManagerRegistry::ManagerRegistry(QObject *parent)
       m_modelRegistry { new ModelRegistry {} },
       m_manager { new DownloadManager {} }
 {
-    connect(&*m_manager, &DownloadManager::readyRead, this, &ManagerRegistry::extractRegistry);
-    connect(&*m_manager, &DownloadManager::failed, this, &ManagerRegistry::download);
-    connect(this, &ManagerRegistry::retrieveDataSuccess, &ManagerRegistry::removeRegistry);
-    connect(this, &ManagerRegistry::retrieveDataSuccess, &*m_modelRegistry, &ModelRegistry::update);
-    connect(&*m_modelRegistry, &ModelRegistry::registry, this, &ManagerRegistry::startDownload);
+    connect(&*m_manager, &DownloadManager::failed, &*m_modelRegistry, &ModelRegistry::getRegistry);
 }
 
 void ManagerRegistry::download() const
 {
-    m_modelRegistry->getRegistry();
+    connect(&*m_manager, &DownloadManager::readyRead, this, &ManagerRegistry::extractRegistry);
+
+    connect(&*m_modelRegistry, &ModelRegistry::registry, this, &ManagerRegistry::downloadRegistry);
+
+    connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::removeRegistry);
+    connect(this, &ManagerRegistry::retrieveDataSuccess, &*m_modelRegistry, &ModelRegistry::update);
+
+    m_manager->append(m_registry->url());
 }
 
-void ManagerRegistry::startDownload(const Registry& registry) const
+void ManagerRegistry::downloadRegistry(const Registry &registry)
 {
-    m_manager->append(registry.url());
+    m_registry.reset(new Registry { registry });
+    download();
 }
 
 void ManagerRegistry::extractRegistry(const QString& fileName)
@@ -49,6 +53,11 @@ void ManagerRegistry::removeRegistry()
     registryArchive.exists() && registryArchive.remove();
     fileRegistry.exists() && fileRegistry.remove();
     emit removeRegistrySuccess();
+}
+
+void ManagerRegistry::removeRegistryInfo()
+{
+    emit removeRegistryInfoSuccess();
 }
 
 const QJsonArray ManagerRegistry::getDownloads(const QJsonDocument& document) const
@@ -80,14 +89,24 @@ void ManagerRegistry::getDocument(QFile& file)
 
 // registryVersion
 
-//void ManagerRegistry::download(const QByteArray& registryInfoBase64)
-//{
-//    connect(&manager, &DownloadManager::successfully, this, &RegistryInfo::newRegistry);
-//    manager.append(QUrl::fromEncoded(QByteArray::fromBase64(registryInfoBase64)));
-//}
-
-void ManagerRegistry::checkNewRegistry()
+void ManagerRegistry::checkNewVesion() const
 {
+    connect(&*m_manager, &DownloadManager::readyRead, this, &ManagerRegistry::retrieveVersion);
+    connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::removeRegistryInfo);
+    connect(&*m_modelRegistry, &ModelRegistry::registry, this, &ManagerRegistry::downloadInfo);
+
+    m_modelRegistry->getRegistry();
+}
+
+void ManagerRegistry::downloadInfo(const Registry& registry)
+{
+    m_registry.reset(new Registry { registry });
+    m_manager->append(registry.infoUrl());
+}
+
+void ManagerRegistry::retrieveVersion(const QString& fileName)
+{
+    fileRegistryInfo.setFileName(fileName);
     connect(this, &ManagerRegistry::getDocumentSuccess, this, &ManagerRegistry::retrieveDataInfo);
     getDocument(fileRegistryInfo);
 }
@@ -101,7 +120,7 @@ void ManagerRegistry::retrieveDataInfo(const QJsonDocument &document)
     }
 }
 
-bool ManagerRegistry::hasNewRegistry(int version)
+bool ManagerRegistry::hasNewRegistry(int version) const
 {
     return QSettings().value("registryVersion").toInt() < version;
 }

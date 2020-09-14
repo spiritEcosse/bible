@@ -5,6 +5,11 @@
 #include "registry.h"
 
 
+Registry::Registry()
+{
+
+}
+
 Registry::Registry(const QJsonObject& registryJson)
     : m_url { registryJson.value("url").toString().toUtf8().toBase64() },
       m_priority { static_cast<short>(registryJson.value("priority").toInt()) },
