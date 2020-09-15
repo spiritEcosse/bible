@@ -43,6 +43,10 @@ private slots:
     void retrieveDataInfo();
     void checkNewVersion_data();
     void checkNewVersion();
+    void getVersion_data();
+    void getVersion();
+    void downloadInfo_data();
+    void downloadInfo();
 };
 
 void tst_ManagerRegistry::cleanupTestCase()
@@ -223,10 +227,8 @@ void tst_ManagerRegistry::retrieveDataInfo_data()
             << QJsonDocument {QJsonObject { { "version",  100 } }} << 100 << true << 1;
     QTest::newRow("failed")
             << QJsonDocument {QJsonObject { { "version",  3 } }} << 3 << false << 1;
-    QTest::newRow("error : doesn`t exist key")
-            << QJsonDocument {QJsonObject { { "version-non",  "" } } } << 0 << false << 0;
-    QTest::newRow("error : value not int")
-            << QJsonDocument {QJsonObject { { "version",  "" } } } << 0 << false << 0;
+    QTest::newRow("error : value is 0")
+            << QJsonDocument {QJsonObject { { "version",  0 } } } << 0 << false << 0;
 }
 
 void tst_ManagerRegistry::retrieveDataInfo()
@@ -287,6 +289,43 @@ void tst_ManagerRegistry::checkNewVersion()
     QCOMPARE(spyRemoveRegistryInfo.count(), 1);
     QCOMPARE(spyGetDocumentSuccess.count(), 1);
     QCOMPARE(spyLast.count(), 1);
+}
+
+void tst_ManagerRegistry::getVersion_data()
+{
+    QTest::addColumn<QJsonDocument>("document");
+    QTest::addColumn<int>("version");
+
+    QTest::newRow("success")
+            << QJsonDocument {QJsonObject { { "version",  100 } }} << 100;
+    QTest::newRow("error : doesn`t exist key")
+            << QJsonDocument {QJsonObject { { "version-non",  "" } } } << 0;
+    QTest::newRow("error : value not int")
+            << QJsonDocument {QJsonObject { { "version",  "" } } } << 0;
+}
+
+void tst_ManagerRegistry::getVersion()
+{
+    QFETCH(QJsonDocument, document);
+    QFETCH(int, version);
+
+    QCOMPARE(managerRegistry.getVersion(document), version);
+}
+
+void tst_ManagerRegistry::downloadInfo_data()
+{
+
+}
+
+void tst_ManagerRegistry::downloadInfo()
+{
+    Registry registry {
+        QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
+            1,
+            QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
+        };
+
+    managerRegistry.downloadInfo(registry);
 }
 
 void tst_ManagerRegistry::removeRegistry_data()

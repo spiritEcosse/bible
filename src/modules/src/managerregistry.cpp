@@ -30,7 +30,7 @@ void ManagerRegistry::download() const
     m_manager->append(m_registry->url());
 }
 
-void ManagerRegistry::downloadRegistry(const Registry &registry)
+void ManagerRegistry::downloadRegistry(const Registry &registry) // WARNING : add test
 {
     m_registry.reset(new Registry { registry });
     download();
@@ -55,7 +55,7 @@ void ManagerRegistry::removeRegistry()
     emit removeRegistrySuccess();
 }
 
-void ManagerRegistry::removeRegistryInfo()
+void ManagerRegistry::removeRegistryInfo() // WARNING : add test
 {
     emit removeRegistryInfoSuccess();
 }
@@ -87,13 +87,13 @@ void ManagerRegistry::getDocument(QFile& file)
     }
 }
 
-// registryVersion
+// version
 
 void ManagerRegistry::checkNewVesion() const
 {
+    connect(&*m_modelRegistry, &ModelRegistry::registry, this, &ManagerRegistry::downloadInfo);
     connect(&*m_manager, &DownloadManager::readyRead, this, &ManagerRegistry::retrieveVersion);
     connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::removeRegistryInfo);
-    connect(&*m_modelRegistry, &ModelRegistry::registry, this, &ManagerRegistry::downloadInfo);
 
     m_modelRegistry->getRegistry();
 }
