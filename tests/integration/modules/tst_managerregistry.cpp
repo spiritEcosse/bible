@@ -86,7 +86,7 @@ void tst_ManagerRegistry::download_data()
 
 void tst_ManagerRegistry::download()
 {
-    QSignalSpy spyReadyRead(&*managerRegistry.m_manager, &DownloadManager::readyRead);
+    QSignalSpy spyReadyRead(managerRegistry.m_manager.get(), &DownloadManager::readyRead);
     QSignalSpy spyRemoveRegistry(&managerRegistry, &ManagerRegistry::removeRegistrySuccess);
     QSignalSpy spyLast(&managerRegistry, &ManagerRegistry::retrieveDataSuccess);
 
@@ -267,9 +267,9 @@ void tst_ManagerRegistry::checkNewVersion()
 {
     qRegisterMetaType<Registry>("Registry");
 
-    QSignalSpy spyReadyRead(&*managerRegistry.m_manager, &DownloadManager::readyRead);
-    QSignalSpy spyRemoveRegistryInfo(&managerRegistry, &ManagerRegistry::removeRegistryInfoSuccess);
-    QSignalSpy spyRegistry(&*managerRegistry.m_modelRegistry, &ModelRegistry::registry);
+    QSignalSpy spyReadyRead(managerRegistry.m_manager.get(), &DownloadManager::readyRead);
+    QSignalSpy spyRemoveInfo(&managerRegistry, &ManagerRegistry::removeInfoSuccess);
+    QSignalSpy spyRegistry(managerRegistry.m_modelRegistry.get(), &ModelRegistry::registry);
     QSignalSpy spyGetDocumentSuccess(&managerRegistry, &ManagerRegistry::getDocumentSuccess);
     QSignalSpy spyLast(&managerRegistry, &ManagerRegistry::newRegistryAvailable);
 
@@ -286,7 +286,7 @@ void tst_ManagerRegistry::checkNewVersion()
     QVERIFY(spyLast.wait());
     QCOMPARE(spyReadyRead.count(), 1);
     QCOMPARE(spyRegistry.count(), 1);
-    QCOMPARE(spyRemoveRegistryInfo.count(), 1);
+    QCOMPARE(spyRemoveInfo.count(), 1);
     QCOMPARE(spyGetDocumentSuccess.count(), 1);
     QCOMPARE(spyLast.count(), 1);
 }
@@ -326,6 +326,7 @@ void tst_ManagerRegistry::downloadInfo()
         };
 
     managerRegistry.downloadInfo(registry);
+    QCOMPARE(*managerRegistry.m_registry, registry);
 }
 
 void tst_ManagerRegistry::removeRegistry_data()

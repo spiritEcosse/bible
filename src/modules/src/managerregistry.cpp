@@ -15,17 +15,17 @@ ManagerRegistry::ManagerRegistry(QObject *parent)
       m_modelRegistry { new ModelRegistry {} },
       m_manager { new DownloadManager {} }
 {
-    connect(&*m_manager, &DownloadManager::failed, &*m_modelRegistry, &ModelRegistry::getRegistry);
+    connect(m_manager.get(), &DownloadManager::failed, m_modelRegistry.get(), &ModelRegistry::getRegistry);
 }
 
 void ManagerRegistry::download() const
 {
-    connect(&*m_manager, &DownloadManager::readyRead, this, &ManagerRegistry::extractRegistry);
+    connect(m_manager.get(), &DownloadManager::readyRead, this, &ManagerRegistry::extractRegistry);
 
-    connect(&*m_modelRegistry, &ModelRegistry::registry, this, &ManagerRegistry::downloadRegistry);
+    connect(m_modelRegistry.get(), &ModelRegistry::registry, this, &ManagerRegistry::downloadRegistry);
 
     connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::removeRegistry);
-    connect(this, &ManagerRegistry::retrieveDataSuccess, &*m_modelRegistry, &ModelRegistry::update);
+    connect(this, &ManagerRegistry::retrieveDataSuccess, m_modelRegistry.get(), &ModelRegistry::update);
 
     m_manager->append(m_registry->url());
 }
@@ -55,9 +55,9 @@ void ManagerRegistry::removeRegistry()
     emit removeRegistrySuccess();
 }
 
-void ManagerRegistry::removeRegistryInfo() // WARNING : add test
+void ManagerRegistry::removeInfo() // WARNING : add test
 {
-    emit removeRegistryInfoSuccess();
+    emit removeInfoSuccess();
 }
 
 const QJsonArray ManagerRegistry::getDownloads(const QJsonDocument& document) const
@@ -91,9 +91,9 @@ void ManagerRegistry::getDocument(QFile& file)
 
 void ManagerRegistry::checkNewVesion() const
 {
-    connect(&*m_modelRegistry, &ModelRegistry::registry, this, &ManagerRegistry::downloadInfo);
-    connect(&*m_manager, &DownloadManager::readyRead, this, &ManagerRegistry::retrieveVersion);
-    connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::removeRegistryInfo);
+    connect(m_modelRegistry.get(), &ModelRegistry::registry, this, &ManagerRegistry::downloadInfo);
+    connect(m_manager.get(), &DownloadManager::readyRead, this, &ManagerRegistry::retrieveVersion);
+    connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::removeInfo);
 
     m_modelRegistry->getRegistry();
 }

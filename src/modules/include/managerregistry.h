@@ -50,7 +50,7 @@ signals:
     void newRegistryAvailable(bool available, int version);
     void retrieveDataSuccess(const QJsonArray& array);
     void removeRegistrySuccess();
-    void removeRegistryInfoSuccess();
+    void removeInfoSuccess();
     void getDocumentSuccess(const QJsonDocument& document);
 
 private slots:
@@ -60,7 +60,7 @@ private slots:
     virtual void retrieveDataInfo(const QJsonDocument& document);
     virtual void extractRegistry(const QString& fileName);
     virtual void removeRegistry();
-    virtual void removeRegistryInfo();
+    virtual void removeInfo();
     virtual void retrieveVersion(const QString& fileName);
 };
 

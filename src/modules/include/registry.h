@@ -16,6 +16,7 @@ public:
     QUrl url() const;
     short priority() const;
     QUrl infoUrl() const;
+    bool operator==(const Registry& other) const;
 private:
     QByteArray m_url;
     short int m_priority;

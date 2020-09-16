@@ -8,7 +8,7 @@
 ManagerGroup::ManagerGroup(QObject *parent)
     : QObject(parent), m_managerRegistry { new ManagerRegistry {} }
 {
-    connect(&*m_managerRegistry, &ManagerRegistry::retrieveDataSuccess, this, &ManagerGroup::makeGroup);
+    connect(m_managerRegistry.get(), &ManagerRegistry::retrieveDataSuccess, this, &ManagerGroup::makeGroup);
 }
 
 void ManagerGroup::downloadRegistry()

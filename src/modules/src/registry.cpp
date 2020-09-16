@@ -37,3 +37,10 @@ QUrl Registry::infoUrl() const
 {
     return QUrl::fromEncoded(QByteArray::fromBase64(m_infoUrl));;
 }
+
+bool Registry::operator==(const Registry &other) const
+{
+    return m_url == other.m_url &&
+            m_infoUrl == other.m_infoUrl &&
+            m_priority == other.m_priority;
+}
