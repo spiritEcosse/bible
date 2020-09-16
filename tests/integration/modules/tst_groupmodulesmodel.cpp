@@ -7,10 +7,6 @@ class tst_GroupModulesModel : public QObject
 public:
     tst_GroupModulesModel();
     ~tst_GroupModulesModel();
-
-private slots:
-    void test_case1();
-
 };
 
 tst_GroupModulesModel::tst_GroupModulesModel()
@@ -19,11 +15,6 @@ tst_GroupModulesModel::tst_GroupModulesModel()
 }
 
 tst_GroupModulesModel::~tst_GroupModulesModel()
-{
-
-}
-
-void tst_GroupModulesModel::test_case1()
 {
 
 }

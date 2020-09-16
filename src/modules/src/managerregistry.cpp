@@ -21,16 +21,15 @@ ManagerRegistry::ManagerRegistry(QObject *parent)
 void ManagerRegistry::download() const
 {
     connect(m_manager.get(), &DownloadManager::readyRead, this, &ManagerRegistry::extractRegistry);
-
     connect(m_modelRegistry.get(), &ModelRegistry::registry, this, &ManagerRegistry::downloadRegistry);
-
     connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::removeRegistry);
+    connect(this, &ManagerRegistry::getDocumentSuccess, this, &ManagerRegistry::retrieveData);
     connect(this, &ManagerRegistry::retrieveDataSuccess, m_modelRegistry.get(), &ModelRegistry::update);
 
     m_manager->append(m_registry->url());
 }
 
-void ManagerRegistry::downloadRegistry(const Registry &registry) // WARNING : add test
+void ManagerRegistry::downloadRegistry(const Registry &registry)
 {
     m_registry.reset(new Registry { registry });
     download();
@@ -43,7 +42,6 @@ void ManagerRegistry::extractRegistry(const QString& fileName)
 
     if (JlCompress::getFileList(registryArchive.fileName()).contains(nameFileRegistry)) {
         JlCompress::extractFile(registryArchive.fileName(), nameFileRegistry, fileRegistry.fileName());
-        connect(this, &ManagerRegistry::getDocumentSuccess, this, &ManagerRegistry::retrieveData);
         getDocument(fileRegistry);
     }
 }
@@ -94,6 +92,7 @@ void ManagerRegistry::checkNewVesion() const
     connect(m_modelRegistry.get(), &ModelRegistry::registry, this, &ManagerRegistry::downloadInfo);
     connect(m_manager.get(), &DownloadManager::readyRead, this, &ManagerRegistry::retrieveVersion);
     connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::removeInfo);
+    connect(this, &ManagerRegistry::getDocumentSuccess, this, &ManagerRegistry::retrieveDataInfo);
 
     m_modelRegistry->getRegistry();
 }
@@ -107,7 +106,6 @@ void ManagerRegistry::downloadInfo(const Registry& registry)
 void ManagerRegistry::retrieveVersion(const QString& fileName)
 {
     fileRegistryInfo.setFileName(fileName);
-    connect(this, &ManagerRegistry::getDocumentSuccess, this, &ManagerRegistry::retrieveDataInfo);
     getDocument(fileRegistryInfo);
 }
 
