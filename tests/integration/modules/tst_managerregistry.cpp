@@ -16,19 +16,26 @@ private:
     const QString pathFiles { "files" };
     const QString dirDownload { "download" };
     const QString strUrl { "file://" };
-    QFile fileRegistry { "registry.json" };
-    const QFile fileRegistryArchive { "registry.zip" };
+    const QString fileRegistry { "registry.json" };
+    const QString fileRegistryArchive { "registry.zip" };
     QFile fileRegistryInfo { "registry_info.json" };
     const QDir dir;
     void createFileRegistryInfo();
-    void createFileRegistry(const QJsonDocument& document);
+    void createFileRegistry(
+            const QJsonDocument& document = QJsonDocument {},
+            const QString& fileNameRegistry = "registry.json");
+    void createFileRegistryArchive(
+            const QJsonDocument& document = QJsonDocument {},
+            const QString& fileNameArchive = "registry.zip",
+            const QString& fileNameRegistry = "registry.json");
     QJsonDocument helperGetDocument();
+    void setQSettings(int value = 0, QString key = "registryVersion");
+    const int version = 10;
 
 private slots:
     void initTestCase();
     void cleanupTestCase();
     void download();
-    void removeRegistry_data();
     void removeRegistry();
     void retrieveData_data();
     void retrieveData();
@@ -41,11 +48,17 @@ private slots:
     void retrieveVersion();
     void retrieveDataInfo_data();
     void retrieveDataInfo();
+    void checkNewVersion_data();
     void checkNewVersion();
     void getVersion_data();
     void getVersion();
     void downloadInfo();
     void downloadRegistry();
+    void removeInfo();
+    void setVersion_data();
+    void setVersion();
+    void getVersionFromCache_data();
+    void getVersionFromCache();
 };
 
 void tst_ManagerRegistry::cleanupTestCase()
@@ -77,32 +90,43 @@ QJsonDocument tst_ManagerRegistry::helperGetDocument()
     return QJsonDocument{QJsonObject { { "downloads", {{"key", "val"}} }, {"version", 1} } };
 }
 
-void tst_ManagerRegistry::createFileRegistryInfo()
+void tst_ManagerRegistry::setQSettings(int value, QString key)
 {
     QSettings settings;
-    settings.setValue("registryVersion", 0);
+    settings.setValue(key, value);
+}
 
+void tst_ManagerRegistry::createFileRegistryInfo()
+{
     fileRegistryInfo.open(QFile::WriteOnly);
-    fileRegistryInfo.write(QJsonDocument{QJsonObject { {"version", 1} } }.toJson());
+    fileRegistryInfo.write(QJsonDocument{QJsonObject { {"version", version} } }.toJson());
     fileRegistryInfo.close();
 }
 
-void tst_ManagerRegistry::createFileRegistry(const QJsonDocument& document)
+void tst_ManagerRegistry::createFileRegistry( const QJsonDocument& document, const QString& fileNameRegistry)
 {
-    fileRegistry.open(QFile::WriteOnly);
-    fileRegistry.write(document.toJson());
-    fileRegistry.close();
+    QFile file {fileNameRegistry};
+    file.open(QFile::WriteOnly);
+    file.write(document.toJson());
+    file.close();
+}
 
-    QVERIFY(JlCompress::compressFile(fileRegistryArchive.fileName(), fileRegistry.fileName()));
+void tst_ManagerRegistry::createFileRegistryArchive(
+        const QJsonDocument& document,
+        const QString& fileNameArchive,
+        const QString& fileNameRegistry)
+{
+    QFile file {fileNameArchive};
+    createFileRegistry(document, fileNameRegistry);
+    QVERIFY(JlCompress::compressFile(fileNameArchive, fileNameRegistry));
 }
 
 // registry
 
 void tst_ManagerRegistry::download()
 {
-    QSettings settings;
-    settings.setValue("registryVersion", 0);
-    createFileRegistry(helperGetDocument());
+    setQSettings();
+    createFileRegistryArchive(helperGetDocument());
 
     ManagerRegistry managerRegistry;
 
@@ -131,9 +155,9 @@ void tst_ManagerRegistry::download()
 
 void tst_ManagerRegistry::downloadRegistry()
 {
-    QSettings settings;
-    settings.setValue("registryVersion", 0);
-    createFileRegistry(helperGetDocument());
+    setQSettings();
+
+    createFileRegistryArchive(helperGetDocument());
     ManagerRegistry managerRegistry;
 
     QSignalSpy spyReadyRead(managerRegistry.m_manager.get(), &DownloadManager::readyRead);
@@ -161,22 +185,22 @@ void tst_ManagerRegistry::downloadRegistry()
 
 void tst_ManagerRegistry::retrieveData_data()
 {
-    QSettings settings;
-    settings.setValue("registryVersion", 0);
+    setQSettings();
 
     QTest::addColumn<QJsonDocument>("document");
     QTest::addColumn<QJsonArray>("array");
-    QTest::addColumn<int>("signalBit");
+    QTest::addColumn<int>("signalHit");
 
-    QJsonArray array ({"key", "value"});
+    QJsonArray array;
+    QTest::newRow("error : doesn`t exist key")
+            << QJsonDocument {QJsonObject { { "downloads-non",  "" } } } << array << 0;
+    QTest::newRow("error : value not array")
+            << QJsonDocument {QJsonObject { { "downloads",  "" } } } << array << 0;
+    QTest::newRow("error: old version")
+            << QJsonDocument {QJsonObject { { "downloads",  array }, { "version", 0 } } } << array << 0;
+    array = {"key", "value"};
     QTest::newRow("success")
             << QJsonDocument {QJsonObject { { "downloads",  array }, { "version", 1 } }} << array << 1;
-    QTest::newRow("error : doesn`t exist key")
-            << QJsonDocument {QJsonObject { { "downloads-non",  "" } } } << QJsonArray() << 0;
-    QTest::newRow("error : value not array")
-            << QJsonDocument {QJsonObject { { "downloads",  "" } } } << QJsonArray() << 0;
-    QTest::newRow("error: old version")
-            << QJsonDocument {QJsonObject { { "downloads",  array }, { "version", 0 } } } << QJsonArray() << 0;
 }
 
 void tst_ManagerRegistry::retrieveData()
@@ -185,15 +209,15 @@ void tst_ManagerRegistry::retrieveData()
 
     QFETCH(QJsonDocument, document);
     QFETCH(QJsonArray, array);
-    QFETCH(int, signalBit);
+    QFETCH(int, signalHit);
 
     QSignalSpy spyLast(&managerRegistry, &ManagerRegistry::retrieveDataSuccess);
 
     managerRegistry.retrieveData(document);
 
-    QCOMPARE(spyLast.count(), signalBit);
+    QCOMPARE(spyLast.count(), signalHit);
 
-    if (signalBit) {
+    if (signalHit) {
         QCOMPARE(spyLast.takeFirst()[0].toJsonArray(), array);
     }
 }
@@ -202,22 +226,19 @@ void tst_ManagerRegistry::getDocument_data()
 {
     QTest::addColumn<QString>("fileName");
     QTest::addColumn<QJsonDocument>("document");
-    QTest::addColumn<int>("signalBit");
+    QTest::addColumn<int>("signalHit");
 
-    QFile fileRegistryError { "registry_empty_file.json" };
-    fileRegistryError.open(QFile::WriteOnly);
-    fileRegistryError.close();
+    QString fileRegistryError { "registry_empty_file.json" };
+    QJsonDocument document {};
+    createFileRegistry(document, fileRegistryError);
+    QTest::newRow("error: empty file") << fileRegistryError << document << 0;
 
-    QTest::newRow("error: empty file")
-            << fileRegistryError.fileName() << QJsonDocument {} << 0;
+    QString fileRegistryDoesntExist { "registry_doesnt_exist_file.json" };
+    QTest::newRow("error : doesn`t exist file") << fileRegistryDoesntExist << document << 0;
 
-    QFile fileRegistryDoesntExist { "registry_doesnt_exist_file.json" };
-    QTest::newRow("error : doesn`t exist file")
-            << fileRegistryDoesntExist.fileName() << QJsonDocument {} << 0;
-
-    QJsonDocument document = helperGetDocument();
+    document = helperGetDocument();
     createFileRegistry(document);
-    QTest::newRow("success") << fileRegistry.fileName() << document << 1;
+    QTest::newRow("success") << fileRegistry << document << 1;
 }
 
 void tst_ManagerRegistry::getDocument()
@@ -226,37 +247,34 @@ void tst_ManagerRegistry::getDocument()
 
     QFETCH(QString, fileName);
     QFETCH(QJsonDocument, document);
-    QFETCH(int, signalBit);
+    QFETCH(int, signalHit);
 
     QSignalSpy spy(&managerRegistry, &ManagerRegistry::getDocumentSuccess);
 
     managerRegistry.fileRegistry.setFileName(fileName);
     managerRegistry.getDocument(managerRegistry.fileRegistry);
 
-    QCOMPARE(spy.count(), signalBit);
+    QCOMPARE(spy.count(), signalHit);
 
-    if (signalBit) {
+    if (signalHit) {
         QCOMPARE(spy.takeFirst()[0].toJsonDocument(), document);
     }
 }
 
-void tst_ManagerRegistry::removeRegistry_data()
-{
-    QFile fileRegistryArchiveD ( QString("%1/%2").arg(dirDownload, fileRegistryArchive.fileName()) );
-    fileRegistryArchiveD.open(QFile::WriteOnly);
-    fileRegistryArchiveD.close();
-
-    QFile fileRegistryD ( QString("%1/%2").arg(dirDownload, fileRegistry.fileName()) );
-    fileRegistryD.open(QFile::WriteOnly);
-    fileRegistryD.close();
-}
-
 void tst_ManagerRegistry::removeRegistry()
 {
+    createFileRegistryArchive();
+
     ManagerRegistry managerRegistry;
 
     QSignalSpy spy(&managerRegistry, &ManagerRegistry::removeRegistrySuccess);
-    managerRegistry.registryArchive.setFileName(QString("%1/%2").arg(dirDownload, fileRegistryArchive.fileName()));
+
+    managerRegistry.registryArchive.setFileName(fileRegistryArchive);
+    managerRegistry.fileRegistry.setFileName(fileRegistry);
+
+    QVERIFY(managerRegistry.registryArchive.exists());
+    QVERIFY(managerRegistry.fileRegistry.exists());
+
     managerRegistry.removeRegistry();
 
     QCOMPARE(spy.count(), 1);
@@ -268,20 +286,13 @@ void tst_ManagerRegistry::extractRegistry_data()
 {
     QTest::addColumn<QString>("fileName");
 
-    fileRegistry.open(QFile::WriteOnly);
-    fileRegistry.close();
+    createFileRegistryArchive();
+    QTest::newRow("success") << fileRegistryArchive;
 
-    QVERIFY(JlCompress::compressFile(fileRegistryArchive.fileName(), fileRegistry.fileName()));
-    QTest::newRow("success") << fileRegistryArchive.fileName();
+    QString file { "registry_other.zip" };
 
-    const QFile fileRegistryArchiveOther { "registry_other.zip" };
-
-    QFile fileRegistryOther { "registry_other.json" };
-    fileRegistryOther.open(QFile::WriteOnly);
-    fileRegistryOther.close();
-
-    QVERIFY(JlCompress::compressFile(fileRegistryArchiveOther.fileName(), fileRegistryOther.fileName()));
-    QTest::newRow("error : other name file") << fileRegistryArchiveOther.fileName();
+    createFileRegistryArchive(QJsonDocument {}, file, "registry_other.json");
+    QTest::newRow("error : other name file") << file;
 }
 
 void tst_ManagerRegistry::extractRegistry()
@@ -294,11 +305,24 @@ void tst_ManagerRegistry::extractRegistry()
 
 // version
 
+void tst_ManagerRegistry::checkNewVersion_data()
+{
+    setQSettings(0);
+    setQSettings(0, "cacheRegistryVersion");
+
+    QTest::addColumn<int>("signalHit");
+
+    QTest::newRow("check through download file") << 1;
+    QTest::newRow("check through cache") << 0;
+}
+
 void tst_ManagerRegistry::checkNewVersion()
 {
     qRegisterMetaType<Registry>("Registry");
     ManagerRegistry managerRegistry;
     createFileRegistryInfo();
+
+    QFETCH(int, signalHit);
 
     QSignalSpy spyReadyRead(managerRegistry.m_manager.get(), &DownloadManager::readyRead);
     QSignalSpy spyRegistry(managerRegistry.m_modelRegistry.get(), &ModelRegistry::registry);
@@ -316,12 +340,68 @@ void tst_ManagerRegistry::checkNewVersion()
 
     managerRegistry.checkNewVesion();
 
-    QVERIFY(spyLast.wait());
-    QCOMPARE(spyReadyRead.count(), 1);
-    QCOMPARE(spyRegistry.count(), 1);
-    QCOMPARE(spyRemoveInfo.count(), 1);
-    QCOMPARE(spyGetDocumentSuccess.count(), 1);
+    if (signalHit) {
+        QVERIFY(spyLast.wait());
+        QCOMPARE(QSettings().value("cacheRegistryVersion").toInt(), version);
+    }
+    QCOMPARE(spyReadyRead.count(), signalHit);
+    QCOMPARE(spyRegistry.count(), signalHit);
+    QCOMPARE(spyRemoveInfo.count(), signalHit);
+    QCOMPARE(spyGetDocumentSuccess.count(), signalHit);
     QCOMPARE(spyLast.count(), 1);
+}
+
+void tst_ManagerRegistry::removeInfo()
+{
+    ManagerRegistry managerRegistry;
+    QSignalSpy spyRemoveInfo(&managerRegistry, &ManagerRegistry::removeInfoSuccess);
+
+    createFileRegistryInfo();
+    managerRegistry.fileRegistryInfo.setFileName(fileRegistryInfo.fileName());
+    QVERIFY(managerRegistry.fileRegistryInfo.exists());
+
+    managerRegistry.removeInfo();
+    QVERIFY(!managerRegistry.fileRegistryInfo.exists());
+    QCOMPARE(spyRemoveInfo.count(), 1);
+}
+
+void tst_ManagerRegistry::setVersion_data()
+{
+    setQSettings(0, "cacheRegistryVersion");
+    QTest::addColumn<bool>("available");
+    QTest::addColumn<int>("version");
+
+    QTest::newRow("cache hasn't version") << false << 0;
+    QTest::newRow("server has new version, set to cache") << true << 100;
+    QTest::newRow("cache has new version") << false << 100;
+}
+
+void tst_ManagerRegistry::setVersion()
+{
+    ManagerRegistry managerRegistry;
+    QFETCH(bool, available);
+    QFETCH(int, version);
+
+    managerRegistry.setVersion(available, version);
+
+    QCOMPARE(QSettings().value("cacheRegistryVersion").toInt(), version);
+}
+
+void tst_ManagerRegistry::getVersionFromCache_data()
+{
+    QTest::addColumn<int>("version");
+
+    QTest::newRow("version - 10") << 10;
+    QTest::newRow("version - 20") << 20;
+}
+
+void tst_ManagerRegistry::getVersionFromCache()
+{
+    QFETCH(int, version);
+    setQSettings(version, "cacheRegistryVersion");
+
+    ManagerRegistry managerRegistry;
+    QCOMPARE(managerRegistry.getVersion(), version);
 }
 
 void tst_ManagerRegistry::getVersion_data()
@@ -363,17 +443,16 @@ void tst_ManagerRegistry::downloadInfo()
 
 void tst_ManagerRegistry::retrieveDataInfo_data()
 {
-    QSettings settings;
-    settings.setValue("registryVersion", 10);
+    setQSettings(10);
 
     QTest::addColumn<QJsonDocument>("document");
     QTest::addColumn<int>("version");
     QTest::addColumn<bool>("available");
-    QTest::addColumn<int>("signalBit");
+    QTest::addColumn<int>("signalHit");
 
-    QTest::newRow("success")
+    QTest::newRow("has new version")
             << QJsonDocument {QJsonObject { { "version",  100 } }} << 100 << true << 1;
-    QTest::newRow("failed")
+    QTest::newRow("hasn't new version")
             << QJsonDocument {QJsonObject { { "version",  3 } }} << 3 << false << 1;
     QTest::newRow("error : value is 0")
             << QJsonDocument {QJsonObject { { "version",  0 } } } << 0 << false << 0;
@@ -386,15 +465,15 @@ void tst_ManagerRegistry::retrieveDataInfo()
     QFETCH(QJsonDocument, document);
     QFETCH(int, version);
     QFETCH(bool, available);
-    QFETCH(int, signalBit);
+    QFETCH(int, signalHit);
 
     QSignalSpy spyLast(&managerRegistry, &ManagerRegistry::newRegistryAvailable);
 
     managerRegistry.retrieveDataInfo(document);
 
-    QCOMPARE(spyLast.count(), signalBit);
+    QCOMPARE(spyLast.count(), signalHit);
 
-    if (signalBit) {
+    if (signalHit) {
         QList<QVariant> arguments = spyLast.takeFirst();
         QCOMPARE(arguments[0].toBool(), available);
         QCOMPARE(arguments[1].toInt(), version);
@@ -420,9 +499,7 @@ void tst_ManagerRegistry::hasNewRegistry()
     QFETCH(int, version);
     QFETCH(bool, availableNewRegistry);
 
-    QSettings settings;
-    settings.setValue("registryVersion", versionInApp);
-
+    setQSettings(versionInApp);
     QCOMPARE(managerRegistry.hasNewRegistry(version), availableNewRegistry);
 }
 

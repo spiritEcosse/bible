@@ -29,7 +29,7 @@ public:
 
 public slots:
     virtual void download() const;
-    virtual void checkNewVesion() const;
+    virtual void checkNewVesion();
 
 private:
     friend class TestManagerRegistry::tst_ManagerRegistry;
@@ -44,7 +44,9 @@ private:
     virtual bool hasNewRegistry(int version) const;
     virtual const QJsonArray getDownloads(const QJsonDocument& document) const;
     virtual int getVersion(const QJsonDocument& document) const;
+    virtual int getVersion() const;
     virtual void getDocument(QFile& file);
+    virtual void setVersion(bool available, int version);
 
 signals:
     void newRegistryAvailable(bool available, int version);
