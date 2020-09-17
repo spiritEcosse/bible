@@ -26,13 +26,13 @@ void ManagerRegistry::download() const
     connect(this, &ManagerRegistry::getDocumentSuccess, this, &ManagerRegistry::retrieveData);
     connect(this, &ManagerRegistry::retrieveDataSuccess, m_modelRegistry.get(), &ModelRegistry::update);
 
-    m_manager->append(m_registry->url());
+    m_registry ? m_manager->append(m_registry->url()) : m_modelRegistry->getRegistry();
 }
 
 void ManagerRegistry::downloadRegistry(const Registry &registry)
 {
     m_registry.reset(new Registry { registry });
-    download();
+    m_manager->append(m_registry->url());
 }
 
 void ManagerRegistry::extractRegistry(const QString& fileName)
@@ -101,7 +101,7 @@ void ManagerRegistry::checkNewVesion()
         connect(this, &ManagerRegistry::getDocumentSuccess, this, &ManagerRegistry::retrieveDataInfo);
         connect(this, &ManagerRegistry::newRegistryAvailable, this, &ManagerRegistry::setVersion);
 
-        m_modelRegistry->getRegistry();
+        m_registry ? m_manager->append(m_registry->infoUrl()) : m_modelRegistry->getRegistry();
     }
 }
 
@@ -141,7 +141,7 @@ int ManagerRegistry::getVersion() const
     return QSettings().value("cacheRegistryVersion").toInt();
 }
 
-void ManagerRegistry::setVersion(bool available, int version)
+void ManagerRegistry::setVersion(bool available, int version) const
 {
     if (available) {
         QSettings().setValue("cacheRegistryVersion", version);

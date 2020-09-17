@@ -46,7 +46,7 @@ private:
     virtual int getVersion(const QJsonDocument& document) const;
     virtual int getVersion() const;
     virtual void getDocument(QFile& file);
-    virtual void setVersion(bool available, int version);
+    virtual void setVersion(bool available, int version) const;
 
 signals:
     void newRegistryAvailable(bool available, int version);
