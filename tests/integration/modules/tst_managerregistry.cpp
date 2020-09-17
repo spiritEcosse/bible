@@ -314,6 +314,7 @@ void tst_ManagerRegistry::checkNewVersion_data()
 
     QTest::newRow("check through download file") << 1;
     QTest::newRow("check through cache") << 0;
+    QTest::newRow("check through download file : 2") << 1;
 }
 
 void tst_ManagerRegistry::checkNewVersion()
@@ -343,6 +344,8 @@ void tst_ManagerRegistry::checkNewVersion()
     if (signalHit) {
         QVERIFY(spyLast.wait());
         QCOMPARE(QSettings().value("cacheRegistryVersion").toInt(), version);
+    } else {
+        setQSettings(0, "cacheRegistryVersion");
     }
     QCOMPARE(spyReadyRead.count(), signalHit);
     QCOMPARE(spyRegistry.count(), signalHit);
