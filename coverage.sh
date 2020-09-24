@@ -1,6 +1,7 @@
 #!/bin/bash
 
-scripts/pre_unit_tests.sh && \
+#scripts/pre_unit_tests.sh && \
+mkdir build && \
 cd build && \
 qmake ../tests.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug LIBS+=-lquazip5 && \
 make qmake_all && \

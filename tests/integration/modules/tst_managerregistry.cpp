@@ -37,6 +37,7 @@ private slots:
     void cleanupTestCase();
     void download_data();
     void download();
+    void downloadManagerFailed();
     void removeRegistry();
     void retrieveData_data();
     void retrieveData();
@@ -51,6 +52,7 @@ private slots:
     void retrieveDataInfo();
     void checkNewVersion_data();
     void checkNewVersion();
+    void checkNewVersionDownloadManagerFailed();
     void getVersion_data();
     void getVersion();
     void downloadInfo();
@@ -173,6 +175,51 @@ void tst_ManagerRegistry::download()
     QVERIFY(spyUpdateSuccess.wait());
     QCOMPARE(spyReadyRead.count(), 1);
     QCOMPARE(spyRegistry.count(), signalRegistryHit);
+    QCOMPARE(spyGetDocumentSuccess.count(), 1);
+    QCOMPARE(spyRetrieveDataSuccess.count(), 1);
+    QCOMPARE(spyRemoveRegistry.count(), 1);
+    QCOMPARE(spyUpdateSuccess.count(), 1);
+}
+
+void tst_ManagerRegistry::downloadManagerFailed()
+{
+    qRegisterMetaType<Registry>("Registry");
+
+    setQSettings();
+    createFileRegistryArchive(helperGetDocument());
+
+    ManagerRegistry managerRegistry;
+
+    QSignalSpy spyReadyRead(managerRegistry.m_manager.get(), &DownloadManager::readyRead);
+    QSignalSpy spyGetDocumentSuccess(&managerRegistry, &ManagerRegistry::getDocumentSuccess);
+    QSignalSpy spyRetrieveDataSuccess(&managerRegistry, &ManagerRegistry::retrieveDataSuccess);
+    QSignalSpy spyRemoveRegistry(&managerRegistry, &ManagerRegistry::removeRegistrySuccess);
+    QSignalSpy spyUpdateSuccess(managerRegistry.m_modelRegistry.get(), &ModelRegistry::updateSuccess);
+    QSignalSpy spyRegistry(managerRegistry.m_modelRegistry.get(), &ModelRegistry::registry);
+    QSignalSpy spyManagerDownloadFailed(managerRegistry.m_manager.get(), &DownloadManager::failed);
+
+    QString fileRegistryDoesntExist { "registry_doesnt_exist_file.zip" };
+
+    managerRegistry.m_modelRegistry->m_registries = {
+        Registry{
+            QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
+            1,
+            QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
+        }
+    };
+    managerRegistry.m_registry.reset(
+                new Registry {
+                    QString(strUrl + QFileInfo(fileRegistryDoesntExist).absoluteFilePath()).toUtf8().toBase64(),
+                    1,
+                    QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
+                });
+
+    managerRegistry.download();
+
+    QVERIFY(spyUpdateSuccess.wait());
+    QCOMPARE(spyReadyRead.count(), 1);
+    QCOMPARE(spyManagerDownloadFailed.count(), 1);
+    QCOMPARE(spyRegistry.count(), 1);
     QCOMPARE(spyGetDocumentSuccess.count(), 1);
     QCOMPARE(spyRetrieveDataSuccess.count(), 1);
     QCOMPARE(spyRemoveRegistry.count(), 1);
@@ -383,6 +430,49 @@ void tst_ManagerRegistry::checkNewVersion()
         QCOMPARE(arguments[0].toBool(), true);
         QCOMPARE(arguments[1].toInt(), version);
     }
+}
+
+void tst_ManagerRegistry::checkNewVersionDownloadManagerFailed()
+{
+    setQSettings(0);
+    setQSettings(0, "cacheRegistryVersion");
+
+    qRegisterMetaType<Registry>("Registry");
+    ManagerRegistry managerRegistry;
+    createFileRegistryInfo();
+
+    QSignalSpy spyManagerDownloadFailed(managerRegistry.m_manager.get(), &DownloadManager::failed);
+    QSignalSpy spyReadyRead(managerRegistry.m_manager.get(), &DownloadManager::readyRead);
+    QSignalSpy spyRegistry(managerRegistry.m_modelRegistry.get(), &ModelRegistry::registry);
+    QSignalSpy spyGetDocumentSuccess(&managerRegistry, &ManagerRegistry::getDocumentSuccess);
+    QSignalSpy spyRemoveInfo(&managerRegistry, &ManagerRegistry::removeInfoSuccess);
+    QSignalSpy spyLast(&managerRegistry, &ManagerRegistry::newRegistryAvailable);
+
+    QString fileRegistryInfoDoesntExist { "registry_info_doesnt_exist_file.json" };
+
+    managerRegistry.m_registry.reset(
+                new Registry {
+                    QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
+                    1,
+                    QString(strUrl + QFileInfo(fileRegistryInfoDoesntExist).absoluteFilePath()).toUtf8().toBase64()
+                });
+    managerRegistry.m_modelRegistry->m_registries = {
+        Registry{
+            QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
+            1,
+            QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
+        }
+    };
+
+    managerRegistry.checkNewVesion();
+
+    QVERIFY(spyLast.wait());
+    QCOMPARE(spyReadyRead.count(), 1);
+    QCOMPARE(spyRegistry.count(), 1);
+    QCOMPARE(spyRemoveInfo.count(), 1);
+    QCOMPARE(spyGetDocumentSuccess.count(), 1);
+    QCOMPARE(spyLast.count(), 1);
+    QCOMPARE(spyManagerDownloadFailed.count(), 1);
 }
 
 void tst_ManagerRegistry::removeInfo()
