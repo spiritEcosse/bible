@@ -52,9 +52,9 @@ private:
     friend class TestManagerGroup::tst_ManagerGroup;
     std::unique_ptr<ManagerRegistry> m_managerRegistry;
     std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual> addToCollection(const QJsonArray& object);
-
+    virtual const QJsonArray getDownloads(const QJsonDocument& document) const;
 private slots:
-    void makeGroup(const QJsonArray& object);
+    void makeGroup(const QJsonDocument& document);
 };
 
 #endif // MANAGERGROUP_H

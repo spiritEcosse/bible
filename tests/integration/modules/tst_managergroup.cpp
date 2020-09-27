@@ -114,20 +114,20 @@ void tst_ManagerGroup::addToCollection()
 
 void tst_ManagerGroup::makeGroup_data()
 {
-    QTest::addColumn<QJsonArray>("array");
+    QTest::addColumn<QJsonDocument>("document");
 
-    QJsonArray array { QJsonObject {{"fil", "name"},{"lng", "en"},{"reg", ""}}};
+    QJsonDocument array { QJsonObject {{"fil", "name"},{"lng", "en"},{"reg", ""}}};
     QTest::newRow("simple case") << array;
 }
 
 void tst_ManagerGroup::makeGroup()
 {
-    QFETCH(QJsonArray, array);
+    QFETCH(QJsonDocument, document);
     qRegisterMetaType<std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual>>("std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual>"); // WARNING : make this simple
     ManagerGroup managerGroup;
     QSignalSpy spy(&managerGroup, &ManagerGroup::completed);
 
-    managerGroup.makeGroup(array);
+    managerGroup.makeGroup(document);
     QCOMPARE(spy.count(), 1);
 }
 

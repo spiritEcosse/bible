@@ -44,3 +44,10 @@ bool Registry::operator==(const Registry &other) const
             m_infoUrl == other.m_infoUrl &&
             m_priority == other.m_priority;
 }
+
+#ifndef QT_NO_DEBUG_STREAM
+QDebug operator<<(QDebug debug, const Registry& registry)
+{
+    return debug << registry.url() << registry.priority() << registry.infoUrl();
+}
+#endif

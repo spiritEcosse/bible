@@ -42,7 +42,6 @@ private:
     std::unique_ptr<DownloadManager> m_manager;
     std::unique_ptr<Registry> m_registry;
     virtual bool hasNewRegistry(int version) const;
-    virtual const QJsonArray getDownloads(const QJsonDocument& document) const;
     virtual int getVersion(const QJsonDocument& document) const;
     virtual int getVersion() const;
     virtual void getDocument(QFile& file);
@@ -50,7 +49,7 @@ private:
 
 signals:
     void newRegistryAvailable(bool available, int version);
-    void retrieveDataSuccess(const QJsonArray& array);
+    void retrieveDataSuccess(const QJsonDocument& document);
     void removeRegistrySuccess();
     void removeInfoSuccess();
     void getDocumentSuccess(const QJsonDocument& document);

@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QUrl>
+#include <QJsonValue>
 
 class QJsonObject;
 
@@ -21,6 +22,10 @@ private:
     QByteArray m_url;
     short int m_priority;
     QByteArray m_infoUrl;
+
+#ifndef QT_NO_DEBUG_STREAM
+    friend QDebug operator<<(QDebug debug, const Registry& registry);
+#endif
 };
 
 #endif // REGISTRY_H

@@ -3,18 +3,15 @@
 
 #include <memory>
 
-#include "dbtypes.h"
 #include "locallanguage.h"
 #include "module.h"
-
-using namespace DBTypes;
 
 class GroupModules
 {
 public:
     GroupModules() = default;
     GroupModules(const QJsonObject& qJsonModule);
-    GroupModules(QString language, QString name, DBIndex id);
+    GroupModules(QString language, QString name, int id);
     QString nativeLanguageName() const;
     QString languageName() const;
     QLocale language() const;
@@ -34,7 +31,7 @@ private:
     LocalLanguage m_language;
     QString m_name;
     QString m_region;
-    DBTypes::DBIndex m_id;
+    int m_id;
     void cleanName();
     std::vector<Module> m_modules;
 };

@@ -53,17 +53,10 @@ void ManagerRegistry::removeRegistry()
     emit removeRegistrySuccess();
 }
 
-const QJsonArray ManagerRegistry::getDownloads(const QJsonDocument& document) const
-{
-    return document.object().value("downloads").toArray();
-}
-
 void ManagerRegistry::retrieveData(const QJsonDocument& document)
 {
-    const QJsonArray& array = getDownloads(document);
-
-    if (!array.isEmpty() && hasNewRegistry(getVersion(document))) {
-        emit retrieveDataSuccess(array);
+    if (hasNewRegistry(getVersion(document))) {
+        emit retrieveDataSuccess(document);
     }
 }
 

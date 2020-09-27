@@ -1,5 +1,6 @@
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QJsonDocument>
 
 #include "managergroup.h"
 #include "module.h"
@@ -9,6 +10,11 @@ ManagerGroup::ManagerGroup(QObject *parent)
     : QObject(parent), m_managerRegistry { new ManagerRegistry {} }
 {
     connect(m_managerRegistry.get(), &ManagerRegistry::retrieveDataSuccess, this, &ManagerGroup::makeGroup);
+}
+
+const QJsonArray ManagerGroup::getDownloads(const QJsonDocument& document) const
+{
+    return document.object().value("downloads").toArray();
 }
 
 void ManagerGroup::downloadRegistry()
@@ -33,7 +39,7 @@ ManagerGroup::addToCollection(const QJsonArray& source)
     return mGMap;
 }
 
-void ManagerGroup::makeGroup(const QJsonArray& source)
+void ManagerGroup::makeGroup(const QJsonDocument& document)
 {
-    emit completed(addToCollection(source));
+    emit completed(addToCollection(getDownloads(document)));
 }

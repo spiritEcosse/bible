@@ -1,4 +1,6 @@
 #include <QJsonArray>
+#include <QJsonObject>
+#include <QJsonDocument>
 
 #include <QDebug>
 #include "modelregistry.h"
@@ -8,9 +10,40 @@ ModelRegistry::ModelRegistry()
 {
 }
 
-void ModelRegistry::update(const QJsonArray& array)
+void ModelRegistry::update(const QJsonDocument& document)
 {
-    emit updateSuccess();
+    if (saveRegistries(getRegistries(document)))
+    {
+        emit updateSuccess();
+    }
+}
+
+const QJsonArray ModelRegistry::getRegistries(const QJsonDocument &document) const
+{
+    return document.object().value("registries").toArray();
+}
+
+std::vector<Registry> transform(const QJsonArray &source)
+{
+    std::vector<Registry> target;
+    std::transform(source.begin(), source.end(), std::back_inserter(target),
+                   [](const QJsonValue& entry)
+    {
+        return Registry { entry.toObject() };
+    });
+    return target;
+}
+
+bool ModelRegistry::saveRegistries(const QJsonArray &array)
+{
+    const std::vector<Registry>& registries = transform(array);
+
+    emit beginResetModel();
+    m_registries = registries;
+    emit endResetModel();
+//    emit dataChanged(createIndex(0, 0), createIndex(m_registries.size(), 0));
+
+    return true;
 }
 
 int ModelRegistry::rowCount(const QModelIndex& parent) const

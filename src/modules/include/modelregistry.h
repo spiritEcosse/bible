@@ -7,9 +7,6 @@
 
 #include "registry.h"
 
-#define FILE_BASE_PATTERN "aHR0cDovL21waDQucnUvcmVnaXN0cn"
-
-
 namespace TestManagerRegistry
 {
    class tst_ManagerRegistry;
@@ -18,6 +15,11 @@ namespace TestManagerRegistry
 namespace TestManagerGroup
 {
    class tst_ManagerGroup;
+}
+
+namespace TestModelRegistry
+{
+   class tst_ModelRegistry;
 }
 
 class ModelRegistry : public QAbstractListModel
@@ -31,6 +33,7 @@ public:
 private:
     friend class TestManagerRegistry::tst_ManagerRegistry;
     friend class TestManagerGroup::tst_ManagerGroup;
+    friend class TestModelRegistry::tst_ModelRegistry;
 
     std::vector<Registry> m_registries {
         Registry {
@@ -47,12 +50,14 @@ private:
         InfoUrlRole
     };
     void addRegistry();
+    const QJsonArray getRegistries(const QJsonDocument &document) const;
+    bool saveRegistries(const QJsonArray &array);
 signals:
     void updateSuccess();
     void registry(const Registry& registry);
 
 public slots:
-    void update(const QJsonArray& array);
+    void update(const QJsonDocument& document);
     void getRegistry();
 };
 

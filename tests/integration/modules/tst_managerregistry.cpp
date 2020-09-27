@@ -248,19 +248,18 @@ void tst_ManagerRegistry::retrieveData_data()
     setQSettings();
 
     QTest::addColumn<QJsonDocument>("document");
-    QTest::addColumn<QJsonArray>("array");
     QTest::addColumn<int>("signalHit");
 
     QJsonArray array;
     QTest::newRow("error : doesn`t exist key")
-            << QJsonDocument {QJsonObject { { "downloads-non",  "" } } } << array << 0;
+            << QJsonDocument {QJsonObject { { "downloads-non",  "" } } } << 0;
     QTest::newRow("error : value not array")
-            << QJsonDocument {QJsonObject { { "downloads",  "" } } } << array << 0;
+            << QJsonDocument {QJsonObject { { "downloads",  "" } } } << 0;
     QTest::newRow("error: old version")
-            << QJsonDocument {QJsonObject { { "downloads",  array }, { "version", 0 } } } << array << 0;
+            << QJsonDocument {QJsonObject { { "downloads",  array }, { "version", 0 } } } << 0;
     array = {"key", "value"};
     QTest::newRow("success")
-            << QJsonDocument {QJsonObject { { "downloads",  array }, { "version", 1 } }} << array << 1;
+            << QJsonDocument {QJsonObject { { "downloads",  array }, { "version", 1 } }} << 1;
 }
 
 void tst_ManagerRegistry::retrieveData()
@@ -268,7 +267,6 @@ void tst_ManagerRegistry::retrieveData()
     ManagerRegistry managerRegistry;
 
     QFETCH(QJsonDocument, document);
-    QFETCH(QJsonArray, array);
     QFETCH(int, signalHit);
 
     QSignalSpy spyLast(&managerRegistry, &ManagerRegistry::retrieveDataSuccess);
@@ -278,7 +276,7 @@ void tst_ManagerRegistry::retrieveData()
     QCOMPARE(spyLast.count(), signalHit);
 
     if (signalHit) {
-        QCOMPARE(spyLast.takeFirst()[0].toJsonArray(), array);
+        QCOMPARE(spyLast.takeFirst()[0].toJsonDocument(), document);
     }
 }
 

@@ -15,7 +15,7 @@ GroupModules::GroupModules(const QJsonObject& qJsonModule)
     cleanName();
 }
 
-GroupModules::GroupModules(QString language, QString name, DBTypes::DBIndex id)
+GroupModules::GroupModules(QString language, QString name, int id)
     : m_language { language },
       m_name {std::move(name)},
       m_id {id} {}
