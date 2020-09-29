@@ -4,6 +4,8 @@
 #include <QDebug>
 #include "registry.h"
 
+#define quote(x) #x
+
 
 Registry::Registry()
 {
@@ -20,6 +22,15 @@ Registry::Registry(const char* url, short &&priority, const char* infoUrl)
     : m_url { url },
       m_priority { priority },
       m_infoUrl { infoUrl }
+{
+}
+
+const QString Registry::tableName()
+{
+    return QString(quote(Registry));
+}
+
+const QStringList Registry::getProperties()
 {
 }
 

@@ -1,9 +1,12 @@
 #pragma once
 #include <dbtypes.h>
 #include <memory>
+#include <QDebug>
 
 namespace db
 {
+
+template <class T>
 class Processor
 {
 public:
@@ -12,9 +15,10 @@ public:
     ~Processor();
     std::pair<DBTypes::DBResult,
               std::vector<DBTypes::DBEntry>> requestTableData(DBTypes::DBTables table);
-
+    void insertBulk(const std::vector<T>& container) const;
 private:
     struct ProcessorPrivate;
     std::unique_ptr<ProcessorPrivate> m_d;
 };
+
 }

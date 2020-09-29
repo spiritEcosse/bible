@@ -9,12 +9,12 @@ set(RESOURCES
   src/include/dbmapper.h
   src/include/ConnectionManager.h
   src/ConnectionManager.cpp
-  src/Processor.cpp
+  src/processor.cpp
   src/Executor.cpp
   src/Selector.cpp
   src/include/manipulator.h
   src/manipulator.cpp
-  include/Processor.h
+  include/processor.h
   include/dbtypes.h
 )
 
@@ -30,4 +30,5 @@ target_include_directories(${PROJECT_NAME}
         src
 )
 
+target_link_libraries(${PROJECT_NAME} PRIVATE modules)
 target_compile_definitions(${PROJECT_NAME} PRIVATE DBMANAGER_LIBRARY)

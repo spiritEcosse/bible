@@ -5,8 +5,8 @@
 #include <QDebug>
 #include "modelregistry.h"
 
-
 ModelRegistry::ModelRegistry()
+    : m_db { new db::Processor<Registry>{} }
 {
 }
 
@@ -37,6 +37,8 @@ std::vector<Registry> transform(const QJsonArray &source)
 bool ModelRegistry::saveRegistries(const QJsonArray &array)
 {
     const std::vector<Registry>& registries = transform(array);
+
+    m_db->insertBulk(registries);
 
     emit beginResetModel();
     m_registries = registries;
@@ -100,3 +102,4 @@ void ModelRegistry::addRegistry()
 {
 
 }
+

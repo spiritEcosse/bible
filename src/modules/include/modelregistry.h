@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QAbstractListModel>
 #include <memory>
+#include <processor.h>
 
 #include "registry.h"
 
@@ -35,6 +36,7 @@ private:
     friend class TestManagerGroup::tst_ManagerGroup;
     friend class TestModelRegistry::tst_ModelRegistry;
 
+    std::unique_ptr<db::Processor<Registry>> m_db;
     std::vector<Registry> m_registries {
         Registry {
             "aHR0cDovL21waDQucnUvcmVnaXN0cnkuemlw",

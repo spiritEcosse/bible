@@ -2,6 +2,7 @@
 #define REGISTRY_H
 
 #include <QString>
+#include <QStringList>
 #include <QUrl>
 #include <QJsonValue>
 
@@ -13,6 +14,9 @@ public:
     Registry();
     Registry(const QJsonObject& registryJson);
     Registry(const char* url, short && priority, const char* infoUrl);
+
+    static const QString tableName();
+    static const QStringList getProperties();
 
     QUrl url() const;
     short priority() const;

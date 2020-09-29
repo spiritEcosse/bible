@@ -1,18 +1,22 @@
 #include "manipulator.h"
 #include "dbmapper.h"
 #include <sstream>
+#include "registry.h"
 
 using namespace DBTypes;
+
 
 namespace db
 {
 
-Manipulator::Manipulator()
+template<class T>
+Manipulator<T>::Manipulator()
     : m_executor {new Executor {}}
 {}
 
 
-std::pair<DBResult, DBIndex> Manipulator::insertRow(const std::string& tableName,
+template<class T>
+std::pair<DBResult, DBIndex> Manipulator<T>::insertRow(const std::string& tableName,
                                                     const QVariantList& recordData)
 { //WARNING : using Variadic_template : https://en.wikipedia.org/wiki/Variadic_template
     const std::string& query {generateInsertQuery(tableName, recordData.size())};
@@ -20,7 +24,13 @@ std::pair<DBResult, DBIndex> Manipulator::insertRow(const std::string& tableName
     return {result.first, result.second.lastInsertId().toInt()};
 }
 
-std::string Manipulator::generateBindString(size_t recordSize) const
+template<class T>
+void Manipulator<T>::insertBulk(const T &container)
+{
+}
+
+template<class T>
+std::string Manipulator<T>::generateBindString(size_t recordSize) const
 {
     std::ostringstream bindings;
     std::fill_n(std::ostream_iterator<std::string>(bindings),
@@ -31,7 +41,8 @@ std::string Manipulator::generateBindString(size_t recordSize) const
     return bindingString;
 }
 
-std::string Manipulator::generateInsertQuery(const std::string& tableName, size_t recordSize) const
+template<class T>
+std::string Manipulator<T>::generateInsertQuery(const std::string& tableName, size_t recordSize) const
 {
     std::string query {"INSERT INTO " + tableName + " (" + tablesMapping.at(tableName) + " ) " +
                   "VALUES ( "};
@@ -42,3 +53,5 @@ std::string Manipulator::generateInsertQuery(const std::string& tableName, size_
 
 
 }
+
+template class db::Manipulator<Registry>;
