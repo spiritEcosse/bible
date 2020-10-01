@@ -6,8 +6,10 @@
 
 namespace db
 {
+template<class T>
 class Executor;
 
+template<class T>
 class Selector
 {
 public:
@@ -16,7 +18,7 @@ public:
     DBTypes::DBResult selectAll(const std::string& tableName,
                                 std::vector<QVariantList>& returnData);
 private:
-    std::unique_ptr<Executor> m_executor;
+    std::unique_ptr<Executor<T>> m_executor;
     std::string generateQuery(const std::string& tableName) const;
 };
 

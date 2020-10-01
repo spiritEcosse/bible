@@ -3,22 +3,26 @@
 #include <QSqlRecord>
 #include <QDebug>
 #include "Executor.h"
+#include "registry.h"
 
 using namespace DBTypes;
 
 namespace db
 {
 
-Selector::Selector()
-    : m_executor {new Executor {}}
+template<class T>
+Selector<T>::Selector()
+    : m_executor {new Executor<T> {}}
 {}
 
-Selector::Selector(const QString& nameDb)
-    : m_executor {new Executor {nameDb}}
+template<class T>
+Selector<T>::Selector(const QString& nameDb)
+    : m_executor {new Executor<T> {nameDb}}
 {
 }
 
-DBResult Selector::selectAll(const std::string& tableName, std::vector<QVariantList>& returnData)
+template<class T>
+DBResult Selector<T>::selectAll(const std::string& tableName, std::vector<QVariantList>& returnData)
 {
     const std::string query {generateQuery(tableName)};
     DBResult result;
@@ -42,10 +46,13 @@ DBResult Selector::selectAll(const std::string& tableName, std::vector<QVariantL
     return result;
 }
 
-std::string Selector::generateQuery(const std::string& tableName) const
+template<class T>
+std::string Selector<T>::generateQuery(const std::string& tableName) const
 {
     std::string query = "SELECT rowid, * FROM " + tableName;
     return query;
 }
 
 }
+
+template class db::Selector<Registry>;

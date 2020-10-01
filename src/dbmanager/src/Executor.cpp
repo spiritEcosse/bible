@@ -3,19 +3,24 @@
 #include <QDebug>
 #include <QSqlError>
 
+#include "registry.h"
+
 using namespace DBTypes;
 
 namespace db
 {
 
-Executor::Executor()
+template<class T>
+Executor<T>::Executor()
     : m_connectionManager {new ConnectionManager {}}
 {}
 
-Executor::Executor(const QString& nameDb)
+template<class T>
+Executor<T>::Executor(const QString& nameDb)
     : m_connectionManager {new ConnectionManager {nameDb}} {}
 
-std::pair<DBResult, QSqlQuery> Executor::execute(const std::string& queryText, const QVariantList &args)
+template<class T>
+std::pair<DBResult, QSqlQuery> Executor<T>::execute(const std::string& queryText, const QVariantList &args)
 {
     if (!m_connectionManager->isValid()) {
         qCritical() << "Database is not valid, skip!";
@@ -38,5 +43,6 @@ std::pair<DBResult, QSqlQuery> Executor::execute(const std::string& queryText, c
     return {result, query};
 };
 
-
 }
+
+template class db::Executor<Registry>;

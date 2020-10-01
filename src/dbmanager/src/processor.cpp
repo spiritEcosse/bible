@@ -14,10 +14,11 @@ template<class T>
 struct Processor<T>::ProcessorPrivate
 {
     ProcessorPrivate(const QString& nameDb)
-        : m_selector {new Selector {nameDb}} {}
+        : m_selector {new Selector<T> {nameDb}} {}
     ProcessorPrivate() {}
-    std::unique_ptr<Selector> m_selector;
+    std::unique_ptr<Selector<T>> m_selector;
     Manipulator<T> manipulator;
+    void insertBulk(const std::vector<T>& container);
     std::once_flag initialized;
     void insertMockData();
 };
@@ -71,10 +72,13 @@ Processor<T>::requestTableData(DBTypes::DBTables table)
 template<class T>
 void Processor<T>::insertBulk(const std::vector<T>& container) const
 {
-    qWarning() << T::tableName();
-    for (auto it = container.begin(); it != container.end(); ++it) {
-        qWarning() << *it << it->url();
-    }
+    m_d->insertBulk(container);
+}
+
+template<class T>
+void db::Processor<T>::ProcessorPrivate::insertBulk(const std::vector<T> &container)
+{
+    manipulator.insertBulk(container);
 }
 
 }

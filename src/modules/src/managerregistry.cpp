@@ -26,13 +26,13 @@ void ManagerRegistry::download() const
     connect(this, &ManagerRegistry::getDocumentSuccess, this, &ManagerRegistry::retrieveData);
     connect(this, &ManagerRegistry::retrieveDataSuccess, m_modelRegistry.get(), &ModelRegistry::update);
 
-    m_registry ? m_manager->append(m_registry->url()) : m_modelRegistry->getRegistry();
+    m_registry ? m_manager->append(m_registry->urlToQUrl()) : m_modelRegistry->getRegistry();
 }
 
 void ManagerRegistry::downloadRegistry(const Registry &registry)
 {
     m_registry.reset(new Registry { registry });
-    m_manager->append(m_registry->url());
+    m_manager->append(m_registry->urlToQUrl());
 }
 
 void ManagerRegistry::extractRegistry(const QString& fileName)
@@ -94,14 +94,14 @@ void ManagerRegistry::checkNewVesion()
         connect(this, &ManagerRegistry::getDocumentSuccess, this, &ManagerRegistry::retrieveDataInfo);
         connect(this, &ManagerRegistry::newRegistryAvailable, this, &ManagerRegistry::setVersion);
 
-        m_registry ? m_manager->append(m_registry->infoUrl()) : m_modelRegistry->getRegistry();
+        m_registry ? m_manager->append(m_registry->infoUrlToQUrl()) : m_modelRegistry->getRegistry();
     }
 }
 
 void ManagerRegistry::downloadInfo(const Registry& registry)
 {
     m_registry.reset(new Registry { registry });
-    m_manager->append(registry.infoUrl());
+    m_manager->append(registry.infoUrlToQUrl());
 }
 
 void ManagerRegistry::retrieveVersion(const QString& fileName)
