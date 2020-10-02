@@ -22,10 +22,10 @@ private slots:
 QJsonDocument tst_ModelRegistry::helperGetDocument()
 {
     QJsonArray array;
-    array << QJsonObject {{"url", "link1"}, {"priority", 1}, {"info_url", "link11"}};
-    array << QJsonObject {{"url", "link2"}, {"priority", 2}, {"info_url", "link22"}};
-    array << QJsonObject {{"url", "link3"}, {"priority", 3}, {"info_url", "link33"}};
 
+    for (int i = 0; i < 1000; i++) {
+        array << QJsonObject {{"url", "link1"}, {"priority", 1}, {"info_url", "link11"}};
+    }
     return QJsonDocument {
         QJsonObject {
             { "registries",  array }

@@ -131,9 +131,19 @@ bool ConnectionManager::ConnectionManagerPrivate::setupTables()
                         "   'id'        INTEGER PRIMARY KEY AUTOINCREMENT, "
                         "   'language'  CHAR(4), "
                         "   'name'      CHAR(50), "
-                        "   'region'    CHAR(50), "
-                        "   UNIQUE (language, name, region) "
+                        "   'region'    CHAR(50) "
+//                        "   UNIQUE (language, name, region) "
                         ")").arg(tableModulesGroup)
+        },
+        QSqlQuery {
+            QString(
+                        "CREATE TABLE IF NOT EXISTS '%1' ("
+                        "   'id'        INTEGER PRIMARY KEY AUTOINCREMENT, "
+                        "   'url'       CHAR(100) NOT NULL, "
+                        "   'priority'  int NOT NULL, "
+                        "   'infoUrl'   CHAR(100) NOT NULL "
+//                        "   UNIQUE (url, priority, infoUrl) "
+                        ")").arg("registry")
         },
         QSqlQuery {
             QString(

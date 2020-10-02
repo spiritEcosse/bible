@@ -14,7 +14,7 @@ static const std::map<DBTables, std::string> tableMapper
 static const std::map<std::string, std::string> tablesMapping
 {
     {"Modules", "name, description"},
-    {"ModulesGroups", "language, type, region"},
+    {"modules_groups", "language, name, region"},
 };
 
 }

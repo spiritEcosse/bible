@@ -22,10 +22,9 @@ public:
     Registry(const QJsonObject& registryJson);
     Registry(const char* url, short && priority, const char* infoUrl);
 
-    static const QString tableName();
-    static const QString getColumns();
-
-    QVariant urlToQVariant() const;
+    static const std::string tableName();
+    static const QStringList getColumns(const Registry& registry = Registry());
+    static const std::string columnsJoinToString(const Registry& registry = Registry());
 
     QByteArray url() const;
     QUrl urlToQUrl() const;

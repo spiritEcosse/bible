@@ -27,6 +27,10 @@ template<class T>
 Processor<T>::Processor()
     : m_d {new ProcessorPrivate {}}
 {
+//    for (int i = 0; i < 1000; i++) {
+//        m_d->manipulator.insertRow("modules_groups", {{"Language1", "Type1", "Region1"}});
+//    }
+
 //    auto inserter = [this] {
 //        m_d->insertMockData();
 //    };
@@ -46,19 +50,14 @@ Processor<T>::Processor(const QString& nameDb)
 //    std::call_once(m_d->initialized, inserter);
 }
 
-//template<class T>
-//void Processor<T>::ProcessorPrivate::insertMockData()
-//{
-////    manipulator.insertRow("ModulesGroup", {{"Language1", "Type1", "Region1"}});
-////    manipulator.insertRow("ModulesGroup", {{"Language2", "Type2", "Region2"}});
-////    manipulator.insertRow("ModulesGroup", {{"Language3", "Type3", "Region3"}});
-////    manipulator.insertRow("ModulesGroup", {{"Language4", "Type4", "Region4"}});
-////    manipulator.insertRow("ModulesGroup", {{"Language5", "Type5", "Region5"}});
-////    manipulator.insertRow("ModulesGroup", {{"Language6", "Type6", "Region6"}});
-////    manipulator.insertRow("ModulesGroup", {{"Language7", "Type7", "Region7"}});
-////    manipulator.insertRow("ModulesGroup", {{"Language8", "Type8", "Region8"}});
-////    manipulator.insertRow("ModulesGroup", {{"Language9", "Type9", "Region9"}});
-//}
+template<class T>
+void Processor<T>::ProcessorPrivate::insertMockData()
+{
+//    for (int i = 0; i < 1000; i++) {
+//        qWarning() << "ProcessorPrivate";
+//        manipulator.insertRow("ModulesGroup", {{"Language1", "Type1", "Region1"}});
+//    }
+}
 
 template<class T>
 std::pair<DBTypes::DBResult, std::vector<DBTypes::DBEntry>>

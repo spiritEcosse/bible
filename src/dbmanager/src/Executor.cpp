@@ -2,6 +2,7 @@
 #include "ConnectionManager.h"
 #include <QDebug>
 #include <QSqlError>
+#include <QString>
 
 #include "registry.h"
 
@@ -37,6 +38,41 @@ std::pair<DBResult, QSqlQuery> Executor<T>::execute(const std::string& queryText
 
     if (!query.exec() && query.lastError().isValid())
     {
+        qCritical() << query.lastError().text() << query.lastQuery();
+        result = DBResult::FAIL;
+    }
+    return {result, query};
+}
+
+template<class T>
+std::pair<DBResult, QSqlQuery> Executor<T>::
+executeB(const std::string &queryText, const std::vector<T> &container)
+{
+    if (!m_connectionManager->isValid()) {
+        qCritical() << "Database is not valid, skip!";
+        return {DBResult::FAIL, QSqlQuery{}};
+    }
+
+    QSqlQuery query {QString::fromStdString(queryText)};
+    QVariantList urls;
+    QVariantList priority;
+    QVariantList infoUrl;
+
+    for (auto it = container.begin(); it != container.end(); ++it) {
+        urls << it->url();
+        priority << it->priority();
+        infoUrl << it->infoUrl();
+    }
+
+    query.addBindValue(urls);
+    query.addBindValue(priority);
+    query.addBindValue(infoUrl);
+
+    DBResult result {DBResult::OK};
+
+    if (!query.execBatch() && query.lastError().isValid())
+    {
+        qWarning() << bool(result);
         qCritical() << query.lastError().text() << query.lastQuery();
         result = DBResult::FAIL;
     }
