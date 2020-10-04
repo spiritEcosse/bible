@@ -23,9 +23,7 @@ QJsonDocument tst_ModelRegistry::helperGetDocument()
 {
     QJsonArray array;
 
-    for (int i = 0; i < 1000; i++) {
-        array << QJsonObject {{"url", "link1"}, {"priority", 1}, {"info_url", "link11"}};
-    }
+    array << QJsonObject {{"url", "link1"}, {"priority", 1}, {"info_url", "link11"}};
     return QJsonDocument {
         QJsonObject {
             { "registries",  array }

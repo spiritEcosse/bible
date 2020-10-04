@@ -1,3 +1,12 @@
 [submodule "3rdparty/quazip"]
 	path = 3rdparty/quazip
 	url = https://github.com/stachenov/quazip.git
+[submodule "3rdparty/hiredis"]
+	path = 3rdparty/hiredis
+	url = https://github.com/redis/hiredis
+[submodule "3rdparty/acl"]
+	path = 3rdparty/acl
+	url = https://github.com/acl-dev/acl
+[submodule "3rdparty/cpp_redis"]
+	path = 3rdparty/cpp_redis
+	url = https://github.com/cpp-redis/cpp_redis

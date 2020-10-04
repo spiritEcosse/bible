@@ -27,8 +27,11 @@ target_include_directories(${PROJECT_NAME}
     PUBLIC
         include
     PRIVATE
+        ${CPP_REDIS_INCLUDE_DIR}
+        ${TACOPIE_INCLUDE_DIR}
         src
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE modules)
+target_link_libraries(${PROJECT_NAME} PRIVATE cpp_redis)
 target_compile_definitions(${PROJECT_NAME} PRIVATE DBMANAGER_LIBRARY)

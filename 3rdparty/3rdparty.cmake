@@ -13,7 +13,16 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
         else()
             set(QUAZIP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/quazip/quazip
                     CACHE PATH "quazip include directory")
+            set(ACL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/acl/lib_acl_cpp/include
+                    CACHE PATH "acl include directory")
+            set(CPP_REDIS_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/cpp_redis/includes
+                    CACHE PATH "cpp_redis include directory")
+            set(TACOPIE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/cpp_redis/tacopie/includes
+                    CACHE PATH "tacopie include directory")
             add_subdirectory(3rdparty/quazip)
+            add_subdirectory(3rdparty/cpp_redis)
+#            add_subdirectory(3rdparty/hiredis)
+#            add_subdirectory(3rdparty/acl)
         endif()
     endif()
 endif()
