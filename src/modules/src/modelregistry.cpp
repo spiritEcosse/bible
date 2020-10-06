@@ -42,17 +42,14 @@ void ModelRegistry::update(const QJsonDocument& document)
 //    storage.insert_range
 
     storage.sync_schema(true);
+    std::vector<User> users;
 
-    for (int i = 0; i < 100; i++) {
-        User user{-1, "Jonh", "Doe", 664416000, std::make_unique<std::string>("url_to_heaven"), 3 };
-        auto insertedId = storage.insert(user);
+    for (int i = 0; i < 2000; i++) {
+        users.push_back(User {-1, "Jonh", "Doe", 664416000, std::make_unique<std::string>("url_to_heaven"), 3 });
 //        qWarning() << "insertedId << " << insertedId;
     }
-//    user.id = insertedId;
-
-//    User secondUser{-1, "Alice", "Inwonder", 831168000, {} , 2};
-//    insertedId = storage.insert(secondUser);
-//    secondUser.id = insertedId;
+    storage.insert_range(users.begin(), users.end());
+    users.clear();
 
 //    saveRegistries(getRegistries(document));
 //    emit updateSuccess();
