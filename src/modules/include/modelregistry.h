@@ -53,7 +53,8 @@ private:
     };
     void addRegistry();
     const QJsonArray getRegistries(const QJsonDocument &document) const;
-    bool saveRegistries(const QJsonArray &array);
+    void saveRegistries(const QJsonArray &array);
+    QVariant value(const char* property);
 signals:
     void updateSuccess();
     void registry(const Registry& registry);

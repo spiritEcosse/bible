@@ -23,15 +23,15 @@ public:
     Registry(const char* url, short && priority, const char* infoUrl);
 
     static const std::string tableName();
-    static const QStringList getColumns(const Registry& registry = Registry());
+    static const std::vector<const char*> getColumns(const Registry& registry = Registry());
     static const std::string columnsJoinToString(const Registry& registry = Registry());
 
-    QByteArray url() const;
+    Q_INVOKABLE QByteArray url() const;
     QUrl urlToQUrl() const;
     void setUrl(QByteArray& url);
-    short priority() const;
+    Q_INVOKABLE short priority() const;
     void setPriority(short &priority);
-    QByteArray infoUrl() const;
+    Q_INVOKABLE QByteArray infoUrl() const;
     QUrl infoUrlToQUrl() const;
     void setInfoUrl(QByteArray& url);
     bool operator==(const Registry& other) const;

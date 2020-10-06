@@ -16,7 +16,7 @@ public:
     Executor(const QString& nameDb);
 
     std::pair<DBResult, QSqlQuery> execute(const std::string& queryText, const QVariantList& args = {});
-    std::pair<DBResult, QSqlQuery> executeB(const std::string& queryText, const std::vector<T>& container);
+    void executeBatch(const std::string& queryText, std::vector<T>& container);
 
 private:
     std::unique_ptr<ConnectionManager> m_connectionManager;

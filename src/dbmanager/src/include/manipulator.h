@@ -15,8 +15,7 @@ public:
     Manipulator();
     std::pair<DBResult, DBIndex> insertRow(const std::string& tableName,
                                            const QVariantList& recordData);
-    void insertBulk(const T& container);
-    std::pair<DBResult, DBIndex> insertBulk(const std::vector<T>& container);
+    void save(std::vector<T>& container);
 private:
     std::unique_ptr<Executor<T>> m_executor;
     std::string generateBindString(size_t recordSize) const;

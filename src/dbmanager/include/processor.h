@@ -15,7 +15,7 @@ public:
     ~Processor();
     std::pair<DBTypes::DBResult,
               std::vector<DBTypes::DBEntry>> requestTableData(DBTypes::DBTables table);
-    void insertBulk(const std::vector<T>& container) const;
+    void save(std::vector<T>& container) const;
 private:
     struct ProcessorPrivate;
     std::unique_ptr<ProcessorPrivate> m_d;

@@ -46,22 +46,25 @@ const std::string Registry::tableName()
     return QString(Registry().metaObject()->className()).toLower().toStdString();
 }
 
-const QStringList Registry::getColumns(const Registry& registry)
+const std::vector<const char*> Registry::getColumns(const Registry& registry)
 {
+//    const QMetaObject* metaObject = Registry::staticMetaObject();
     const QMetaObject* metaObject = registry.metaObject();
-    QStringList properties;
-    //WARNING : replace on std::vector
+    std::vector<const char*> properties;
 
     for (int i = metaObject->propertyOffset(); i < metaObject->propertyCount(); ++i) {
         properties.push_back(metaObject->property(i).name());
     }
-
     return properties;
 }
 
 const std::string Registry::columnsJoinToString(const Registry& registry)
 {
-    return registry.getColumns().join(", ").toStdString();
+    std::vector<const char*> columns = registry.getColumns();
+    return std::accumulate(columns.begin() + 1, columns.end(), std::string(columns[0]),
+                         [](const std::string& a, const char* b){
+                               return a + "," + std::string(b);
+                         });
 }
 
 QByteArray Registry::url() const

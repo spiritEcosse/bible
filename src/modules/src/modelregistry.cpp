@@ -12,10 +12,8 @@ ModelRegistry::ModelRegistry()
 
 void ModelRegistry::update(const QJsonDocument& document)
 {
-    if (saveRegistries(getRegistries(document)))
-    {
-        emit updateSuccess();
-    }
+    saveRegistries(getRegistries(document));
+    emit updateSuccess();
 }
 
 const QJsonArray ModelRegistry::getRegistries(const QJsonDocument &document) const
@@ -34,18 +32,11 @@ std::vector<Registry> transform(const QJsonArray &source)
     return target;
 }
 
-bool ModelRegistry::saveRegistries(const QJsonArray &array)
+void ModelRegistry::saveRegistries(const QJsonArray &array)
 {
-    const std::vector<Registry>& registries = transform(array);
-
-    m_db->insertBulk(registries);
-
-    emit beginResetModel();
+    std::vector<Registry>&& registries = transform(array);
+    m_db->save(registries);
     m_registries = registries;
-    emit endResetModel();
-//    emit dataChanged(createIndex(0, 0), createIndex(m_registries.size(), 0));
-
-    return true;
 }
 
 int ModelRegistry::rowCount(const QModelIndex& parent) const

@@ -27,12 +27,9 @@ std::pair<DBResult, DBIndex> Manipulator<T>::insertRow(const std::string& tableN
 }
 
 template<class T>
-std::pair<DBResult, DBIndex> Manipulator<T>::insertBulk(const std::vector<T>& container)
+void Manipulator<T>::save(std::vector<T>& container)
 {
-    const std::string& query {generateInsertQuery()};
-    qWarning() << QString::fromStdString(query);
-    const auto& result {m_executor->executeB(query, container)};
-    return {result.first, result.second.lastInsertId().toInt()};
+    m_executor->executeBatch(generateInsertQuery(), container);
 }
 
 template<class T>

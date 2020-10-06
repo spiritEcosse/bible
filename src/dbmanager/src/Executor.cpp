@@ -45,38 +45,29 @@ std::pair<DBResult, QSqlQuery> Executor<T>::execute(const std::string& queryText
 }
 
 template<class T>
-std::pair<DBResult, QSqlQuery> Executor<T>::
-executeB(const std::string &queryText, const std::vector<T> &container)
+void Executor<T>::executeBatch(const std::string &queryText, std::vector<T>& container)
 {
     if (!m_connectionManager->isValid()) {
         qCritical() << "Database is not valid, skip!";
-        return {DBResult::FAIL, QSqlQuery{}};
+//        return {DBResult::FAIL, QSqlQuery{}};
     }
 
     QSqlQuery query {QString::fromStdString(queryText)};
-    QVariantList urls;
-    QVariantList priority;
-    QVariantList infoUrl;
+    const auto& columns = T::getColumns();
 
-    for (auto it = container.begin(); it != container.end(); ++it) {
-        urls << it->url();
-        priority << it->priority();
-        infoUrl << it->infoUrl();
+    for (auto itColumn = columns.begin(); itColumn != columns.end(); itColumn++) {
+        QVariantList data;
+
+        for (auto it = container.begin(); it != container.end(); it++) {
+            data << QMetaObject::invokeMethod(&*it, *itColumn, Qt::DirectConnection);
+        }
+        query.addBindValue(data);
     }
-
-    query.addBindValue(urls);
-    query.addBindValue(priority);
-    query.addBindValue(infoUrl);
-
-    DBResult result {DBResult::OK};
 
     if (!query.execBatch() && query.lastError().isValid())
     {
-        qWarning() << bool(result);
         qCritical() << query.lastError().text() << query.lastQuery();
-        result = DBResult::FAIL;
     }
-    return {result, query};
 };
 
 }
