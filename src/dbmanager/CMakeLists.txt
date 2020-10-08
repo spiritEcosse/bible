@@ -1,21 +1,6 @@
 project(dbmanager LANGUAGES CXX)
 
-include_directories(src/include)
-
 set(RESOURCES
-  dbmanager_global.h
-  src/include/Executor.h
-  src/include/Selector.h
-  src/include/dbmapper.h
-  src/include/ConnectionManager.h
-  src/ConnectionManager.cpp
-  src/processor.cpp
-  src/Executor.cpp
-  src/Selector.cpp
-  src/include/manipulator.h
-  src/manipulator.cpp
-  include/processor.h
-  include/dbtypes.h
   include/db.h
   include/binding.h
   src/db.cpp
