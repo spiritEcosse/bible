@@ -16,6 +16,9 @@ set(RESOURCES
   src/manipulator.cpp
   include/processor.h
   include/dbtypes.h
+  include/db.h
+  include/binding.h
+  src/db.cpp
 )
 
 add_library(${PROJECT_NAME} STATIC ${RESOURCES})

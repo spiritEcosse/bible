@@ -24,7 +24,7 @@ QJsonDocument tst_ModelRegistry::helperGetDocument()
     QJsonArray array;
 
     array << QJsonObject {{"url", "link1"}, {"priority", 1}, {"info_url", "link11"}};
-    array << QJsonObject {{"url", "link1"}, {"priority", 1}, {"info_url", "link11"}};
+
     return QJsonDocument {
         QJsonObject {
             { "registries",  array }
@@ -48,7 +48,7 @@ void tst_ModelRegistry::update()
     QSignalSpy spyLast(&modelRegistry, &ModelRegistry::updateSuccess);
 
     modelRegistry.update(helperGetDocument());
-//    QCOMPARE(spyLast.count(), 1);
+    QCOMPARE(spyLast.count(), 1);
 }
 
 }

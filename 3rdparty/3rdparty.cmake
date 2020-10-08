@@ -16,7 +16,6 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
             set(SQLITE_ORM_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/sqlite_orm/include/sqlite_orm
                     CACHE PATH "sqlite_orm include directory")
             add_subdirectory(3rdparty/quazip)
-            add_subdirectory(3rdparty/Catch2)
             add_subdirectory(3rdparty/sqlite_orm)
         endif()
     endif()

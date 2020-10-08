@@ -48,9 +48,9 @@ template<class T>
 const std::string Manipulator<T>::generateBindString() const
 {
     std::ostringstream bindings;
-    std::fill_n(std::ostream_iterator<std::string>(bindings),
-                T::getColumns().size(),
-                "?,");
+//    std::fill_n(std::ostream_iterator<std::string>(bindings),
+//                T::getColumns().size(),
+//                "?,");
     std::string bindingString = bindings.str();
     bindingString.pop_back();
     return bindingString;
@@ -59,9 +59,7 @@ const std::string Manipulator<T>::generateBindString() const
 template<class T>
 std::string Manipulator<T>::generateInsertQuery() const
 {
-    return "INSERT INTO " + T::tableName() +
-            " (" + T::columnsJoinToString() + ") values (" +
-            generateBindString() + ");";
+    return "";
 }
 
 template<class T>

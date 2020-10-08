@@ -9,36 +9,27 @@
 
 class QJsonObject;
 
-class Registry : public QObject
+class Registry
 {
-    Q_OBJECT
-    Q_PROPERTY(QByteArray url READ url WRITE setUrl)
-    Q_PROPERTY(short priority READ priority WRITE setPriority)
-    Q_PROPERTY(QByteArray infoUrl READ infoUrl WRITE setInfoUrl)
 public:
     Registry();
-    Registry(const Registry& other);
-    Registry &operator=(const Registry &other);
     Registry(const QJsonObject& registryJson);
-    Registry(const char* url, short && priority, const char* infoUrl);
+    Registry(const QByteArray& url, const short& priority, const QByteArray& infoUrl);
 
-    static const std::string tableName();
-    static const std::vector<const char*> getColumns(const Registry& registry = Registry());
-    static const std::string columnsJoinToString(const Registry& registry = Registry());
-
-    Q_INVOKABLE QByteArray url() const;
+    QByteArray url() const;
     QUrl urlToQUrl() const;
     void setUrl(QByteArray& url);
-    Q_INVOKABLE short priority() const;
+    short priority() const;
     void setPriority(short &priority);
-    Q_INVOKABLE QByteArray infoUrl() const;
+    QByteArray infoUrl() const;
     QUrl infoUrlToQUrl() const;
     void setInfoUrl(QByteArray& url);
     bool operator==(const Registry& other) const;
-private:
+
     QByteArray m_url;
-    short int m_priority;
+    short m_priority;
     QByteArray m_infoUrl;
+    int m_id;
 
 #ifndef QT_NO_DEBUG_STREAM
     friend QDebug operator<<(QDebug debug, const Registry& registry);

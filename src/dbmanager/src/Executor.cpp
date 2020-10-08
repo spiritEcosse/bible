@@ -53,16 +53,6 @@ void Executor<T>::executeBatch(const std::string &queryText, std::vector<T>& con
     }
 
     QSqlQuery query {QString::fromStdString(queryText)};
-    const auto& columns = T::getColumns();
-
-    for (auto itColumn = columns.begin(); itColumn != columns.end(); itColumn++) {
-        QVariantList data;
-
-        for (auto it = container.begin(); it != container.end(); it++) {
-            data << QMetaObject::invokeMethod(&*it, *itColumn, Qt::DirectConnection);
-        }
-        query.addBindValue(data);
-    }
 
     if (!query.execBatch() && query.lastError().isValid())
     {

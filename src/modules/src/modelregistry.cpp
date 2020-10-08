@@ -4,55 +4,16 @@
 
 #include <QDebug>
 #include "modelregistry.h"
-#include "sqlite_orm.h"
 
 ModelRegistry::ModelRegistry()
-    : m_db { new db::Processor<Registry>{} }
+    : m_db { db::Db::getInstance() }
 {
 }
 
 void ModelRegistry::update(const QJsonDocument& document)
 {
-    struct User{
-        int id;
-        std::string firstName;
-        std::string lastName;
-        int birthDate;
-        std::unique_ptr<std::string> imageUrl;
-        int typeId;
-    };
-
-    struct UserType {
-        int id;
-        std::string name;
-    };
-
-    using namespace sqlite_orm;
-    auto storage = make_storage("db.sqlite",
-                                make_table("users",
-                                           make_column("id", &User::id, autoincrement(), primary_key()),
-                                           make_column("first_name", &User::firstName),
-                                           make_column("last_name", &User::lastName),
-                                           make_column("birth_date", &User::birthDate),
-                                           make_column("image_url", &User::imageUrl),
-                                           make_column("type_id", &User::typeId)),
-                                make_table("user_types",
-                                           make_column("id", &UserType::id, autoincrement(), primary_key()),
-                                           make_column("name", &UserType::name, default_value("name_placeholder"))));
-//    storage.insert_range
-
-    storage.sync_schema(true);
-    std::vector<User> users;
-
-    for (int i = 0; i < 2000; i++) {
-        users.push_back(User {-1, "Jonh", "Doe", 664416000, std::make_unique<std::string>("url_to_heaven"), 3 });
-//        qWarning() << "insertedId << " << insertedId;
-    }
-    storage.insert_range(users.begin(), users.end());
-    users.clear();
-
-//    saveRegistries(getRegistries(document));
-//    emit updateSuccess();
+    saveRegistries(getRegistries(document));
+    emit updateSuccess();
 }
 
 const QJsonArray ModelRegistry::getRegistries(const QJsonDocument &document) const
@@ -73,8 +34,8 @@ std::vector<Registry> transform(const QJsonArray &source)
 
 void ModelRegistry::saveRegistries(const QJsonArray &array)
 {
-    std::vector<Registry>&& registries = transform(array);
-    m_db->save(registries);
+    const std::vector<Registry>& registries = transform(array);
+    m_db->storage->insert_range(registries.begin(), registries.end());
     m_registries = registries;
 }
 

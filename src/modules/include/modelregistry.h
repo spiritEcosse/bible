@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QAbstractListModel>
 #include <memory>
-#include <processor.h>
+#include "db.h"
 
 #include "registry.h"
 
@@ -32,11 +32,18 @@ public:
     QVariant data(const QModelIndex& index = {}, int role = Qt::DisplayRole) const override;
     QHash<int, QByteArray> roleNames() const override;
 private:
+    enum RegistryRoles
+    {
+        UrlRole,
+        PriorityRole,
+        InfoUrlRole
+    };
+
     friend class TestManagerRegistry::tst_ManagerRegistry;
     friend class TestManagerGroup::tst_ManagerGroup;
     friend class TestModelRegistry::tst_ModelRegistry;
 
-    std::unique_ptr<db::Processor<Registry>> m_db;
+    std::shared_ptr<db::Db> m_db;
     std::vector<Registry> m_registries {
         Registry {
             "aHR0cDovL21waDQucnUvcmVnaXN0cnkuemlw",
@@ -45,12 +52,6 @@ private:
         }
     };
     int index = 0;
-    enum RegistryRoles
-    {
-        UrlRole,
-        PriorityRole,
-        InfoUrlRole
-    };
     void addRegistry();
     const QJsonArray getRegistries(const QJsonDocument &document) const;
     void saveRegistries(const QJsonArray &array);

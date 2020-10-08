@@ -1,9 +1,6 @@
 [submodule "3rdparty/quazip"]
 	path = 3rdparty/quazip
 	url = https://github.com/stachenov/quazip.git
-[submodule "3rdparty/Catch2"]
-	path = 3rdparty/Catch2
-	url = https://github.com/catchorg/Catch2.git
 [submodule "3rdparty/sqlite_orm"]
 	path = 3rdparty/sqlite_orm
 	url = https://github.com/fnc12/sqlite_orm.git
