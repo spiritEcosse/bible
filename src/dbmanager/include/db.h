@@ -9,9 +9,32 @@
 namespace db {
 
     using namespace sqlite_orm;
+    using namespace modules;
 
     inline auto userStorage(const std::string& name)
     {
+        //    QString* qStringSql = new QString(
+        //                "CREATE TABLE IF NOT EXISTS '%1' ("
+        //                "   'id'                INTEGER PRIMARY KEY AUTOINCREMENT, "
+        //                "   'name'              CHAR(200) NOT NULL, "
+        //                "   'description'       TEXT, "
+        //                "   'abbreviation'      CHAR(50), "
+        //                "   'information'       TEXT, "
+        //                "   'language'          CHAR(50), "
+        //                "   'language_show'     CHAR(50), "
+        //                "   'update'            TEXT, "
+        //                "   'urls'              TEXT, "
+        //                "   'comment'           TEXT, "
+        //                "   'size'              NUMERIC NOT NULL, "
+        //                "   'region'            TEXT, "
+        //                "   'default_download'  NUMERIC DEFAULT 0, "
+        //                "   'hidden'            NUMERIC DEFAULT 0, "
+        //                "   'copyright'         TEXT, "
+        //                "   '%2_id'             NUMERIC NOT NULL, "
+        //                "FOREIGN KEY ('%2_id')  REFERENCES %2(id)"
+        //                ")"
+        //                );
+
         return make_storage(
                     name,
                     make_table(

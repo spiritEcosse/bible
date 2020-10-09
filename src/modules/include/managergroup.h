@@ -7,54 +7,58 @@
 #include "managerregistry.h"
 #include "groupmodules.h"
 
-// WARNING: replace this three on one class
-struct MGKey {
-    std::string name;
-    std::string language;
-    std::string region;
-};
+namespace modules {
 
-struct MGKeyHash {
-    std::size_t operator()(const MGKey& mgKey) const
+    // WARNING: replace this three on one class
+    struct MGKey {
+        std::string name;
+        std::string language;
+        std::string region;
+    };
+
+    struct MGKeyHash {
+        std::size_t operator()(const MGKey& mgKey) const
+        {
+            using namespace std;
+            return ((hash<string>()(mgKey.name)
+                     ^ (hash<string>()(mgKey.language) << 1)) >> 1)
+                     ^ (hash<string>()(mgKey.region) << 1);
+        }
+    };
+
+    struct MGKeyEqual {
+        bool operator()(const MGKey& lhs, const MGKey& rhs) const
+        {
+            return lhs.name == rhs.name && lhs.language == rhs.language && lhs.region == rhs.region;
+        }
+    };
+
+    namespace tests
     {
-        using namespace std;
-        return ((hash<string>()(mgKey.name)
-                 ^ (hash<string>()(mgKey.language) << 1)) >> 1)
-                 ^ (hash<string>()(mgKey.region) << 1);
+       class tst_ManagerGroup;
     }
-};
 
-struct MGKeyEqual {
-    bool operator()(const MGKey& lhs, const MGKey& rhs) const
+    class ManagerGroup : public QObject
     {
-        return lhs.name == rhs.name && lhs.language == rhs.language && lhs.region == rhs.region;
-    }
-};
+        Q_OBJECT
+    public:
+        ManagerGroup(QObject *parent = nullptr);
+        virtual ~ManagerGroup() {}
+    public slots:
+        void downloadRegistry();
 
-namespace TestManagerGroup
-{
-   class tst_ManagerGroup;
+    signals:
+        void completed(std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual>);
+
+    private:
+        friend class tests::tst_ManagerGroup;
+        std::unique_ptr<ManagerRegistry> m_managerRegistry;
+        std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual> addToCollection(const QJsonArray& object);
+        virtual const QJsonArray getDownloads(const QJsonDocument& document) const;
+    private slots:
+        void makeGroup(const QJsonDocument& document);
+    };
+
 }
-
-class ManagerGroup : public QObject
-{
-    Q_OBJECT
-public:
-    ManagerGroup(QObject *parent = nullptr);
-    virtual ~ManagerGroup() {}
-public slots:
-    void downloadRegistry();
-
-signals:
-    void completed(std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual>);
-
-private:
-    friend class TestManagerGroup::tst_ManagerGroup;
-    std::unique_ptr<ManagerRegistry> m_managerRegistry;
-    std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual> addToCollection(const QJsonArray& object);
-    virtual const QJsonArray getDownloads(const QJsonDocument& document) const;
-private slots:
-    void makeGroup(const QJsonDocument& document);
-};
 
 #endif // MANAGERGROUP_H

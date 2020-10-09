@@ -9,31 +9,35 @@
 
 class QJsonObject;
 
-class Registry
-{
-public:
-    Registry();
-    Registry(const QJsonObject& registryJson);
-    Registry(const QByteArray& url, const short& priority, const QByteArray& infoUrl);
+namespace modules {
 
-    QByteArray url() const;
-    QUrl urlToQUrl() const;
-    void setUrl(QByteArray& url);
-    short priority() const;
-    void setPriority(short &priority);
-    QByteArray infoUrl() const;
-    QUrl infoUrlToQUrl() const;
-    void setInfoUrl(QByteArray& url);
-    bool operator==(const Registry& other) const;
+    class Registry
+    {
+    public:
+        Registry();
+        Registry(const QJsonObject& registryJson);
+        Registry(const QByteArray& url, const short& priority, const QByteArray& infoUrl);
 
-    QByteArray m_url;
-    short m_priority;
-    QByteArray m_infoUrl;
-    int m_id;
+        QByteArray url() const;
+        QUrl urlToQUrl() const;
+        void setUrl(QByteArray& url);
+        short priority() const;
+        void setPriority(short &priority);
+        QByteArray infoUrl() const;
+        QUrl infoUrlToQUrl() const;
+        void setInfoUrl(QByteArray& url);
+        bool operator==(const Registry& other) const;
 
-#ifndef QT_NO_DEBUG_STREAM
-    friend QDebug operator<<(QDebug debug, const Registry& registry);
-#endif
-};
+        QByteArray m_url;
+        short m_priority;
+        QByteArray m_infoUrl;
+        int m_id;
+
+    #ifndef QT_NO_DEBUG_STREAM
+        friend QDebug operator<<(QDebug debug, const Registry& registry);
+    #endif
+    };
+
+}
 
 #endif // REGISTRY_H

@@ -10,133 +10,137 @@
 
 #include "managerregistry.h"
 
-ManagerRegistry::ManagerRegistry(QObject *parent)
-    : QObject(parent),
-      m_modelRegistry { new ModelRegistry {} },
-      m_manager { new DownloadManager {} }
-{
-    connect(m_manager.get(), &DownloadManager::failed, m_modelRegistry.get(), &ModelRegistry::getRegistry);
-}
+namespace modules {
 
-void ManagerRegistry::download() const
-{
-    connect(m_manager.get(), &DownloadManager::readyRead, this, &ManagerRegistry::extractRegistry);
-    connect(m_modelRegistry.get(), &ModelRegistry::registry, this, &ManagerRegistry::downloadRegistry);
-    connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::removeRegistry);
-    connect(this, &ManagerRegistry::getDocumentSuccess, this, &ManagerRegistry::retrieveData);
-    connect(this, &ManagerRegistry::retrieveDataSuccess, m_modelRegistry.get(), &ModelRegistry::update);
-
-    m_registry ? m_manager->append(m_registry->urlToQUrl()) : m_modelRegistry->getRegistry();
-}
-
-void ManagerRegistry::downloadRegistry(const Registry &registry)
-{
-    m_registry.reset(new Registry { registry });
-    m_manager->append(m_registry->urlToQUrl());
-}
-
-void ManagerRegistry::extractRegistry(const QString& fileName)
-{
-    registryArchive.setFileName(fileName);
-    QString nameFileRegistry = QFileInfo(fileRegistry).fileName();
-
-    if (JlCompress::getFileList(registryArchive.fileName()).contains(nameFileRegistry)) {
-        JlCompress::extractFile(registryArchive.fileName(), nameFileRegistry, fileRegistry.fileName());
-        getDocument(fileRegistry);
+    ManagerRegistry::ManagerRegistry(QObject *parent)
+        : QObject(parent),
+          m_modelRegistry { new ModelRegistry {} },
+          m_manager { new DownloadManager {} }
+    {
+        connect(m_manager.get(), &DownloadManager::failed, m_modelRegistry.get(), &ModelRegistry::getRegistry);
     }
-}
 
-void ManagerRegistry::removeRegistry()
-{
-    registryArchive.remove();
-    fileRegistry.remove();
-    emit removeRegistrySuccess();
-}
+    void ManagerRegistry::download() const
+    {
+        connect(m_manager.get(), &DownloadManager::readyRead, this, &ManagerRegistry::extractRegistry);
+        connect(m_modelRegistry.get(), &ModelRegistry::registry, this, &ManagerRegistry::downloadRegistry);
+        connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::removeRegistry);
+        connect(this, &ManagerRegistry::getDocumentSuccess, this, &ManagerRegistry::retrieveData);
+        connect(this, &ManagerRegistry::retrieveDataSuccess, m_modelRegistry.get(), &ModelRegistry::update);
 
-void ManagerRegistry::retrieveData(const QJsonDocument& document)
-{
-    if (hasNewRegistry(getVersion(document))) {
-        emit retrieveDataSuccess(document);
+        m_registry ? m_manager->append(m_registry->urlToQUrl()) : m_modelRegistry->getRegistry();
     }
-}
 
-void ManagerRegistry::getDocument(QFile& file)
-{
-    if ( file.open(QIODevice::ReadOnly | QIODevice::Text) ) {
-        QJsonParseError retrieveResult;
-        const QJsonDocument& document = QJsonDocument::fromJson(file.readAll(), &retrieveResult);
-        file.close();
+    void ManagerRegistry::downloadRegistry(const Registry &registry)
+    {
+        m_registry.reset(new Registry { registry });
+        m_manager->append(m_registry->urlToQUrl());
+    }
 
-        if (retrieveResult.error == QJsonParseError::NoError) {
-            emit getDocumentSuccess(document);
+    void ManagerRegistry::extractRegistry(const QString& fileName)
+    {
+        registryArchive.setFileName(fileName);
+        QString nameFileRegistry = QFileInfo(fileRegistry).fileName();
+
+        if (JlCompress::getFileList(registryArchive.fileName()).contains(nameFileRegistry)) {
+            JlCompress::extractFile(registryArchive.fileName(), nameFileRegistry, fileRegistry.fileName());
+            getDocument(fileRegistry);
         }
     }
-}
 
-// version
-
-void ManagerRegistry::removeInfo()
-{
-    fileRegistryInfo.remove();
-    emit removeInfoSuccess();
-}
-
-void ManagerRegistry::checkNewVesion()
-{
-    int version = getVersion();
-
-    if (hasNewRegistry(version)) {
-        emit newRegistryAvailable(true, version);
-    } else {
-        connect(m_modelRegistry.get(), &ModelRegistry::registry, this, &ManagerRegistry::downloadInfo);
-        connect(m_manager.get(), &DownloadManager::readyRead, this, &ManagerRegistry::retrieveVersion);
-        connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::removeInfo);
-        connect(this, &ManagerRegistry::getDocumentSuccess, this, &ManagerRegistry::retrieveDataInfo);
-        connect(this, &ManagerRegistry::newRegistryAvailable, this, &ManagerRegistry::setVersion);
-
-        m_registry ? m_manager->append(m_registry->infoUrlToQUrl()) : m_modelRegistry->getRegistry();
+    void ManagerRegistry::removeRegistry()
+    {
+        registryArchive.remove();
+        fileRegistry.remove();
+        emit removeRegistrySuccess();
     }
-}
 
-void ManagerRegistry::downloadInfo(const Registry& registry)
-{
-    m_registry.reset(new Registry { registry });
-    m_manager->append(registry.infoUrlToQUrl());
-}
-
-void ManagerRegistry::retrieveVersion(const QString& fileName)
-{
-    fileRegistryInfo.setFileName(fileName);
-    getDocument(fileRegistryInfo);
-}
-
-void ManagerRegistry::retrieveDataInfo(const QJsonDocument &document)
-{
-    int version = getVersion(document);
-
-    if (version) {
-        emit newRegistryAvailable(hasNewRegistry(version), version);
+    void ManagerRegistry::retrieveData(const QJsonDocument& document)
+    {
+        if (hasNewRegistry(getVersion(document))) {
+            emit retrieveDataSuccess(document);
+        }
     }
-}
 
-bool ManagerRegistry::hasNewRegistry(int version) const
-{
-    return QSettings().value("registryVersion").toInt() < version;
-}
+    void ManagerRegistry::getDocument(QFile& file)
+    {
+        if ( file.open(QIODevice::ReadOnly | QIODevice::Text) ) {
+            QJsonParseError retrieveResult;
+            const QJsonDocument& document = QJsonDocument::fromJson(file.readAll(), &retrieveResult);
+            file.close();
 
-int ManagerRegistry::getVersion(const QJsonDocument &document) const
-{
-    return document.object().value("version").toInt();
-}
-
-int ManagerRegistry::getVersion() const
-{
-    return QSettings().value("cacheRegistryVersion").toInt();
-}
-
-void ManagerRegistry::setVersion(bool available, int version) const
-{
-    if (available) {
-        QSettings().setValue("cacheRegistryVersion", version);
+            if (retrieveResult.error == QJsonParseError::NoError) {
+                emit getDocumentSuccess(document);
+            }
+        }
     }
+
+    // version
+
+    void ManagerRegistry::removeInfo()
+    {
+        fileRegistryInfo.remove();
+        emit removeInfoSuccess();
+    }
+
+    void ManagerRegistry::checkNewVesion()
+    {
+        int version = getVersion();
+
+        if (hasNewRegistry(version)) {
+            emit newRegistryAvailable(true, version);
+        } else {
+            connect(m_modelRegistry.get(), &ModelRegistry::registry, this, &ManagerRegistry::downloadInfo);
+            connect(m_manager.get(), &DownloadManager::readyRead, this, &ManagerRegistry::retrieveVersion);
+            connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::removeInfo);
+            connect(this, &ManagerRegistry::getDocumentSuccess, this, &ManagerRegistry::retrieveDataInfo);
+            connect(this, &ManagerRegistry::newRegistryAvailable, this, &ManagerRegistry::setVersion);
+
+            m_registry ? m_manager->append(m_registry->infoUrlToQUrl()) : m_modelRegistry->getRegistry();
+        }
+    }
+
+    void ManagerRegistry::downloadInfo(const Registry& registry)
+    {
+        m_registry.reset(new Registry { registry });
+        m_manager->append(registry.infoUrlToQUrl());
+    }
+
+    void ManagerRegistry::retrieveVersion(const QString& fileName)
+    {
+        fileRegistryInfo.setFileName(fileName);
+        getDocument(fileRegistryInfo);
+    }
+
+    void ManagerRegistry::retrieveDataInfo(const QJsonDocument &document)
+    {
+        int version = getVersion(document);
+
+        if (version) {
+            emit newRegistryAvailable(hasNewRegistry(version), version);
+        }
+    }
+
+    bool ManagerRegistry::hasNewRegistry(int version) const
+    {
+        return QSettings().value("registryVersion").toInt() < version;
+    }
+
+    int ManagerRegistry::getVersion(const QJsonDocument &document) const
+    {
+        return document.object().value("version").toInt();
+    }
+
+    int ManagerRegistry::getVersion() const
+    {
+        return QSettings().value("cacheRegistryVersion").toInt();
+    }
+
+    void ManagerRegistry::setVersion(bool available, int version) const
+    {
+        if (available) {
+            QSettings().setValue("cacheRegistryVersion", version);
+        }
+    }
+
 }

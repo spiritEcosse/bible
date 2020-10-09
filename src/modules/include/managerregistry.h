@@ -10,59 +10,59 @@
 
 class QJsonParseError;
 
-namespace TestManagerRegistry
-{
-   class tst_ManagerRegistry;
+namespace modules {
+
+    namespace tests
+    {
+       class tst_ManagerRegistry;
+       class tst_ManagerGroup;
+    }
+
+    class ManagerRegistry : public QObject
+    {
+        Q_OBJECT
+    public:
+        ManagerRegistry(QObject *parent = nullptr);
+        virtual ~ManagerRegistry() {}
+
+    public slots:
+        virtual void download() const;
+        virtual void checkNewVesion();
+
+    private:
+        friend class tests::tst_ManagerRegistry;
+        friend class tests::tst_ManagerGroup;
+
+        QFile registryArchive;
+        QFile fileRegistryInfo;
+        std::unique_ptr<ModelRegistry> m_modelRegistry;
+        QFile fileRegistry { "download/registry.json" };
+        std::unique_ptr<DownloadManager> m_manager;
+        std::unique_ptr<Registry> m_registry;
+        virtual bool hasNewRegistry(int version) const;
+        virtual int getVersion(const QJsonDocument& document) const;
+        virtual int getVersion() const;
+        virtual void getDocument(QFile& file);
+        virtual void setVersion(bool available, int version) const;
+
+    signals:
+        void newRegistryAvailable(bool available, int version);
+        void retrieveDataSuccess(const QJsonDocument& document);
+        void removeRegistrySuccess();
+        void removeInfoSuccess();
+        void getDocumentSuccess(const QJsonDocument& document);
+
+    private slots:
+        virtual void downloadRegistry(const Registry& registry);
+        virtual void downloadInfo(const Registry& registry);
+        virtual void retrieveData(const QJsonDocument& document);
+        virtual void retrieveDataInfo(const QJsonDocument& document);
+        virtual void extractRegistry(const QString& fileName);
+        virtual void removeRegistry();
+        virtual void removeInfo();
+        virtual void retrieveVersion(const QString& fileName);
+    };
+
 }
-
-namespace TestManagerGroup
-{
-   class tst_ManagerGroup;
-}
-
-class ManagerRegistry : public QObject
-{
-    Q_OBJECT
-public:
-    ManagerRegistry(QObject *parent = nullptr);
-    virtual ~ManagerRegistry() {}
-
-public slots:
-    virtual void download() const;
-    virtual void checkNewVesion();
-
-private:
-    friend class TestManagerRegistry::tst_ManagerRegistry;
-    friend class TestManagerGroup::tst_ManagerGroup;
-
-    QFile registryArchive;
-    QFile fileRegistryInfo;
-    std::unique_ptr<ModelRegistry> m_modelRegistry;
-    QFile fileRegistry { "download/registry.json" };
-    std::unique_ptr<DownloadManager> m_manager;
-    std::unique_ptr<Registry> m_registry;
-    virtual bool hasNewRegistry(int version) const;
-    virtual int getVersion(const QJsonDocument& document) const;
-    virtual int getVersion() const;
-    virtual void getDocument(QFile& file);
-    virtual void setVersion(bool available, int version) const;
-
-signals:
-    void newRegistryAvailable(bool available, int version);
-    void retrieveDataSuccess(const QJsonDocument& document);
-    void removeRegistrySuccess();
-    void removeInfoSuccess();
-    void getDocumentSuccess(const QJsonDocument& document);
-
-private slots:
-    virtual void downloadRegistry(const Registry& registry);
-    virtual void downloadInfo(const Registry& registry);
-    virtual void retrieveData(const QJsonDocument& document);
-    virtual void retrieveDataInfo(const QJsonDocument& document);
-    virtual void extractRegistry(const QString& fileName);
-    virtual void removeRegistry();
-    virtual void removeInfo();
-    virtual void retrieveVersion(const QString& fileName);
-};
 
 #endif // MANAGERREGISTRY_H
