@@ -46,9 +46,10 @@ namespace modules {
             }
         };
         int index = 0;
+        void deleteAllRegistries();
         void addRegistry();
         const QJsonArray getRegistries(const QJsonDocument &document) const;
-        void saveRegistries(const QJsonArray &array);
+        void saveRegistries(const std::vector<Registry>& registries);
         QVariant value(const char* property);
     signals:
         void updateSuccess();

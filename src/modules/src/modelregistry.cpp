@@ -12,17 +12,6 @@ namespace modules {
     {
     }
 
-    void ModelRegistry::update(const QJsonDocument& document)
-    {
-        saveRegistries(getRegistries(document));
-        emit updateSuccess();
-    }
-
-    const QJsonArray ModelRegistry::getRegistries(const QJsonDocument &document) const
-    {
-        return document.object().value("registries").toArray();
-    }
-
     std::vector<Registry> transform(const QJsonArray &source)
     {
         std::vector<Registry> target;
@@ -34,11 +23,31 @@ namespace modules {
         return target;
     }
 
-    void ModelRegistry::saveRegistries(const QJsonArray &array)
+    void ModelRegistry::update(const QJsonDocument& document)
     {
-        const std::vector<Registry>& registries = transform(array);
+        try {
+          auto guard = m_db->storage->transaction_guard(); //  calls BEGIN TRANSACTION and returns guard object
+          const std::vector<Registry>& registries = transform(getRegistries(document));
+
+          deleteAllRegistries();
+          saveRegistries(registries);
+          guard.commit();
+          m_registries = registries;
+        } catch(std::system_error e) {
+            qWarning() << "exception: " << e.what();
+        }
+
+        emit updateSuccess();
+    }
+
+    const QJsonArray ModelRegistry::getRegistries(const QJsonDocument &document) const
+    {
+        return document.object().value("registries").toArray();
+    }
+
+    void ModelRegistry::saveRegistries(const std::vector<Registry>& registries)
+    {
         m_db->storage->insert_range(registries.begin(), registries.end());
-        m_registries = registries;
     }
 
     int ModelRegistry::rowCount(const QModelIndex& parent) const
@@ -79,6 +88,11 @@ namespace modules {
         roles[RegistryRoles::InfoUrlRole] = "info_url";
 
         return roles;
+    }
+
+    void ModelRegistry::deleteAllRegistries()
+    {
+        m_db->storage->remove_all<Registry>();
     }
 
     void ModelRegistry::getRegistry()

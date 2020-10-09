@@ -11,6 +11,7 @@ namespace modules {
 
         private:
             QJsonDocument helperGetDocument();
+            std::shared_ptr<db::Db> m_db;
 
         public:
             tst_ModelRegistry();
@@ -27,6 +28,8 @@ namespace modules {
             QJsonArray array;
 
             array << QJsonObject {{"url", "link1"}, {"priority", 1}, {"info_url", "link11"}};
+            array << QJsonObject {{"url", "link1"}, {"priority", 1}, {"info_url", "link11"}};
+            array << QJsonObject {{"url", "link1"}, {"priority", 1}, {"info_url", "link11"}};
 
             return QJsonDocument {
                 QJsonObject {
@@ -36,8 +39,8 @@ namespace modules {
         }
 
         tst_ModelRegistry::tst_ModelRegistry()
+            : m_db { db::Db::getInstance() }
         {
-
         }
 
         tst_ModelRegistry::~tst_ModelRegistry()
@@ -45,12 +48,18 @@ namespace modules {
 
         }
 
+        // tests
         void tst_ModelRegistry::update()
         {
             ModelRegistry modelRegistry;
             QSignalSpy spyLast(&modelRegistry, &ModelRegistry::updateSuccess);
 
+            m_db->storage->remove_all<Registry>();
+            QCOMPARE(m_db->storage->count<Registry>(), 0);
+
             modelRegistry.update(helperGetDocument());
+            QCOMPARE(m_db->storage->count<Registry>(), 3);
+
             QCOMPARE(spyLast.count(), 1);
         }
 
