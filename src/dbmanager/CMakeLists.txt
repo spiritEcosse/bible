@@ -18,5 +18,5 @@ target_include_directories(${PROJECT_NAME}
         src
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE modules)
+target_link_libraries(${PROJECT_NAME} PRIVATE modules core)
 target_compile_definitions(${PROJECT_NAME} PRIVATE DBMANAGER_LIBRARY)

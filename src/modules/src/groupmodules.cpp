@@ -7,84 +7,88 @@
 #define MODULES_SPLIT_NAME "^(.+)\\.(.+)$"
 
 
-GroupModules::GroupModules(const QJsonObject& qJsonModule)
-    : m_language { qJsonModule.value("lng").toString() }
-{
-    m_name = qJsonModule.value("fil").toString();
-    m_region = qJsonModule.value("reg").toString();
-    cleanName();
-}
+namespace modules {
 
-GroupModules::GroupModules(QString language, QString name, int id)
-    : m_language { language },
-      m_name {std::move(name)},
-      m_id {id} {}
+    GroupModules::GroupModules(const QJsonObject& qJsonModule)
+        : m_language { qJsonModule.value("lng").toString() }
+    {
+        m_name = qJsonModule.value("fil").toString();
+        m_region = qJsonModule.value("reg").toString();
+        cleanName();
+    }
 
-QString GroupModules::nativeLanguageName() const
-{
-    return m_language.nativeLanguageName();
-}
+    GroupModules::GroupModules(QString language, QString name, int id)
+        : m_language { language },
+          m_name {std::move(name)},
+          m_id {id} {}
 
-QString GroupModules::languageName() const
-{
-    return m_language.languageInString();
-}
+    QString GroupModules::nativeLanguageName() const
+    {
+        return m_language.nativeLanguageName();
+    }
 
-QLocale GroupModules::language() const
-{
-    return m_language;
-}
+    QString GroupModules::languageName() const
+    {
+        return m_language.languageInString();
+    }
 
-QString GroupModules::region() const
-{
-    return m_region;
-}
+    QLocale GroupModules::language() const
+    {
+        return m_language;
+    }
 
-std::string GroupModules::regionToStdString() const
-{
-    return m_region.toStdString();
-}
+    QString GroupModules::region() const
+    {
+        return m_region;
+    }
 
-QString GroupModules::languageCode() const
-{
-    return m_language.code();
-}
+    std::string GroupModules::regionToStdString() const
+    {
+        return m_region.toStdString();
+    }
 
-std::string GroupModules::languageCodeToStdString() const
-{
-    return languageCode().toStdString();
-}
+    QString GroupModules::languageCode() const
+    {
+        return m_language.code();
+    }
 
-QString GroupModules::name()
-{
-    return m_name;
-}
+    std::string GroupModules::languageCodeToStdString() const
+    {
+        return languageCode().toStdString();
+    }
 
-std::string GroupModules::nameToStdString()
-{
-    return m_name.toStdString();
-}
+    QString GroupModules::name()
+    {
+        return m_name;
+    }
 
-QString GroupModules::parseName(const QString& name)
-{
-    QRegularExpression re(MODULES_SPLIT_NAME);
-    QRegularExpressionMatch match = re.match(name);
+    std::string GroupModules::nameToStdString()
+    {
+        return m_name.toStdString();
+    }
 
-    return match.hasMatch() ? match.captured(2).trimmed() : name;
-}
+    QString GroupModules::parseName(const QString& name)
+    {
+        QRegularExpression re(MODULES_SPLIT_NAME);
+        QRegularExpressionMatch match = re.match(name);
 
-void GroupModules::cleanName()
-{
-    m_name = parseName(m_name);
-    m_name[0] = m_name[0].toUpper();
-}
+        return match.hasMatch() ? match.captured(2).trimmed() : name;
+    }
 
-void GroupModules::addModule(const Module& modules)
-{
-    m_modules.push_back(modules);
-}
+    void GroupModules::cleanName()
+    {
+        m_name = parseName(m_name);
+        m_name[0] = m_name[0].toUpper();
+    }
 
-uint GroupModules::modulesCount()
-{
-    return static_cast<uint>(m_modules.size());
+    void GroupModules::addModule(const Module& modules)
+    {
+        m_modules.push_back(modules);
+    }
+
+    uint GroupModules::modulesCount()
+    {
+        return static_cast<uint>(m_modules.size());
+    }
+
 }

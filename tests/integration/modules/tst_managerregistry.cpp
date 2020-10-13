@@ -33,6 +33,7 @@ namespace modules {
             QJsonDocument helperGetDocument();
             void setQSettings(int value = 0, QString key = "registryVersion");
             const int version = 10;
+            std::shared_ptr<db::Db> m_db;
 
         private slots:
             void initTestCase();
@@ -66,11 +67,6 @@ namespace modules {
             void getVersionFromCache();
         };
 
-        void tst_ManagerRegistry::cleanupTestCase()
-        {
-            dir.rmdir(dirDownload);
-        }
-
         void tst_ManagerRegistry::initTestCase()
         {
             dir.mkdir(pathFiles);
@@ -78,15 +74,15 @@ namespace modules {
             dir.mkdir(dirDownload);
         }
 
+        void tst_ManagerRegistry::cleanupTestCase()
+        {
+            dir.rmdir(dirDownload);
+        }
+
         tst_ManagerRegistry::tst_ManagerRegistry()
-        {
+            : m_db { db::Db::getInstance() } {}
 
-        }
-
-        tst_ManagerRegistry::~tst_ManagerRegistry()
-        {
-
-        }
+        tst_ManagerRegistry::~tst_ManagerRegistry() {}
 
         // helpers
 
@@ -202,6 +198,7 @@ namespace modules {
 
             QString fileRegistryDoesntExist { "registry_doesnt_exist_file.zip" };
 
+
             managerRegistry.m_modelRegistry->m_registries = {
                 Registry{
                     QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
@@ -236,10 +233,10 @@ namespace modules {
             ManagerRegistry managerRegistry;
 
             Registry registry {
-                QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
+                    QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
                     1,
                     QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
-                };
+            };
 
             managerRegistry.downloadRegistry(registry);
             QCOMPARE(*managerRegistry.m_registry, registry);

@@ -46,13 +46,13 @@ namespace modules {
             }
         };
         int index = 0;
-        void deleteAllRegistries();
-        void addRegistry();
+        void deleteAllRegistries() const;
+        bool setRegistries();
+        void saveRegistries(const std::vector<Registry>& registries) const;
         const QJsonArray getRegistries(const QJsonDocument &document) const;
-        void saveRegistries(const std::vector<Registry>& registries);
-        QVariant value(const char* property);
     signals:
         void updateSuccess();
+        void error(const QString& error);
         void registry(const Registry& registry);
 
     public slots:
