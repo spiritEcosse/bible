@@ -41,7 +41,6 @@ namespace modules {
         std::vector<Registry> m_registries {
             Registry {
                 "aHR0cDovL21waDQucnUvcmVnaXN0cnkuemlw",
-                1,
                 "aHR0cDovL21waDQucnUvcmVnaXN0cnlfaW5mby5qc29u"
             }
         };

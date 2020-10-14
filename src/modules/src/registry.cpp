@@ -16,8 +16,8 @@ namespace modules {
 
     Registry::Registry(const QJsonObject& registryJson)
         : m_url { registryJson.value("url").toString().toUtf8().toBase64() },
-          m_priority { static_cast<short>(registryJson.value("priority").toInt()) },
           m_infoUrl { registryJson.value("info_url").toString().toUtf8().toBase64() },
+          m_priority { static_cast<short>(registryJson.value("priority").toInt()) },
           m_test { registryJson.value("test").toBool() }
     {
         if (m_url.isEmpty() || m_infoUrl.isEmpty()) {
@@ -26,13 +26,13 @@ namespace modules {
     }
 
     Registry::Registry(const QByteArray& url,
-                       const short& priority,
                        const QByteArray& infoUrl,
+                       const short& priority,
                        const bool& test)
-        : m_url { url },
-          m_priority { priority },
-          m_infoUrl { infoUrl },
-          m_test { test }
+        : m_url { std::move(url) },
+          m_infoUrl { std::move(infoUrl) },
+          m_priority { std::move(priority) },
+          m_test { std::move(test) }
     {
     }
 

@@ -71,28 +71,28 @@ namespace modules {
 
             QJsonArray array;
 
-            array << QJsonObject {{"fil", "name"},{"lng", "en"},{"reg", ""}};
+            array << QJsonObject {{"fil", "name"},{"des", "description"},{"abr", "abbreviation"},{"lng", "en"},{"reg", ""}};
             QTest::newRow("case: countMG is 1") << array << size_t(1) << std::vector<uint> {1};
 
-            array << QJsonObject {{"fil", "name"},{"lng", "en"},{"reg", ""}};
+            array << QJsonObject {{"fil", "name"},{"des", "description"},{"abr", "abbreviation"},{"lng", "en"},{"reg", ""}};
             QTest::newRow("case: countMG is 1") << array << size_t(1) << std::vector<uint> {2};
 
-            array << QJsonObject {{"fil", "name"},{"lng", "en"},{"reg", "region"}};
+            array << QJsonObject {{"fil", "name"},{"des", "description"},{"abr", "abbreviation"},{"lng", "en"},{"reg", "region"}};
             QTest::newRow("case: countMG is 2") << array << size_t(2) << std::vector<uint> {1, 2};
 
-            array << QJsonObject {{"fil", "name"},{"lng", "av"},{"reg", ""}};
+            array << QJsonObject {{"fil", "name"},{"des", "description"},{"abr", "abbreviation"},{"lng", "av"},{"reg", ""}};
             QTest::newRow("case: countMG is 3") << array << size_t(3) << std::vector<uint> {1, 1, 2};
 
-            array << QJsonObject {{"fil", "name"},{"lng", "av"},{"reg", "region"}};
+            array << QJsonObject {{"fil", "name"},{"des", "description"},{"abr", "abbreviation"},{"lng", "av"},{"reg", "region"}};
             QTest::newRow("case: countMG is 4") << array << size_t(4) << std::vector<uint> {1, 1, 1, 2};
 
-            array << QJsonObject {{"fil", "name"},{"lng", "av"},{"reg", ""}};
+            array << QJsonObject {{"fil", "name"},{"des", "description"},{"abr", "abbreviation"},{"lng", "av"},{"reg", ""}};
             QTest::newRow("case: countMG is 4") << array << size_t(4) << std::vector<uint> {1, 2, 1, 2};
 
-            array << QJsonObject {{"fil", "name"},{"lng", "av"},{"reg", ""}};
+            array << QJsonObject {{"fil", "name"},{"des", "description"},{"abr", "abbreviation"},{"lng", "av"},{"reg", ""}};
             QTest::newRow("case: countMG is 4") << array << size_t(4) << std::vector<uint> {1, 3, 1, 2};
 
-            array << QJsonObject {{"fil", "name"},{"lng", "av"},{"reg", ""}};
+            array << QJsonObject {{"fil", "name"},{"des", "description"},{"abr", "abbreviation"},{"lng", "av"},{"reg", ""}};
             QTest::newRow("case: countMG is 4") << array << size_t(4) << std::vector<uint> {1, 4, 1, 2};
         }
 
@@ -138,7 +138,22 @@ namespace modules {
             settings.setValue("registryVersion", 0);
 
             fileRegistry.open(QFile::WriteOnly);
-            fileRegistry.write(QJsonDocument {QJsonObject { { "downloads", {{"key", "val"}} }, {"version", 1} } }.toJson());
+            fileRegistry.write(
+                        QJsonDocument {
+                            QJsonObject {
+                                {
+                                    "downloads",
+                                    QJsonArray {
+                                        QJsonObject {
+                                            {"fil", "name"},
+                                            {"des", "description"},
+                                            {"abr", "abbreviation"}
+                                        }
+                                    },
+                                },
+                                {"version", 1}
+                            }
+                        }.toJson());
             fileRegistry.close();
 
             QVERIFY(JlCompress::compressFile(fileRegistryArchive.fileName(), fileRegistry.fileName()));
@@ -154,7 +169,6 @@ namespace modules {
             managerGroup.m_managerRegistry->m_registry.reset(
                         new Registry {
                             QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
-                            1,
                             QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
                         });
 

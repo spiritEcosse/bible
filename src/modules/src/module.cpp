@@ -13,20 +13,59 @@ namespace modules {
         : m_name { moduleJson.value("fil").toString() },
           m_description { moduleJson.value("des").toString() },
           m_abbreviation { moduleJson.value("abr").toString() },
+          m_languageShow { moduleJson.value("aln").toString() },
           m_information { moduleJson.value("inf").toString() },
           m_comment { moduleJson.value("cmt").toString() },
           m_copyright { moduleJson.value("lic").toString() },
           m_hidden { moduleJson.value("hid").toBool() },
-          m_defaultDownload { moduleJson.value("def").toBool() },
-          m_languageShow { moduleJson.value("aln").toString() }
+          m_defaultDownload { moduleJson.value("def").toBool() }
     {
+        if (m_name.isEmpty() || m_description.isEmpty() || m_abbreviation.isEmpty()) {
+            throw(ModuleInvalidData("Invalid data."));
+        }
+
         convertSize(moduleJson.value("siz").toString());
         convertUpdate(moduleJson.value("upd").toString());
     }
 
-    double Module::size() const
+    Module::Module(
+            const QString& name,
+            const QString& description,
+            const QString& abbreviation,
+            const double& size,
+            const QString& languageShow,
+            const QString& information,
+            const QString& comment,
+            const QString& copyright,
+            const QDate& update,
+            const bool& hidden,
+            const bool& defaultDownload)
+        : m_name { std::move(name) },
+          m_description { std::move(description) },
+          m_abbreviation { std::move(abbreviation) },
+          m_size { std::move(size) },
+          m_languageShow { std::move(languageShow) },
+          m_information { std::move(information) },
+          m_comment { std::move(comment) },
+          m_copyright { std::move(copyright) },
+          m_update { std::move(update) },
+          m_hidden { std::move(hidden) },
+          m_defaultDownload { std::move(defaultDownload) }
+    {}
+
+    bool Module::operator==(const Module &other) const
     {
-        return m_size;
+        return m_name == other.m_name &&
+                m_description == other.m_description &&
+                m_abbreviation == other.m_abbreviation &&
+                m_size == other.m_size &&
+                m_information == other.m_information &&
+                m_comment == other.m_comment &&
+                m_copyright == other.m_copyright &&
+                m_update == other.m_update &&
+                m_hidden == other.m_hidden &&
+                m_defaultDownload == other.m_defaultDownload &&
+                m_languageShow == other.m_languageShow;
     }
 
     void Module::convertSize(const QString& str)

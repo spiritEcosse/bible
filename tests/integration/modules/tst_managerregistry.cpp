@@ -155,7 +155,6 @@ namespace modules {
                 managerRegistry.m_modelRegistry->m_registries = {
                     Registry{
                         QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
-                        1,
                         QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
                     }
                 };
@@ -163,7 +162,6 @@ namespace modules {
                 managerRegistry.m_registry.reset(
                             new Registry {
                                 QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
-                                1,
                                 QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
                             });
             }
@@ -202,14 +200,12 @@ namespace modules {
             managerRegistry.m_modelRegistry->m_registries = {
                 Registry{
                     QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
-                    1,
                     QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
                 }
             };
             managerRegistry.m_registry.reset(
                         new Registry {
                             QString(strUrl + QFileInfo(fileRegistryDoesntExist).absoluteFilePath()).toUtf8().toBase64(),
-                            1,
                             QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
                         });
 
@@ -234,7 +230,6 @@ namespace modules {
 
             Registry registry {
                     QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
-                    1,
                     QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
             };
 
@@ -395,7 +390,6 @@ namespace modules {
                 managerRegistry.m_modelRegistry->m_registries = {
                     Registry{
                         QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
-                        1,
                         QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
                     }
                 };
@@ -403,7 +397,6 @@ namespace modules {
                 managerRegistry.m_registry.reset(
                             new Registry {
                                 QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
-                                1,
                                 QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
                             });
             }
@@ -450,13 +443,11 @@ namespace modules {
             managerRegistry.m_registry.reset(
                         new Registry {
                             QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
-                            1,
                             QString(strUrl + QFileInfo(fileRegistryInfoDoesntExist).absoluteFilePath()).toUtf8().toBase64()
                         });
             managerRegistry.m_modelRegistry->m_registries = {
                 Registry{
                     QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
-                    1,
                     QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
                 }
             };
@@ -553,10 +544,9 @@ namespace modules {
             ManagerRegistry managerRegistry;
 
             Registry registry {
-                QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
-                    1,
-                    QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
-                };
+                        QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
+                        QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
+            };
 
             managerRegistry.downloadInfo(registry);
             QCOMPARE(*managerRegistry.m_registry, registry);

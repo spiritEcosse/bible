@@ -2,6 +2,8 @@
 #include "module.h"
 #include "locallanguage.h"
 
+Q_DECLARE_METATYPE(modules::Module)
+
 namespace modules {
 
     namespace tests {
@@ -12,29 +14,16 @@ namespace modules {
             tst_Module();
             ~tst_Module();
 
+        private:
+            Module helperGetModule();
+
         private slots:
-            void m_size_data();
-            void m_size();
-            void m_description_data();
-            void m_description();
-            void m_name_data();
-            void m_name();
+            void constructor_data();
+            void constructor();
+            void convertSize_data();
+            void convertSize();
             void m_languageShow_data();
             void m_languageShow();
-            void m_update_data();
-            void m_update();
-            void m_abbreviation_data();
-            void m_abbreviation();
-            void m_information_data();
-            void m_information();
-            void m_comment_data();
-            void m_comment();
-            void m_copyright_data();
-            void m_copyright();
-            void m_hidden_data();
-            void m_hidden();
-            void m_defaultDownload_data();
-            void m_defaultDownload();
         };
 
         tst_Module::tst_Module()
@@ -44,10 +33,86 @@ namespace modules {
 
         tst_Module::~tst_Module()
         {
-
         }
 
-        void tst_Module::m_size_data()
+        Module tst_Module::helperGetModule()
+        {
+            return Module (
+                        "name",
+                        "description",
+                        "abbreviation",
+                        102400,
+                        "en",
+                        "information",
+                        "comment",
+                        "copyright",
+                        QDate(2017, 03, 31),
+                        true,
+                        true);
+        }
+
+        void tst_Module::constructor_data()
+        {
+            QTest::addColumn<QJsonObject>("object");
+            QTest::addColumn<Module>("registry");
+            QTest::addColumn<bool>("except");
+
+            QJsonObject data {
+                {"fil", "name"},
+                {"des", "description"},
+                {"abr", "abbreviation"},
+                {"siz", "100.0K"},
+                {"aln", "en"},
+                {"inf", "information"},
+                {"cmt", "comment"},
+                {"lic", "copyright"},
+                {"lic", "copyright"},
+                {"upd", "2017-03-31"},
+                {"hid", true},
+                {"def", true}
+            };
+            QTest::newRow("valid data") << data << helperGetModule() << false;
+
+            data = {
+                {"fil", "name"},
+                {"des", "description"},
+                {"abr", "abbreviation"}
+            };
+            QTest::newRow("default fields") << data << Module ("name","description","abbreviation",0,"","","","",QDate(),false,false) << false;
+
+            data = {
+                {"des", "description"},
+                {"abr", "abbreviation"}
+            };
+            QTest::newRow("invalid data: required m_name.") << data << Module() << true;
+
+            data = {
+                {"fil", "name"},
+                {"abr", "abbreviation"}
+            };
+            QTest::newRow("invalid data: required m_description.") << data << Module() << true;
+
+            data = {
+                {"fil", "name"},
+                {"des", "description"}
+            };
+            QTest::newRow("invalid data: required m_abbreviation.") << data << Module() << true;
+        }
+
+        void tst_Module::constructor()
+        {
+            QFETCH(QJsonObject, object);
+            QFETCH(Module, registry);
+            QFETCH(bool, except);
+
+            if (except) {
+                QVERIFY_EXCEPTION_THROWN(Module {object}, ModuleInvalidData);
+            } else {
+                QCOMPARE(Module {object}, registry);
+            }
+        }
+
+        void tst_Module::convertSize_data()
         {
             QTest::addColumn<QString>("in");
             QTest::addColumn<double>("out");
@@ -61,62 +126,14 @@ namespace modules {
             QTest::newRow("65700") << "65700" << double(65700);
         }
 
-        void tst_Module::m_size()
+        void tst_Module::convertSize()
         {
             QFETCH(QString, in);
             QFETCH(double, out);
 
-            QJsonObject qJsonModule
-            {
-                {"siz", in},
-            };
-
-            Module Module {qJsonModule};
-            QCOMPARE(Module.m_size, out);
-        }
-
-        void tst_Module::m_description_data()
-        {
-            QTest::addColumn<QString>("in");
-            QTest::addColumn<QString>("out");
-
-            QTest::newRow("New Revised Standard Version") << "New Revised Standard Version" << "New Revised Standard Version";
-        }
-
-        void tst_Module::m_description()
-        {
-            QFETCH(QString, in);
-            QFETCH(QString, out);
-
-            QJsonObject qJsonModule
-            {
-                {"des", in},
-            };
-
-            Module module { qJsonModule };
-            QCOMPARE(module.m_description, out);
-        }
-
-        void tst_Module::m_name_data()
-        {
-            QTest::addColumn<QString>("in");
-            QTest::addColumn<QString>("out");
-
-            QTest::newRow("10CD-p.plan") << "10CD-p.plan" << "10CD-p.plan";
-        }
-
-        void tst_Module::m_name()
-        {
-            QFETCH(QString, in);
-            QFETCH(QString, out);
-
-            QJsonObject qJsonModule
-            {
-                {"fil", in},
-            };
-
-            Module Module { qJsonModule };
-            QCOMPARE(Module.m_name, out);
+            Module module = helperGetModule();
+            module.convertSize(in);
+            QCOMPARE(module.m_size, out);
         }
 
         void tst_Module::m_languageShow_data()
@@ -148,6 +165,9 @@ namespace modules {
 
             QJsonObject qJsonModule
             {
+                {"fil", "name"},
+                {"des", "description"},
+                {"abr", "abbreviation"},
                 {"aln", language}
             };
 
@@ -158,170 +178,8 @@ namespace modules {
             QCOMPARE(Module.nativeLanguageNameShow(), nativeLanguageName);
         }
 
-        void tst_Module::m_update_data()
-        {
-            QTest::addColumn<QString>("in");
-            QTest::addColumn<QDate>("out");
-            QTest::newRow("2017-03-31") << "2017-03-31" << QDate(2017, 03, 31);
-            QTest::newRow("2016-12-23") << "2016-12-23" << QDate(2016, 12, 23);
-        }
-
-        void tst_Module::m_update()
-        {
-            QFETCH(QString, in);
-            QFETCH(QDate, out);
-
-            QJsonObject qJsonModule
-            {
-                {"upd", in}
-            };
-
-            Module Module { qJsonModule };
-            QCOMPARE(Module.m_update, out);
-        }
-
-        void tst_Module::m_abbreviation_data()
-        {
-            QTest::addColumn<QString>("in");
-            QTest::addColumn<QString>("out");
-            QTest::newRow("10CD-p") << "10CD-p" << "10CD-p";
-            QTest::newRow("2000") << "2000" << "2000";
-            QTest::newRow("ABP-el+") << "ABP-el+" << "ABP-el+";
-            QTest::newRow("ACF'2007") << "ACF'2007" << "ACF'2007";
-            QTest::newRow("Apologét") << "Apologét" << "Apologét";
-        }
-
-        void tst_Module::m_abbreviation()
-        {
-            QFETCH(QString, in);
-            QFETCH(QString, out);
-
-            QJsonObject qJsonModule
-            {
-                {"abr", in}
-            };
-
-            Module Module { qJsonModule };
-            QCOMPARE(Module.m_abbreviation, out);
-        }
-
-        void tst_Module::m_information_data()
-        {
-            QTest::addColumn<QString>("in");
-            QTest::addColumn<QString>("out");
-            QTest::newRow("10CD-p") << "10CD-p" << "10CD-p";
-            QTest::newRow("2000") << "2000" << "2000";
-            QTest::newRow("ABP-el+") << "ABP-el+" << "ABP-el+";
-            QTest::newRow("ACF'2007") << "ACF'2007" << "ACF'2007";
-            QTest::newRow("Apologét") << "Apologét" << "Apologét";
-        }
-
-        void tst_Module::m_information()
-        {
-            QFETCH(QString, in);
-            QFETCH(QString, out);
-
-            QJsonObject qJsonModule
-            {
-                {"inf", in}
-            };
-
-            Module Module { qJsonModule };
-            QCOMPARE(Module.m_information, out);
-        }
-
-        void tst_Module::m_comment_data()
-        {
-            QTest::addColumn<QString>("in");
-            QTest::addColumn<QString>("out");
-            const char* comment = "(2016-02-18) Code cleaning\n(2015-12-30)";
-
-            QTest::newRow(comment) << comment << comment;
-        }
-
-        void tst_Module::m_comment()
-        {
-            QFETCH(QString, in);
-            QFETCH(QString, out);
-
-            QJsonObject qJsonModule
-            {
-                {"cmt", in}
-            };
-
-            Module Module { qJsonModule };
-            QCOMPARE(Module.m_comment, out);
-        }
-
-        void tst_Module::m_copyright_data()
-        {
-            QTest::addColumn<QString>("in");
-            QTest::addColumn<QString>("out");
-            const char* copright {"<br/><h4>Bible Society of South Africa</h4>"};
-
-            QTest::newRow(copright) << copright << copright;
-            QTest::newRow("*") << "*" << "*";
-        }
-
-        void tst_Module::m_copyright()
-        {
-            QFETCH(QString, in);
-            QFETCH(QString, out);
-
-            QJsonObject qJsonModule
-            {
-                {"lic", in}
-            };
-
-            Module Module { qJsonModule };
-            QCOMPARE(Module.m_copyright, out);
-        }
-
-        void tst_Module::m_hidden_data()
-        {
-            QTest::addColumn<bool>("in");
-            QTest::addColumn<bool>("out");
-            QTest::newRow("1") << true << true;
-            QTest::newRow("0") << false << false;
-        }
-
-        void tst_Module::m_hidden()
-        {
-            QFETCH(bool, in);
-            QFETCH(bool, out);
-
-            QJsonObject qJsonModule
-            {
-                {"hid", in}
-            };
-
-            Module Module { qJsonModule };
-            QCOMPARE(Module.m_hidden, out);
-        }
-
-        void tst_Module::m_defaultDownload_data()
-        {
-            QTest::addColumn<bool>("in");
-            QTest::addColumn<bool>("out");
-            QTest::newRow("1") << true << true;
-            QTest::newRow("0") << false << false;
-        }
-
-        void tst_Module::m_defaultDownload()
-        {
-            QFETCH(bool, in);
-            QFETCH(bool, out);
-
-            QJsonObject qJsonModule
-            {
-                {"def", in}
-            };
-
-            Module Module { qJsonModule };
-            QCOMPARE(Module.m_defaultDownload, out);
-        }
-
     }
+
 }
 
 QTEST_APPLESS_MAIN(modules::tests::tst_Module)

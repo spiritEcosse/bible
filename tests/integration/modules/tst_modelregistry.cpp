@@ -67,7 +67,7 @@ namespace modules {
         }
 
         std::vector<Registry> tst_ModelRegistry::helperGetRegistries() {
-            return std::vector<Registry> {{"bGluazE=", 1, "bGluazEx"}, {"bGluazI=", 2, "bGluazIy"}, {"bGluazM=", 3, "bGluazMz"}};
+            return std::vector<Registry> {{"bGluazE=", "bGluazEx", 1}, {"bGluazI=", "bGluazIy", 2}, {"bGluazM=", "bGluazMz", 3}};
         }
 
         std::vector<Registry> tst_ModelRegistry::helperSaveRegistries()
@@ -81,7 +81,6 @@ namespace modules {
         {
             return std::vector<Registry> {{
                 "aHR0cDovL21waDQucnUvcmVnaXN0cnkuemlw",
-                1,
                 "aHR0cDovL21waDQucnUvcmVnaXN0cnlfaW5mby5qc29u"
             }};
         }

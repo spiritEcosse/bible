@@ -51,8 +51,8 @@ namespace modules {
         Registry();
         Registry(const QJsonObject& registryJson);
         Registry(const QByteArray& url,
-                 const short& priority,
                  const QByteArray& infoUrl,
+                 const short& priority = 0,
                  const bool& test = false);
 
         QUrl urlToQUrl() const;
@@ -60,8 +60,8 @@ namespace modules {
         bool operator==(const Registry& other) const;
 
         QByteArray m_url;
-        short m_priority;
         QByteArray m_infoUrl;
+        short m_priority;
         bool m_test;
         int m_id;
 

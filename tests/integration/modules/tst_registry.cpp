@@ -30,7 +30,7 @@ namespace modules {
 
         Registry tst_Registry::helperGetRegistry()
         {
-            return Registry ("bGluazE=", 1, "bGluazEx", 0);
+            return Registry ("bGluazE=", "bGluazEx", 1, true);
         }
 
         void tst_Registry::constructor_data()
@@ -39,8 +39,14 @@ namespace modules {
             QTest::addColumn<Registry>("registry");
             QTest::addColumn<bool>("except");
 
-            QJsonObject data {{"url", "link1"}, {"priority", 1}, {"info_url", "link11"}};
+            QJsonObject data {{"url", "link1"}, {"priority", 1}, {"info_url", "link11"}, {"test", true}};
             QTest::newRow("valid data") << data << helperGetRegistry() << false;
+
+            data = {
+                {"url", "link1"},
+                {"info_url", "link11"}
+            };
+            QTest::newRow("default fields") << data << Registry ("bGluazE=", "bGluazEx", 0, false) << false;
 
             data = {{"priority", 1}, {"info_url", "link11"}};
             QTest::newRow("invalid data: required m_url.") << data << Registry {} << true;
