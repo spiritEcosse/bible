@@ -12,8 +12,10 @@ namespace modules {
 
         private:
             QJsonDocument helperGetDocument();
-            std::vector<Registry> helpGetRegistries();
-            std::vector<Registry> helpSaveRegistries();
+            QJsonDocument helperGetInvalidDocument();
+            std::vector<Registry> helperGetRegistries();
+            std::vector<Registry> helperSaveRegistries();
+            std::vector<Registry> helperGetBaseRegistries();
             int vectorSize = 3;
             std::shared_ptr<db::Db> m_db;
 
@@ -24,6 +26,7 @@ namespace modules {
         private slots:
             void cleanRegistryTable();
             void update();
+            void update_data();
             void deleteAllRegistries();
             void saveRegistries();
             void getRegistry_data();
@@ -48,15 +51,39 @@ namespace modules {
             };
         }
 
-        std::vector<Registry> tst_ModelRegistry::helpGetRegistries() {
+        QJsonDocument tst_ModelRegistry::helperGetInvalidDocument()
+        {
+            QJsonArray array;
+
+            array << QJsonObject {{"url", "link1"}, {"priority", 1}};
+            array << QJsonObject {{"priority", 2}, {"info_ufrl", "link22"}};
+            array << QJsonObject {{"url", "link3"}, {"priority", 3}, {"info_url", "link33"}};
+
+            return QJsonDocument {
+                QJsonObject {
+                    { "registries",  array }
+                }
+            };
+        }
+
+        std::vector<Registry> tst_ModelRegistry::helperGetRegistries() {
             return std::vector<Registry> {{"bGluazE=", 1, "bGluazEx"}, {"bGluazI=", 2, "bGluazIy"}, {"bGluazM=", 3, "bGluazMz"}};
         }
 
-        std::vector<Registry> tst_ModelRegistry::helpSaveRegistries()
+        std::vector<Registry> tst_ModelRegistry::helperSaveRegistries()
         {
-            const std::vector<Registry>& registries = helpGetRegistries();
+            const std::vector<Registry>& registries = helperGetRegistries();
             m_db->storage->insert_range(registries.begin(), registries.end());
             return registries;
+        }
+
+        std::vector<Registry> tst_ModelRegistry::helperGetBaseRegistries()
+        {
+            return std::vector<Registry> {{
+                "aHR0cDovL21waDQucnUvcmVnaXN0cnkuemlw",
+                1,
+                "aHR0cDovL21waDQucnUvcmVnaXN0cnlfaW5mby5qc29u"
+            }};
         }
 
         tst_ModelRegistry::tst_ModelRegistry()
@@ -75,27 +102,39 @@ namespace modules {
         }
 
         // tests
+        void tst_ModelRegistry::update_data()
+        {
+            QTest::addColumn<QJsonDocument>("document");
+            QTest::addColumn<std::vector<Registry>>("m_registries");
+            QTest::addColumn<int>("size");
+
+            QTest::newRow("success") << helperGetDocument() << helperGetRegistries() << vectorSize ;
+            QTest::newRow("invalid data") << helperGetInvalidDocument() << helperGetBaseRegistries() << 0;
+        }
+
         void tst_ModelRegistry::update()
         {
             cleanRegistryTable();
 
+            QFETCH(QJsonDocument, document);
+            QFETCH(std::vector<Registry>, m_registries);
+            QFETCH(int, size);
+
             ModelRegistry modelRegistry;
-            QSignalSpy spyLast(&modelRegistry, &ModelRegistry::updateSuccess);
+            QSignalSpy spyLast(&modelRegistry, &ModelRegistry::updateDone);
 
-            helpSaveRegistries();
-
-            modelRegistry.update(helperGetDocument());
+            modelRegistry.update(document);
 
             QCOMPARE(spyLast.count(), 1);
-            QCOMPARE(m_db->storage->count<Registry>(), vectorSize);
-            QCOMPARE(modelRegistry.m_registries, helpGetRegistries());
+            QCOMPARE(m_db->storage->count<Registry>(), size);
+            QCOMPARE(modelRegistry.m_registries, m_registries);
         }
 
         void tst_ModelRegistry::deleteAllRegistries()
         {
             ModelRegistry modelRegistry;
 
-            helpSaveRegistries();
+            helperSaveRegistries();
 
             modelRegistry.deleteAllRegistries();
             QCOMPARE(m_db->storage->count<Registry>(), 0);
@@ -107,7 +146,7 @@ namespace modules {
 
             ModelRegistry modelRegistry;
 
-            modelRegistry.saveRegistries(helpGetRegistries());
+            modelRegistry.saveRegistries(helperGetRegistries());
             QCOMPARE(m_db->storage->count<Registry>(), vectorSize);
         }
 
@@ -118,14 +157,8 @@ namespace modules {
             QTest::addColumn<Registry>("registry");
             QTest::addColumn<int>("index");
 
-            Registry registry {
-                "aHR0cDovL21waDQucnUvcmVnaXN0cnkuemlw",
-                1,
-                "aHR0cDovL21waDQucnUvcmVnaXN0cnlfaW5mby5qc29u"
-            };
-
-            QTest::newRow("get registry without query to db") << registry << 0;
-            QTest::newRow("get registry with query (get a bunch of registers) to db") << helpSaveRegistries()[1] << 1;
+            QTest::newRow("get registry without query to db") << helperGetBaseRegistries()[0] << 0;
+            QTest::newRow("get registry with query (get a bunch of registers) to db") << helperSaveRegistries()[1] << 1;
         }
 
         void tst_ModelRegistry::getRegistry()

@@ -25,15 +25,19 @@ namespace modules {
     void ModelRegistry::update(const QJsonDocument& document)
     {
         try {
-          auto guard = m_db->storage->transaction_guard();
           const std::vector<Registry>& registries = transform(getRegistries(document));
+          auto guard = m_db->storage->transaction_guard();
 
           deleteAllRegistries();
           saveRegistries(registries);
           guard.commit();
           m_registries = registries;
-          emit updateSuccess();
-        } catch(const std::system_error& e) {}
+          emit updateDone();
+        } catch(const std::system_error& e) {
+            emit error("An error occured.");
+        } catch(const RegistryInvalidData& e) {
+            emit updateDone();
+        }
     }
 
     const QJsonArray ModelRegistry::getRegistries(const QJsonDocument &document) const

@@ -51,7 +51,7 @@ namespace modules {
         void saveRegistries(const std::vector<Registry>& registries) const;
         const QJsonArray getRegistries(const QJsonDocument &document) const;
     signals:
-        void updateSuccess();
+        void updateDone();
         void error(const QString& error);
         void registry(const Registry& registry);
 

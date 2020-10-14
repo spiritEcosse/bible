@@ -147,7 +147,7 @@ namespace modules {
             QSignalSpy spyGetDocumentSuccess(&managerRegistry, &ManagerRegistry::getDocumentSuccess);
             QSignalSpy spyRetrieveDataSuccess(&managerRegistry, &ManagerRegistry::retrieveDataSuccess);
             QSignalSpy spyRemoveRegistry(&managerRegistry, &ManagerRegistry::removeRegistrySuccess);
-            QSignalSpy spyUpdateSuccess(managerRegistry.m_modelRegistry.get(), &ModelRegistry::updateSuccess);
+            QSignalSpy spyUpdateDone(managerRegistry.m_modelRegistry.get(), &ModelRegistry::updateDone);
             QSignalSpy spyRegistry(managerRegistry.m_modelRegistry.get(), &ModelRegistry::registry);
 
             if (signalRegistryHit)
@@ -170,13 +170,13 @@ namespace modules {
 
             managerRegistry.download();
 
-            QVERIFY(spyUpdateSuccess.wait());
+            QVERIFY(spyUpdateDone.wait());
             QCOMPARE(spyReadyRead.count(), 1);
             QCOMPARE(spyRegistry.count(), signalRegistryHit);
             QCOMPARE(spyGetDocumentSuccess.count(), 1);
             QCOMPARE(spyRetrieveDataSuccess.count(), 1);
             QCOMPARE(spyRemoveRegistry.count(), 1);
-            QCOMPARE(spyUpdateSuccess.count(), 1);
+            QCOMPARE(spyUpdateDone.count(), 1);
         }
 
         void tst_ManagerRegistry::downloadManagerFailed()
@@ -192,7 +192,7 @@ namespace modules {
             QSignalSpy spyGetDocumentSuccess(&managerRegistry, &ManagerRegistry::getDocumentSuccess);
             QSignalSpy spyRetrieveDataSuccess(&managerRegistry, &ManagerRegistry::retrieveDataSuccess);
             QSignalSpy spyRemoveRegistry(&managerRegistry, &ManagerRegistry::removeRegistrySuccess);
-            QSignalSpy spyUpdateSuccess(managerRegistry.m_modelRegistry.get(), &ModelRegistry::updateSuccess);
+            QSignalSpy spyUpdateDone(managerRegistry.m_modelRegistry.get(), &ModelRegistry::updateDone);
             QSignalSpy spyRegistry(managerRegistry.m_modelRegistry.get(), &ModelRegistry::registry);
             QSignalSpy spyManagerDownloadFailed(managerRegistry.m_manager.get(), &DownloadManager::failed);
 
@@ -215,14 +215,14 @@ namespace modules {
 
             managerRegistry.download();
 
-            QVERIFY(spyUpdateSuccess.wait());
+            QVERIFY(spyUpdateDone.wait());
             QCOMPARE(spyReadyRead.count(), 1);
             QCOMPARE(spyManagerDownloadFailed.count(), 1);
             QCOMPARE(spyRegistry.count(), 1);
             QCOMPARE(spyGetDocumentSuccess.count(), 1);
             QCOMPARE(spyRetrieveDataSuccess.count(), 1);
             QCOMPARE(spyRemoveRegistry.count(), 1);
-            QCOMPARE(spyUpdateSuccess.count(), 1);
+            QCOMPARE(spyUpdateDone.count(), 1);
         }
 
         void tst_ManagerRegistry::downloadRegistry()

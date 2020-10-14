@@ -20,6 +20,9 @@ namespace modules {
           m_infoUrl { registryJson.value("info_url").toString().toUtf8().toBase64() },
           m_test { registryJson.value("test").toBool() }
     {
+        if (m_url.isEmpty() || m_infoUrl.isEmpty()) {
+            throw(RegistryInvalidData("Invalid data."));
+        }
     }
 
     Registry::Registry(const QByteArray& url,
@@ -47,7 +50,8 @@ namespace modules {
     {
         return m_url == other.m_url &&
                 m_infoUrl == other.m_infoUrl &&
-                m_priority == other.m_priority;
+                m_priority == other.m_priority &&
+                m_test == other.m_test;
     }
 
     #ifndef QT_NO_DEBUG_STREAM

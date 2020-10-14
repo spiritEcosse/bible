@@ -6,7 +6,7 @@ namespace db {
 
     Db::Db()
     {
-        storage.reset(new Storage(userStorage("")));
+        storage.reset(new Storage(userStorage("user.sqlite")));
         storage->sync_schema();
     }
 
