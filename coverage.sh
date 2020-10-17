@@ -1,13 +1,17 @@
 #!/bin/bash
 
-#scripts/pre_unit_tests.sh && \
-mkdir build && \
+mkdir -p build && \
 cd build && \
-qmake ../tests.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug LIBS+=-lquazip5 && \
-make qmake_all && \
-make -j8 && \
-./tests && \
-lcov -c -d . -o coverage.info && \
-lcov -r coverage.info "*Qt*.framework*" "*.moc" "*moc_*.cpp" "*/test/*" '/usr/include/*' '/usr/local/*' '**/tests*' -o coverage-filtered.info && \
-genhtml coverage-filtered.info -o ../${HTML} && \
-lcov -d . -z
+cmake \
+-DCMAKE_BUILD_TYPE:STRING=Debug \
+-DCMAKE_CXX_COMPILER:STRING=/usr/bin/g++ \
+-DCMAKE_C_COMPILER:STRING=/usr/bin/gcc \
+-DCMAKE_PREFIX_PATH:STRING=/home/igor/Qt5.6.3/5.6.3/gcc_64 \
+-DQT_QMAKE_EXECUTABLE:STRING=/home/igor/Qt5.6.3/5.6.3/gcc_64/bin/qmake \
+-DCMAKE_BUILD_TYPE=Coverage \
+-DBUILD_TESTING=false \
+.. && \
+make && \
+make tests && \
+gcovr -r ../src . --html-details --html -o index.html
+xdg-open index.html
