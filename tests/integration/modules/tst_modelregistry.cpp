@@ -25,6 +25,8 @@ namespace modules {
 
         private slots:
             void cleanRegistryTable();
+            void setRegistries_data();
+            void setRegistries();
             void update();
             void update_data();
             void deleteAllRegistries();
@@ -100,6 +102,7 @@ namespace modules {
             m_db->storage->remove_all<Registry>();
         }
 
+
         // tests
         void tst_ModelRegistry::update_data()
         {
@@ -137,6 +140,29 @@ namespace modules {
 
             modelRegistry.deleteAllRegistries();
             QCOMPARE(m_db->storage->count<Registry>(), 0);
+        }
+
+        void tst_ModelRegistry::setRegistries_data()
+        {
+            cleanRegistryTable();
+
+            QTest::addColumn<std::vector<Registry>>("m_registries");
+            QTest::addColumn<bool>("result");
+
+            QTest::newRow("exists rows in table") << helperSaveRegistries() << true;
+            QTest::newRow("empty table") << helperGetBaseRegistries() << false;
+        }
+
+        void tst_ModelRegistry::setRegistries()
+        {
+            QFETCH(std::vector<Registry>, m_registries);
+            QFETCH(bool, result);
+
+            ModelRegistry modelRegistry;
+            QCOMPARE(modelRegistry.setRegistries(), result);
+            QCOMPARE(modelRegistry.m_registries, m_registries);
+
+            cleanRegistryTable();
         }
 
         void tst_ModelRegistry::saveRegistries()
