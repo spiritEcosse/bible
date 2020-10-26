@@ -8,7 +8,7 @@ namespace core {
     class LocalLanguage : public QLocale
     {
     public:
-        LocalLanguage() = default;
+        LocalLanguage();
         LocalLanguage(const QString& language);
         QString code() const;
         QString languageInString() const;

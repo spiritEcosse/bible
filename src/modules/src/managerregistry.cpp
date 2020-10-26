@@ -26,7 +26,7 @@ namespace modules {
         connect(m_modelRegistry.get(), &ModelRegistry::registry, this, &ManagerRegistry::downloadRegistry);
         connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::removeRegistry);
         connect(this, &ManagerRegistry::getDocumentSuccess, this, &ManagerRegistry::retrieveData);
-        connect(this, &ManagerRegistry::retrieveDataSuccess, m_modelRegistry.get(), &ModelRegistry::update);
+//        connect(this, &ManagerRegistry::retrieveDataSuccess, m_modelRegistry.get(), &ModelRegistry::update);
 
         m_registry ? m_manager->append(m_registry->urlToQUrl()) : m_modelRegistry->getRegistry();
     }

@@ -1,5 +1,4 @@
 #include "locallanguage.h"
-#include <QtDebug>
 #include <QVector>
 
 namespace core {
@@ -7,6 +6,9 @@ namespace core {
     QHash<QString, int> languages {{"av", 0}, {"an", 1}, {"ae", 2}, {"ch", 3}};
     QVector<QString> languagesNames {"Avaric", "Aragonese", "Avestan", "Chamorro"};
     QVector<QString> nativeLanguagesNames {"Магӏарул мацӏ Maǥarul macʼ", "Aragonés", "Avesta", "Chamoru"};
+
+    LocalLanguage::LocalLanguage()
+        : QLocale() {}
 
     LocalLanguage::LocalLanguage(const QString& language)
         : QLocale(language),

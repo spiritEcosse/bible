@@ -17,10 +17,13 @@ namespace modules {
         cleanName();
     }
 
-    GroupModules::GroupModules(QString language, QString name, int id)
-        : m_language { language },
-          m_name {std::move(name)},
-          m_id {id} {}
+    GroupModules::GroupModules(const QString& language,
+                               const QString& name,
+                               const QString& region)
+        : m_language { std::move(language) },
+          m_name { std::move(name) },
+          m_region { std::move(region) }
+    {}
 
     QString GroupModules::nativeLanguageName() const
     {
@@ -86,9 +89,23 @@ namespace modules {
         m_modules.push_back(modules);
     }
 
+    bool GroupModules::operator==(const GroupModules &other) const
+    {
+        return m_language == other.m_language &&
+                m_name == other.m_name &&
+                m_region == other.m_region;
+    }
+
     uint GroupModules::modulesCount()
     {
         return static_cast<uint>(m_modules.size());
     }
+
+    #ifndef QT_NO_DEBUG_STREAM
+    QDebug operator<<(QDebug debug, const GroupModules& groupModules)
+    {
+        return debug << groupModules.m_language << groupModules.m_name << groupModules.m_region;
+    }
+    #endif
 
 }

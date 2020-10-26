@@ -48,10 +48,12 @@ namespace modules {
         void downloadRegistry();
 
     signals:
-        void completed(std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual>);
+        void makeGroupModulesSuccess(const std::vector<GroupModules>& groupModules);
+        void makeModulesSuccess(const std::vector<Module>& modules);
 
     private:
         friend class tests::tst_ManagerGroup;
+
         std::unique_ptr<ManagerRegistry> m_managerRegistry;
         std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual> addToCollection(const QJsonArray& object);
         virtual const QJsonArray getDownloads(const QJsonDocument& document) const;

@@ -1,10 +1,11 @@
 #include "modulemodel.h"
 #include "modelregistry.h"
+#include "module.h"
 
 namespace modules {
 
     ModuleModel::ModuleModel()
-        : m_db { db::Db::getInstance() }
+        : m_db { db::Db<Module>::getInstance() }
     {
     }
 

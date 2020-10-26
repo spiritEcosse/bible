@@ -22,7 +22,7 @@ namespace modules {
     //    virtual bool createTable();
     //    virtual bool execLastError(const QString& query);
     private:
-        std::shared_ptr<db::Db> m_db;
+        std::shared_ptr<db::Db<Module>> m_db;
         std::vector<Module> m_modules;
 
     //    std::vector<Modules> m_modules;

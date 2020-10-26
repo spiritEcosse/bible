@@ -19,7 +19,7 @@ namespace modules {
     public:
         GroupModules() = default;
         GroupModules(const QJsonObject& qJsonModule);
-        GroupModules(QString language, QString name, int id);
+        GroupModules(const QString& language, const QString& name, const QString& region);
         QString nativeLanguageName() const;
         QString languageName() const;
         QLocale language() const;
@@ -32,13 +32,21 @@ namespace modules {
         std::string nameToStdString();
         static QString parseName(const QString& name);
         void addModule(const Module& modules);
-    private:
-        friend class tests::tst_GroupModules;
+
+        bool operator==(const GroupModules& other) const;
 
         core::LocalLanguage m_language;
         QString m_name;
         QString m_region;
         int m_id;
+
+    #ifndef QT_NO_DEBUG_STREAM
+        friend QDebug operator<<(QDebug debug, const GroupModules& groupModules);
+    #endif
+
+    private:
+        friend class tests::tst_GroupModules;
+
         void cleanName();
         std::vector<Module> m_modules;
     };

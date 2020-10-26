@@ -3,12 +3,12 @@
 #include <QJsonDocument>
 
 #include "managergroup.h"
-#include "module.h"
 
 namespace modules {
 
     ManagerGroup::ManagerGroup(QObject *parent)
-        : QObject(parent), m_managerRegistry { new ManagerRegistry {} }
+        : QObject(parent),
+          m_managerRegistry { new ManagerRegistry {} }
     {
         connect(m_managerRegistry.get(), &ManagerRegistry::retrieveDataSuccess, this, &ManagerGroup::makeGroup);
     }
@@ -27,14 +27,17 @@ namespace modules {
     ManagerGroup::addToCollection(const QJsonArray& source)
     {
         std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual> mGMap;
+        std::vector<Module> modules;
 
         for (QJsonArray::const_iterator it = source.begin(); it != source.end(); it++)
         {
-            GroupModules mg(it->toObject());
-            const MGKey mgKey {mg.nameToStdString(), mg.languageCodeToStdString(), mg.regionToStdString()};
-            auto itMGMap = mGMap.insert({mgKey, mg});
-            itMGMap.first->second.addModule(Module(it->toObject()));
-            // delete *it ? // WARNING : need delete data where indicated it (it->toObject())
+            GroupModules groupModules(it->toObject());
+            const MGKey mgKey {groupModules.nameToStdString(), groupModules.languageCodeToStdString(), groupModules.regionToStdString()};
+            auto itMGMap = mGMap.insert({mgKey, groupModules});
+            Module module {it->toObject()};
+            module.m_idGroupModules = groupModules.m_id;
+//            itMGMap.first->second
+            modules.push_back(module);
         }
 
         return mGMap;
@@ -42,7 +45,11 @@ namespace modules {
 
     void ManagerGroup::makeGroup(const QJsonDocument& document)
     {
-        emit completed(addToCollection(getDownloads(document)));
+//        addToCollection(getDownloads(document));
+        std::vector<GroupModules> groupModules;
+        std::vector<Module> modules;
+        emit makeGroupModulesSuccess(groupModules);
+        emit makeModulesSuccess(modules);
     }
 
 }

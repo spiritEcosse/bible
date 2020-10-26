@@ -127,7 +127,7 @@ namespace modules {
             QFETCH(QJsonDocument, document);
             qRegisterMetaType<std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual>>("std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual>"); // WARNING : make this simple
             ManagerGroup managerGroup;
-            QSignalSpy spy(&managerGroup, &ManagerGroup::completed);
+            QSignalSpy spy(&managerGroup, &ManagerGroup::makeGroupModulesSuccess);
 
             managerGroup.makeGroup(document);
             QCOMPARE(spy.count(), 1);
@@ -164,7 +164,7 @@ namespace modules {
             qRegisterMetaType<std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual>>("std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual>"); // WARNING : make this simple
             ManagerGroup managerGroup;
             QSignalSpy spy(managerGroup.m_managerRegistry.get(), &ManagerRegistry::retrieveDataSuccess);
-            QSignalSpy spyСompleted(&managerGroup, &ManagerGroup::completed);
+            QSignalSpy spyСompleted(&managerGroup, &ManagerGroup::makeGroupModulesSuccess);
 
             managerGroup.m_managerRegistry->m_registry.reset(
                         new Registry {

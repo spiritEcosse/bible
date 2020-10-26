@@ -80,6 +80,7 @@ namespace modules {
         bool m_hidden;
         bool m_defaultDownload;
         int m_id;
+        int m_idGroupModules;
 
         bool operator==(const Module& other) const;
 
