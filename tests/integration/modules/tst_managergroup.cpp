@@ -178,7 +178,7 @@ namespace modules {
         {
             ManagerGroup managerGroup;
             QSignalSpy spy(managerGroup.m_managerRegistry.get(), &ManagerRegistry::retrieveDataSuccess);
-            QSignalSpy spyСompleted(&managerGroup, &ManagerGroup::makeGroupModulesSuccess);
+            QSignalSpy spyMakeGroupModulesSuccess(&managerGroup, &ManagerGroup::makeGroupModulesSuccess);
 
             managerGroup.m_managerRegistry->m_registry.reset(
                         new Registry {
@@ -188,9 +188,9 @@ namespace modules {
 
             managerGroup.downloadRegistry();
 
-            QVERIFY(spyСompleted.wait());
+            QVERIFY(spyMakeGroupModulesSuccess.wait(10000));
             QCOMPARE(spy.count(), 1);
-            QCOMPARE(spyСompleted.count(), 1);
+            QCOMPARE(spyMakeGroupModulesSuccess.count(), 1);
         }
 
     }

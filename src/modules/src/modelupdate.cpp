@@ -36,6 +36,6 @@ namespace modules {
     }
 
     template class ModelUpdate<GroupModules>;
-    template class ModelUpdate<Registry>;
     template class ModelUpdate<Module>;
+    template class ModelUpdate<Registry>;
 }

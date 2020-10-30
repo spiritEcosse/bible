@@ -4,7 +4,7 @@
 namespace db {
 
     template <class T>
-    std::shared_ptr<Db<T>> Db<T>::m_db;
+    std::shared_ptr<Db<T>> Db<T>::m_db = nullptr;
 
     template <class T>
     Db<T>::Db()
@@ -16,9 +16,7 @@ namespace db {
     template <class T>
     std::shared_ptr<Db<T>> Db<T>::getInstance()
     {
-        if (!m_db) {
-            m_db.reset(new Db<T> {});
-        }
+        m_db.reset(new Db<T> {});
         return m_db;
     }
 

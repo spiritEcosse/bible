@@ -72,7 +72,7 @@ namespace modules {
         QString m_name;
         QString m_description;
         QString m_abbreviation;
-        int m_idGroupModules;
+        int m_idGroupModules = 0;
         double m_size = 0;
         core::LocalLanguage m_languageShow;
         QString m_information;
