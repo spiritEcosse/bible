@@ -41,9 +41,4 @@ namespace modules {
         return names;
     }
 
-    int ModelGroupModules::rowCount(const QModelIndex& /* parent */) const
-    {
-    //    return static_cast<int>(m_groups.size());
-    }
-
 }

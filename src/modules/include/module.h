@@ -56,6 +56,7 @@ namespace modules {
                 const QString& name,
                 const QString& description,
                 const QString& abbreviation,
+                const int& idGroupModules = 0,
                 const double& size = 0,
                 const QString& languageShow = "",
                 const QString& information = "",
@@ -71,6 +72,7 @@ namespace modules {
         QString m_name;
         QString m_description;
         QString m_abbreviation;
+        int m_idGroupModules;
         double m_size = 0;
         core::LocalLanguage m_languageShow;
         QString m_information;
@@ -80,12 +82,15 @@ namespace modules {
         bool m_hidden;
         bool m_defaultDownload;
         int m_id;
-        int m_idGroupModules;
 
         bool operator==(const Module& other) const;
 
         void convertSize(const QString& str);
         void convertUpdate(const QString& update);
+
+    #ifndef QT_NO_DEBUG_STREAM
+        friend QDebug operator<<(QDebug debug, const Module& module);
+    #endif
     };
 
 }

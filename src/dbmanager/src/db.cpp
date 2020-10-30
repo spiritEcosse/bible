@@ -1,9 +1,10 @@
 #include "db.h"
+#include <QDebug>
 
 namespace db {
 
     template <class T>
-    std::shared_ptr<Db<T>> Db<T>::m_db = nullptr;
+    std::shared_ptr<Db<T>> Db<T>::m_db;
 
     template <class T>
     Db<T>::Db()

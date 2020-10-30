@@ -1,12 +1,14 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QDebug>
 
 #include "modelregistry.h"
 
 namespace modules {
 
-    ModelRegistry::ModelRegistry() {
+    ModelRegistry::ModelRegistry()
+    {
         m_objects = {
             Registry {
                 "aHR0cDovL21waDQucnUvcmVnaXN0cnkuemlw",
@@ -16,22 +18,6 @@ namespace modules {
     }
 
     ModelRegistry::~ModelRegistry() {}
-
-    std::vector<Registry> transform(const QJsonArray &source)
-    {
-        std::vector<Registry> target;
-        std::transform(source.begin(), source.end(), std::back_inserter(target),
-                       [](const QJsonValue& entry)
-        {
-            return Registry { entry.toObject() };
-        });
-        return target;
-    }
-
-    const QJsonArray ModelRegistry::getRegistries(const QJsonDocument &document) const
-    {
-        return document.object().value("registries").toArray();
-    }
 
     void ModelRegistry::getRegistry()
     {
@@ -61,12 +47,6 @@ namespace modules {
     }
 
     // overridden from qt
-
-    int ModelRegistry::rowCount(const QModelIndex& parent) const
-    {
-        Q_UNUSED(parent)
-        return static_cast<int>(m_objects.size());
-    }
 
     QVariant ModelRegistry::data(const QModelIndex& index, int role) const
     {

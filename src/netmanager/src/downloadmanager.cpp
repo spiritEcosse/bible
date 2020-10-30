@@ -84,7 +84,7 @@ void DownloadManager::startNextDownload()
             SLOT(downloadReadyRead()));
 
     // prepare the output
-    printf("Downloading %s...\n", url.toEncoded().constData());
+    qInfo() << QString("Downloading %1...").arg(url.toEncoded().constData());
     downloadTime.start();
 }
 
@@ -117,10 +117,10 @@ void DownloadManager::downloadFinished()
 
     if (currentDownload->error()) {
         // download failed
-        fprintf(stderr, "Failed: %s\n", qPrintable(currentDownload->errorString()));
+        qCritical() << QString("Failed: %1").arg(currentDownload->errorString());
         emit failed();
     } else {
-        printf("Succeeded.\n");
+        qInfo() << "Succeeded.\n";
         ++downloadedCount;
         emit readyRead(output.fileName());
     }

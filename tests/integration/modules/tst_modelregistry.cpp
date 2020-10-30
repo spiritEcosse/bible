@@ -75,11 +75,12 @@ namespace modules {
             ModelRegistry modelRegistry;
             QSignalSpy spyLast(&modelRegistry, &ModelRegistry::updateDone);
 
-            modelRegistry.update(helperGetObjects());
+            const std::vector<Registry> objects = helperGetObjects();
+            modelRegistry.update(objects);
 
             QCOMPARE(spyLast.count(), 1);
             QCOMPARE(m_db->count(), vectorSize);
-            QCOMPARE(modelRegistry.m_objects.size(), helperGetObjects().size());
+            QCOMPARE(modelRegistry.m_objects, objects);
         }
 
         void tst_ModelRegistry::setRegistries_data()

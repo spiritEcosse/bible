@@ -1,7 +1,10 @@
 #include <QRegularExpression>
 #include <QLocale>
 #include <QJsonObject>
+
+#ifndef QT_NO_DEBUG_STREAM
 #include <QDebug>
+#endif
 
 #include "groupmodules.h"
 #define MODULES_SPLIT_NAME "^(.+)\\.(.+)$"

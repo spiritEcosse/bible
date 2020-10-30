@@ -88,20 +88,19 @@ namespace modules {
 
         // helpers
 
-//        QJsonDocument tst_ManagerRegistry::helperGetDocument()
-//        {
-//            QJsonArray array;
+        QJsonDocument tst_ManagerRegistry::helperGetDocument()
+        {
+            QJsonArray array;
+            array << QJsonObject {{"url", "link1"}, {"priority", 1}, {"info_url", "link11"}};
 
-//            array << QJsonObject {{"url", "link1"}, {"priority", 1}, {"info_url", "link11"}};
-//            array << QJsonObject {{"url", "link2"}, {"priority", 2}, {"info_url", "link22"}};
-//            array << QJsonObject {{"url", "link3"}, {"priority", 3}, {"info_url", "link33"}};
-
-//            return QJsonDocument {
-//                QJsonObject {
-//                    { "registries",  array }
-//                }
-//            };
-//        }
+            return QJsonDocument {
+                QJsonObject {
+                    { "registries",  array },
+                    { "downloads", {{"key", "val"}} },
+                    { "version", 1 }
+                }
+            };
+        }
 
         QJsonDocument tst_ManagerRegistry::helperGetInvalidDocument()
         {
@@ -116,11 +115,6 @@ namespace modules {
                     { "registries",  array }
                 }
             };
-        }
-
-        QJsonDocument tst_ManagerRegistry::helperGetDocument()
-        {
-            return QJsonDocument{QJsonObject { { "downloads", {{"key", "val"}} }, {"version", 1} } };
         }
 
         void tst_ManagerRegistry::setQSettings(int value, QString key)
@@ -179,8 +173,8 @@ namespace modules {
             QSignalSpy spyGetDocumentSuccess(&managerRegistry, &ManagerRegistry::getDocumentSuccess);
             QSignalSpy spyRetrieveDataSuccess(&managerRegistry, &ManagerRegistry::retrieveDataSuccess);
             QSignalSpy spyRemoveRegistry(&managerRegistry, &ManagerRegistry::removeRegistrySuccess);
-            QSignalSpy spyUpdateDone(managerRegistry.m_modelRegistry.get(), &ModelRegistry::updateDone);
             QSignalSpy spyRegistry(managerRegistry.m_modelRegistry.get(), &ModelRegistry::registry);
+            QSignalSpy spyUpdateDone(managerRegistry.m_modelRegistry.get(), &ModelRegistry::updateDone);
 
             if (signalRegistryHit)
             {

@@ -3,7 +3,6 @@
 
 #include <QObject>
 #include <memory>
-#include "db.h"
 #include "modelupdate.h"
 
 #include "registry.h"
@@ -23,9 +22,8 @@ namespace modules {
     public:
         ModelRegistry();
         ~ModelRegistry();
-        int rowCount(const QModelIndex& parent = {}) const override;
-        QVariant data(const QModelIndex& index = {}, int role = Qt::DisplayRole) const override;
-        QHash<int, QByteArray> roleNames() const override;
+        virtual QVariant data(const QModelIndex& index = {}, int role = Qt::DisplayRole) const override;
+        virtual QHash<int, QByteArray> roleNames() const override;
     private:
         enum RegistryRoles
         {
@@ -40,7 +38,6 @@ namespace modules {
 
         int index = 0;
         bool setRegistries();
-        const QJsonArray getRegistries(const QJsonDocument &document) const;
     signals:
         void registry(const Registry& registry);
 

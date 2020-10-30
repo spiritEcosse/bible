@@ -2,6 +2,10 @@
 #include <QRegularExpression>
 #include <qmath.h>
 
+#ifndef QT_NO_DEBUG_STREAM
+#include <QDebug>
+#endif
+
 #include "module.h"
 
 #define MODULES_DATE_FORMAT QString("yyyy-MM-dd")
@@ -32,6 +36,7 @@ namespace modules {
             const QString& name,
             const QString& description,
             const QString& abbreviation,
+            const int& idGroupModules,
             const double& size,
             const QString& languageShow,
             const QString& information,
@@ -43,6 +48,7 @@ namespace modules {
         : m_name { std::move(name) },
           m_description { std::move(description) },
           m_abbreviation { std::move(abbreviation) },
+          m_idGroupModules { std::move(idGroupModules) },
           m_size { std::move(size) },
           m_languageShow { std::move(languageShow) },
           m_information { std::move(information) },
@@ -65,7 +71,8 @@ namespace modules {
                 m_update == other.m_update &&
                 m_hidden == other.m_hidden &&
                 m_defaultDownload == other.m_defaultDownload &&
-                m_languageShow == other.m_languageShow;
+                m_languageShow == other.m_languageShow &&
+                m_idGroupModules == other.m_idGroupModules;
     }
 
     void Module::convertSize(const QString& str)
@@ -97,5 +104,14 @@ namespace modules {
     {
         return m_languageShow.languageInString();
     }
+
+    #ifndef QT_NO_DEBUG_STREAM
+    QDebug operator<<(QDebug debug, const Module& module)
+    {
+        return debug << module.m_name << module.m_description << module.m_abbreviation << module.m_size <<
+                        module.m_information << module.m_comment << module.m_copyright << module.m_update <<
+                        module.m_hidden << module.m_defaultDownload << module.m_languageShow;
+    }
+    #endif
 
 }

@@ -68,12 +68,13 @@ namespace modules {
             ModelGroupModules modelGroupModules;
             QSignalSpy spyLast(&modelGroupModules, &ModelGroupModules::updateDone);
 
-            modelGroupModules.update(helperGetObjects());
+            const std::vector<GroupModules> objects = helperGetObjects();
+            modelGroupModules.update(objects);
 
             QCOMPARE(spyLast.count(), 1);
             QCOMPARE(m_db->count(), vectorSize);
             QCOMPARE(modelGroupModules.m_objects.size(), helperGetObjects().size());
-            QCOMPARE(modelGroupModules.m_objects, helperGetObjects());
+            QCOMPARE(modelGroupModules.m_objects, objects);
         }
 
     }

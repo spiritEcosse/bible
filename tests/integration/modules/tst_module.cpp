@@ -41,6 +41,7 @@ namespace modules {
                         "name",
                         "description",
                         "abbreviation",
+                        0,
                         102400,
                         "en",
                         "information",
@@ -78,7 +79,7 @@ namespace modules {
                 {"des", "description"},
                 {"abr", "abbreviation"}
             };
-            QTest::newRow("default fields") << data << Module ("name","description","abbreviation",0,"","","","",QDate(),false,false) << false;
+            QTest::newRow("default fields") << data << Module ("name","description","abbreviation",0,0,"","","","",QDate(),false,false) << false;
 
             data = {
                 {"des", "description"},

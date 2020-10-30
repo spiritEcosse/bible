@@ -44,6 +44,7 @@ namespace modules {
         virtual int getVersion() const;
         virtual void getDocument(QFile& file);
         virtual void setVersion(bool available, int version) const;
+        virtual const QJsonArray getRegistries(const QJsonDocument &document) const;
 
     signals:
         void newRegistryAvailable(bool available, int version);
@@ -51,6 +52,7 @@ namespace modules {
         void removeRegistrySuccess();
         void removeInfoSuccess();
         void getDocumentSuccess(const QJsonDocument& document);
+        void transformSuccess(const std::vector<Registry>& container);
 
     private slots:
         virtual void downloadRegistry(const Registry& registry);
@@ -61,6 +63,7 @@ namespace modules {
         virtual void removeRegistry();
         virtual void removeInfo();
         virtual void retrieveVersion(const QString& fileName);
+        virtual void transform(const QJsonDocument& document);
     };
 
 }

@@ -1,4 +1,5 @@
 #include "modelupdate.h"
+#include <QtDebug>
 
 namespace modules {
 
@@ -6,6 +7,13 @@ namespace modules {
     ModelUpdate<T>::ModelUpdate()
         : m_db { db::Db<T>::getInstance() }
     {
+    }
+
+    template <class T>
+    int ModelUpdate<T>::rowCount(const QModelIndex& parent) const
+    {
+        Q_UNUSED(parent)
+        return static_cast<int>(m_objects.size());
     }
 
     template <class T>
@@ -22,10 +30,12 @@ namespace modules {
           emit endResetModel();
           emit updateDone();
         } catch(const std::system_error& e) {
+            qCritical() << e.what();
             emit error("An error occured.");
         }
     }
 
     template class ModelUpdate<GroupModules>;
     template class ModelUpdate<Registry>;
+    template class ModelUpdate<Module>;
 }

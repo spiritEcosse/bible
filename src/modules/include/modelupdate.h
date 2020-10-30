@@ -19,7 +19,8 @@ namespace modules {
     {
     public:
         ModelUpdate();
-        void update(const std::vector<T>& containers);
+        void update(const std::vector<T>& container);
+        virtual int rowCount(const QModelIndex& parent = {}) const override;
 
     protected:
         std::vector<T> m_objects;

@@ -4,8 +4,11 @@
 #include "groupmodules.h"
 #include "managerregistry.h"
 #include "modelregistry.h"
+#include "module.h"
 
 Q_DECLARE_METATYPE(std::string)
+Q_DECLARE_METATYPE(std::vector<modules::Module>)
+Q_DECLARE_METATYPE(std::vector<modules::GroupModules>)
 Q_DECLARE_METATYPE(QJsonArray)
 
 namespace modules {
@@ -28,14 +31,12 @@ namespace modules {
             const QFile fileRegistryArchive { "registry.zip" };
             const QFile fileRegistryInfo { "registry_info.json" };
             QDir dir;
-
-        private slots:
             void initTestCase();
             void cleanupTestCase();
-            void addToCollection_data();
-            void addToCollection();
-            void makeGroup_data();
-            void makeGroup();
+
+        private slots:
+            void makeCollections_data();
+            void makeCollections();
             void downloadRegistry_data();
             void downloadRegistry();
         };
@@ -63,74 +64,88 @@ namespace modules {
             dir.rmdir(dirDownload);
         }
 
-        void tst_ManagerGroup::addToCollection_data()
-        {
-            QTest::addColumn<QJsonArray>("ar");
-            QTest::addColumn<size_t>("countMG");
-            QTest::addColumn<std::vector<uint>>("countM");
-
-            QJsonArray array;
-
-            array << QJsonObject {{"fil", "name"},{"des", "description"},{"abr", "abbreviation"},{"lng", "en"},{"reg", ""}};
-            QTest::newRow("case: countMG is 1") << array << size_t(1) << std::vector<uint> {1};
-
-            array << QJsonObject {{"fil", "name"},{"des", "description"},{"abr", "abbreviation"},{"lng", "en"},{"reg", ""}};
-            QTest::newRow("case: countMG is 1") << array << size_t(1) << std::vector<uint> {2};
-
-            array << QJsonObject {{"fil", "name"},{"des", "description"},{"abr", "abbreviation"},{"lng", "en"},{"reg", "region"}};
-            QTest::newRow("case: countMG is 2") << array << size_t(2) << std::vector<uint> {1, 2};
-
-            array << QJsonObject {{"fil", "name"},{"des", "description"},{"abr", "abbreviation"},{"lng", "av"},{"reg", ""}};
-            QTest::newRow("case: countMG is 3") << array << size_t(3) << std::vector<uint> {1, 1, 2};
-
-            array << QJsonObject {{"fil", "name"},{"des", "description"},{"abr", "abbreviation"},{"lng", "av"},{"reg", "region"}};
-            QTest::newRow("case: countMG is 4") << array << size_t(4) << std::vector<uint> {1, 1, 1, 2};
-
-            array << QJsonObject {{"fil", "name"},{"des", "description"},{"abr", "abbreviation"},{"lng", "av"},{"reg", ""}};
-            QTest::newRow("case: countMG is 4") << array << size_t(4) << std::vector<uint> {1, 2, 1, 2};
-
-            array << QJsonObject {{"fil", "name"},{"des", "description"},{"abr", "abbreviation"},{"lng", "av"},{"reg", ""}};
-            QTest::newRow("case: countMG is 4") << array << size_t(4) << std::vector<uint> {1, 3, 1, 2};
-
-            array << QJsonObject {{"fil", "name"},{"des", "description"},{"abr", "abbreviation"},{"lng", "av"},{"reg", ""}};
-            QTest::newRow("case: countMG is 4") << array << size_t(4) << std::vector<uint> {1, 4, 1, 2};
-        }
-
-        void tst_ManagerGroup::addToCollection()
-        {
-            QFETCH(QJsonArray, ar);
-            QFETCH(size_t, countMG);
-            QFETCH(std::vector<uint>, countM);
-
-            ManagerGroup filler;
-            auto mGMap = filler.addToCollection(ar);
-            QCOMPARE(mGMap.size(), countMG);
-
-            int index = 0;
-            for (auto it = mGMap.begin(); it != mGMap.end(); it++) {
-        //        qInfo() << it->second.name() << it->second.languageCode() << it->second.region() << it->second.modulesCount(); // WARNING: instead this, make available data if error happened
-                QCOMPARE(it->second.modulesCount(), countM[index]);
-                index++;
-            }
-        }
-
-        void tst_ManagerGroup::makeGroup_data()
+        void tst_ManagerGroup::makeCollections_data()
         {
             QTest::addColumn<QJsonDocument>("document");
+            QTest::addColumn<std::vector<Module>>("modules");
+            QTest::addColumn<std::vector<GroupModules>>("groupModules");
 
-            QJsonDocument array { QJsonObject {{"fil", "name"},{"lng", "en"},{"reg", ""}}};
-            QTest::newRow("simple case") << array;
+            std::vector<Module> modules;
+            std::vector<GroupModules> groupModules;
+            QJsonArray array;
+
+            array << QJsonObject {{"fil", "name"},{"des", "des"},{"abr", "abbr"},{"lng", "en"}};
+            modules.push_back(Module("name", "des", "abbr", 1));
+            groupModules.push_back(GroupModules("en", "Name"));
+            QTest::newRow("case: count GroupModules is 1, count Module is 1")
+                    << QJsonDocument { QJsonObject {{"downloads", array }}} << modules << groupModules;
+
+            array << QJsonObject {{"fil", "name"},{"des", "des"},{"abr", "abbr"},{"lng", "en"}};
+            modules.push_back(Module("name", "des", "abbr", 1));
+            QTest::newRow("case: count GroupModules is 1, count Module is 2")
+                    << QJsonDocument { QJsonObject {{"downloads", array }}} << modules << groupModules;
+
+            array << QJsonObject {{"fil", "name"},{"des", "des"},{"abr", "abbr"},{"lng", "en"},{"reg", "region"}};
+            modules.push_back(Module("name", "des", "abbr", 2));
+            groupModules.insert(groupModules.begin(), GroupModules("en", "Name", "region"));
+            QTest::newRow("case: count GroupModules is 2, count Module is 3")
+                    << QJsonDocument { QJsonObject {{"downloads", array }}} << modules << groupModules;
+
+            array << QJsonObject {{"fil", "name"},{"des", "des"},{"abr", "abbr"},{"lng", "av"},{"reg", ""}};
+            modules.push_back(Module("name", "des", "abbr", 3));
+            groupModules.insert(groupModules.begin(), GroupModules("av", "Name"));
+            QTest::newRow("case: count GroupModules is 3, count Module is 4")
+                    << QJsonDocument { QJsonObject {{"downloads", array }}} << modules << groupModules;
+
+            array << QJsonObject {{"fil", "name"},{"des", "des"},{"abr", "abbr"},{"lng", "av"},{"reg", "region"}};
+            modules.push_back(Module("name", "des", "abbr", 4));
+            groupModules.insert(groupModules.begin(), GroupModules("av", "Name", "region"));
+            QTest::newRow("case: count GroupModules is 4, count Module is 5")
+                    << QJsonDocument { { QJsonObject {{"downloads", array }}}} << modules << groupModules;
+
+            array << QJsonObject {{"fil", "name"},{"des", "des"},{"abr", "abbr"},{"lng", "av"},{"reg", ""}};
+            modules.push_back(Module("name", "des", "abbr", 4));
+            QTest::newRow("case: count GroupModules is 4, count Module is 6")
+                    << QJsonDocument { { QJsonObject {{"downloads", array }}}} << modules << groupModules;
+
+            array << QJsonObject {{"fil", "name"},{"des", "des"},{"abr", "abbr"},{"lng", "av"},{"reg", ""}};
+            modules.push_back(Module("name", "des", "abbr", 4));
+            QTest::newRow("case: count GroupModules is 4, count Module is 7")
+                    << QJsonDocument { { QJsonObject {{"downloads", array }}}} << modules << groupModules;
+
+            array << QJsonObject {{"fil", "name"},{"des", "des"},{"abr", "abbr"},{"lng", "av"},{"reg", ""}};
+            modules.push_back(Module("name", "des", "abbr", 4));
+            QTest::newRow("case: count GroupModules is 4, count Module is 8")
+                    << QJsonDocument { { QJsonObject {{"downloads", array }}}} << modules << groupModules;
         }
 
-        void tst_ManagerGroup::makeGroup()
+        void tst_ManagerGroup::makeCollections()
         {
-            QFETCH(QJsonDocument, document);
-            qRegisterMetaType<std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual>>("std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual>"); // WARNING : make this simple
-            ManagerGroup managerGroup;
-            QSignalSpy spy(&managerGroup, &ManagerGroup::makeGroupModulesSuccess);
+            qRegisterMetaType<std::vector<Module>>("std::vector<Module>");
+            qRegisterMetaType<std::vector<GroupModules>>("std::vector<GroupModules>");
 
-            managerGroup.makeGroup(document);
-            QCOMPARE(spy.count(), 1);
+            QFETCH(QJsonDocument, document);
+            QFETCH(std::vector<Module>, modules);
+            QFETCH(std::vector<GroupModules>, groupModules);
+
+            ManagerGroup managerGroup;
+            QSignalSpy spyMakeModulesSuccess(&managerGroup, &ManagerGroup::makeModulesSuccess);
+            QSignalSpy spyMakeGroupModulesSuccess(&managerGroup, &ManagerGroup::makeGroupModulesSuccess);
+
+            managerGroup.makeCollections(document);
+
+            QCOMPARE(spyMakeModulesSuccess.count(), 1);
+            QCOMPARE(spyMakeGroupModulesSuccess.count(), 1);
+
+            QList<QVariant> arguments = spyMakeModulesSuccess.takeFirst();
+            const std::vector<Module>& modules_actual = arguments[0].value<std::vector<Module>>();
+            QCOMPARE(modules_actual.size(), modules.size());
+            QCOMPARE(modules_actual, modules);
+
+            arguments = spyMakeGroupModulesSuccess.takeFirst();
+            const std::vector<GroupModules>& groupModules_actual = arguments[0].value<std::vector<GroupModules>>();
+            QCOMPARE(groupModules_actual.size(), groupModules.size());
+            QCOMPARE(groupModules_actual, groupModules);
         }
 
         void tst_ManagerGroup::downloadRegistry_data() {
@@ -161,7 +176,6 @@ namespace modules {
 
         void tst_ManagerGroup::downloadRegistry()
         {
-            qRegisterMetaType<std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual>>("std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual>"); // WARNING : make this simple
             ManagerGroup managerGroup;
             QSignalSpy spy(managerGroup.m_managerRegistry.get(), &ManagerRegistry::retrieveDataSuccess);
             QSignalSpy spyСompleted(&managerGroup, &ManagerGroup::makeGroupModulesSuccess);

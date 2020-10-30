@@ -21,7 +21,7 @@
 
 #define MODULES_SPLIT_NAME "^(.+)\\.(.+)$"
 
-#include "modulemodel.h"
+#include "modelmodule.h"
 //#include "LocaleDesc.h"
 #include "gtest/gtest_prod.h"
 //#include "modulesgroups.h"
@@ -49,7 +49,6 @@ namespace modules {
         ModelGroupModules();
         virtual ~ModelGroupModules();
         static void registerMe(const std::string& moduleName);
-        virtual int rowCount(const QModelIndex& parent = {}) const override;
         virtual QVariant data(const QModelIndex &index = {}, int role = Qt::DisplayRole) const override;
         virtual QHash<int, QByteArray> roleNames() const override;
 
