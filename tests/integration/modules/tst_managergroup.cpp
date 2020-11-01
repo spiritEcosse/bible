@@ -31,10 +31,10 @@ namespace modules {
             const QFile fileRegistryArchive { "registry.zip" };
             const QFile fileRegistryInfo { "registry_info.json" };
             QDir dir;
-            void initTestCase();
-            void cleanupTestCase();
 
         private slots:
+            void initTestCase();
+            void cleanupTestCase();
             void makeCollections_data();
             void makeCollections();
             void downloadRegistry_data();
@@ -188,7 +188,7 @@ namespace modules {
 
             managerGroup.downloadRegistry();
 
-            QVERIFY(spyMakeGroupModulesSuccess.wait(10000));
+            QVERIFY(spyMakeGroupModulesSuccess.wait());
             QCOMPARE(spy.count(), 1);
             QCOMPARE(spyMakeGroupModulesSuccess.count(), 1);
         }
