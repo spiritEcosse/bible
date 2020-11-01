@@ -1,54 +1,28 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonDocument>
-
 #include <QDebug>
-#include <thread>
+
 #include "modelregistry.h"
 
 namespace modules {
 
     ModelRegistry::ModelRegistry()
-        : m_db { db::Db::getInstance() } {}
-
-    std::vector<Registry> transform(const QJsonArray &source)
     {
-        std::vector<Registry> target;
-        std::transform(source.begin(), source.end(), std::back_inserter(target),
-                       [](const QJsonValue& entry)
-        {
-            return Registry { entry.toObject() };
-        });
-        return target;
+        m_objects = {
+            Registry {
+                "aHR0cDovL21waDQucnUvcmVnaXN0cnkuemlw",
+                "aHR0cDovL21waDQucnUvcmVnaXN0cnlfaW5mby5qc29u"
+            }
+        };
     }
 
-    void ModelRegistry::update(const QJsonDocument& document)
-    {
-        try {
-          const std::vector<Registry>& registries = transform(getRegistries(document));
-          auto guard = m_db->storage->transaction_guard();
-
-          deleteAllRegistries();
-          saveRegistries(registries);
-          guard.commit();
-          m_registries = registries;
-          emit updateDone();
-        } catch(const std::system_error& e) {
-            emit error("An error occured.");
-        } catch(const RegistryInvalidData& e) {
-            emit updateDone();
-        }
-    }
-
-    const QJsonArray ModelRegistry::getRegistries(const QJsonDocument &document) const
-    {
-        return document.object().value("registries").toArray();
-    }
+    ModelRegistry::~ModelRegistry() {}
 
     void ModelRegistry::getRegistry()
     {
         try {
-            emit registry(m_registries.at(index));
+            emit registry(m_objects.at(index));
             ++index;
         } catch (std::out_of_range) {
             if (setRegistries()) {
@@ -61,34 +35,19 @@ namespace modules {
 
     // db queries
 
-    void ModelRegistry::saveRegistries(const std::vector<Registry>& registries) const
-    {
-        m_db->storage->insert_range(registries.begin(), registries.end());
-    }
-
-    void ModelRegistry::deleteAllRegistries() const
-    {
-        m_db->storage->remove_all<Registry>();
-    }
-
     bool ModelRegistry::setRegistries()
     {
-        const auto &registries = m_db->storage->get_all<Registry>(
+        auto registries = m_db->storage->get_all<Registry>(
                     sqlite_orm::order_by(&Registry::m_priority));
 
+
         if (!registries.empty()) {
-            m_registries = registries;
+            m_objects = registries;
         }
         return !registries.empty();
     }
 
     // overridden from qt
-
-    int ModelRegistry::rowCount(const QModelIndex& parent) const
-    {
-        Q_UNUSED(parent)
-        return static_cast<int>(m_registries.size());
-    }
 
     QVariant ModelRegistry::data(const QModelIndex& index, int role) const
     {
@@ -96,7 +55,7 @@ namespace modules {
             return {};
         }
 
-        const Registry& registry = m_registries.at(index.row());
+        const Registry& registry = m_objects.at(index.row());
 
         switch (role) {
             case RegistryRoles::UrlRole: {

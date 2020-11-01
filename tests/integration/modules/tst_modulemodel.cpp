@@ -1,41 +1,33 @@
 #include <QtTest>
-#include "modulemodel.h"
+#include "modelmodule.h"
 
 
 namespace modules {
 
     namespace tests {
 
-        class tst_ModuleModel : public QObject
+        class tst_ModelModule: public QObject
         {
             Q_OBJECT
         public:
-            tst_ModuleModel();
-            ~tst_ModuleModel();
-
-        private slots:
-            void contructor();
+            tst_ModelModule();
+            ~tst_ModelModule();
 
         };
 
-        tst_ModuleModel::tst_ModuleModel()
+        tst_ModelModule::tst_ModelModule()
         {
         }
 
-        tst_ModuleModel::~tst_ModuleModel()
+        tst_ModelModule::~tst_ModelModule()
         {
 
-        }
-
-        void tst_ModuleModel::contructor()
-        {
-            ModuleModel();
         }
 
     }
 
 }
 
-QTEST_APPLESS_MAIN(modules::tests::tst_ModuleModel)
+QTEST_APPLESS_MAIN(modules::tests::tst_ModelModule)
 
 #include "tst_modulemodel.moc"

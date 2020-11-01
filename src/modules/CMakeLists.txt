@@ -2,12 +2,14 @@ project(modules LANGUAGES CXX)
 
 set(RESOURCES
     # models
-    include/modulemodel.h
-    include/groupmodulesmodel.h
+    include/modelmodule.h
+    include/modelgroupmodules.h
     include/modelregistry.h
-    src/modulemodel.cpp
-    src/groupmodulesmodel.cpp
+    include/modelupdate.h
+    src/modelmodule.cpp
+    src/modelgroupmodules.cpp
     src/modelregistry.cpp
+    src/modelupdate.cpp
 
     #entities
     include/registry.h

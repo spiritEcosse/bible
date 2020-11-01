@@ -30,10 +30,12 @@ namespace modules {
                     const QJsonDocument& document = QJsonDocument {},
                     const QString& fileNameArchive = "registry.zip",
                     const QString& fileNameRegistry = "registry.json");
+            //            QJsonDocument helperGetDocument();
             QJsonDocument helperGetDocument();
             void setQSettings(int value = 0, QString key = "registryVersion");
             const int version = 10;
-            std::shared_ptr<db::Db> m_db;
+            std::shared_ptr<db::Db<Registry>> m_db;
+            QJsonDocument helperGetInvalidDocument();
 
         private slots:
             void initTestCase();
@@ -80,7 +82,7 @@ namespace modules {
         }
 
         tst_ManagerRegistry::tst_ManagerRegistry()
-            : m_db { db::Db::getInstance() } {}
+            : m_db { db::Db<Registry>::getInstance() } {}
 
         tst_ManagerRegistry::~tst_ManagerRegistry() {}
 
@@ -88,7 +90,31 @@ namespace modules {
 
         QJsonDocument tst_ManagerRegistry::helperGetDocument()
         {
-            return QJsonDocument{QJsonObject { { "downloads", {{"key", "val"}} }, {"version", 1} } };
+            QJsonArray array;
+            array << QJsonObject {{"url", "link1"}, {"priority", 1}, {"info_url", "link11"}};
+
+            return QJsonDocument {
+                QJsonObject {
+                    { "registries",  array },
+                    { "downloads", {{"key", "val"}} },
+                    { "version", 1 }
+                }
+            };
+        }
+
+        QJsonDocument tst_ManagerRegistry::helperGetInvalidDocument()
+        {
+            QJsonArray array;
+
+            array << QJsonObject {{"url", "link1"}, {"priority", 1}};
+            array << QJsonObject {{"priority", 2}, {"info_ufrl", "link22"}};
+            array << QJsonObject {{"url", "link3"}, {"priority", 3}, {"info_url", "link33"}};
+
+            return QJsonDocument {
+                QJsonObject {
+                    { "registries",  array }
+                }
+            };
         }
 
         void tst_ManagerRegistry::setQSettings(int value, QString key)
@@ -147,12 +173,12 @@ namespace modules {
             QSignalSpy spyGetDocumentSuccess(&managerRegistry, &ManagerRegistry::getDocumentSuccess);
             QSignalSpy spyRetrieveDataSuccess(&managerRegistry, &ManagerRegistry::retrieveDataSuccess);
             QSignalSpy spyRemoveRegistry(&managerRegistry, &ManagerRegistry::removeRegistrySuccess);
-            QSignalSpy spyUpdateDone(managerRegistry.m_modelRegistry.get(), &ModelRegistry::updateDone);
             QSignalSpy spyRegistry(managerRegistry.m_modelRegistry.get(), &ModelRegistry::registry);
+            QSignalSpy spyUpdateDone(managerRegistry.m_modelRegistry.get(), &ModelRegistry::updateDone);
 
             if (signalRegistryHit)
             {
-                managerRegistry.m_modelRegistry->m_registries = {
+                managerRegistry.m_modelRegistry->m_objects = {
                     Registry{
                         QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
                         QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
@@ -197,7 +223,7 @@ namespace modules {
             QString fileRegistryDoesntExist { "registry_doesnt_exist_file.zip" };
 
 
-            managerRegistry.m_modelRegistry->m_registries = {
+            managerRegistry.m_modelRegistry->m_objects = {
                 Registry{
                     QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
                     QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
@@ -387,7 +413,7 @@ namespace modules {
 
             if (signalRegistryHit)
             {
-                managerRegistry.m_modelRegistry->m_registries = {
+                managerRegistry.m_modelRegistry->m_objects = {
                     Registry{
                         QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
                         QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
@@ -445,7 +471,7 @@ namespace modules {
                             QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
                             QString(strUrl + QFileInfo(fileRegistryInfoDoesntExist).absoluteFilePath()).toUtf8().toBase64()
                         });
-            managerRegistry.m_modelRegistry->m_registries = {
+            managerRegistry.m_modelRegistry->m_objects = {
                 Registry{
                     QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
                     QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()

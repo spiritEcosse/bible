@@ -26,7 +26,8 @@ namespace modules {
         connect(m_modelRegistry.get(), &ModelRegistry::registry, this, &ManagerRegistry::downloadRegistry);
         connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::removeRegistry);
         connect(this, &ManagerRegistry::getDocumentSuccess, this, &ManagerRegistry::retrieveData);
-        connect(this, &ManagerRegistry::retrieveDataSuccess, m_modelRegistry.get(), &ModelRegistry::update);
+        connect(this, &ManagerRegistry::retrieveDataSuccess, this, &ManagerRegistry::transform);
+        connect(this, &ManagerRegistry::transformSuccess, m_modelRegistry.get(), &ModelRegistry::update);
 
         m_registry ? m_manager->append(m_registry->urlToQUrl()) : m_modelRegistry->getRegistry();
     }
@@ -73,6 +74,24 @@ namespace modules {
                 emit getDocumentSuccess(document);
             }
         }
+    }
+
+    const QJsonArray ManagerRegistry::getRegistries(const QJsonDocument &document) const
+    {
+        return document.object().value("registries").toArray();
+    }
+
+    void ManagerRegistry::transform(const QJsonDocument &document)
+    {
+        const QJsonArray& source = getRegistries(document);
+
+        std::vector<Registry> target;
+        std::transform(source.begin(), source.end(), std::back_inserter(target),
+                       [](const QJsonValue& entry)
+        {
+            return Registry { entry.toObject() };
+        });
+        emit transformSuccess(target);
     }
 
     // version

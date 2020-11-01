@@ -6,6 +6,7 @@
 
 #include "managerregistry.h"
 #include "groupmodules.h"
+#include "modelmodule.h"
 
 namespace modules {
 
@@ -48,15 +49,19 @@ namespace modules {
         void downloadRegistry();
 
     signals:
-        void completed(std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual>);
+        void makeGroupModulesSuccess(const std::vector<GroupModules>& groupModules);
+        void makeModulesSuccess(const std::vector<Module>& modules);
 
     private:
         friend class tests::tst_ManagerGroup;
+
         std::unique_ptr<ManagerRegistry> m_managerRegistry;
-        std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual> addToCollection(const QJsonArray& object);
+        std::unique_ptr<ModelModule> m_modelModule;
+        void addToCollection(const QJsonArray& object);
         virtual const QJsonArray getDownloads(const QJsonDocument& document) const;
+        virtual void transform(const std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual> &source);
     private slots:
-        void makeGroup(const QJsonDocument& document);
+        void makeCollections(const QJsonDocument& document);
     };
 
 }

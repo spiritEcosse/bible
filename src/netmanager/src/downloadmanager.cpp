@@ -1,31 +1,29 @@
 #include "downloadmanager.h"
 
-#include <QFileInfo>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QString>
-#include <QStringList>
-#include <QTimer>
-#include <stdio.h>
+#include <QTextStream>
+
+#include <cstdio>
+
+using namespace std;
 
 DownloadManager::DownloadManager(QObject *parent)
-    : QObject(parent), downloadedCount(0), totalCount(0)
+    : QObject(parent)
 {
 }
 
-void DownloadManager::append(const QStringList &urlList)
+void DownloadManager::append(const QStringList &urls)
 {
-    foreach (QString url, urlList)
-        append(QUrl::fromEncoded(url.toLocal8Bit()));
+    for (const QString &urlAsString : urls)
+        append(QUrl::fromEncoded(urlAsString.toLocal8Bit()));
 
     if (downloadQueue.isEmpty())
-        QTimer::singleShot(0, this, SIGNAL(finished()));
+        QTimer::singleShot(0, this, &DownloadManager::finished);
 }
 
 void DownloadManager::append(const QUrl &url)
 {
     if (downloadQueue.isEmpty())
-        QTimer::singleShot(0, this, SLOT(startNextDownload()));
+        QTimer::singleShot(0, this, &DownloadManager::startNextDownload);
 
     downloadQueue.enqueue(url);
     ++totalCount;
@@ -76,16 +74,17 @@ void DownloadManager::startNextDownload()
 
     QNetworkRequest request(url);
     currentDownload = manager.get(request);
-    connect(currentDownload, SIGNAL(downloadProgress(qint64,qint64)),
-            SLOT(downloadProgress(qint64,qint64)));
-    connect(currentDownload, SIGNAL(finished()),
-            SLOT(downloadFinished()));
-    connect(currentDownload, SIGNAL(readyRead()),
-            SLOT(downloadReadyRead()));
+    connect(currentDownload, &QNetworkReply::downloadProgress,
+            this, &DownloadManager::downloadProgress);
+    connect(currentDownload, &QNetworkReply::finished,
+            this, &DownloadManager::downloadFinished);
+    connect(currentDownload, &QNetworkReply::readyRead,
+            this, &DownloadManager::downloadReadyRead);
 
     // prepare the output
+    qInfo() << QString("Downloading %1...").arg(url.toEncoded().constData());
     printf("Downloading %s...\n", url.toEncoded().constData());
-    downloadTime.start();
+    downloadTimer.start();
 }
 
 void DownloadManager::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)
@@ -93,7 +92,7 @@ void DownloadManager::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)
     progressBar.setStatus(bytesReceived, bytesTotal);
 
     // calculate the download speed
-    double speed = bytesReceived * 1000.0 / downloadTime.elapsed();
+    double speed = bytesReceived * 1000.0 / downloadTimer.elapsed();
     QString unit;
     if (speed < 1024) {
         unit = "bytes/sec";
@@ -117,12 +116,23 @@ void DownloadManager::downloadFinished()
 
     if (currentDownload->error()) {
         // download failed
-        fprintf(stderr, "Failed: %s\n", qPrintable(currentDownload->errorString()));
+        qCritical() << QString("Failed: %1").arg(currentDownload->errorString());
         emit failed();
+        fprintf(stderr, "Failed: %s\n", qPrintable(currentDownload->errorString()));
+        output.remove();
     } else {
-        printf("Succeeded.\n");
-        ++downloadedCount;
-        emit readyRead(output.fileName());
+        // let's check if it was actually a redirect
+        if (isHttpRedirect()) {
+            reportRedirect();
+            output.remove();
+            emit failed();
+            qCritical() << QString("Failed: ");
+        } else {
+            qInfo() << "Succeeded.\n";
+            printf("Succeeded.\n");
+            emit readyRead(output.fileName());
+            ++downloadedCount;
+        }
     }
 
     currentDownload->deleteLater();
@@ -132,4 +142,29 @@ void DownloadManager::downloadFinished()
 void DownloadManager::downloadReadyRead()
 {
     output.write(currentDownload->readAll());
+}
+
+bool DownloadManager::isHttpRedirect() const
+{
+    int statusCode = currentDownload->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    return statusCode == 301 || statusCode == 302 || statusCode == 303
+           || statusCode == 305 || statusCode == 307 || statusCode == 308;
+}
+
+void DownloadManager::reportRedirect()
+{
+    int statusCode = currentDownload->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    QUrl requestUrl = currentDownload->request().url();
+    QTextStream(stderr) << "Request: " << requestUrl.toDisplayString()
+                        << " was redirected with code: " << statusCode
+                        << '\n';
+
+    QVariant target = currentDownload->attribute(QNetworkRequest::RedirectionTargetAttribute);
+    if (!target.isValid())
+        return;
+    QUrl redirectUrl = target.toUrl();
+    if (redirectUrl.isRelative())
+        redirectUrl = requestUrl.resolved(redirectUrl);
+    QTextStream(stderr) << "Redirected to: " << redirectUrl.toDisplayString()
+                        << '\n';
 }

@@ -11,26 +11,22 @@ namespace modules {
             Q_OBJECT
 
         private:
-            QJsonDocument helperGetDocument();
-            QJsonDocument helperGetInvalidDocument();
-            std::vector<Registry> helperGetRegistries();
+            std::vector<Registry> helperGetObjects();
             std::vector<Registry> helperSaveRegistries();
             std::vector<Registry> helperGetBaseRegistries();
+            void cleanTable();
+
             int vectorSize = 3;
-            std::shared_ptr<db::Db> m_db;
+            std::shared_ptr<db::Db<Registry>> m_db;
 
         public:
             tst_ModelRegistry();
             ~tst_ModelRegistry();
 
         private slots:
-            void cleanRegistryTable();
             void setRegistries_data();
             void setRegistries();
             void update();
-            void update_data();
-            void deleteAllRegistries();
-            void saveRegistries();
             void getRegistry_data();
             void getRegistry();
             void getRegistry_NoRegistry();
@@ -38,43 +34,13 @@ namespace modules {
 
         //helpers
 
-        QJsonDocument tst_ModelRegistry::helperGetDocument()
-        {
-            QJsonArray array;
-
-            array << QJsonObject {{"url", "link1"}, {"priority", 1}, {"info_url", "link11"}};
-            array << QJsonObject {{"url", "link2"}, {"priority", 2}, {"info_url", "link22"}};
-            array << QJsonObject {{"url", "link3"}, {"priority", 3}, {"info_url", "link33"}};
-
-            return QJsonDocument {
-                QJsonObject {
-                    { "registries",  array }
-                }
-            };
-        }
-
-        QJsonDocument tst_ModelRegistry::helperGetInvalidDocument()
-        {
-            QJsonArray array;
-
-            array << QJsonObject {{"url", "link1"}, {"priority", 1}};
-            array << QJsonObject {{"priority", 2}, {"info_ufrl", "link22"}};
-            array << QJsonObject {{"url", "link3"}, {"priority", 3}, {"info_url", "link33"}};
-
-            return QJsonDocument {
-                QJsonObject {
-                    { "registries",  array }
-                }
-            };
-        }
-
-        std::vector<Registry> tst_ModelRegistry::helperGetRegistries() {
+        std::vector<Registry> tst_ModelRegistry::helperGetObjects() {
             return std::vector<Registry> {{"bGluazE=", "bGluazEx", 1}, {"bGluazI=", "bGluazIy", 2}, {"bGluazM=", "bGluazMz", 3}};
         }
 
         std::vector<Registry> tst_ModelRegistry::helperSaveRegistries()
         {
-            const std::vector<Registry>& registries = helperGetRegistries();
+            const std::vector<Registry>& registries = helperGetObjects();
             m_db->storage->insert_range(registries.begin(), registries.end());
             return registries;
         }
@@ -88,7 +54,7 @@ namespace modules {
         }
 
         tst_ModelRegistry::tst_ModelRegistry()
-            : m_db { db::Db::getInstance() }
+            : m_db { db::Db<Registry>::getInstance() }
         {
         }
 
@@ -97,54 +63,29 @@ namespace modules {
 
         }
 
-        void tst_ModelRegistry::cleanRegistryTable()
+        void tst_ModelRegistry::cleanTable()
         {
-            m_db->storage->remove_all<Registry>();
+            m_db->removeAll();
         }
-
 
         // tests
-        void tst_ModelRegistry::update_data()
-        {
-            QTest::addColumn<QJsonDocument>("document");
-            QTest::addColumn<std::vector<Registry>>("m_registries");
-            QTest::addColumn<int>("size");
-
-            QTest::newRow("success") << helperGetDocument() << helperGetRegistries() << vectorSize ;
-            QTest::newRow("invalid data") << helperGetInvalidDocument() << helperGetBaseRegistries() << 0;
-        }
 
         void tst_ModelRegistry::update()
         {
-            cleanRegistryTable();
-
-            QFETCH(QJsonDocument, document);
-            QFETCH(std::vector<Registry>, m_registries);
-            QFETCH(int, size);
-
             ModelRegistry modelRegistry;
             QSignalSpy spyLast(&modelRegistry, &ModelRegistry::updateDone);
 
-            modelRegistry.update(document);
+            const std::vector<Registry> objects = helperGetObjects();
+            modelRegistry.update(objects);
 
             QCOMPARE(spyLast.count(), 1);
-            QCOMPARE(m_db->storage->count<Registry>(), size);
-            QCOMPARE(modelRegistry.m_registries, m_registries);
-        }
-
-        void tst_ModelRegistry::deleteAllRegistries()
-        {
-            ModelRegistry modelRegistry;
-
-            helperSaveRegistries();
-
-            modelRegistry.deleteAllRegistries();
-            QCOMPARE(m_db->storage->count<Registry>(), 0);
+            QCOMPARE(m_db->count(), vectorSize);
+            QCOMPARE(modelRegistry.m_objects, objects);
         }
 
         void tst_ModelRegistry::setRegistries_data()
         {
-            cleanRegistryTable();
+            cleanTable();
 
             QTest::addColumn<std::vector<Registry>>("m_registries");
             QTest::addColumn<bool>("result");
@@ -160,24 +101,14 @@ namespace modules {
 
             ModelRegistry modelRegistry;
             QCOMPARE(modelRegistry.setRegistries(), result);
-            QCOMPARE(modelRegistry.m_registries, m_registries);
+            QCOMPARE(modelRegistry.m_objects, m_registries);
 
-            cleanRegistryTable();
-        }
-
-        void tst_ModelRegistry::saveRegistries()
-        {
-            cleanRegistryTable();
-
-            ModelRegistry modelRegistry;
-
-            modelRegistry.saveRegistries(helperGetRegistries());
-            QCOMPARE(m_db->storage->count<Registry>(), vectorSize);
+            cleanTable();
         }
 
         void tst_ModelRegistry::getRegistry_data()
         {
-            cleanRegistryTable();
+            cleanTable();
 
             QTest::addColumn<Registry>("registry");
             QTest::addColumn<int>("index");
@@ -205,7 +136,7 @@ namespace modules {
 
         void tst_ModelRegistry::getRegistry_NoRegistry()
         {
-            cleanRegistryTable();
+            cleanTable();
 
             ModelRegistry modelRegistry;
             QSignalSpy spy(&modelRegistry, &ModelRegistry::error);
