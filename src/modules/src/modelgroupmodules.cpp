@@ -1,12 +1,4 @@
 #include "modelgroupmodules.h"
-#if (QT_VERSION > QT_VERSION_CHECK(5, 6, 3))
-#include <QQmlEngine>
-#else
-//#include <QtQuick>
-#endif
-#include <QDebug>
-#include <iterator>
-#include <algorithm>
 
 namespace modules {
 

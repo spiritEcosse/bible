@@ -106,7 +106,7 @@ namespace db {
 
     static_assert(std::is_same<Storage, decltype(userStorage(""))>::value, "");
 
-    template <class T>
+    template<class T>
     class Db
     {
     private:
@@ -115,8 +115,8 @@ namespace db {
         Db& operator=(const Db&);
 
     public:
-        static std::shared_ptr<Db> getInstance();
         std::unique_ptr<Storage> storage;
+        static std::shared_ptr<Db> getInstance();
         static std::shared_ptr<Db> m_db;
         void removeAll();
         int count();

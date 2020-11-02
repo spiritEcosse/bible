@@ -11,12 +11,11 @@ namespace modules {
             Q_OBJECT
 
         private:
-            std::vector<Registry> helperGetObjects();
-            std::vector<Registry> helperSaveRegistries();
-            std::vector<Registry> helperGetBaseRegistries();
+            std::vector<Registry> helperGetObjects() const;
+            std::vector<Registry> helperSaveRegistries() const;
+            std::vector<Registry> helperGetBaseRegistries() const;
             void cleanTable();
-
-            int vectorSize = 3;
+            const size_t vectorSize = 3;
             std::shared_ptr<db::Db<Registry>> m_db;
 
         public:
@@ -34,18 +33,18 @@ namespace modules {
 
         //helpers
 
-        std::vector<Registry> tst_ModelRegistry::helperGetObjects() {
-            return std::vector<Registry> {{"bGluazE=", "bGluazEx", 1}, {"bGluazI=", "bGluazIy", 2}, {"bGluazM=", "bGluazMz", 3}};
+        std::vector<Registry> tst_ModelRegistry::helperGetObjects() const {
+            return std::vector<Registry> {vectorSize, {"bGluazE=", "bGluazEx", 1}};
         }
 
-        std::vector<Registry> tst_ModelRegistry::helperSaveRegistries()
+        std::vector<Registry> tst_ModelRegistry::helperSaveRegistries() const
         {
             const std::vector<Registry>& registries = helperGetObjects();
-            m_db->storage->insert_range(registries.begin(), registries.end());
+            m_db->save(registries.begin(), registries.end());
             return registries;
         }
 
-        std::vector<Registry> tst_ModelRegistry::helperGetBaseRegistries()
+        std::vector<Registry> tst_ModelRegistry::helperGetBaseRegistries() const
         {
             return std::vector<Registry> {{
                 "aHR0cDovL21waDQucnUvcmVnaXN0cnkuemlw",
@@ -79,7 +78,7 @@ namespace modules {
             model.update(objects);
 
             QCOMPARE(spyLast.count(), 1);
-            QCOMPARE(m_db->count(), vectorSize);
+            QCOMPARE(m_db->count(), static_cast<int>(vectorSize));
             QCOMPARE(model.m_objects.size(), objects.size());
             QCOMPARE(model.m_objects, objects);
         }

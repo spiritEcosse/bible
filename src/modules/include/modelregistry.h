@@ -1,10 +1,7 @@
 #ifndef MODELREGISTRY_H
 #define MODELREGISTRY_H
 
-#include <QObject>
-#include <memory>
 #include "modelupdate.h"
-
 #include "registry.h"
 
 namespace modules {

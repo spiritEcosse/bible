@@ -6,10 +6,8 @@
 #include "modelregistry.h"
 #include "module.h"
 
-Q_DECLARE_METATYPE(std::string)
 Q_DECLARE_METATYPE(std::vector<modules::Module>)
 Q_DECLARE_METATYPE(std::vector<modules::GroupModules>)
-Q_DECLARE_METATYPE(QJsonArray)
 
 namespace modules {
 
@@ -64,6 +62,7 @@ namespace modules {
             dir.rmdir(dirDownload);
         }
 
+        // tests
         void tst_ManagerGroup::makeCollections_data()
         {
             QTest::addColumn<QJsonDocument>("document");

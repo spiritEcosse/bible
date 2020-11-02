@@ -1,8 +1,3 @@
-#include <QJsonArray>
-#include <QJsonObject>
-#include <QJsonDocument>
-#include <QDebug>
-
 #include "modelregistry.h"
 
 namespace modules {
