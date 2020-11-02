@@ -8,6 +8,7 @@ namespace modules {
         connect(m_managerGroup.get(), &ManagerGroup::makeGroupModulesSuccess, this, &ModelGroupModules::update);
     }
 
+
     ModelGroupModules::~ModelGroupModules() {}
 
     void ModelGroupModules::registerMe(const std::string& moduleName)

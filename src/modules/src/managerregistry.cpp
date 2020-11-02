@@ -25,8 +25,8 @@ namespace modules {
         connect(m_manager.get(), &DownloadManager::readyRead, this, &ManagerRegistry::extractRegistry);
         connect(m_modelRegistry.get(), &ModelRegistry::registry, this, &ManagerRegistry::downloadRegistry);
         connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::removeRegistry);
-        connect(this, &ManagerRegistry::getDocumentSuccess, this, &ManagerRegistry::retrieveData);
-        connect(this, &ManagerRegistry::retrieveDataSuccess, this, &ManagerRegistry::transform);
+        connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::retrieveData);
+        connect(this, &ManagerRegistry::retrieveDataSuccess, &ManagerRegistry::transform);
         connect(this, &ManagerRegistry::transformSuccess, m_modelRegistry.get(), &ModelRegistry::update);
 
         m_registry ? m_manager->append(m_registry->urlToQUrl()) : m_modelRegistry->getRegistry();
@@ -114,8 +114,8 @@ namespace modules {
             connect(m_modelRegistry.get(), &ModelRegistry::registry, this, &ManagerRegistry::downloadInfo);
             connect(m_manager.get(), &DownloadManager::readyRead, this, &ManagerRegistry::retrieveVersion);
             connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::removeInfo);
-            connect(this, &ManagerRegistry::getDocumentSuccess, this, &ManagerRegistry::retrieveDataInfo);
-            connect(this, &ManagerRegistry::newRegistryAvailable, this, &ManagerRegistry::setVersion);
+            connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::retrieveDataInfo);
+            connect(this, &ManagerRegistry::newRegistryAvailable, &ManagerRegistry::setVersion);
 
             m_registry ? m_manager->append(m_registry->infoUrlToQUrl()) : m_modelRegistry->getRegistry();
         }

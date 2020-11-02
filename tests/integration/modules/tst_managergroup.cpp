@@ -91,7 +91,7 @@ namespace modules {
 
             array << QJsonObject {{"fil", "name"},{"des", "des"},{"abr", "abbr"},{"lng", "en"}};
             modules.push_back(Module("name", "des", "abbr", 1));
-            groupModules.push_back(GroupModules("en", "Name"));
+            groupModules.push_back(GroupModules("en", "Translations"));
             QTest::newRow("case: count GroupModules is 1, count Module is 1")
                     << QJsonDocument { QJsonObject {{"downloads", array }}} << modules << groupModules << true;
 
@@ -102,19 +102,19 @@ namespace modules {
 
             array << QJsonObject {{"fil", "name"},{"des", "des"},{"abr", "abbr"},{"lng", "en"},{"reg", "region"}};
             modules.push_back(Module("name", "des", "abbr", 2));
-            groupModules.insert(groupModules.begin(), GroupModules("en", "Name", "region"));
+            groupModules.insert(groupModules.begin(), GroupModules("en", "Translations", "region"));
             QTest::newRow("case: count GroupModules is 2, count Module is 3")
                     << QJsonDocument { QJsonObject {{"downloads", array }}} << modules << groupModules << true;
 
             array << QJsonObject {{"fil", "name"},{"des", "des"},{"abr", "abbr"},{"lng", "av"},{"reg", ""}};
             modules.push_back(Module("name", "des", "abbr", 3));
-            groupModules.insert(groupModules.begin(), GroupModules("av", "Name"));
+            groupModules.insert(groupModules.begin(), GroupModules("av", "Translations"));
             QTest::newRow("case: count GroupModules is 3, count Module is 4")
                     << QJsonDocument { QJsonObject {{"downloads", array }}} << modules << groupModules << true;
 
             array << QJsonObject {{"fil", "name"},{"des", "des"},{"abr", "abbr"},{"lng", "av"},{"reg", "region"}};
             modules.push_back(Module("name", "des", "abbr", 4));
-            groupModules.insert(groupModules.begin(), GroupModules("av", "Name", "region"));
+            groupModules.insert(groupModules.begin(), GroupModules("av", "Translations", "region"));
             QTest::newRow("case: count GroupModules is 4, count Module is 5")
                     << QJsonDocument { { QJsonObject {{"downloads", array }}}} << modules << groupModules << true;
 
@@ -201,9 +201,13 @@ namespace modules {
 
         void tst_ManagerGroup::downloadRegistry()
         {
+            qRegisterMetaType<std::vector<Module>>("std::vector<Module>");
+            qRegisterMetaType<std::vector<GroupModules>>("std::vector<GroupModules>");
+
             ManagerGroup managerGroup;
             QSignalSpy spy(managerGroup.m_managerRegistry.get(), &ManagerRegistry::retrieveDataSuccess);
             QSignalSpy spyMakeGroupModulesSuccess(&managerGroup, &ManagerGroup::makeGroupModulesSuccess);
+            QSignalSpy spyMakeModulesSuccess(&managerGroup, &ManagerGroup::makeGroupModulesSuccess);
 
             managerGroup.m_managerRegistry->m_registry.reset(
                         new Registry {
@@ -215,6 +219,7 @@ namespace modules {
 
             QVERIFY(spyMakeGroupModulesSuccess.wait());
             QCOMPARE(spy.count(), 1);
+            QCOMPARE(spyMakeModulesSuccess.count(), 1);
             QCOMPARE(spyMakeGroupModulesSuccess.count(), 1);
         }
 

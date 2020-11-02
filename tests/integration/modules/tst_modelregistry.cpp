@@ -74,7 +74,7 @@ namespace modules {
             ModelRegistry model;
             QSignalSpy spyLast(&model, &ModelRegistry::updateDone);
 
-            const std::vector<Registry> objects = helperGetObjects();
+            const std::vector<Registry>& objects = helperGetObjects();
             model.update(objects);
 
             QCOMPARE(spyLast.count(), 1);

@@ -55,7 +55,7 @@ namespace modules {
             ModelGroupModules model;
             QSignalSpy spyLast(&model, &ModelGroupModules::updateDone);
 
-            const std::vector<GroupModules> objects = helperGetObjects();
+            const std::vector<GroupModules>& objects = helperGetObjects();
             model.update(objects);
 
             QCOMPARE(spyLast.count(), 1);

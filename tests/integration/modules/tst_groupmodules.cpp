@@ -39,6 +39,7 @@ namespace modules {
             QTest::addColumn<QString>("name");
             QTest::addColumn<QString>("result");
 
+            QTest::newRow("name") << "name" << "Translations";
             QTest::newRow("name *.plan") << "2016c-p.plan" << "Plan";
             QTest::newRow("name *.commentaries") << "AB-c.commentaries" << "Commentaries";
             QTest::newRow("name with spaces *.commentaries") << " AB-c.commentaries " << "Commentaries";

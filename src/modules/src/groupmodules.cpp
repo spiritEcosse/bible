@@ -78,7 +78,7 @@ namespace modules {
         QRegularExpression re(MODULES_SPLIT_NAME);
         QRegularExpressionMatch match = re.match(name);
 
-        return match.hasMatch() ? match.captured(2).trimmed() : name;
+        return match.hasMatch() ? match.captured(2).trimmed() : "Translations";
     }
 
     void GroupModules::cleanName()
