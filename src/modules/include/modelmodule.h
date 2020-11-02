@@ -7,6 +7,11 @@
 
 namespace modules {
 
+    namespace tests
+    {
+       class tst_ModelModule;
+    }
+
     class ModelModule : public ModelUpdate<Module>
     {
         Q_OBJECT
@@ -16,6 +21,9 @@ namespace modules {
 
         virtual QVariant data(const QModelIndex &index, int role) const override;
         virtual QHash<int, QByteArray> roleNames() const override;
+
+    private:
+        friend class tests::tst_ModelModule;
     };
 
 }

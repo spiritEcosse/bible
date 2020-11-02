@@ -72,15 +72,16 @@ namespace modules {
 
         void tst_ModelRegistry::update()
         {
-            ModelRegistry modelRegistry;
-            QSignalSpy spyLast(&modelRegistry, &ModelRegistry::updateDone);
+            ModelRegistry model;
+            QSignalSpy spyLast(&model, &ModelRegistry::updateDone);
 
             const std::vector<Registry> objects = helperGetObjects();
-            modelRegistry.update(objects);
+            model.update(objects);
 
             QCOMPARE(spyLast.count(), 1);
             QCOMPARE(m_db->count(), vectorSize);
-            QCOMPARE(modelRegistry.m_objects, objects);
+            QCOMPARE(model.m_objects.size(), objects.size());
+            QCOMPARE(model.m_objects, objects);
         }
 
         void tst_ModelRegistry::setRegistries_data()

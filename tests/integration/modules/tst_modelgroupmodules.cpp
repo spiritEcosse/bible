@@ -29,17 +29,6 @@ namespace modules {
 
         //helpers
 
-//        std::vector<Registry> tst_ModelGroupModules::helperGetRegistries() {
-////            return std::vector<Registry> {{"bGluazE=", "bGluazEx", 1}, {"bGluazI=", "bGluazIy", 2}, {"bGluazM=", "bGluazMz", 3}};
-//        }
-
-//        std::vector<Registry> tst_ModelGroupModules::helperSaveRegistries()
-//        {
-////            const std::vector<Registry>& registries = helperGetRegistries();
-////            m_db->storage->insert_range(registries.begin(), registries.end());
-////            return registries;
-//        }
-
         tst_ModelGroupModules::tst_ModelGroupModules()
             : m_db { db::Db<GroupModules>::getInstance() } {}
 
@@ -65,16 +54,16 @@ namespace modules {
         // tests
         void tst_ModelGroupModules::update()
         {
-            ModelGroupModules modelGroupModules;
-            QSignalSpy spyLast(&modelGroupModules, &ModelGroupModules::updateDone);
+            ModelGroupModules model;
+            QSignalSpy spyLast(&model, &ModelGroupModules::updateDone);
 
             const std::vector<GroupModules> objects = helperGetObjects();
-            modelGroupModules.update(objects);
+            model.update(objects);
 
             QCOMPARE(spyLast.count(), 1);
             QCOMPARE(m_db->count(), vectorSize);
-            QCOMPARE(modelGroupModules.m_objects.size(), helperGetObjects().size());
-            QCOMPARE(modelGroupModules.m_objects, objects);
+            QCOMPARE(model.m_objects.size(), objects.size());
+            QCOMPARE(model.m_objects, objects);
         }
 
     }
