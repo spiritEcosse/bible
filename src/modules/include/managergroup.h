@@ -51,6 +51,7 @@ namespace modules {
     signals:
         void makeGroupModulesSuccess(const std::vector<GroupModules>& groupModules);
         void makeModulesSuccess(const std::vector<Module>& modules);
+        void error(const QString& error);
 
     private:
         friend class tests::tst_ManagerGroup;

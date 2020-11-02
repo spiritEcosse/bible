@@ -34,23 +34,28 @@ namespace modules {
         std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual> mGMap;
         std::vector<Module> modules;
 
-        int id = 1;
-        for (auto it = source.begin(); it != source.end(); it++)
-        {
-            Module module {it->toObject()};
-            GroupModules groupModules(it->toObject());
-            const MGKey mgKey {groupModules.nameToStdString(), groupModules.languageCodeToStdString(), groupModules.regionToStdString()};
-            if (mGMap.insert({mgKey, groupModules}).second)
+        try {
+            int id = 1;
+            for (auto it = source.begin(); it != source.end(); it++)
             {
-                groupModules.m_id = id++;
+                Module module {it->toObject()};
+                GroupModules groupModules(it->toObject());
+                const MGKey mgKey {groupModules.nameToStdString(), groupModules.languageCodeToStdString(), groupModules.regionToStdString()};
+                if (mGMap.insert({mgKey, groupModules}).second)
+                {
+                    groupModules.m_id = id++;
+                }
+
+                module.m_idGroupModules = groupModules.m_id;
+                modules.push_back(module);
             }
 
-            module.m_idGroupModules = groupModules.m_id;
-            modules.push_back(module);
+            emit makeModulesSuccess(modules);
+            transform(mGMap);
+        } catch(const ModuleInvalidData& e) {
+            qInfo() << e.what();
+            emit error("An error occured, please try in time.");
         }
-
-        emit makeModulesSuccess(modules);
-        transform(mGMap);
     }
 
     void ManagerGroup::transform(const std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual> &source)

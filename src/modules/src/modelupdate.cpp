@@ -30,7 +30,7 @@ namespace modules {
           emit endResetModel();
           emit updateDone();
         } catch(const std::system_error& e) {
-            qCritical() << e.what();
+            qInfo() << e.what();
             emit error("An error occured.");
         }
     }

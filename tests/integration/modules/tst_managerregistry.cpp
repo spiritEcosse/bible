@@ -38,7 +38,7 @@ namespace modules {
             const int version = 10;
             const size_t vectorSize = 3;
             std::shared_ptr<db::Db<Registry>> m_db;
-            QJsonDocument helperGetInvalidDocument();
+            QJsonDocument helperGetInvalidDocument() const;
             std::vector<Registry> helperGetObjects() const;
 
         private slots:
@@ -114,7 +114,7 @@ namespace modules {
             };
         }
 
-        QJsonDocument tst_ManagerRegistry::helperGetInvalidDocument()
+        QJsonDocument tst_ManagerRegistry::helperGetInvalidDocument() const
         {
             QJsonArray array;
 
@@ -400,10 +400,10 @@ namespace modules {
         {
             QTest::addColumn<QJsonDocument>("document");
             QTest::addColumn<std::vector<Registry>>("objects");
-            QTest::addColumn<bool>("except");
+            QTest::addColumn<bool>("hit");
 
-            QTest::newRow("valid data") << helperGetDocument() << helperGetObjects() << false;
-            QTest::newRow("not valid data") << helperGetInvalidDocument() << std::vector<Registry>() << true;
+            QTest::newRow("valid data") << helperGetDocument() << helperGetObjects() << true;
+            QTest::newRow("not valid data") << helperGetInvalidDocument() << std::vector<Registry>() << false;
         }
 
         void tst_ManagerRegistry::transform()
@@ -412,22 +412,21 @@ namespace modules {
 
             QFETCH(QJsonDocument, document);
             QFETCH(std::vector<Registry>, objects);
-            QFETCH(bool, except);
+            QFETCH(bool, hit);
 
             ManagerRegistry manager;
 
+            QSignalSpy spy(&manager, &ManagerRegistry::transformSuccess);
             manager.transform(document);
 
-            if (!except) {
-                QSignalSpy spy(&manager, &ManagerRegistry::transformSuccess);
-                manager.transform(document);
-                QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.count(), int(hit));
+
+            if (hit) {
                 QList<QVariant> arguments = spy.takeFirst();
                 const std::vector<Registry>& registries_actual = arguments[0].value<std::vector<Registry>>();
                 QCOMPARE(registries_actual.size(), objects.size());
                 QCOMPARE(registries_actual, objects);
             }
-
         }
 
         // version

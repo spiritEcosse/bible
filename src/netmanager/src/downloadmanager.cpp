@@ -116,7 +116,7 @@ void DownloadManager::downloadFinished()
 
     if (currentDownload->error()) {
         // download failed
-        qCritical() << QString("Failed: %1").arg(currentDownload->errorString());
+        qInfo() << QString("Failed: %1").arg(currentDownload->errorString());
         emit failed();
         fprintf(stderr, "Failed: %s\n", qPrintable(currentDownload->errorString()));
         output.remove();
@@ -126,9 +126,9 @@ void DownloadManager::downloadFinished()
             reportRedirect();
             output.remove();
             emit failed();
-            qCritical() << QString("Failed: ");
+            qInfo() << "Failed";
         } else {
-            qInfo() << "Succeeded.\n";
+            qInfo() << "Succeeded.";
             printf("Succeeded.\n");
             emit readyRead(output.fileName());
             ++downloadedCount;
