@@ -9,5 +9,5 @@
 [submodule "3rdparty/openssl"]
 	path = 3rdparty/openssl
 	url = https://github.com/janbar/openssl-cmake
-	branch = cfc6806d13b998acf93ad30b1030a065af0adfe0
+	branch = 1.0.2
 	
