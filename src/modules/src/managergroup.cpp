@@ -37,6 +37,7 @@ namespace modules {
         int id = 1;
         for (auto it = source.begin(); it != source.end(); it++)
         {
+            Module module {it->toObject()};
             GroupModules groupModules(it->toObject());
             const MGKey mgKey {groupModules.nameToStdString(), groupModules.languageCodeToStdString(), groupModules.regionToStdString()};
             if (mGMap.insert({mgKey, groupModules}).second)
@@ -44,7 +45,6 @@ namespace modules {
                 groupModules.m_id = id++;
             }
 
-            Module module {it->toObject()};
             module.m_idGroupModules = groupModules.m_id;
             modules.push_back(module);
         }

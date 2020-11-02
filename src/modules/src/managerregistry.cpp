@@ -83,15 +83,17 @@ namespace modules {
 
     void ManagerRegistry::transform(const QJsonDocument &document)
     {
-        const QJsonArray& source = getRegistries(document);
+        try {
+            const QJsonArray& source = getRegistries(document);
 
-        std::vector<Registry> target;
-        std::transform(source.begin(), source.end(), std::back_inserter(target),
-                       [](const QJsonValue& entry)
-        {
-            return Registry { entry.toObject() };
-        });
-        emit transformSuccess(target);
+            std::vector<Registry> target;
+            std::transform(source.begin(), source.end(), std::back_inserter(target),
+                           [](const QJsonValue& entry)
+            {
+                return Registry { entry.toObject() };
+            });
+            emit transformSuccess(target);
+        } catch(const RegistryInvalidData& e) {}
     }
 
     // version

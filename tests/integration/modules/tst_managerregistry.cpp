@@ -2,6 +2,8 @@
 #include <JlCompress.h>
 #include "managerregistry.h"
 
+Q_DECLARE_METATYPE(std::vector<modules::Registry>)
+
 namespace modules {
 
     namespace tests {
@@ -34,8 +36,10 @@ namespace modules {
             QJsonDocument helperGetDocument();
             void setQSettings(int value = 0, QString key = "registryVersion");
             const int version = 10;
+            const size_t vectorSize = 3;
             std::shared_ptr<db::Db<Registry>> m_db;
             QJsonDocument helperGetInvalidDocument();
+            std::vector<Registry> helperGetObjects() const;
 
         private slots:
             void initTestCase();
@@ -50,6 +54,8 @@ namespace modules {
             void hasNewRegistry();
             void extractRegistry_data();
             void extractRegistry();
+            void transform_data();
+            void transform();
             void getDocument_data();
             void getDocument();
             void retrieveVersion();
@@ -88,9 +94,15 @@ namespace modules {
 
         // helpers
 
+        std::vector<Registry> tst_ManagerRegistry::helperGetObjects() const {
+            return std::vector<Registry> {vectorSize, {"bGluazE=", "bGluazEx", 1}};
+        }
+
         QJsonDocument tst_ManagerRegistry::helperGetDocument()
         {
             QJsonArray array;
+            array << QJsonObject {{"url", "link1"}, {"priority", 1}, {"info_url", "link11"}};
+            array << QJsonObject {{"url", "link1"}, {"priority", 1}, {"info_url", "link11"}};
             array << QJsonObject {{"url", "link1"}, {"priority", 1}, {"info_url", "link11"}};
 
             return QJsonDocument {
@@ -161,6 +173,7 @@ namespace modules {
         void tst_ManagerRegistry::download()
         {
             qRegisterMetaType<Registry>("Registry");
+            qRegisterMetaType<std::vector<Registry>>("std::vector<Registry>");
 
             setQSettings();
             createFileRegistryArchive(helperGetDocument());
@@ -172,6 +185,7 @@ namespace modules {
             QSignalSpy spyReadyRead(managerRegistry.m_manager.get(), &DownloadManager::readyRead);
             QSignalSpy spyGetDocumentSuccess(&managerRegistry, &ManagerRegistry::getDocumentSuccess);
             QSignalSpy spyRetrieveDataSuccess(&managerRegistry, &ManagerRegistry::retrieveDataSuccess);
+            QSignalSpy spyTransformSuccess(&managerRegistry, &ManagerRegistry::transformSuccess);
             QSignalSpy spyRemoveRegistry(&managerRegistry, &ManagerRegistry::removeRegistrySuccess);
             QSignalSpy spyRegistry(managerRegistry.m_modelRegistry.get(), &ModelRegistry::registry);
             QSignalSpy spyUpdateDone(managerRegistry.m_modelRegistry.get(), &ModelRegistry::updateDone);
@@ -199,6 +213,7 @@ namespace modules {
             QCOMPARE(spyRegistry.count(), signalRegistryHit);
             QCOMPARE(spyGetDocumentSuccess.count(), 1);
             QCOMPARE(spyRetrieveDataSuccess.count(), 1);
+            QCOMPARE(spyTransformSuccess.count(), 1);
             QCOMPARE(spyRemoveRegistry.count(), 1);
             QCOMPARE(spyUpdateDone.count(), 1);
         }
@@ -375,10 +390,44 @@ namespace modules {
 
         void tst_ManagerRegistry::extractRegistry()
         {
-            ManagerRegistry managerRegistry;
+            ManagerRegistry manager;
 
             QFETCH(QString, fileName);
-            managerRegistry.extractRegistry(fileName);
+            manager.extractRegistry(fileName);
+        }
+
+        void tst_ManagerRegistry::transform_data()
+        {
+            QTest::addColumn<QJsonDocument>("document");
+            QTest::addColumn<std::vector<Registry>>("objects");
+            QTest::addColumn<bool>("except");
+
+            QTest::newRow("valid data") << helperGetDocument() << helperGetObjects() << false;
+            QTest::newRow("not valid data") << helperGetInvalidDocument() << std::vector<Registry>() << true;
+        }
+
+        void tst_ManagerRegistry::transform()
+        {
+            qRegisterMetaType<std::vector<Registry>>("std::vector<Registry>");
+
+            QFETCH(QJsonDocument, document);
+            QFETCH(std::vector<Registry>, objects);
+            QFETCH(bool, except);
+
+            ManagerRegistry manager;
+
+            manager.transform(document);
+
+            if (!except) {
+                QSignalSpy spy(&manager, &ManagerRegistry::transformSuccess);
+                manager.transform(document);
+                QCOMPARE(spy.count(), 1);
+                QList<QVariant> arguments = spy.takeFirst();
+                const std::vector<Registry>& registries_actual = arguments[0].value<std::vector<Registry>>();
+                QCOMPARE(registries_actual.size(), objects.size());
+                QCOMPARE(registries_actual, objects);
+            }
+
         }
 
         // version
