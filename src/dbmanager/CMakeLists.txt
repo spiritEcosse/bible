@@ -11,6 +11,14 @@ add_library(${PROJECT_NAME} STATIC ${RESOURCES})
 find_package(Qt5 COMPONENTS Core Sql REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Sql)
 
+if ( ${SAILFISH} )
+    find_package (sqlite)
+    target_link_libraries (${PROJECT_NAME} PRIVATE sqlite)
+else()
+    find_package (SQLite3)
+    target_link_libraries (${PROJECT_NAME} PRIVATE SQLite::SQLite3)
+endif()
+
 target_include_directories(${PROJECT_NAME}
     PUBLIC
         include

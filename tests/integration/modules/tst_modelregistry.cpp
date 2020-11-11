@@ -85,8 +85,6 @@ namespace modules {
 
         void tst_ModelRegistry::setRegistries_data()
         {
-            cleanTable();
-
             QTest::addColumn<std::vector<Registry>>("m_registries");
             QTest::addColumn<bool>("result");
 
@@ -102,7 +100,6 @@ namespace modules {
             ModelRegistry modelRegistry;
             QCOMPARE(modelRegistry.setRegistries(), result);
             QCOMPARE(modelRegistry.m_objects, m_registries);
-
             cleanTable();
         }
 

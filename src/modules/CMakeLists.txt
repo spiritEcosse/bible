@@ -31,9 +31,6 @@ add_library(${PROJECT_NAME} STATIC ${RESOURCES})
 find_package(Qt5 COMPONENTS Core Sql Network REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Sql Qt5::Network QuaZip sqlite_orm)
 
-find_package (SQLite3)
-target_link_libraries (${PROJECT_NAME} PRIVATE SQLite::SQLite3)
-
 target_include_directories(${PROJECT_NAME}
     PUBLIC
         include
