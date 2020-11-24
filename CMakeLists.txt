@@ -23,7 +23,7 @@ if ( ${SAILFISH} )
     install(FILES ${PROJECT_NAME}.desktop
         DESTINATION share/applications
     )
-    install(FILES ${PROJECT_NAME}.png
+    install(FILES icons/86x86/${PROJECT_NAME}.png
         DESTINATION share/icons/hicolor/86x86/apps
     )
 
