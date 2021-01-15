@@ -1,5 +1,7 @@
 #include <QtTest>
 #include "modelgroupmodules.h"
+#include "groupmodules.h"
+#include <JlCompress.h>
 
 namespace modules {
 
@@ -11,6 +13,14 @@ namespace modules {
         private:
             const size_t vectorSize = 3;
             std::shared_ptr<db::Db<GroupModules>> m_db;
+            const QString pathFiles { "files" };
+            const QString dirDownload = "download";
+            const QString strUrl { "file://" };
+            QFile fileRegistry { "registry.json" };
+            const QFile fileRegistryArchive { "registry.zip" };
+            const QFile fileRegistryInfo { "registry_info.json" };
+            QDir dir;
+            QJsonDocument helperGetInvalidDocument() const;
 
         public:
             tst_ModelGroupModules();
@@ -22,14 +32,30 @@ namespace modules {
             void cleanTable();
 
         private slots:
+            void initTestCase();
+            void cleanupTestCase();
             void update();
+            void downloadRegistry_data();
+            void downloadRegistry();
         };
 
-
         tst_ModelGroupModules::tst_ModelGroupModules()
-            : m_db { db::Db<GroupModules>::getInstance() } {}
+            : m_db { db::Db<GroupModules>::getInstance() }{}
 
         tst_ModelGroupModules::~tst_ModelGroupModules() {}
+
+        void tst_ModelGroupModules::initTestCase()
+        {
+            // Will be called before the first test function is executed.
+            dir.mkdir(pathFiles);
+            dir.setCurrent(pathFiles);
+            dir.mkdir(dirDownload);
+        }
+
+        void tst_ModelGroupModules::cleanupTestCase()
+        {
+            dir.rmdir(dirDownload);
+        }
 
         //helpers
         std::vector<GroupModules> tst_ModelGroupModules::helperGetObjects() const
@@ -62,6 +88,49 @@ namespace modules {
             QCOMPARE(m_db->count(), static_cast<int>(vectorSize));
             QCOMPARE(model.m_objects.size(), objects.size());
             QCOMPARE(model.m_objects, objects);
+        }
+
+        void tst_ModelGroupModules::downloadRegistry_data() {
+            QSettings settings;
+            settings.setValue("registryVersion", 0);
+
+            fileRegistry.open(QFile::WriteOnly);
+            fileRegistry.write(
+                        QJsonDocument {
+                            QJsonObject {
+                                {
+                                    "downloads",
+                                    QJsonArray {
+                                        QJsonObject {
+                                            {"fil", "name"},
+                                            {"des", "description"},
+                                            {"abr", "abbreviation"}
+                                        }
+                                    },
+                                },
+                                {"version", 1}
+                            }
+                        }.toJson());
+            fileRegistry.close();
+
+            QVERIFY(JlCompress::compressFile(fileRegistryArchive.fileName(), fileRegistry.fileName()));
+        }
+
+        void tst_ModelGroupModules::downloadRegistry()
+        {
+            ModelGroupModules modelGroupModules;
+            QSignalSpy spy(&modelGroupModules, &ModelGroupModules::updateDone);
+
+            modelGroupModules.m_managerGroup->m_managerRegistry->m_registry.reset(
+                        new Registry {
+                            QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
+                            QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
+                        });
+
+            modelGroupModules.downloadRegistry();
+
+            QVERIFY(spy.wait());
+            QCOMPARE(spy.count(), 1);
         }
 
     }

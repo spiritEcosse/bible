@@ -37,6 +37,7 @@ namespace modules {
     namespace tests
     {
        class tst_ManagerGroup;
+       class tst_ModelGroupModules;
     }
 
     class ManagerGroup : public QObject
@@ -55,6 +56,7 @@ namespace modules {
 
     private:
         friend class tests::tst_ManagerGroup;
+        friend class tests::tst_ModelGroupModules;
 
         std::unique_ptr<ManagerRegistry> m_managerRegistry;
         std::unique_ptr<ModelModule> m_modelModule;

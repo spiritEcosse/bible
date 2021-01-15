@@ -8,12 +8,16 @@ namespace modules {
         connect(m_managerGroup.get(), &ManagerGroup::makeGroupModulesSuccess, this, &ModelGroupModules::update);
     }
 
-
     ModelGroupModules::~ModelGroupModules() {}
 
     void ModelGroupModules::registerMe(const std::string& moduleName)
     {
     //    qmlRegisterType<ModulesGroupsModel>(moduleName.c_str(), 1, 0, "ModulesGroupsModel");
+    }
+
+    void ModelGroupModules::downloadRegistry() const
+    {
+        m_managerGroup->downloadRegistry();
     }
 	
     QVariant ModelGroupModules

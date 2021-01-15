@@ -165,7 +165,10 @@ namespace modules {
                 arguments = spyMakeGroupModulesSuccess.takeFirst();
                 const std::vector<GroupModules>& groupModules_actual = arguments[0].value<std::vector<GroupModules>>();
                 QCOMPARE(groupModules_actual.size(), groupModules.size());
-                QCOMPARE(groupModules_actual, groupModules);
+
+                for_each (groupModules.begin(), groupModules.end(), [&](const GroupModules& needle) {
+                    QVERIFY(find(groupModules_actual.begin(), groupModules_actual.end(), needle) != groupModules_actual.end());
+                });
             } else {
                 QCOMPARE(spyError.count(), 1);
                 QList<QVariant> arguments = spyError.takeFirst();

@@ -16,11 +16,13 @@ namespace modules {
     {
        class tst_ManagerRegistry;
        class tst_ManagerGroup;
+       class tst_ModelGroupModules;
     }
 
     class ManagerRegistry : public QObject
     {
         Q_OBJECT
+//        Q_PROPERTY(VersesModel* currentVerses READ)
     public:
         ManagerRegistry(QObject *parent = nullptr);
         virtual ~ManagerRegistry() {}
@@ -32,12 +34,15 @@ namespace modules {
     private:
         friend class tests::tst_ManagerRegistry;
         friend class tests::tst_ManagerGroup;
+        friend class tests::tst_ModelGroupModules;
+
+        std::unique_ptr<ModelRegistry> m_modelRegistry;
+        std::unique_ptr<DownloadManager> m_manager;
+        bool m_newVersionAvailable = false;
 
         QFile registryArchive;
         QFile fileRegistryInfo;
-        std::unique_ptr<ModelRegistry> m_modelRegistry;
         QFile fileRegistry { "download/registry.json" };
-        std::unique_ptr<DownloadManager> m_manager;
         std::unique_ptr<Registry> m_registry;
         virtual bool hasNewRegistry(int version) const;
         virtual int getVersion(const QJsonDocument& document) const;

@@ -17,15 +17,20 @@ URL:        http://example.org/
 Source0:    %{name}-%{version}.tar.bz2
 Source100:  bible.yaml
 Requires:   sailfishsilica-qt5 >= 0.10.9
-Requires:   sqlite-devel
-Requires:   sqlite3
+Requires:   quazip
+Requires:   sqlite
+Requires:   qt5-qttest
 BuildRequires:  pkgconfig(sailfishapp) >= 1.0.2
 BuildRequires:  pkgconfig(Qt5Core)
 BuildRequires:  pkgconfig(Qt5Qml)
 BuildRequires:  pkgconfig(Qt5Quick)
 BuildRequires:  pkgconfig(Qt5Test)
 BuildRequires:  pkgconfig(sqlite3)
-BuildRequires:  cmake
+BuildRequires:  cmake >= 3.5
+BuildRequires:  git
+BuildRequires:  qt5-qttest
+BuildRequires:  quazip-devel
+BuildRequires:  sqlite-devel
 BuildRequires:  desktop-file-utils
 
 %description
@@ -44,7 +49,8 @@ cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=/usr
 make
 # << build pre
 
-
+%check
+make test CTEST_OUTPUT_ON_FAILURE=TRUE
 
 # >> build post
 # << build post

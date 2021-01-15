@@ -44,6 +44,8 @@ namespace modules {
         private slots:
             void initTestCase();
             void cleanupTestCase();
+            void contructor_data();
+            void contructor();
             void download_data();
             void download();
             void downloadManagerFailed();
@@ -431,17 +433,35 @@ namespace modules {
 
         // version
 
+        void tst_ManagerRegistry::contructor_data()
+        {
+            QTest::addColumn<bool>("available");
+            QTest::addColumn<int>("version");
+
+            QTest::newRow("true") << true << 11;
+            QTest::newRow("false") << false << 0;
+        }
+
+        void tst_ManagerRegistry::contructor()
+        {
+            QFETCH(bool, available);
+            QFETCH(int, version);
+            setQSettings(version, "cacheRegistryVersion");
+
+            ManagerRegistry managerRegistry;
+            QCOMPARE(managerRegistry.m_newVersionAvailable, available);
+        }
+
         void tst_ManagerRegistry::checkNewVersion_data()
         {
             setQSettings(0);
             setQSettings(0, "cacheRegistryVersion");
 
-            QTest::addColumn<int>("signalHit");
             QTest::addColumn<int>("signalRegistryHit");
 
-            QTest::newRow("check through download file") << 1 << 0;
-            QTest::newRow("check through cache") << 0 << 1;
-            QTest::newRow("check through download file : 2") << 1 << 0;
+            QTest::newRow("check through download file") << 0;
+            QTest::newRow("check through m_registry") << 1;
+            QTest::newRow("check through download file : 2") << 0;
         }
 
         void tst_ManagerRegistry::checkNewVersion()
@@ -450,7 +470,6 @@ namespace modules {
             ManagerRegistry managerRegistry;
             createFileRegistryInfo();
 
-            QFETCH(int, signalHit);
             QFETCH(int, signalRegistryHit);
 
             QSignalSpy spyReadyRead(managerRegistry.m_manager.get(), &DownloadManager::readyRead);
@@ -477,23 +496,17 @@ namespace modules {
 
             managerRegistry.checkNewVesion();
 
-            if (signalHit) {
-                QVERIFY(spyLast.wait());
-                QCOMPARE(QSettings().value("cacheRegistryVersion").toInt(), version);
-            } else {
-                setQSettings(0, "cacheRegistryVersion");
-            }
-            QCOMPARE(spyReadyRead.count(), signalHit);
-            QCOMPARE(spyRegistry.count(), signalHit & signalRegistryHit);
-            QCOMPARE(spyRemoveInfo.count(), signalHit);
-            QCOMPARE(spyGetDocumentSuccess.count(), signalHit);
+            QVERIFY(spyLast.wait());
+            QCOMPARE(QSettings().value("cacheRegistryVersion").toInt(), version);
+            QCOMPARE(spyReadyRead.count(), 1);
+            QCOMPARE(spyRegistry.count(), signalRegistryHit);
+            QCOMPARE(spyRemoveInfo.count(), 1);
+            QCOMPARE(spyGetDocumentSuccess.count(), 1);
             QCOMPARE(spyLast.count(), 1);
 
-            if (!signalHit) {
-                QList<QVariant> arguments = spyLast.takeFirst();
-                QCOMPARE(arguments[0].toBool(), true);
-                QCOMPARE(arguments[1].toInt(), version);
-            }
+            QList<QVariant> arguments = spyLast.takeFirst();
+            QCOMPARE(arguments[0].toBool(), true);
+            QCOMPARE(arguments[1].toInt(), version);
         }
 
         void tst_ManagerRegistry::checkNewVersionDownloadManagerFailed()
@@ -633,14 +646,13 @@ namespace modules {
             QTest::addColumn<QJsonDocument>("document");
             QTest::addColumn<int>("version");
             QTest::addColumn<bool>("available");
-            QTest::addColumn<int>("signalHit");
 
             QTest::newRow("has new version")
-                    << QJsonDocument {QJsonObject { { "version",  100 } }} << 100 << true << 1;
+                    << QJsonDocument {QJsonObject { { "version",  100 } }} << 100 << true;
             QTest::newRow("hasn't new version")
-                    << QJsonDocument {QJsonObject { { "version",  3 } }} << 3 << false << 1;
+                    << QJsonDocument {QJsonObject { { "version",  3 } }} << 3 << false;
             QTest::newRow("error : value is 0")
-                    << QJsonDocument {QJsonObject { { "version",  0 } } } << 0 << false << 0;
+                    << QJsonDocument {QJsonObject { { "version",  0 } } } << 0 << false;
         }
 
         void tst_ManagerRegistry::retrieveDataInfo()
@@ -650,19 +662,16 @@ namespace modules {
             QFETCH(QJsonDocument, document);
             QFETCH(int, version);
             QFETCH(bool, available);
-            QFETCH(int, signalHit);
 
             QSignalSpy spyLast(&managerRegistry, &ManagerRegistry::newRegistryAvailable);
 
             managerRegistry.retrieveDataInfo(document);
 
-            QCOMPARE(spyLast.count(), signalHit);
+            QCOMPARE(spyLast.count(), 1);
 
-            if (signalHit) {
-                QList<QVariant> arguments = spyLast.takeFirst();
-                QCOMPARE(arguments[0].toBool(), available);
-                QCOMPARE(arguments[1].toInt(), version);
-            }
+            QList<QVariant> arguments = spyLast.takeFirst();
+            QCOMPARE(arguments[0].toBool(), available);
+            QCOMPARE(arguments[1].toInt(), version);
         }
 
         void tst_ManagerRegistry::hasNewRegistry_data()

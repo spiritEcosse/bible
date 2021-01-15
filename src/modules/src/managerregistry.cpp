@@ -17,6 +17,7 @@ namespace modules {
           m_modelRegistry { new ModelRegistry {} },
           m_manager { new DownloadManager {} }
     {
+        m_newVersionAvailable = hasNewRegistry(getVersion());
         connect(m_manager.get(), &DownloadManager::failed, m_modelRegistry.get(), &ModelRegistry::getRegistry);
     }
 
@@ -106,19 +107,13 @@ namespace modules {
 
     void ManagerRegistry::checkNewVesion()
     {
-        int version = getVersion();
+        connect(m_modelRegistry.get(), &ModelRegistry::registry, this, &ManagerRegistry::downloadInfo);
+        connect(m_manager.get(), &DownloadManager::readyRead, this, &ManagerRegistry::retrieveVersion);
+        connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::removeInfo);
+        connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::retrieveDataInfo);
+        connect(this, &ManagerRegistry::newRegistryAvailable, &ManagerRegistry::setVersion);
 
-        if (hasNewRegistry(version)) {
-            emit newRegistryAvailable(true, version);
-        } else {
-            connect(m_modelRegistry.get(), &ModelRegistry::registry, this, &ManagerRegistry::downloadInfo);
-            connect(m_manager.get(), &DownloadManager::readyRead, this, &ManagerRegistry::retrieveVersion);
-            connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::removeInfo);
-            connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::retrieveDataInfo);
-            connect(this, &ManagerRegistry::newRegistryAvailable, &ManagerRegistry::setVersion);
-
-            m_registry ? m_manager->append(m_registry->infoUrlToQUrl()) : m_modelRegistry->getRegistry();
-        }
+        m_registry ? m_manager->append(m_registry->infoUrlToQUrl()) : m_modelRegistry->getRegistry();
     }
 
     void ManagerRegistry::downloadInfo(const Registry& registry)
@@ -136,10 +131,7 @@ namespace modules {
     void ManagerRegistry::retrieveDataInfo(const QJsonDocument &document)
     {
         int version = getVersion(document);
-
-        if (version) {
-            emit newRegistryAvailable(hasNewRegistry(version), version);
-        }
+        emit newRegistryAvailable(hasNewRegistry(version), version);
     }
 
     bool ManagerRegistry::hasNewRegistry(int version) const

@@ -29,7 +29,16 @@ set(RESOURCES
 add_library(${PROJECT_NAME} STATIC ${RESOURCES})
 
 find_package(Qt5 COMPONENTS Core Sql Network REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Sql Qt5::Network QuaZip sqlite_orm)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Sql Qt5::Network sqlite_orm)
+
+message("------------------------------------------------------------------------------Quazip---------------------------------------------------------")
+if (${SAILFISH})
+    find_package(QuaZip5)
+    include_directories(${QUAZIP_INCLUDE_DIRS})
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${QUAZIP_LIBRARIES})
+else()
+    target_link_libraries(${PROJECT_NAME} PRIVATE QuaZip)
+endif()
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC

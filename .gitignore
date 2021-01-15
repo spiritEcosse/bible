@@ -2,9 +2,14 @@ db
 **/logs/
 *.log
 shared/
+*build*
 
 *.autosave
 *.user
+*.sqlite
+
+*autogen/*
+CMakeLists.txt.user*
 
 bible.creator.user
 

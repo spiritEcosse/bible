@@ -2,12 +2,20 @@ project(src LANGUAGES CXX)
 
 set(SOURCE main.cpp)
 
-add_executable(${PROJECT_NAME} ${SOURCE})
+find_package (Qt5 COMPONENTS Widgets Core Network Qml Gui Quick REQUIRED)
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set(MACOSX TRUE)
+    FILE(GLOB_RECURSE QML_FILES "${CMAKE_SOURCE_DIR}/*.qml")
+    add_custom_target(qml SOURCES ${QML_FILES})
+endif()
 
 if ( ${SAILFISH} )
-    find_package (Qt5 COMPONENTS Core Network Qml Gui Quick REQUIRED)
     include(FindPkgConfig)
     pkg_search_module(SAILFISH sailfishapp REQUIRED)
+
+    qt5_add_resources(RESOURCES qml/qml.qrc)
+    add_executable(${PROJECT_NAME} ${SOURCE} ${RESOURCES})
 
     target_include_directories(${PROJECT_NAME} PRIVATE
         $<BUILD_INTERFACE:
@@ -15,6 +23,8 @@ if ( ${SAILFISH} )
     >)
     target_link_libraries(${PROJECT_NAME}
         Qt5::Quick
+        Qt5::Widgets
+        Qt5::Qml
         ${SAILFISH_LDFLAGS}
     )
 

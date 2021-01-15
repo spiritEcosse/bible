@@ -22,6 +22,7 @@ namespace modules {
         static void registerMe(const std::string& moduleName);
         virtual QVariant data(const QModelIndex &index = {}, int role = Qt::DisplayRole) const override;
         virtual QHash<int, QByteArray> roleNames() const override;
+        Q_INVOKABLE virtual void downloadRegistry() const;
 
     private:
         friend class tests::tst_ModelGroupModules;

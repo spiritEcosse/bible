@@ -40,7 +40,11 @@ namespace modules {
             {
                 Module module {it->toObject()};
                 GroupModules groupModules(it->toObject());
-                const MGKey mgKey {groupModules.nameToStdString(), groupModules.languageCodeToStdString(), groupModules.regionToStdString()};
+                const MGKey mgKey {
+                    groupModules.nameToStdString(),
+                    groupModules.languageCodeToStdString(),
+                    groupModules.regionToStdString()
+                };
                 if (mGMap.insert({mgKey, groupModules}).second)
                 {
                     groupModules.m_id = id++;
