@@ -22,7 +22,7 @@ namespace modules {
     class ManagerRegistry : public QObject
     {
         Q_OBJECT
-//        Q_PROPERTY(VersesModel* currentVerses READ)
+        Q_PROPERTY(bool newVersionAvailable)
     public:
         ManagerRegistry(QObject *parent = nullptr);
         virtual ~ManagerRegistry() {}
@@ -39,6 +39,7 @@ namespace modules {
         std::unique_ptr<ModelRegistry> m_modelRegistry;
         std::unique_ptr<DownloadManager> m_manager;
         bool m_newVersionAvailable = false;
+        bool newVersionAvailable() const;
 
         QFile registryArchive;
         QFile fileRegistryInfo;

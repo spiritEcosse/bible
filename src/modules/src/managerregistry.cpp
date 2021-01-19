@@ -116,6 +116,11 @@ namespace modules {
         m_registry ? m_manager->append(m_registry->infoUrlToQUrl()) : m_modelRegistry->getRegistry();
     }
 
+    bool ManagerRegistry::newVersionAvailable() const
+    {
+        return m_newVersionAvailable;
+    }
+
     void ManagerRegistry::downloadInfo(const Registry& registry)
     {
         m_registry.reset(new Registry { registry });

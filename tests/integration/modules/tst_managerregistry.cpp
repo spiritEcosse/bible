@@ -438,8 +438,8 @@ namespace modules {
             QTest::addColumn<bool>("available");
             QTest::addColumn<int>("version");
 
-            QTest::newRow("true") << true << 11;
-            QTest::newRow("false") << false << 0;
+            QTest::newRow("available new version is true") << true << 11;
+            QTest::newRow("available new version is false") << false << 0;
         }
 
         void tst_ManagerRegistry::contructor()

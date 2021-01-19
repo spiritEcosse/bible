@@ -8,6 +8,8 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(MACOSX TRUE)
     FILE(GLOB_RECURSE QML_FILES "${CMAKE_SOURCE_DIR}/*.qml")
     add_custom_target(qml SOURCES ${QML_FILES})
+
+    add_executable(${PROJECT_NAME} ${SOURCE})
 endif()
 
 if ( ${SAILFISH} )
@@ -16,6 +18,8 @@ if ( ${SAILFISH} )
 
     qt5_add_resources(RESOURCES qml/qml.qrc)
     add_executable(${PROJECT_NAME} ${SOURCE} ${RESOURCES})
+
+    set_property(SOURCE qrc_qml.cpp PROPERTY SKIP_AUTOGEN ON)
 
     target_include_directories(${PROJECT_NAME} PRIVATE
         $<BUILD_INTERFACE:
