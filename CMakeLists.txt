@@ -12,6 +12,9 @@ if ("${PLATFORM}" MATCHES "sailfishos")
     set ( SAILFISH TRUE )
 endif()
 
+FILE(GLOB_RECURSE QML_FILES "${CMAKE_SOURCE_DIR}/*.qml")
+add_custom_target(qml SOURCES ${QML_FILES})
+
 if ( ${SAILFISH} )
     install(DIRECTORY qml
         DESTINATION share/${PROJECT_NAME}

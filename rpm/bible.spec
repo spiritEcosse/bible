@@ -71,6 +71,10 @@ desktop-file-install --delete-original       \
 
 %files
 %defattr(-,root,root,-)
+/usr/include/sqlite_orm.h
+/usr/lib/cmake/sqlite_orm/SqliteOrmConfig.cmake
+/usr/lib/cmake/sqlite_orm/SqliteOrmConfigVersion.cmake
+/usr/lib/cmake/sqlite_orm/SqliteOrmTargets.cmake
 %{_bindir}
 %{_datadir}/%{name}
 %{_datadir}/%{name}/translations/

@@ -22,7 +22,7 @@ namespace modules {
     class ManagerRegistry : public QObject
     {
         Q_OBJECT
-        Q_PROPERTY(bool newVersionAvailable)
+        Q_PROPERTY(bool newVersionAvailable READ newVersionAvailable)
     public:
         ManagerRegistry(QObject *parent = nullptr);
         virtual ~ManagerRegistry() {}
