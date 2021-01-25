@@ -45,7 +45,7 @@ Short description of my Sailfish OS Application
 
 %build
 # >> build pre
-cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TESTING=off
+cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_TESTING=OFF
 make
 # << build pre
 

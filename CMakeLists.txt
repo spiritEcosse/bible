@@ -26,8 +26,6 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(MACOSX TRUE)
     FILE(GLOB_RECURSE QML_FILES "${CMAKE_SOURCE_DIR}/*.qml")
     add_custom_target(qml SOURCES ${QML_FILES})
-
-#    add_executable(${PROJECT_NAME} ${SOURCE})
 endif()
 
 if ( ${SAILFISH} )
@@ -92,12 +90,12 @@ if ( ${SAILFISH} )
         "${CMAKE_INSTALL_PREFIX}\n${CMAKE_BINARY_DIR}/${PROJECT_NAME}:bin\n")
 endif()
 
-set(CMAKE_AUTOUIC ON)
 include(3rdparty/3rdparty.cmake)
 
+set(CMAKE_AUTOUIC ON)
 add_subdirectory(src)
 
-if (BUILD_TESTING)
-    include(CTest)
+if ( BUILD_TESTING )
+    enable_testing()
     add_subdirectory(tests)
 endif()

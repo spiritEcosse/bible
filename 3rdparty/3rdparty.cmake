@@ -21,7 +21,7 @@ if(EXISTS "${PROJECT_SOURCE_DIR}/.git")
             add_subdirectory(3rdparty/openssl)
         endif()
         execute_process(COMMAND bash -c "sed -e '/add_subdirectory(examples)/ s/^#*/#/' -i 3rdparty/sqlite_orm/CMakeLists.txt"
-                        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+                        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}) # remove sinse with sqlite_orm==1.6
         add_subdirectory(3rdparty/sqlite_orm)
     endif()
 endif()
