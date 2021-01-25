@@ -1,7 +1,7 @@
 [submodule "3rdparty/openssl"]
 	path = 3rdparty/openssl
 	url = https://github.com/janbar/openssl-cmake
-	branch = 1.0.2	
+	branch = 1.0.2
 [submodule "3rdparty/quazip"]
 	path = 3rdparty/quazip
 	url = https://github.com/stachenov/quazip

@@ -1,15 +1,12 @@
-//#ifdef QT_QML_DEBUG
-//#include <QtQuick>
-//#endif
+#include <QtQuick>
+#include <sailfishapp.h>
 
-//#include <sailfishapp.h>
 //#include "booksmodel.h"
 //#include "historymodel.h"
 //#include "commentsmodel.h"
 //#include "modulesmodel.h"
-//#include <QDebug>
 
-int main(int argc, char *argv[])
+Q_DECL_EXPORT int main(int argc, char *argv[])
 {
     // SailfishApp::main() will display "qml/bible.qml", if you need more
     // control over initialization, you can use:
@@ -21,11 +18,11 @@ int main(int argc, char *argv[])
     //
     // To display the view, call "show()" (will show fullscreen on device).
 
-//    QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
-//    QScopedPointer<QQuickView> view(SailfishApp::createView());
+    QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
+    QScopedPointer<QQuickView> view(SailfishApp::createView());
 
-//    QCoreApplication::setOrganizationName("Spirit");
-//    QCoreApplication::setApplicationName("bible");
+    QCoreApplication::setOrganizationName("Spirit");
+    QCoreApplication::setApplicationName("bible");
 
 //    qmlRegisterType<BooksModel>("bible.BooksModel", 1, 0, "BooksModel");
 //    qmlRegisterType<CommentsModel>("bible.CommentsModel", 1, 0, "CommentsModel");
@@ -43,7 +40,7 @@ int main(int argc, char *argv[])
 //    moduleProxyModel.sort(0, Qt::AscendingOrder);
 //    ctxt->setContextProperty("moduleProxyModel", &moduleProxyModel);
 
-//    view->setSource(SailfishApp::pathToMainQml());
-//    view->show();
-//    return app->exec();
+    view->setSource(SailfishApp::pathToMainQml());
+    view->show();
+    return app->exec();
 }
