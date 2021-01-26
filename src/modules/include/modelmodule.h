@@ -18,7 +18,7 @@ namespace modules {
     public:
         ModelModule();
         virtual ~ModelModule();
-
+        static void registerMe(const std::string& moduleName);
         virtual QVariant data(const QModelIndex &index, int role) const override;
         virtual QHash<int, QByteArray> roleNames() const override;
 

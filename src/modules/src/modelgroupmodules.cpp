@@ -1,3 +1,4 @@
+#include <QtQuick>
 #include "modelgroupmodules.h"
 
 namespace modules {
@@ -12,7 +13,7 @@ namespace modules {
 
     void ModelGroupModules::registerMe(const std::string& moduleName)
     {
-    //    qmlRegisterType<ModulesGroupsModel>(moduleName.c_str(), 1, 0, "ModulesGroupsModel");
+        qmlRegisterType<ModelGroupModules>(moduleName.c_str(), 1, 0, "ModelGroupModules");
     }
 
     void ModelGroupModules::downloadRegistry() const

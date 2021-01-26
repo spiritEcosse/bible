@@ -25,7 +25,7 @@ set(SOURCE src/${PROJECT_NAME}.cpp)
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(MACOSX TRUE)
     FILE(GLOB_RECURSE QML_FILES "${CMAKE_SOURCE_DIR}/*.qml")
-    add_custom_target(qml SOURCES ${QML_FILES})
+    add_custom_target(qml SOURCES ${QML_FILES} ${SOURCE})
 endif()
 
 if ( ${SAILFISH} )
@@ -46,6 +46,7 @@ if ( ${SAILFISH} )
         Qt5::Widgets
         Qt5::Qml
         ${SAILFISH_LDFLAGS}
+        modules
     )
 
     install(TARGETS ${PROJECT_NAME}

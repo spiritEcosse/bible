@@ -1,3 +1,4 @@
+#include <QtQuick>
 #include "modelmodule.h"
 
 namespace modules {
@@ -5,6 +6,11 @@ namespace modules {
     ModelModule::ModelModule() {}
 
     ModelModule::~ModelModule() {}
+
+    void ModelModule::registerMe(const std::string& moduleName)
+    {
+        qmlRegisterType<ModelModule>(moduleName.c_str(), 1, 0, "ModelModule");
+    }
 
     QVariant ModelModule::data(const QModelIndex &index, int role) const
     {

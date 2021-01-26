@@ -28,8 +28,8 @@ set(RESOURCES
 
 add_library(${PROJECT_NAME} STATIC ${RESOURCES})
 
-find_package(Qt5 COMPONENTS Core Sql Network REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Sql Qt5::Network sqlite_orm)
+find_package(Qt5 COMPONENTS Core Network REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Quick Qt5::Network sqlite_orm)
 
 message("------------------------------------------------------------------------------Quazip---------------------------------------------------------")
 if (${SAILFISH})
