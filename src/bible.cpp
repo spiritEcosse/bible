@@ -4,8 +4,16 @@
 //#include "booksmodel.h"
 //#include "historymodel.h"
 //#include "commentsmodel.h"
-#include "modelmodule.h"
 #include "modelgroupmodules.h"
+
+void createAppDir() {
+    const QDir writeDirApp = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    if (!writeDirApp.mkpath("."))
+        qFatal("Failed to create writable directory at %s", qPrintable(writeDirApp.absolutePath()));
+
+    writeDirApp.setCurrent(writeDirApp.path());
+    writeDirApp.mkdir("download");
+}
 
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {
@@ -22,11 +30,12 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
     QScopedPointer<QQuickView> view(SailfishApp::createView());
 
-    QCoreApplication::setOrganizationName("Spirit");
+    QCoreApplication::setOrganizationName("spirit");
     QCoreApplication::setApplicationName("bible");
 
-    modules::ModelGroupModules::registerMe("GroupModules");
-    modules::ModelModule::registerMe("Module");
+    createAppDir();
+
+    modules::ModelGroupModules::registerMe();
 //    qmlRegisterType<BooksModel>("bible.BooksModel", 1, 0, "BooksModel");
 //    qmlRegisterType<CommentsModel>("bible.CommentsModel", 1, 0, "CommentsModel");
 //    qmlRegisterType<ModulesModel>("bible.ModulesModel", 1, 0, "ModulesModel");

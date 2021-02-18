@@ -1,10 +1,10 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import bible.BooksModel 1.0
+//import bible.BooksModel 1.0
 
 ExpandingSectionPatch {
     id: expandingSection
-    property BooksModel model
+//    property BooksModel model
     property Page page
     property int depth: 0
 

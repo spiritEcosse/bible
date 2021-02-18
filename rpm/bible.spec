@@ -20,6 +20,7 @@ Requires:   sailfishsilica-qt5 >= 0.10.9
 Requires:   quazip
 Requires:   sqlite
 Requires:   qt5-qttest
+Requires:   sdk-deploy-rpm
 BuildRequires:  pkgconfig(sailfishapp) >= 1.0.2
 BuildRequires:  pkgconfig(Qt5Core)
 BuildRequires:  pkgconfig(Qt5Qml)

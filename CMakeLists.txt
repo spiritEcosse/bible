@@ -28,18 +28,31 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     add_custom_target(qml SOURCES ${QML_FILES} ${SOURCE})
 endif()
 
-if ( ${SAILFISH} )
+include(3rdparty/3rdparty.cmake)
 
+set(QT_5_12_VERSION 5.12.0)
+
+if(Qt5_VERSION VERSION_GREATER_EQUAL QT_5_12_VERSION)
+    find_package (Qt5 COMPONENTS QuickCompiler REQUIRED)
+endif()
+
+if ( ${SAILFISH} )    
     include(FindPkgConfig)
     pkg_search_module(SAILFISH sailfishapp REQUIRED)
 
-    qt5_add_resources(RESOURCES qml/qml.qrc)
+    if(Qt5_VERSION VERSION_GREATER_EQUAL QT_5_12_VERSION)
+        qtquick_compiler_add_resources(RESOURCES qml/qml.qrc)
+    else()
+        qt5_add_resources(RESOURCES qml/qml.qrc)
+    endif()
+
     add_executable(${PROJECT_NAME} ${SOURCE} ${RESOURCES})
     set_property(SOURCE qrc_qml.cpp PROPERTY SKIP_AUTOGEN ON)
 
     target_include_directories(${PROJECT_NAME} PRIVATE
         $<BUILD_INTERFACE:
         ${SAILFISH_INCLUDE_DIRS}
+        ${SQLITE_ORM_INCLUDE_DIR}
     >)
     target_link_libraries(${PROJECT_NAME}
         Qt5::Quick
@@ -47,6 +60,10 @@ if ( ${SAILFISH} )
         Qt5::Qml
         ${SAILFISH_LDFLAGS}
         modules
+        dbmanager
+        core
+        netmanager
+        sqlite_orm
     )
 
     install(TARGETS ${PROJECT_NAME}
@@ -90,8 +107,6 @@ if ( ${SAILFISH} )
     file(WRITE "${CMAKE_BINARY_DIR}/QtCreatorDeployment.txt"
         "${CMAKE_INSTALL_PREFIX}\n${CMAKE_BINARY_DIR}/${PROJECT_NAME}:bin\n")
 endif()
-
-include(3rdparty/3rdparty.cmake)
 
 set(CMAKE_AUTOUIC ON)
 add_subdirectory(src)

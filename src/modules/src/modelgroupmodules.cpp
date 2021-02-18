@@ -11,9 +11,9 @@ namespace modules {
 
     ModelGroupModules::~ModelGroupModules() {}
 
-    void ModelGroupModules::registerMe(const std::string& moduleName)
+    void ModelGroupModules::registerMe()
     {
-        qmlRegisterType<ModelGroupModules>(moduleName.c_str(), 1, 0, "ModelGroupModules");
+        qmlRegisterType<ModelGroupModules>("bible.ModelGroupModules", 1, 0, "ModelGroupModules");
     }
 
     void ModelGroupModules::downloadRegistry() const

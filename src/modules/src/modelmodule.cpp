@@ -7,11 +7,6 @@ namespace modules {
 
     ModelModule::~ModelModule() {}
 
-    void ModelModule::registerMe(const std::string& moduleName)
-    {
-        qmlRegisterType<ModelModule>(moduleName.c_str(), 1, 0, "ModelModule");
-    }
-
     QVariant ModelModule::data(const QModelIndex &index, int role) const
     {
     //    if (!index.isValid() || index.row() > rowCount(index)) {

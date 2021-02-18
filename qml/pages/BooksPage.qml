@@ -1,8 +1,8 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import bible.BooksModel 1.0
-import bible.ModulesModel 1.0
-import bible.HistoryModel 1.0
+//import bible.BooksModel 1.0
+import bible.ModelGroupModules 1.0
+//import bible.HistoryModel 1.0
 
 Pages {
     id: page
@@ -15,28 +15,28 @@ Pages {
     property int chapterIndex
     property int verseIndex
 
-    HistoryModel {
-        id: historyModel
-    }
+//    HistoryModel {
+//        id: historyModel
+//    }
 
-    BooksModel {
-        id: booksOldTestament
+//    BooksModel {
+//        id: booksOldTestament
 
-        Component.onCompleted: {
-            booksOldTestament.oldTestament()
-        }
-    }
+//        Component.onCompleted: {
+//            booksOldTestament.oldTestament()
+//        }
+//    }
 
-    BooksModel {
-        id: booksNewTestament
+//    BooksModel {
+//        id: booksNewTestament
 
-        Component.onCompleted: {
-            booksNewTestament.newTestament()
-        }
-    }
+//        Component.onCompleted: {
+//            booksNewTestament.newTestament()
+//        }
+//    }
 
-    ModulesModel {
-        id: modulesModel
+    ModelGroupModules {
+        id: groupModules
     }
 
     VisualItemModel {
@@ -67,21 +67,21 @@ Pages {
                             historyModel.testamentIndex = currentIndex
                         }
                     }
-                    property int testamentIndex: historyModel.testamentIndex
-                    onTestamentIndexChanged: {
-                        currentIndex = historyModel.testamentIndex
-                    }
+//                    property int testamentIndex: historyModel.testamentIndex
+//                    onTestamentIndexChanged: {
+//                        currentIndex = historyModel.testamentIndex
+//                    }
 
                     ExpandingSectionBooks {
                         title: qsTrId("Old testament")
                         page: page
-                        model: booksOldTestament
+//                        model: booksOldTestament
                     }
 
                     ExpandingSectionBooks {
                         title: qsTrId("New testament")
                         page: page
-                        model: booksNewTestament
+//                        model: booksNewTestament
                         depth: 1
                     }
                 }
@@ -117,6 +117,7 @@ Pages {
         }
 
         SilicaFlickable {
+            id: silicaFlickableSearch
             width: parent.width
             height: parent.height
             contentHeight: columnA.height + Theme.paddingLarge
@@ -183,20 +184,6 @@ Pages {
             anchors.bottomMargin: panel.height
         }
 
-        PushUpMenu {
-            id: pushUpMenu
-
-            MenuItem {
-                text: "Return to Top"
-                onClicked: silicaFlickableBooks.scrollToTop()
-            }
-
-            MenuItem {
-                text: qsTrId("Update modules")
-                onClicked: modulesModel.updateModules()
-            }
-        }
-
         Image {
             width: parent.width
             height: panel.height
@@ -207,7 +194,7 @@ Pages {
         SilicaListView {
             id: panel
             height: Theme.itemSizeMedium
-            model: historyModel
+//            model: historyModel
             snapMode: ListView.SnapToItem
             orientation: listHorizontal
             anchors.bottom: parent.bottom
@@ -281,9 +268,27 @@ Pages {
                 }
             }
         }
+
+        PushUpMenu {
+            id: pushUpMenu
+
+            MenuItem {
+                text: qsTrId("Update modules")
+                visible: slideshow.currentIndex == 1
+                onClicked: {
+                    pushUpMenu.busy = !pushUpMenu.busy
+                    groupModules.downloadRegistry()
+                }
+            }
+
+            MenuItem {
+                text: qsTrId("Some action")
+                visible: slideshow.currentIndex == 0
+            }
+        }
     }
 
     Component.onCompleted: {
-        expandingSectionGroup.currentIndex = historyModel.testamentIndex;
+//        expandingSectionGroup.currentIndex = historyModel.testamentIndex;
     }
 }

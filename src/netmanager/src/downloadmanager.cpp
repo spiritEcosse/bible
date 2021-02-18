@@ -83,7 +83,6 @@ void DownloadManager::startNextDownload()
 
     // prepare the output
     qInfo() << QString("Downloading %1...").arg(url.toEncoded().constData());
-    printf("Downloading %s...\n", url.toEncoded().constData());
     downloadTimer.start();
 }
 

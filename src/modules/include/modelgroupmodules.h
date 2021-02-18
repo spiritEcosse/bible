@@ -19,7 +19,7 @@ namespace modules {
     public:
         ModelGroupModules();
         virtual ~ModelGroupModules();
-        static void registerMe(const std::string& moduleName);
+        static void registerMe();
         virtual QVariant data(const QModelIndex &index = {}, int role = Qt::DisplayRole) const override;
         virtual QHash<int, QByteArray> roleNames() const override;
         Q_INVOKABLE virtual void downloadRegistry() const;
