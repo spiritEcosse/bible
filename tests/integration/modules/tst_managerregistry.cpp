@@ -44,8 +44,6 @@ namespace modules {
         private slots:
             void initTestCase();
             void cleanupTestCase();
-            void contructor_data();
-            void contructor();
             void download_data();
             void download();
             void downloadManagerFailed();
@@ -432,25 +430,6 @@ namespace modules {
         }
 
         // version
-
-        void tst_ManagerRegistry::contructor_data()
-        {
-            QTest::addColumn<bool>("available");
-            QTest::addColumn<int>("version");
-
-            QTest::newRow("available new version is true") << true << 11;
-            QTest::newRow("available new version is false") << false << 0;
-        }
-
-        void tst_ManagerRegistry::contructor()
-        {
-            QFETCH(bool, available);
-            QFETCH(int, version);
-            setQSettings(version, "cacheRegistryVersion");
-
-            ManagerRegistry managerRegistry;
-            QCOMPARE(managerRegistry.m_newVersionAvailable, available);
-        }
 
         void tst_ManagerRegistry::checkNewVersion_data()
         {

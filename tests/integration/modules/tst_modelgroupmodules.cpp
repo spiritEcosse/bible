@@ -21,6 +21,7 @@ namespace modules {
             const QFile fileRegistryInfo { "registry_info.json" };
             QDir dir;
             QJsonDocument helperGetInvalidDocument() const;
+            void setQSettings(int value = 0, QString key = "registryVersion");
 
         public:
             tst_ModelGroupModules();
@@ -34,6 +35,10 @@ namespace modules {
         private slots:
             void initTestCase();
             void cleanupTestCase();
+            void contructor_data();
+            void contructor();
+            void newVersionAvailable();
+            void updateCompleted();
             void update();
             void downloadRegistry_data();
             void downloadRegistry();
@@ -58,6 +63,13 @@ namespace modules {
         }
 
         //helpers
+
+        void tst_ModelGroupModules::setQSettings(int value, QString key)
+        {
+            QSettings settings;
+            settings.setValue(key, value);
+        }
+
         std::vector<GroupModules> tst_ModelGroupModules::helperGetObjects() const
         {
             return std::vector<GroupModules> {vectorSize, {"en", "name", "region"}};
@@ -76,6 +88,37 @@ namespace modules {
         }
 
         // tests
+        void tst_ModelGroupModules::contructor_data()
+        {
+            QTest::addColumn<bool>("available");
+            QTest::addColumn<int>("version");
+
+            QTest::newRow("available new version is true") << true << 11;
+            QTest::newRow("available new version is false") << false << 0;
+        }
+
+        void tst_ModelGroupModules::contructor()
+        {
+            QFETCH(bool, available);
+            QFETCH(int, version);
+            setQSettings(version, "cacheRegistryVersion");
+
+            ModelGroupModules modelGroupModules;
+            QCOMPARE(modelGroupModules.m_newVersionAvailable, available);
+        }
+
+        void tst_ModelGroupModules::newVersionAvailable()
+        {
+            ModelGroupModules model;
+            QCOMPARE(model.newVersionAvailable(), false);
+        }
+
+        void tst_ModelGroupModules::updateCompleted()
+        {
+            ModelGroupModules model;
+            QCOMPARE(model.updateCompleted(), false);
+        }
+
         void tst_ModelGroupModules::update()
         {
             ModelGroupModules model;
@@ -120,6 +163,8 @@ namespace modules {
         {
             ModelGroupModules modelGroupModules;
             QSignalSpy spy(&modelGroupModules, &ModelGroupModules::updateDone);
+            QSignalSpy spyChangeNewVersionAvailable(&modelGroupModules, &ModelGroupModules::changeNewVersionAvailable);
+            QSignalSpy spyChangeUpdateCompleted(&modelGroupModules, &ModelGroupModules::changeUpdateCompleted);
 
             modelGroupModules.m_managerGroup->m_managerRegistry->m_registry.reset(
                         new Registry {
@@ -128,9 +173,12 @@ namespace modules {
                         });
 
             modelGroupModules.downloadRegistry();
-
+            QCOMPARE(modelGroupModules.m_newVersionAvailable, false);
             QVERIFY(spy.wait());
             QCOMPARE(spy.count(), 1);
+            QCOMPARE(modelGroupModules.m_updateCompleted, true);
+            QCOMPARE(spyChangeUpdateCompleted.count(), 1);
+            QCOMPARE(spyChangeNewVersionAvailable.count(), 1);
         }
 
     }
