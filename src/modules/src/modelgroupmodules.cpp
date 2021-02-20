@@ -1,12 +1,17 @@
 #include <QtQuick>
 #include "modelgroupmodules.h"
+#include <QDebug>
+
 
 namespace modules {
 
     ModelGroupModules::ModelGroupModules()
         : m_managerGroup { new ManagerGroup {} }
     {
+        m_newVersionAvailable = true;
+//        m_newVersionAvailable = m_managerGroup->m_managerRegistry->hasNewRegistry();
         connect(m_managerGroup.get(), &ManagerGroup::makeGroupModulesSuccess, this, &ModelGroupModules::update);
+        connect(this, &ModelGroupModules::updateDone, this, &ModelGroupModules::setUpdateCompleted);
     }
 
     ModelGroupModules::~ModelGroupModules() {}
@@ -16,9 +21,27 @@ namespace modules {
         qmlRegisterType<ModelGroupModules>("bible.ModelGroupModules", 1, 0, "ModelGroupModules");
     }
 
-    void ModelGroupModules::downloadRegistry() const
+    bool ModelGroupModules::newVersionAvailable() const
     {
-        m_managerGroup->downloadRegistry();
+        return m_newVersionAvailable;
+    }
+
+    bool ModelGroupModules::updateCompleted() const
+    {
+        return m_updateCompleted;
+    }
+
+    void ModelGroupModules::setUpdateCompleted()
+    {
+        m_updateCompleted = true;
+        emit changeUpdateCompleted();
+    }
+
+    void ModelGroupModules::downloadRegistry()
+    {
+        QTimer::singleShot(0, m_managerGroup.get(), &ManagerGroup::downloadRegistry);
+        m_newVersionAvailable = false;
+        emit changeNewVersionAvailable();
     }
 	
     QVariant ModelGroupModules

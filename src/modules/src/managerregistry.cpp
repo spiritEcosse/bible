@@ -17,7 +17,6 @@ namespace modules {
           m_modelRegistry { new ModelRegistry {} },
           m_manager { new DownloadManager {} }
     {
-        m_newVersionAvailable = hasNewRegistry(getVersion());
         connect(m_manager.get(), &DownloadManager::failed, m_modelRegistry.get(), &ModelRegistry::getRegistry);
     }
 
@@ -116,11 +115,6 @@ namespace modules {
         m_registry ? m_manager->append(m_registry->infoUrlToQUrl()) : m_modelRegistry->getRegistry();
     }
 
-    bool ManagerRegistry::newVersionAvailable() const
-    {
-        return m_newVersionAvailable;
-    }
-
     void ManagerRegistry::downloadInfo(const Registry& registry)
     {
         m_registry.reset(new Registry { registry });
@@ -142,6 +136,11 @@ namespace modules {
     bool ManagerRegistry::hasNewRegistry(int version) const
     {
         return QSettings().value("registryVersion").toInt() < version;
+    }
+
+    bool ManagerRegistry::hasNewRegistry() const
+    {
+        return QSettings().value("registryVersion").toInt() < getVersion();
     }
 
     int ManagerRegistry::getVersion(const QJsonDocument &document) const

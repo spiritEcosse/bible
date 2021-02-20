@@ -57,6 +57,7 @@ namespace modules {
     private:
         friend class tests::tst_ManagerGroup;
         friend class tests::tst_ModelGroupModules;
+        friend class ModelGroupModules;
 
         std::unique_ptr<ManagerRegistry> m_managerRegistry;
         std::unique_ptr<ModelModule> m_modelModule;

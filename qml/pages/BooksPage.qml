@@ -273,10 +273,16 @@ Pages {
             id: pushUpMenu
 
             MenuItem {
+                id: updateModules
                 text: qsTrId("Update modules")
                 visible: slideshow.currentIndex == 1
+                enabled: groupModules.newVersionAvailable
+                property bool updateСompleted: groupModules.updateCompleted
+                onUpdateСompletedChanged : {
+                    pushUpMenu.busy = false
+                }
                 onClicked: {
-                    pushUpMenu.busy = !pushUpMenu.busy
+                    pushUpMenu.busy = true
                     groupModules.downloadRegistry()
                 }
             }

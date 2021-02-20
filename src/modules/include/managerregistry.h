@@ -22,7 +22,6 @@ namespace modules {
     class ManagerRegistry : public QObject
     {
         Q_OBJECT
-        Q_PROPERTY(bool newVersionAvailable READ newVersionAvailable)
     public:
         ManagerRegistry(QObject *parent = nullptr);
         virtual ~ManagerRegistry() {}
@@ -35,17 +34,17 @@ namespace modules {
         friend class tests::tst_ManagerRegistry;
         friend class tests::tst_ManagerGroup;
         friend class tests::tst_ModelGroupModules;
+        friend class ModelGroupModules;
 
         std::unique_ptr<ModelRegistry> m_modelRegistry;
         std::unique_ptr<DownloadManager> m_manager;
-        bool m_newVersionAvailable = false;
-        bool newVersionAvailable() const;
 
         QFile registryArchive;
         QFile fileRegistryInfo;
         QFile fileRegistry { "download/registry.json" };
         std::unique_ptr<Registry> m_registry;
         virtual bool hasNewRegistry(int version) const;
+        virtual bool hasNewRegistry() const;
         virtual int getVersion(const QJsonDocument& document) const;
         virtual int getVersion() const;
         virtual void getDocument(QFile& file);
