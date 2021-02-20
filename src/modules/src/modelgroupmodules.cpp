@@ -8,8 +8,7 @@ namespace modules {
     ModelGroupModules::ModelGroupModules()
         : m_managerGroup { new ManagerGroup {} }
     {
-        m_newVersionAvailable = true;
-//        m_newVersionAvailable = m_managerGroup->m_managerRegistry->hasNewRegistry();
+        m_newVersionAvailable = m_managerGroup->m_managerRegistry->hasNewRegistry();
         connect(m_managerGroup.get(), &ManagerGroup::makeGroupModulesSuccess, this, &ModelGroupModules::update);
         connect(this, &ModelGroupModules::updateDone, this, &ModelGroupModules::setUpdateCompleted);
     }
