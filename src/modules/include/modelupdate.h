@@ -22,7 +22,6 @@ namespace modules {
         void update(const std::vector<T>& container);
         virtual int rowCount(const QModelIndex& parent = {}) const override;
 
-    protected:
         std::vector<T> m_objects;
         std::shared_ptr<db::Db<T>> m_db;
     };

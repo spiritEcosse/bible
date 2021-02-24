@@ -2,24 +2,20 @@
 #include "modelgroupmodules.h"
 #include "groupmodules.h"
 #include <JlCompress.h>
+#include "basetest.h"
 
 namespace modules {
 
     namespace tests {
 
-        class tst_ModelGroupModules : public QObject {
+        class tst_ModelGroupModules :  public ::tests::BaseTest<GroupModules, ModelGroupModules> {
             Q_OBJECT
 
         private:
-            const size_t vectorSize = 3;
-            std::shared_ptr<db::Db<GroupModules>> m_db;
-            const QString pathFiles { "files" };
-            const QString dirDownload = "download";
             const QString strUrl { "file://" };
             QFile fileRegistry { "registry.json" };
             const QFile fileRegistryArchive { "registry.zip" };
             const QFile fileRegistryInfo { "registry_info.json" };
-            QDir dir;
             QJsonDocument helperGetInvalidDocument() const;
             void setQSettings(int value = 0, QString key = "registryVersion");
 
@@ -28,38 +24,32 @@ namespace modules {
             ~tst_ModelGroupModules();
 
         private:
-            std::vector<GroupModules> helperSave() const;
-            std::vector<GroupModules> helperGetObjects() const;
-            void cleanTable();
+            std::vector<GroupModules> helperGetObjects() const override;
 
         private slots:
-            void initTestCase();
-            void cleanupTestCase();
+            void initTestCase() override;
+            void cleanupTestCase() override;
+            void update() override;
             void contructor_data();
             void contructor();
             void newVersionAvailable();
             void updateCompleted();
-            void update();
             void downloadRegistry_data();
             void downloadRegistry();
         };
 
-        tst_ModelGroupModules::tst_ModelGroupModules()
-            : m_db { db::Db<GroupModules>::getInstance() }{}
+        tst_ModelGroupModules::tst_ModelGroupModules() {}
 
         tst_ModelGroupModules::~tst_ModelGroupModules() {}
 
         void tst_ModelGroupModules::initTestCase()
         {
-            // Will be called before the first test function is executed.
-            dir.mkdir(pathFiles);
-            dir.setCurrent(pathFiles);
-            dir.mkdir(dirDownload);
+            ::tests::BaseTest<GroupModules, ModelGroupModules>::initTestCase();
         }
 
         void tst_ModelGroupModules::cleanupTestCase()
         {
-            dir.rmdir(dirDownload);
+            ::tests::BaseTest<GroupModules, ModelGroupModules>::cleanupTestCase();
         }
 
         //helpers
@@ -73,18 +63,6 @@ namespace modules {
         std::vector<GroupModules> tst_ModelGroupModules::helperGetObjects() const
         {
             return std::vector<GroupModules> {vectorSize, {"en", "name", "region"}};
-        }
-
-        std::vector<GroupModules> tst_ModelGroupModules::helperSave() const
-        {
-            const std::vector<GroupModules>& entries = helperGetObjects();
-            m_db->save(entries.begin(), entries.end());
-            return entries;
-        }
-
-        void tst_ModelGroupModules::cleanTable()
-        {
-            m_db->removeAll();
         }
 
         // tests
@@ -121,16 +99,7 @@ namespace modules {
 
         void tst_ModelGroupModules::update()
         {
-            ModelGroupModules model;
-            QSignalSpy spyLast(&model, &ModelGroupModules::updateDone);
-
-            const std::vector<GroupModules>& objects = helperGetObjects();
-            model.update(objects);
-
-            QCOMPARE(spyLast.count(), 1);
-            QCOMPARE(m_db->count(), static_cast<int>(vectorSize));
-            QCOMPARE(model.m_objects.size(), objects.size());
-            QCOMPARE(model.m_objects, objects);
+            ::tests::BaseTest<GroupModules, ModelGroupModules>::update();
         }
 
         void tst_ModelGroupModules::downloadRegistry_data() {
