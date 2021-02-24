@@ -14,8 +14,6 @@ namespace tests {
     template <class T, class O>
     void BaseTest<T, O>::initTestCase()
     {
-        qDebug() << "initTestCase";
-
         // Will be called before the first test function is executed.
         dir.mkdir(pathFiles);
         dir.setCurrent(pathFiles);

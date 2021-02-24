@@ -39,7 +39,23 @@ namespace modules {
         //helpers
         std::vector<Module> tst_ModelModule::helperGetObjects() const
         {
-            return std::vector<Module> {vectorSize, {"name", "des", "abb"}};
+            return std::vector<Module> {
+                vectorSize,
+                {
+                    "name",
+                    "description",
+                    "abbreviation",
+                    0,
+                    102400,
+                    "en",
+                    "information",
+                    "comment",
+                    "copyright",
+                    QDate(2017, 03, 31),
+                    true,
+                    false
+                }
+            };
         }
 
         // tests

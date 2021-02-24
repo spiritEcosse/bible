@@ -61,14 +61,15 @@ namespace db {
                         make_column("name", &Module::m_name),
                         make_column("description", &Module::m_description),
                         make_column("abbreviation", &Module::m_abbreviation),
-//                        make_column("size", &Module::m_size),
-//                        make_column("information", &Module::m_information),
-//                        make_column("comment", &Module::m_comment),
-//                        make_column("copyright", &Module::m_copyright),
-                        make_column("update", &Module::m_update)
-//                        make_column("hidden", &Module::m_hidden),
-//                        make_column("default_download", &Module::m_defaultDownload),
-//                        make_column("language_show", &Module::m_languageShow)
+                        make_column("group_modules_id", &Module::m_idGroupModules),
+                        make_column("size", &Module::m_size),
+                        make_column("language_show", &Module::m_languageShow),
+                        make_column("information", &Module::m_information),
+                        make_column("comment", &Module::m_comment),
+                        make_column("copyright", &Module::m_copyright),
+                        make_column("update", &Module::m_update),
+                        make_column("hidden", &Module::m_hidden),
+                        make_column("default_download", &Module::m_defaultDownload)
                         ));
     }
 
@@ -94,14 +95,15 @@ namespace db {
         Column<Module, decltype(Module::m_name)>,
         Column<Module, decltype(Module::m_description)>,
         Column<Module, decltype(Module::m_abbreviation)>,
-//        Column<Module, decltype(Module::m_size)>,
-//        Column<Module, decltype(Module::m_information)>,
-//        Column<Module, decltype(Module::m_comment)>,
-//        Column<Module, decltype(Module::m_copyright)>,
-        Column<Module, decltype(Module::m_update)>
-//        Column<Module, decltype(Module::m_hidden)>,
-//        Column<Module, decltype(Module::m_defaultDownload)>,
-//        Column<Module, decltype(Module::m_languageShow)>
+        Column<Module, decltype(Module::m_idGroupModules)>,
+        Column<Module, decltype(Module::m_size)>,
+        Column<Module, decltype(Module::m_languageShow)>,
+        Column<Module, decltype(Module::m_information)>,
+        Column<Module, decltype(Module::m_comment)>,
+        Column<Module, decltype(Module::m_copyright)>,
+        Column<Module, decltype(Module::m_update)>,
+        Column<Module, decltype(Module::m_hidden)>,
+        Column<Module, decltype(Module::m_defaultDownload)>
     >>;
 
     static_assert(std::is_same<Storage, decltype(userStorage(""))>::value, "");
