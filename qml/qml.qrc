@@ -1,6 +1,5 @@
-<!DOCTYPE RCC>
-<RCC version="1.0">
-    <qresource prefix="⁄">
+<RCC>
+    <qresource prefix="/⁄">
         <file>bible.qml</file>
         <file>cover/CoverPage.qml</file>
         <file>pages/BooksPage.qml</file>
@@ -12,7 +11,7 @@
         <file>pages/FlippingPageHeader.qml</file>
         <file>pages/History.qml</file>
         <file>pages/ModuleInformation.qml</file>
-        <file>pages/Modules.qml</file>
+        <file>pages/SilicaFlickableModules.qml</file>
         <file>pages/PageEdgeTransition.qml</file>
         <file>pages/Pages.qml</file>
         <file>pages/VersesListView.qml</file>

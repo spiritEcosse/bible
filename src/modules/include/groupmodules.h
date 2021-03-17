@@ -17,17 +17,19 @@ namespace modules {
     class GroupModules
     {
     public:
-        GroupModules() = default;
+        GroupModules();
         GroupModules(const QJsonObject& qJsonModule);
-        GroupModules(const QString& language, const QString& name, const QString& region = "");
+        GroupModules(const QString& language, const QString& name, const QString& region);
+        ~GroupModules();
         QString nativeLanguageName() const;
         QString languageName() const;
         QLocale language() const;
         QString region() const;
         std::string regionToStdString() const;
         QString languageCode() const;
+        QString titleGroup() const;
         std::string languageCodeToStdString() const;
-        QString name();
+        QString name() const;
         uint modulesCount();
         std::string nameToStdString();
         static QString parseName(const QString& name);

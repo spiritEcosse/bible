@@ -36,6 +36,8 @@ namespace modules {
             void updateCompleted();
             void downloadRegistry_data();
             void downloadRegistry();
+            void updateObjects_data();
+            void updateObjects();
         };
 
         tst_ModelGroupModules::tst_ModelGroupModules() {}
@@ -135,11 +137,11 @@ namespace modules {
             QSignalSpy spyChangeNewVersionAvailable(&modelGroupModules, &ModelGroupModules::changeNewVersionAvailable);
             QSignalSpy spyChangeUpdateCompleted(&modelGroupModules, &ModelGroupModules::changeUpdateCompleted);
 
-            modelGroupModules.m_managerGroup->m_managerRegistry->m_registry.reset(
-                        new Registry {
-                            QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
-                            QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
-                        });
+//            modelGroupModules.m_managerGroup->m_managerRegistry->m_registry.reset(
+//                        new Registry {
+//                            QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
+//                            QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
+//                        });
 
             modelGroupModules.downloadRegistry();
             QCOMPARE(modelGroupModules.m_newVersionAvailable, false);
@@ -148,8 +150,22 @@ namespace modules {
             QCOMPARE(modelGroupModules.m_updateCompleted, true);
             QCOMPARE(spyChangeUpdateCompleted.count(), 1);
             QCOMPARE(spyChangeNewVersionAvailable.count(), 1);
+//            QCOMPARE(modelGroupModules.m_objects.size(), static_cast<size_t>(1));
         }
 
+        void tst_ModelGroupModules::updateObjects_data()
+        {
+            cleanTable();
+            helperSave();
+        }
+
+        void tst_ModelGroupModules::updateObjects()
+        {
+            ModelGroupModules modelGroupModules;
+            modelGroupModules.updateObjects();
+//            QCOMPARE(modelGroupModules.m_objects.size(), vectorSize);
+//            QCOMPARE(modelGroupModules.m_objects, helperGetObjects());
+        }
     }
 
 }

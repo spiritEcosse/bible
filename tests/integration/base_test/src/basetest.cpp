@@ -18,6 +18,7 @@ namespace tests {
         dir.mkdir(pathFiles);
         dir.setCurrent(pathFiles);
         dir.mkdir(dirDownload);
+//        cleanTable();
     }
 
     template <class T, class O>
@@ -58,8 +59,6 @@ namespace tests {
 
         QCOMPARE(spyLast.count(), 1);
         QCOMPARE(m_db->count(), static_cast<int>(vectorSize));
-        QCOMPARE(model.m_objects.size(), objects.size());
-        QCOMPARE(model.m_objects, objects);
     }
 
     template class BaseTest<modules::Module, modules::ModelModule>;

@@ -26,7 +26,8 @@ namespace core {
         if (language() == QLocale::C)
         {
             int in = languages.value(m_language, -1);
-            if (in != -1) {
+            if (in != -1)
+            {
                 name = languagesNames[in];
             }
         }
@@ -45,9 +46,7 @@ namespace core {
         if (language() == QLocale::C)
         {
             int in = languages.value(m_language, -1);
-            if (in != -1) {
-                name = nativeLanguagesNames[in];
-            }
+            name = in != -1 ? nativeLanguagesNames[in] : "";
         }
         else
         {

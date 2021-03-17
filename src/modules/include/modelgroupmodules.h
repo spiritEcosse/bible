@@ -19,14 +19,20 @@ namespace modules {
         Q_PROPERTY(bool newVersionAvailable READ newVersionAvailable NOTIFY changeNewVersionAvailable)
         Q_PROPERTY(bool updateCompleted READ updateCompleted NOTIFY changeUpdateCompleted)
     public:
+        enum GroupModulesRoles {
+            TitleRole = 0
+        };
         ModelGroupModules();
         virtual ~ModelGroupModules();
         static void registerMe();
         virtual QVariant data(const QModelIndex &index = {}, int role = Qt::DisplayRole) const override;
         virtual QHash<int, QByteArray> roleNames() const override;
         Q_INVOKABLE virtual void downloadRegistry();
-
+    protected:
+        Q_INVOKABLE bool canFetchMorePatch() const;
+        Q_INVOKABLE void fetchMorePatch();
     private:
+        int itemsToFetch = 50;
         friend class tests::tst_ModelGroupModules;
         bool newVersionAvailable() const;
         bool updateCompleted() const;
@@ -38,6 +44,7 @@ namespace modules {
         void changeUpdateCompleted();
     private slots:
         void setUpdateCompleted();
+        void updateObjects();
     };
 
 }

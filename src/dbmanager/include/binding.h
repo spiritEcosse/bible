@@ -29,24 +29,24 @@ namespace db {
         return std::make_unique<QDate>(QDate::fromString(QString::fromStdString(str)));
     }
 
-    // LocalLanguage to std::string
+    // LocalLanguage to char*
 
-    inline std::string LocalLanguageToString(const core::LocalLanguage& language) {
-        return language.code().toStdString();
+    inline char* LocalLanguageToChar(const core::LocalLanguage& language) {
+        return language.code().toLocal8Bit().data();
     }
 
-    inline std::unique_ptr<core::LocalLanguage> LocalLanguageFromString(const std::string& str) {
-        return std::make_unique<core::LocalLanguage>(QString::fromStdString(str));
+    inline std::unique_ptr<core::LocalLanguage> LocalLanguageFromChar(const char* c) {
+        return std::make_unique<core::LocalLanguage>(c);
     }
 
-    // QString to std::string
+    // QString to char*
 
-    inline std::string QStringToString(const QString& value) {
-        return value.toStdString();
+    inline char* QStringToChar(const QString& value) {
+        return value.toLocal8Bit().data();
     }
 
-    inline std::unique_ptr<QString> QStringFromString(const std::string& str) {
-        return std::make_unique<QString>(QString::fromStdString(str));
+    inline std::unique_ptr<QString> QStringFromChar(const char* c) {
+        return std::make_unique<QString>(c);
     }
 
 }
@@ -61,7 +61,6 @@ namespace sqlite_orm {
     struct statement_binder<QByteArray> {
         int bind(sqlite3_stmt *stmt, int index, const QByteArray &value) {
             return statement_binder<const char*>().bind(stmt, index, db::QByteArrayToChar(value));
-//            return sqlite3_bind_text(stmt, index++, QByteArrayToChar(value).c_str(), -1, SQLITE_TRANSIENT);
         }
     };
 
@@ -129,21 +128,21 @@ namespace sqlite_orm {
     template<>
     struct statement_binder<core::LocalLanguage> {
         int bind(sqlite3_stmt *stmt, int index, const core::LocalLanguage& value) {
-            return statement_binder<std::string>().bind(stmt, index, db::LocalLanguageToString(value));
+            return statement_binder<std::string>().bind(stmt, index, db::LocalLanguageToChar(value));
         }
     };
 
     template<>
     struct field_printer<core::LocalLanguage> {
         std::string operator()(const core::LocalLanguage& value) const {
-            return db::LocalLanguageToString(value);
+            return db::LocalLanguageToChar(value);
         }
     };
 
     template<>
     struct row_extractor<core::LocalLanguage> {
-        core::LocalLanguage extract(const std::string& row_value) {
-            if(auto value = db::LocalLanguageFromString(row_value)) {
+        core::LocalLanguage extract(const char* row_value) {
+            if(auto value = db::LocalLanguageFromChar(row_value)) {
                 return std::move(*value);
             } else {
                 throw std::runtime_error("incorrect LocalLanguage value (" + std::string(row_value) + ")");
@@ -152,7 +151,7 @@ namespace sqlite_orm {
 
         core::LocalLanguage extract(sqlite3_stmt *stmt, int columnIndex) {
             auto str = sqlite3_column_text(stmt, columnIndex);
-            return this->extract((const std::string&)str);
+            return this->extract((const char*)str);
         }
     };
 
@@ -163,21 +162,21 @@ namespace sqlite_orm {
     template<>
     struct statement_binder<QString> {
         int bind(sqlite3_stmt *stmt, int index, const QString& value) {
-            return statement_binder<std::string>().bind(stmt, index, db::QStringToString(value));
+            return statement_binder<std::string>().bind(stmt, index, db::QStringToChar(value));
         }
     };
 
     template<>
     struct field_printer<QString> {
         std::string operator()(const QString& value) const {
-            return db::QStringToString(value);
+            return db::QStringToChar(value);
         }
     };
 
     template<>
     struct row_extractor<QString> {
-        QString extract(const std::string& row_value) {
-            if(auto value = db::QStringFromString(row_value)) {
+        QString extract(const char* row_value) {
+            if(auto value = db::QStringFromChar(row_value)) {
                 return std::move(*value);
             } else {
                 throw std::runtime_error("incorrect QString value (" + std::string(row_value) + ")");
@@ -186,7 +185,7 @@ namespace sqlite_orm {
 
         QString extract(sqlite3_stmt *stmt, int columnIndex) {
             auto str = sqlite3_column_text(stmt, columnIndex);
-            return this->extract((const std::string&)str);
+            return this->extract((const char*)str);
         }
     };
 

@@ -97,9 +97,7 @@ Pages {
 
                     Label {
                         width: parent.width
-                        text: "<p>Святая Библия, Новый Русский Перевод<br/>
-                        © Biblica, Inc.®, 2006, 2010, 2012, 2014<br/>
-                        Используется с разрешения. Все права защищены по всему миру.</p>"
+                        text: "<p>Святая Библия, Новый Русский Перевод<br/> © Biblica, Inc.®, 2006, 2010, 2012, 2014<br/> Используется с разрешения. Все права защищены по всему миру.</p>"
                         font.pixelSize: Theme.fontSizeSmall
                         wrapMode: Text.WordWrap
                         truncationMode: TruncationMode.Fade
@@ -108,13 +106,7 @@ Pages {
             }
         }
 
-        SilicaFlickable {
-            id: silicaFlickableModules
-            width: parent.width
-            contentHeight: columnBooks.height
-            height: parent.height
-            VerticalScrollDecorator {}
-        }
+        SilicaFlickableModules {}
 
         SilicaFlickable {
             id: silicaFlickableSearch

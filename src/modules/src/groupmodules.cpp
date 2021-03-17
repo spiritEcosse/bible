@@ -12,6 +12,8 @@
 
 namespace modules {
 
+    GroupModules::GroupModules() {}
+
     GroupModules::GroupModules(const QJsonObject& qJsonModule)
         : m_language { qJsonModule.value("lng").toString() }
     {
@@ -28,6 +30,11 @@ namespace modules {
           m_region { std::move(region) }
     {}
 
+    GroupModules::~GroupModules()
+    {
+
+    }
+
     QString GroupModules::nativeLanguageName() const
     {
         return m_language.nativeLanguageName();
@@ -38,10 +45,27 @@ namespace modules {
         return m_language.languageInString();
     }
 
-    QLocale GroupModules::language() const
+    QString GroupModules::titleGroup() const
     {
-        return m_language;
+        QString title;
+        if ( m_region.isEmpty() )
+        {
+            QString nativeLanguage = nativeLanguageName();
+            QString language = languageName();
+            title += (language.isEmpty() ? languageCode() : language) + (nativeLanguage.isEmpty() ? "" : " (" + nativeLanguage + ")");
+        } else
+        {
+            title += m_region;
+        }
+        title += title.isEmpty() ? "" : " - ";
+        title += m_name;
+        return title;
     }
+
+//    QLocale GroupModules::language() const
+//    {
+//        return m_language;
+//    }
 
     QString GroupModules::region() const
     {
@@ -63,7 +87,7 @@ namespace modules {
         return languageCode().toStdString();
     }
 
-    QString GroupModules::name()
+    QString GroupModules::name() const
     {
         return m_name;
     }
