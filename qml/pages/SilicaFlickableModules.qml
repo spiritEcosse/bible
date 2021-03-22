@@ -5,19 +5,13 @@ import Sailfish.Silica 1.0
 SilicaFlickable {
     id: silicaFlickableModules
     width: parent.width
-    contentHeight: columnModules.height
     height: parent.height
     clip: true
-    VerticalScrollDecorator {}
-
-    onContentYChanged: {
-        if (columnModules.height <= contentY + height + 1000 && groupModules.canFetchMorePatch())
-            groupModules.fetchMorePatch()
-    }
 
     Column {
         id: columnModules
         width: parent.width
+        height: parent.height
 
         PageHeader {
             id: pageHeaderModules
@@ -26,13 +20,17 @@ SilicaFlickable {
 
         ExpandingSectionGroupPatch {
             id: expandingSectionGroupModules
+            height: parent.height - pageHeaderModules.height
 
-            Repeater {
+            SilicaListView {
                 model: groupModules
+                width: parent.width
+                height: parent.height
+                clip: true
+                VerticalScrollDecorator {}
 
-                ExpandingSectionPatch {
-                    id: expandingSectionBooks
-                    title: titleGroup
+                delegate: ExpandingSectionPatch {
+                    title: model.titleGroup
                 }
             }
         }

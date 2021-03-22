@@ -8,7 +8,6 @@ ExpandingSection {
         if (currentIndexParent == -1) {
             _group.currentIndex = -1;
         } else {
-//            console.log("onCurrentIndexParentChanged", expanded, title, _group.parentGroup.currentSection.title)
             expanded = false;
         }
     }

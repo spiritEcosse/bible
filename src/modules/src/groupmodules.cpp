@@ -131,7 +131,7 @@ namespace modules {
     #ifndef QT_NO_DEBUG_STREAM
     QDebug operator<<(QDebug debug, const GroupModules& groupModules)
     {
-        return debug << groupModules.m_language << groupModules.m_name << groupModules.m_region;
+        return debug << groupModules.m_language << groupModules.m_name << groupModules.m_region << groupModules.m_id;
     }
     #endif
 

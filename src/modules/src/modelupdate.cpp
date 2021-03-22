@@ -9,9 +9,9 @@ namespace modules {
     }
 
     template <class T>
-    int ModelUpdate<T>::rowCount(const QModelIndex& parent) const
+    int ModelUpdate<T>::rowCount(const QModelIndex& /* parent */) const
     {
-        return static_cast<int>(m_objects.size());
+        return objectsCount;
     }
 
     template <class T>
@@ -20,7 +20,6 @@ namespace modules {
         try {
           auto guard = m_db->storage->transaction_guard();
 
-//          qDebug() << container[0];
           m_db->removeAll();
           m_db->save(container.begin(), container.end());
           guard.commit();

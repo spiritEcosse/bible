@@ -40,35 +40,36 @@ namespace modules {
 
     void ModelGroupModules::updateObjects()
     {
-        qDebug() << rowCount();
-        emit beginResetModel();
-
-        const auto &objects = m_db->storage->get_all<GroupModules>(
+        beginResetModel();
+        m_objects = m_db->storage->get_all<GroupModules>(
                     sqlite_orm::multi_order_by(
                         sqlite_orm::order_by(&GroupModules::m_language),
                         sqlite_orm::order_by(&GroupModules::m_region),
                         sqlite_orm::order_by(&GroupModules::m_name)
-                    ), sqlite_orm::limit(itemsToFetch, sqlite_orm::offset(rowCount())));
-        m_objects.insert(m_objects.end(), objects.begin(), objects.end());
-        emit endResetModel();
+                    ));
+        endResetModel();
     }
 
-    bool ModelGroupModules::canFetchMorePatch() const
+    bool ModelGroupModules::canFetchMore(const QModelIndex &parent) const
     {
-        qDebug() << "canFetchMore" << rowCount();
-        return rowCount() < m_db->count();
+        if (parent.isValid())
+            return false;
+        return (objectsCount < static_cast<int>(m_objects.size()));
     }
 
-    void ModelGroupModules::fetchMorePatch()
+    void ModelGroupModules::fetchMore(const QModelIndex &parent)
     {
-        qDebug() << "fetchMore" << rowCount();
-        int remainder = m_db->count() - rowCount();
-        itemsToFetch = qMin(50, remainder);
+        if (parent.isValid())
+            return;
+        int remainder = static_cast<int>(m_objects.size()) - objectsCount;
+        int itemsToFetch = qMin(40, remainder);
 
-        updateObjects();
-//        beginInsertRows(QModelIndex(), fileCount, fileCount + itemsToFetch - 1);
-//        fileCount += itemsToFetch;
-//        endInsertRows();
+        if (itemsToFetch <= 0)
+            return;
+
+        beginInsertRows(QModelIndex(), objectsCount, objectsCount + itemsToFetch - 1);
+        objectsCount += itemsToFetch;
+        endInsertRows();
     }
 
     void ModelGroupModules::downloadRegistry()
@@ -88,6 +89,7 @@ namespace modules {
 //            return {};
 
         const auto &groupModules = m_objects.at(index.row());
+
         if (role == TitleRole) {
             return groupModules.titleGroup();
         }

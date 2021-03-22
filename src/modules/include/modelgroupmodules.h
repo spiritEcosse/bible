@@ -29,10 +29,9 @@ namespace modules {
         virtual QHash<int, QByteArray> roleNames() const override;
         Q_INVOKABLE virtual void downloadRegistry();
     protected:
-        Q_INVOKABLE bool canFetchMorePatch() const;
-        Q_INVOKABLE void fetchMorePatch();
+        bool canFetchMore(const QModelIndex &parent) const override;
+        void fetchMore(const QModelIndex &parent) override;
     private:
-        int itemsToFetch = 50;
         friend class tests::tst_ModelGroupModules;
         bool newVersionAvailable() const;
         bool updateCompleted() const;
