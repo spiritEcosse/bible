@@ -19,7 +19,7 @@ namespace modules {
     public:
         GroupModules();
         GroupModules(const QJsonObject& qJsonModule);
-        GroupModules(const QString& language, const QString& name, const QString& region);
+        GroupModules(const QString& language, const QString& name, const QString& region = "");
         ~GroupModules();
         QString nativeLanguageName() const;
         QString languageName() const;
