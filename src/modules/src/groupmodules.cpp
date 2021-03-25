@@ -47,11 +47,10 @@ namespace modules {
 
     QString GroupModules::titleGroup() const
     {
-        QString title;
         const QString& language = languageName();
-        title += language.isEmpty() ? languageCode() : language;
+        QString title(language.isEmpty() ? std::move(languageCode()) : std::move(language));
         title += title.isEmpty() ? "" : " - ";
-        title += m_name;
+        title += std::move(m_name);
         return title;
     }
 

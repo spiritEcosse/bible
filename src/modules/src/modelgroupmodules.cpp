@@ -81,22 +81,24 @@ namespace modules {
 
     QVariant ModelGroupModules
     ::data(const QModelIndex & index, int role) const {
-        if (!index.isValid() || index.row() > rowCount(index)) {
-            return {};
-        }
+        QVariant data {};
 
-//        if (!hasIndex(index.row(), index.column(), index.parent()))
-//            return {};
+        if (!index.isValid() || index.row() > rowCount(index)) {
+            return data;
+        }
 
         const auto &groupModules = m_objects.at(index.row());
 
-        if (role == TitleRole) {
-            return groupModules.titleGroup();
+        switch(role) {
+            case TitleRole :
+                data = std::move(groupModules.titleGroup());
+                break;
+            case RegionRole :
+                data = std::move(groupModules.region());
+                break;
         }
-        if (role == RegionRole) {
-            return groupModules.region();
-        }
-        return {};
+
+        return data;
     }
 
     QHash<int, QByteArray>
