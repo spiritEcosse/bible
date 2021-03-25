@@ -29,6 +29,15 @@ SilicaFlickable {
                 clip: true
                 VerticalScrollDecorator {}
 
+                section {
+                    property: 'region'
+
+                    delegate: SectionHeader {
+                        text: section
+                        height: Theme.itemSizeSmall
+                    }
+                }
+
                 delegate: ExpandingSectionPatch {
                     title: model.titleGroup
                 }

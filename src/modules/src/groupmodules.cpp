@@ -48,15 +48,8 @@ namespace modules {
     QString GroupModules::titleGroup() const
     {
         QString title;
-        if ( m_region.isEmpty() )
-        {
-            QString nativeLanguage = nativeLanguageName();
-            QString language = languageName();
-            title += (language.isEmpty() ? languageCode() : language) + (nativeLanguage.isEmpty() ? "" : " (" + nativeLanguage + ")");
-        } else
-        {
-            title += m_region;
-        }
+        const QString& language = languageName();
+        title += language.isEmpty() ? languageCode() : language;
         title += title.isEmpty() ? "" : " - ";
         title += m_name;
         return title;

@@ -43,8 +43,8 @@ namespace modules {
         beginResetModel();
         m_objects = m_db->storage->get_all<GroupModules>(
                     sqlite_orm::multi_order_by(
-                        sqlite_orm::order_by(&GroupModules::m_language),
                         sqlite_orm::order_by(&GroupModules::m_region),
+                        sqlite_orm::order_by(&GroupModules::m_language),
                         sqlite_orm::order_by(&GroupModules::m_name)
                     ));
         endResetModel();
@@ -93,6 +93,9 @@ namespace modules {
         if (role == TitleRole) {
             return groupModules.titleGroup();
         }
+        if (role == RegionRole) {
+            return groupModules.region();
+        }
         return {};
     }
 
@@ -100,6 +103,7 @@ namespace modules {
     ModelGroupModules::roleNames() const {
         return {
             { TitleRole, "titleGroup" },
+            { RegionRole, "region" },
         };
     }
 

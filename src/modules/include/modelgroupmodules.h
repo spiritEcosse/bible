@@ -20,7 +20,8 @@ namespace modules {
         Q_PROPERTY(bool updateCompleted READ updateCompleted NOTIFY changeUpdateCompleted)
     public:
         enum GroupModulesRoles {
-            TitleRole = 0
+            TitleRole = 0,
+            RegionRole = 1
         };
         ModelGroupModules();
         virtual ~ModelGroupModules();
