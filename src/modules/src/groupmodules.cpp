@@ -74,8 +74,6 @@ namespace modules {
         return m_language.code();
     }
 
-    void GroupModules::setLanguageName(const QString &) {}
-
     QString GroupModules::getLanguageName() const
     {
         return languageName();

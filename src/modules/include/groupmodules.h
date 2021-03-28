@@ -27,7 +27,7 @@ namespace modules {
         QString region() const;
         std::string regionToStdString() const;
         QString languageCode() const;
-        void setLanguageName(const QString& name);
+        inline void setLanguageName(const QString&) {}
         QString getLanguageName() const;
         QString titleGroup() const;
         std::string languageCodeToStdString() const;

@@ -22,6 +22,10 @@ namespace modules {
             void language_data();
             void m_region();
             void m_region_data();
+            void getLanguageName_data();
+            void getLanguageName();
+            void setLanguageName_data();
+            void setLanguageName();
         };
 
         tst_GroupModules::tst_GroupModules()
@@ -183,6 +187,43 @@ namespace modules {
 
             GroupModules GroupModules {  QJsonObject { {"reg", in} } };
             QCOMPARE(GroupModules.m_region, out);
+        }
+
+        void tst_GroupModules::getLanguageName_data()
+        {
+            QTest::addColumn<QString>("in");
+            QTest::addColumn<QString>("out");
+
+            QTest::newRow("English") << "en" << "English";
+            QTest::newRow("Maithili") << "mai" << "Maithili";
+        }
+
+        void tst_GroupModules::getLanguageName()
+        {
+            QFETCH(QString, in);
+            QFETCH(QString, out);
+
+            GroupModules GroupModules {in, "name"};
+            QCOMPARE(GroupModules.getLanguageName(), out);
+        }
+
+        void tst_GroupModules::setLanguageName_data()
+        {
+            QTest::addColumn<QString>("in");
+            QTest::addColumn<QString>("out");
+
+            QTest::newRow("English") << "en" << "";
+            QTest::newRow("Maithili") << "mai" << "";
+        }
+
+        void tst_GroupModules::setLanguageName()
+        {
+            QFETCH(QString, in);
+            QFETCH(QString, out);
+
+            GroupModules GroupModules {in, "name"};
+            GroupModules.setLanguageName(in);
+            QCOMPARE(GroupModules.m_languageName, out);
         }
 
     }
