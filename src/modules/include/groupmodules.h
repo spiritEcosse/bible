@@ -27,6 +27,8 @@ namespace modules {
         QString region() const;
         std::string regionToStdString() const;
         QString languageCode() const;
+        void setLanguageName(const QString& name);
+        QString getLanguageName() const;
         QString titleGroup() const;
         std::string languageCodeToStdString() const;
         QString name() const;
@@ -40,6 +42,7 @@ namespace modules {
         core::LocalLanguage m_language;
         QString m_name;
         QString m_region;
+        QString m_languageName;
         int m_id;
 
     #ifndef QT_NO_DEBUG_STREAM

@@ -74,6 +74,13 @@ namespace modules {
         return m_language.code();
     }
 
+    void GroupModules::setLanguageName(const QString &) {}
+
+    QString GroupModules::getLanguageName() const
+    {
+        return languageName();
+    }
+
     std::string GroupModules::languageCodeToStdString() const
     {
         return languageCode().toStdString();
@@ -112,7 +119,8 @@ namespace modules {
     {
         return m_language == other.m_language &&
                 m_name == other.m_name &&
-                m_region == other.m_region;
+                m_region == other.m_region &&
+                m_languageName == other.m_languageName;
     }
 
     uint GroupModules::modulesCount()
