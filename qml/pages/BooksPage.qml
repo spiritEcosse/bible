@@ -191,6 +191,7 @@ Pages {
             orientation: listHorizontal
             anchors.bottom: parent.bottom
             currentIndex: 0
+            visible: slideshow.currentIndex != 1
             clip: true
             x: Theme.paddingMedium
             width: parent.width - 2 * Theme.paddingMedium
@@ -259,6 +260,29 @@ Pages {
                     font.pixelSize: Theme.fontSizeLarge
                 }
             }
+        }
+
+        SearchField {
+            id: searchField
+            visible: slideshow.currentIndex == 1
+            onVisibleChanged: {
+                enabled = visible
+            }
+            anchors.bottom: parent.bottom
+            onTextChanged: {
+                if (text.length >= 2) {
+                    groupModules.search(text)
+                } else if (text.length === 0) {
+                     groupModules.getAll()
+                }
+            }
+            width: parent.width
+            height: enabled ? implicitHeight : 0.0
+            opacity: enabled ? 1.0 : 0.0
+            Behavior on opacity { FadeAnimator {} }
+            Behavior on height { NumberAnimation { duration: 200; easing.type: Easing.InOutQuad } }
+            EnterKey.iconSource: "image://theme/icon-m-enter-close"
+            EnterKey.onClicked: focus = false
         }
 
         PushUpMenu {

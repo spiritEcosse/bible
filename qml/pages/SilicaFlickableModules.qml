@@ -23,6 +23,7 @@ SilicaFlickable {
             height: parent.height - pageHeaderModules.height
 
             SilicaListView {
+                id: listModules
                 model: groupModules
                 width: parent.width
                 height: parent.height

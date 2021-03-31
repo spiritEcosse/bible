@@ -74,7 +74,7 @@ namespace modules {
             QTest::newRow("Aragonese") << "an" << "Aragonese" << "Aragonés";
             QTest::newRow("Avestan") << "ae" << "Avestan" << "Avesta";
             QTest::newRow("Chamorro") << "ch" << "Chamorro" << "Chamoru";
-            QTest::newRow("Arauka-Sprachen; Mapuche") << "arn" << "Arauka-Sprachen; Mapuche" << "";
+            QTest::newRow("Mapuche") << "arn" << "Mapuche" << "";
             QTest::newRow("Acoli") << "ach" << "Acoli" << "Lwo";
             QTest::newRow("Adangme") << "ada" << "Adangme" << "";
             QTest::newRow("Adyghe") << "ady" << "Adyghe" << "Адыгабзэ";
@@ -225,7 +225,6 @@ namespace modules {
             GroupModules.setLanguageName(in);
             QCOMPARE(GroupModules.m_languageName, out);
         }
-
     }
 
 }

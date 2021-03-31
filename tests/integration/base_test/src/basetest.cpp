@@ -18,7 +18,7 @@ namespace tests {
         dir.mkdir(pathFiles);
         dir.setCurrent(pathFiles);
         dir.mkdir(dirDownload);
-//        cleanTable();
+        cleanTable();
     }
 
     template <class T, class O>
@@ -28,11 +28,11 @@ namespace tests {
     }
 
     template <class T, class O>
-    std::vector<T> BaseTest<T, O>::helperSave() const
+    std::vector<T> BaseTest<T, O>::helperSave(const std::vector<T>& entries) const
     {
-        const std::vector<T>& entries = helperGetObjects();
-        m_db->save(entries.begin(), entries.end());
-        return entries;
+        const std::vector<T>& objects = entries.size() == 0 ? helperGetObjects() : entries;
+        m_db->save(objects.begin(), objects.end());
+        return objects;
     }
 
     template <class T, class O>

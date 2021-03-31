@@ -5,10 +5,13 @@
 
 namespace modules {
 
+    using namespace sqlite_orm;
+
     ModelGroupModules::ModelGroupModules()
         : m_managerGroup { new ManagerGroup {} }
     {
         m_newVersionAvailable = m_managerGroup->m_managerRegistry->hasNewRegistry();
+        m_newVersionAvailable = true;
         updateObjects();
         connect(m_managerGroup.get(), &ManagerGroup::makeGroupModulesSuccess, this, &ModelGroupModules::update);
         connect(this, &ModelGroupModules::updateDone, this, &ModelGroupModules::setUpdateCompleted);
@@ -41,11 +44,35 @@ namespace modules {
     void ModelGroupModules::updateObjects()
     {
         beginResetModel();
+        objectsCount = 0;
         m_objects = m_db->storage->get_all<GroupModules>(
-                    sqlite_orm::multi_order_by(
-                        sqlite_orm::order_by(&GroupModules::m_region),
-                        sqlite_orm::order_by(&GroupModules::m_language),
-                        sqlite_orm::order_by(&GroupModules::m_name)
+                    multi_order_by(
+                        order_by(&GroupModules::m_region),
+                        order_by(&GroupModules::getLanguageName),
+                        order_by(&GroupModules::m_name)
+                    ));
+        endResetModel();
+    }
+
+    void ModelGroupModules::getAll()
+    {
+        updateObjects();
+    }
+
+    void ModelGroupModules::search(const QString& needle)
+    {
+        beginResetModel();
+        objectsCount = 0;
+        m_objects = m_db->storage->get_all<GroupModules>(
+                    where(
+                        like(&GroupModules::m_region, needle + "%") or
+                        like(&GroupModules::m_name, needle + "%") or
+                        like(&GroupModules::getLanguageName, needle + "%")
+                    ),
+                    multi_order_by(
+                        order_by(&GroupModules::m_region),
+                        order_by(&GroupModules::getLanguageName),
+                        order_by(&GroupModules::m_name)
                     ));
         endResetModel();
     }

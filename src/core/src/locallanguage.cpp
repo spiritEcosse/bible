@@ -6,7 +6,7 @@ namespace core {
     QHash<QString, QString> languagesNames {
         {"av", "Avaric"},
         {"an", "Aragonese"},
-        {"arn", "Arauka-Sprachen; Mapuche"},
+        {"arn", "Mapuche"},
         {"ae", "Avestan"},
         {"ch", "Chamorro"},
         {"ach", "Acoli"},

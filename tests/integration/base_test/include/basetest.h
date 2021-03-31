@@ -22,7 +22,7 @@ namespace tests {
         const QString dirDownload = "download";
         QDir dir;
         std::shared_ptr<db::Db<T>> m_db = db::Db<T>::getInstance();
-        std::vector<T> helperSave() const;
+        std::vector<T> helperSave(const std::vector<T>& entries = {}) const;
         virtual void cleanTable();
         virtual std::vector<T> helperGetObjects() const;
         virtual void initTestCase();

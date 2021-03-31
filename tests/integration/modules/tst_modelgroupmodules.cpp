@@ -4,6 +4,8 @@
 #include <JlCompress.h>
 #include "basetest.h"
 
+Q_DECLARE_METATYPE(std::vector<modules::GroupModules>)
+
 namespace modules {
 
     namespace tests {
@@ -38,6 +40,10 @@ namespace modules {
             void downloadRegistry();
             void updateObjects_data();
             void updateObjects();
+            void search_data();
+            void search();
+            void getAll_data();
+            void getAll();
         };
 
         tst_ModelGroupModules::tst_ModelGroupModules() {}
@@ -165,6 +171,48 @@ namespace modules {
             modelGroupModules.updateObjects();
             QCOMPARE(modelGroupModules.m_objects.size(), vectorSize);
             QCOMPARE(modelGroupModules.m_objects, helperGetObjects());
+            QCOMPARE(modelGroupModules.objectsCount, 0);
+        }
+
+        void tst_ModelGroupModules::search_data()
+        {
+            cleanTable();
+            helperSave();
+            helperSave({{"ru", "translate", ""}});
+
+            QTest::addColumn<QString>("needle");
+            QTest::addColumn<std::vector<GroupModules>>("objects");
+
+            QTest::newRow("language exists English") << "eng" << helperGetObjects();
+            QTest::newRow("not started language") << "env" << std::vector<GroupModules>();
+            QTest::newRow("language not exists Maithili") << "ma" << std::vector<GroupModules>();
+            QTest::newRow("started name") << "na" << helperGetObjects();
+            QTest::newRow("not started name") << "me" << std::vector<GroupModules>();
+            QTest::newRow("started region") << "reg" << helperGetObjects();
+        }
+
+        void tst_ModelGroupModules::search()
+        {
+            qRegisterMetaType<std::vector<GroupModules>>("std::vector<GroupModules>");
+
+            QFETCH(QString, needle);
+            QFETCH(std::vector<GroupModules>, objects);
+
+            ModelGroupModules modelGroupModules;
+            modelGroupModules.search(needle);
+            QCOMPARE(modelGroupModules.m_objects.size(), objects.size());
+            QCOMPARE(modelGroupModules.m_objects, objects);
+            QCOMPARE(modelGroupModules.objectsCount, 0);
+        }
+
+        void tst_ModelGroupModules::getAll_data()
+        {
+            updateObjects_data();
+        }
+
+        void tst_ModelGroupModules::getAll()
+        {
+            updateObjects();
         }
     }
 

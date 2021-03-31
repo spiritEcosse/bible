@@ -29,6 +29,8 @@ namespace modules {
         virtual QVariant data(const QModelIndex &index = {}, int role = Qt::DisplayRole) const override;
         virtual QHash<int, QByteArray> roleNames() const override;
         Q_INVOKABLE virtual void downloadRegistry();
+        Q_INVOKABLE virtual void search(const QString& needle);
+        Q_INVOKABLE void getAll();
     protected:
         bool canFetchMore(const QModelIndex &parent) const override;
         void fetchMore(const QModelIndex &parent) override;
