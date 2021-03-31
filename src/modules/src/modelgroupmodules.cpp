@@ -11,7 +11,6 @@ namespace modules {
         : m_managerGroup { new ManagerGroup {} }
     {
         m_newVersionAvailable = m_managerGroup->m_managerRegistry->hasNewRegistry();
-        m_newVersionAvailable = true;
         updateObjects();
         connect(m_managerGroup.get(), &ManagerGroup::makeGroupModulesSuccess, this, &ModelGroupModules::update);
         connect(this, &ModelGroupModules::updateDone, this, &ModelGroupModules::setUpdateCompleted);
