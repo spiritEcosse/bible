@@ -34,13 +34,19 @@ SilicaFlickable {
                     property: 'region'
 
                     delegate: SectionHeader {
-                        text: section
+                        text: Theme.highlightText(
+                                  section.substr(0, section.length),
+                                  searchField.text,
+                                  Theme.highlightBackgroundColor);
                         height: Theme.itemSizeSmall
                     }
                 }
 
                 delegate: ExpandingSectionPatch {
-                    title: model.titleGroup
+                    title: Theme.highlightText(
+                               model.titleGroup.substr(0, model.titleGroup.length),
+                               searchField.text,
+                               Theme.highlightColor);
                 }
             }
         }
