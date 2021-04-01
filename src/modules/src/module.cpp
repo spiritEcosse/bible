@@ -24,10 +24,10 @@ namespace modules {
           m_hidden { moduleJson.value("hid").toBool() },
           m_defaultDownload { moduleJson.value("def").toBool() }
     {
-        if (m_name.isEmpty() || m_description.isEmpty() || m_abbreviation.isEmpty()) {
+        if (m_name.isEmpty()) {
             throw(ModuleInvalidData("Invalid data."));
         }
-
+        m_id = 0;
         convertSize(moduleJson.value("siz").toString());
         convertUpdate(moduleJson.value("upd").toString());
     }
@@ -105,12 +105,23 @@ namespace modules {
         return m_languageShow.languageInString();
     }
 
+    QString Module::getLanguageShowName() const
+    {
+        return m_languageShow.code();
+    }
+
+    void Module::setLanguageShowName(const QString &other)
+    {
+        m_languageShow = other;
+    }
+
     #ifndef QT_NO_DEBUG_STREAM
     QDebug operator<<(QDebug debug, const Module& module)
     {
-        return debug << module.m_name << module.m_description << module.m_abbreviation << module.m_size <<
-                        module.m_information << module.m_comment << module.m_copyright << module.m_update <<
-                        module.m_hidden << module.m_defaultDownload << module.m_languageShow;
+        return debug << module.m_name << module.m_description << module.m_abbreviation << module.m_size
+                     << module.m_information << module.m_comment << module.m_copyright << module.m_update
+                     << module.m_hidden << module.m_defaultDownload << module.m_languageShow << module.m_id
+                     << module.m_idGroupModules;
     }
     #endif
 

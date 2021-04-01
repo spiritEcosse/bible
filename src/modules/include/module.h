@@ -54,8 +54,8 @@ namespace modules {
         Module() = default;
         Module(
                 const QString& name,
-                const QString& description,
-                const QString& abbreviation,
+                const QString& description = "",
+                const QString& abbreviation = "",
                 const int& idGroupModules = 0,
                 const double& size = 0,
                 const QString& languageShow = "",
@@ -68,6 +68,8 @@ namespace modules {
         Module(const QJsonObject& qJsonModule);
         QString nativeLanguageNameShow() const;
         QString languageNameShow() const;
+        QString getLanguageShowName() const;
+        void setLanguageShowName(const QString&);
 
         QString m_name;
         QString m_description;

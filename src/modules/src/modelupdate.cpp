@@ -21,7 +21,19 @@ namespace modules {
           auto guard = m_db->storage->transaction_guard();
 
           m_db->removeAll();
-          m_db->save(container.begin(), container.end());
+          int chunkSize = 2000;
+
+          auto start = container.begin();
+          auto end = container.end();
+
+          while (start != end) {
+              auto next = std::distance(start, end) >= chunkSize
+                          ? start + chunkSize
+                          : end;
+
+              m_db->save(start, next);
+              start = next;
+          }
           guard.commit();
           emit updateDone();
         } catch(const std::system_error& e) {

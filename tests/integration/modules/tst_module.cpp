@@ -86,18 +86,6 @@ namespace modules {
                 {"abr", "abbreviation"}
             };
             QTest::newRow("invalid data: required m_name.") << data << Module() << true;
-
-            data = {
-                {"fil", "name"},
-                {"abr", "abbreviation"}
-            };
-            QTest::newRow("invalid data: required m_description.") << data << Module() << true;
-
-            data = {
-                {"fil", "name"},
-                {"des", "description"}
-            };
-            QTest::newRow("invalid data: required m_abbreviation.") << data << Module() << true;
         }
 
         void tst_Module::constructor()
