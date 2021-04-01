@@ -4,7 +4,6 @@
 #include <memory>
 
 #include "locallanguage.h"
-#include "module.h"
 
 namespace modules {
 
@@ -12,7 +11,6 @@ namespace modules {
     {
         class tst_GroupModules;
     }
-
 
     class GroupModules
     {
@@ -32,10 +30,8 @@ namespace modules {
         QString titleGroup() const;
         std::string languageCodeToStdString() const;
         QString name() const;
-        uint modulesCount();
         std::string nameToStdString();
         static QString parseName(const QString& name);
-        void addModule(const Module& modules);
 
         bool operator==(const GroupModules& other) const;
 
@@ -53,7 +49,6 @@ namespace modules {
         friend class tests::tst_GroupModules;
 
         void cleanName();
-        std::vector<Module> m_modules;
     };
 
 }

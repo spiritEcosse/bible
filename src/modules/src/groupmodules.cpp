@@ -108,22 +108,12 @@ namespace modules {
         m_name[0] = m_name[0].toUpper();
     }
 
-    void GroupModules::addModule(const Module& modules)
-    {
-        m_modules.push_back(modules);
-    }
-
     bool GroupModules::operator==(const GroupModules &other) const
     {
         return m_language == other.m_language &&
                 m_name == other.m_name &&
                 m_region == other.m_region &&
                 m_languageName == other.m_languageName;
-    }
-
-    uint GroupModules::modulesCount()
-    {
-        return static_cast<uint>(m_modules.size());
     }
 
     #ifndef QT_NO_DEBUG_STREAM

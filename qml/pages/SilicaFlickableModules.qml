@@ -47,6 +47,16 @@ SilicaFlickable {
                                model.titleGroup.substr(0, model.titleGroup.length),
                                searchField.text,
                                Theme.highlightColor);
+
+                    content.sourceComponent: SilicaListView {
+                        width: parent.width
+                        spacing: Theme.paddingMedium
+                        model: modules
+
+                        clip: true
+                        snapMode: ListView.SnapToItem
+                        highlightRangeMode: ListView.StrictlyEnforceRange
+                    }
                 }
             }
         }
