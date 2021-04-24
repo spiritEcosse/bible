@@ -2,6 +2,7 @@
 #include "modelgroupmodules.h"
 #include <QDebug>
 
+Q_DECLARE_METATYPE(std::shared_ptr<modules::ModelModule>)
 
 namespace modules {
 
@@ -34,6 +35,33 @@ namespace modules {
         return m_updateCompleted;
     }
 
+    void ModelGroupModules::update()
+    {
+        try {
+          auto guard = m_db->storage->transaction_guard();
+
+          m_db->removeAll();
+          int chunkSize = 2000;
+
+          auto start = MapValueIterator(m_managerGroup->m_objects.begin());
+          auto end = MapValueIterator(m_managerGroup->m_objects.end());
+
+          while (start != end) {
+              auto next = std::distance(start, end) >= chunkSize
+                          ? std::next(start, chunkSize)
+                          : end;
+
+              m_db->save(start, next);
+              start = next;
+          }
+          guard.commit();
+          emit updateDone();
+        } catch(const std::system_error& e) {
+            qInfo() << e.what();
+            emit error("An error occured.");
+        }
+    }
+
     void ModelGroupModules::setUpdateCompleted()
     {
         m_updateCompleted = true;
@@ -44,7 +72,7 @@ namespace modules {
     {
         beginResetModel();
         objectsCount = 0;
-        m_objects = m_db->storage->get_all<GroupModules>(
+        m_objects = m_db->storage->get_all_pointer<GroupModules>(
                     multi_order_by(
                         order_by(&GroupModules::m_region),
                         order_by(&GroupModules::getLanguageName),
@@ -62,7 +90,7 @@ namespace modules {
     {
         beginResetModel();
         objectsCount = 0;
-        m_objects = m_db->storage->get_all<GroupModules>(
+        m_objects = m_db->storage->get_all_pointer<GroupModules>(
                     where(
                         like(&GroupModules::m_region, needle + "%") or
                         like(&GroupModules::m_name, needle + "%") or
@@ -76,28 +104,6 @@ namespace modules {
         endResetModel();
     }
 
-    bool ModelGroupModules::canFetchMore(const QModelIndex &parent) const
-    {
-        if (parent.isValid())
-            return false;
-        return (objectsCount < static_cast<int>(m_objects.size()));
-    }
-
-    void ModelGroupModules::fetchMore(const QModelIndex &parent)
-    {
-        if (parent.isValid())
-            return;
-        int remainder = static_cast<int>(m_objects.size()) - objectsCount;
-        int itemsToFetch = qMin(40, remainder);
-
-        if (itemsToFetch <= 0)
-            return;
-
-        beginInsertRows(QModelIndex(), objectsCount, objectsCount + itemsToFetch - 1);
-        objectsCount += itemsToFetch;
-        endInsertRows();
-    }
-
     void ModelGroupModules::downloadRegistry()
     {
         m_newVersionAvailable = false;
@@ -108,6 +114,7 @@ namespace modules {
     QVariant ModelGroupModules
     ::data(const QModelIndex & index, int role) const {
         QVariant data {};
+        qRegisterMetaType<std::shared_ptr<ModelModule>>("std::shared_ptr<ModelModule>");
 
         if (!index.isValid() || index.row() > rowCount(index)) {
             return data;
@@ -117,10 +124,17 @@ namespace modules {
 
         switch(role) {
             case TitleRole :
-                data = std::move(groupModules.titleGroup());
+                data = std::move(groupModules->titleGroup());
                 break;
             case RegionRole :
-                data = std::move(groupModules.region());
+                data = std::move(groupModules->region());
+                break;
+            case ModulesRole :
+                groupModules->m_modules.reset(new ModelModule(groupModules->m_groupId));
+                data = qVariantFromValue(groupModules->m_modules.get());
+                break;
+            case CountModulesRole :
+                data = std::move(groupModules->m_countModules);
                 break;
         }
 
@@ -132,6 +146,8 @@ namespace modules {
         return {
             { TitleRole, "titleGroup" },
             { RegionRole, "region" },
+            { ModulesRole, "modules" },
+            { CountModulesRole, "count_modules" },
         };
     }
 

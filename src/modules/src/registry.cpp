@@ -36,6 +36,11 @@ namespace modules {
     {
     }
 
+    Registry::~Registry()
+    {
+
+    }
+
     QUrl Registry::urlToQUrl() const
     {
         return QUrl::fromEncoded(QByteArray::fromBase64(m_url));
@@ -50,8 +55,7 @@ namespace modules {
     {
         return m_url == other.m_url &&
                 m_infoUrl == other.m_infoUrl &&
-                m_priority == other.m_priority &&
-                m_test == other.m_test;
+                m_priority == other.m_priority;
     }
 
     #ifndef QT_NO_DEBUG_STREAM

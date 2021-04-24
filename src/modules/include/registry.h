@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QUrl>
 #include <QJsonValue>
+#include <memory>
 
 class QJsonObject;
 
@@ -54,6 +55,7 @@ namespace modules {
                  const QByteArray& infoUrl,
                  const short& priority = 0,
                  const bool& test = false);
+        ~Registry();
 
         QUrl urlToQUrl() const;
         QUrl infoUrlToQUrl() const;
@@ -69,6 +71,9 @@ namespace modules {
         friend QDebug operator<<(QDebug debug, const Registry& registry);
     #endif
     };
+
+    using RegistryShared = decltype(std::shared_ptr<Registry>());
+    using RegistryUnique = decltype(std::unique_ptr<Registry>());
 
 }
 

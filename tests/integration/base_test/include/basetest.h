@@ -21,10 +21,11 @@ namespace tests {
         const QString pathFiles { "files" };
         const QString dirDownload = "download";
         QDir dir;
-        std::shared_ptr<db::Db<T>> m_db = db::Db<T>::getInstance();
-        std::vector<T> helperSave(const std::vector<T>& entries = {}) const;
+        std::shared_ptr<db::Db<T>> m_db;
+        std::vector<std::shared_ptr<T>> helperSave(std::vector<std::shared_ptr<T>>&& entries = {});
         virtual void cleanTable();
-        virtual std::vector<T> helperGetObjects() const;
+        virtual std::vector<std::shared_ptr<T>> helperGetObjects() const;
+        virtual std::vector<std::unique_ptr<T>> helperGetObjectsUnique() const;
         virtual void initTestCase();
         virtual void cleanupTestCase();
         virtual void update();

@@ -17,30 +17,25 @@ namespace modules {
     {
         Q_OBJECT
     public:
+        enum RegistryRoles
+        {
+            UrlRole = 0,
+            PriorityRole = 1,
+            InfoUrlRole = 2
+        };
+
         ModelRegistry();
         ~ModelRegistry();
         virtual QVariant data(const QModelIndex& index = {}, int role = Qt::DisplayRole) const override;
         virtual QHash<int, QByteArray> roleNames() const override;
-
+        virtual QUrl data(int index, int role) const;
+        bool setRegistries();
     private:
-        enum RegistryRoles
-        {
-            UrlRole,
-            PriorityRole,
-            InfoUrlRole
-        };
-
         friend class tests::tst_ManagerRegistry;
         friend class tests::tst_ManagerGroup;
         friend class tests::tst_ModelRegistry;
 
-        int index = 0;
-        bool setRegistries();
-    signals:
-        void registry(const Registry& registry);
-
-    public slots:
-        void getRegistry();
+        RegistryUnique baseRegistry() const;
     };
 
 }

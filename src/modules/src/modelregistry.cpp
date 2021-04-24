@@ -1,80 +1,87 @@
 #include "modelregistry.h"
+#include <QtDebug>
 
 namespace modules {
 
     ModelRegistry::ModelRegistry()
     {
-        m_objects = {
-            Registry {
-                "aHR0cDovL21waDQucnUvcmVnaXN0cnkuemlw",
-                "aHR0cDovL21waDQucnUvcmVnaXN0cnlfaW5mby5qc29u"
-            }
-        };
+        m_objects.push_back(baseRegistry());
     }
 
     ModelRegistry::~ModelRegistry() {}
 
-    void ModelRegistry::getRegistry()
+    std::unique_ptr<Registry> ModelRegistry::baseRegistry() const
     {
-        try {
-            emit registry(m_objects.at(index));
-            ++index;
-        } catch (std::out_of_range) {
-            if (setRegistries()) {
-                getRegistry();
-            } else {
-                emit error("An error occured, please try in time.");
-            }
+        return std::make_unique<Registry>(
+            "aHR0cDovL21waDQucnUvcmVnaXN0cnkuemlw",
+            "aHR0cDovL21waDQucnUvcmVnaXN0cnlfaW5mby5qc29u"
+        );
+    }
+
+    QUrl ModelRegistry::data(int index, int role) const
+    {
+        QUrl url;
+        if (index > static_cast<int>(m_objects.size())) {
+            return url;
         }
+
+        const auto &registry = m_objects.at(index);
+
+        switch (role) {
+            case RegistryRoles::UrlRole:
+                url = registry->urlToQUrl();
+                break;
+            case RegistryRoles::InfoUrlRole:
+                url = registry->infoUrlToQUrl();
+                break;
+        }
+
+        return url;
     }
 
     // db queries
 
     bool ModelRegistry::setRegistries()
     {
-        const auto &registries = m_db->storage->get_all<Registry>(
+        m_objects = m_db->storage->get_all_pointer<Registry>(
                     sqlite_orm::order_by(&Registry::m_priority));
-
-        if (!registries.empty()) {
-            m_objects = registries;
-        }
-        return !registries.empty();
+        return !m_objects.empty();
     }
 
     // overridden from qt
 
     QVariant ModelRegistry::data(const QModelIndex& index, int role) const
     {
+        QVariant data {};
+
         if (!index.isValid() || index.row() > rowCount(index)) {
-            return {};
+            return data;
         }
 
-        const Registry& registry = m_objects.at(index.row());
+        const auto &registry = m_objects.at(index.row());
 
         switch (role) {
-            case RegistryRoles::UrlRole: {
-                return QVariant::fromValue(registry.m_url);
-            }
-            case RegistryRoles::PriorityRole: {
-                return QVariant::fromValue(registry.m_priority);
-            }
-            case RegistryRoles::InfoUrlRole: {
-                return QVariant::fromValue(registry.m_infoUrl);
-            }
-            default: {
-                return {};
-            }
+            case RegistryRoles::UrlRole:
+                data = std::move(registry->m_url);
+                break;
+            case RegistryRoles::PriorityRole:
+                data = std::move(registry->m_priority);
+                break;
+            case RegistryRoles::InfoUrlRole:
+                return QVariant::fromValue(registry->m_infoUrl);
+                break;
         }
+
+        return data;
     }
 
     QHash<int, QByteArray> ModelRegistry::roleNames() const
     {
-        QHash<int, QByteArray> roles;
-        roles[RegistryRoles::UrlRole] = "url";
-        roles[RegistryRoles::PriorityRole] = "priority";
-        roles[RegistryRoles::InfoUrlRole] = "info_url";
-
-        return roles;
+        return {
+            { UrlRole, "url" },
+            { PriorityRole, "priority" },
+            { InfoUrlRole, "info_url" },
+        };
     }
 
 }

@@ -7,6 +7,7 @@
 #include <QJsonParseError>
 #include <QSettings>
 #include <JlCompress.h>
+#include <mutex>
 
 #include "managerregistry.h"
 
@@ -17,25 +18,23 @@ namespace modules {
           m_modelRegistry { new ModelRegistry {} },
           m_manager { new DownloadManager {} }
     {
-        connect(m_manager.get(), &DownloadManager::failed, m_modelRegistry.get(), &ModelRegistry::getRegistry);
     }
 
-    void ManagerRegistry::download() const
+    void ManagerRegistry::download()
     {
+        connect(m_manager.get(), &DownloadManager::failed, this, &ManagerRegistry::tryOtherUrl);
         connect(m_manager.get(), &DownloadManager::readyRead, this, &ManagerRegistry::extractRegistry);
-        connect(m_modelRegistry.get(), &ModelRegistry::registry, this, &ManagerRegistry::downloadRegistry);
         connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::removeRegistry);
         connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::retrieveData);
         connect(this, &ManagerRegistry::retrieveDataSuccess, &ManagerRegistry::transform);
         connect(this, &ManagerRegistry::transformSuccess, m_modelRegistry.get(), &ModelRegistry::update);
 
-        m_registry ? m_manager->append(m_registry->urlToQUrl()) : m_modelRegistry->getRegistry();
+        downloadFile(ModelRegistry::RegistryRoles::UrlRole);
     }
 
-    void ManagerRegistry::downloadRegistry(const Registry &registry)
+    void ManagerRegistry::downloadFile(int role)
     {
-        m_registry.reset(new Registry { registry });
-        m_manager->append(m_registry->urlToQUrl());
+        m_manager->append(std::move(m_modelRegistry->data(index, role)));
     }
 
     void ManagerRegistry::extractRegistry(const QString& fileName)
@@ -76,9 +75,40 @@ namespace modules {
         }
     }
 
+    void ManagerRegistry::setRegistriesOnce()
+    {
+        static std::once_flag flag;
+        std::call_once(flag, [&]() {
+            size_t count = m_modelRegistry->m_db->count();
+            if (count && m_modelRegistry->setRegistries()) {
+                index = count >= 2 ? 1 : 0;
+            }
+        });
+    }
+
     const QJsonArray ManagerRegistry::getRegistries(const QJsonDocument &document) const
     {
         return document.object().value("registries").toArray();
+    }
+
+    void ManagerRegistry::tryOther(int role)
+    {
+        index++;
+        if (index >= static_cast<int>(m_modelRegistry->m_objects.size()))
+        {
+            index = 0;
+            setRegistriesOnce();
+        }
+        if (index == 0) {
+            emit m_modelRegistry->error("An error occured, please try in time.");
+        } else {
+            downloadFile(role);
+        }
+    }
+
+    void ManagerRegistry::tryOtherUrl()
+    {
+        tryOther(ModelRegistry::RegistryRoles::UrlRole);
     }
 
     void ManagerRegistry::transform(const QJsonDocument &document)
@@ -90,7 +120,7 @@ namespace modules {
             std::transform(source.begin(), source.end(), std::back_inserter(target),
                            [](const QJsonValue& entry)
             {
-                return Registry { entry.toObject() };
+                return std::move(Registry(entry.toObject()));
             });
             emit transformSuccess(target);
         } catch(const RegistryInvalidData& e) {}
@@ -106,19 +136,18 @@ namespace modules {
 
     void ManagerRegistry::checkNewVesion()
     {
-        connect(m_modelRegistry.get(), &ModelRegistry::registry, this, &ManagerRegistry::downloadInfo);
+        connect(m_manager.get(), &DownloadManager::failed, this, &ManagerRegistry::tryOtherInfoUrl);
         connect(m_manager.get(), &DownloadManager::readyRead, this, &ManagerRegistry::retrieveVersion);
         connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::removeInfo);
         connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::retrieveDataInfo);
         connect(this, &ManagerRegistry::newRegistryAvailable, &ManagerRegistry::setVersion);
 
-        m_registry ? m_manager->append(m_registry->infoUrlToQUrl()) : m_modelRegistry->getRegistry();
+        downloadFile(ModelRegistry::RegistryRoles::InfoUrlRole);
     }
 
-    void ManagerRegistry::downloadInfo(const Registry& registry)
+    void ManagerRegistry::tryOtherInfoUrl()
     {
-        m_registry.reset(new Registry { registry });
-        m_manager->append(registry.infoUrlToQUrl());
+        tryOther(ModelRegistry::RegistryRoles::InfoUrlRole);
     }
 
     void ManagerRegistry::retrieveVersion(const QString& fileName)

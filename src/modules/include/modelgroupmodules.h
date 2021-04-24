@@ -21,7 +21,9 @@ namespace modules {
     public:
         enum GroupModulesRoles {
             TitleRole = 0,
-            RegionRole = 1
+            RegionRole = 1,
+            ModulesRole = 2,
+            CountModulesRole = 3
         };
         ModelGroupModules();
         virtual ~ModelGroupModules();
@@ -31,9 +33,6 @@ namespace modules {
         Q_INVOKABLE virtual void downloadRegistry();
         Q_INVOKABLE virtual void search(const QString& needle);
         Q_INVOKABLE void getAll();
-    protected:
-        bool canFetchMore(const QModelIndex &parent) const override;
-        void fetchMore(const QModelIndex &parent) override;
     private:
         friend class tests::tst_ModelGroupModules;
         bool newVersionAvailable() const;
@@ -41,6 +40,7 @@ namespace modules {
         bool m_newVersionAvailable = false;
         bool m_updateCompleted = false;
         std::unique_ptr<ManagerGroup> m_managerGroup;
+        virtual void update();
     signals:
         void changeNewVersionAvailable();
         void changeUpdateCompleted();

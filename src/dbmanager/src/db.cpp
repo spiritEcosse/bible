@@ -1,5 +1,6 @@
 #include "db.h"
 #include <QDebug>
+#include "dereferenceiterator.h"
 
 namespace db {
 
@@ -16,7 +17,10 @@ namespace db {
     template <class T>
     std::shared_ptr<Db<T>> Db<T>::getInstance()
     {
-        m_db.reset(new Db<T> {});
+        if (m_db == nullptr)
+        {
+            m_db.reset(new Db<T> {});
+        }
         return m_db;
     }
 
@@ -39,9 +43,25 @@ namespace db {
     }
 
     template<class T>
-    void Db<T>::save(
-            const typename std::vector<T>::const_iterator& begin,
-            const typename std::vector<T>::const_iterator& end)
+    void Db<T>::save(const vector_unique_iterator& begin, const vector_unique_iterator& end)
+    {
+        storage->insert_range(dereference_iterator(begin), dereference_iterator(end));
+    }
+
+    template<class T>
+    void Db<T>::save(const vector_shared_iterator& begin, const vector_shared_iterator& end)
+    {
+        storage->insert_range(dereference_iterator(begin), dereference_iterator(end));
+    }
+
+    template<class T>
+    void Db<T>::save(const vector_iterator& begin, const vector_iterator& end)
+    {
+        storage->insert_range(begin, end);
+    }
+
+    template<class T>
+    void Db<T>::save(const MapValueIterator &begin, const MapValueIterator &end)
     {
         storage->insert_range(begin, end);
     }

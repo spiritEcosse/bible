@@ -3,14 +3,15 @@
 #include "groupmodules.h"
 #include <JlCompress.h>
 #include "basetest.h"
+#include "dereferenceiterator.h"
 
-Q_DECLARE_METATYPE(std::vector<modules::GroupModules>)
+Q_DECLARE_METATYPE(std::vector<modules::GroupModulesShared>)
 
 namespace modules {
 
     namespace tests {
 
-        class tst_ModelGroupModules :  public ::tests::BaseTest<GroupModules, ModelGroupModules> {
+        class tst_ModelGroupModules : public ::tests::BaseTest<GroupModules, ModelGroupModules> {
             Q_OBJECT
 
         private:
@@ -26,16 +27,17 @@ namespace modules {
             ~tst_ModelGroupModules();
 
         private:
-            std::vector<GroupModules> helperGetObjects() const override;
+            std::vector<GroupModulesShared> helperGetObjects() const override;
+            std::vector<GroupModulesUnique> helperGetObjectsUnique() const override;
 
         private slots:
             void initTestCase() override;
             void cleanupTestCase() override;
-            void update() override;
             void contructor_data();
             void contructor();
             void newVersionAvailable();
             void updateCompleted();
+            void update() override;
             void downloadRegistry_data();
             void downloadRegistry();
             void updateObjects_data();
@@ -68,12 +70,25 @@ namespace modules {
             settings.setValue(key, value);
         }
 
-        std::vector<GroupModules> tst_ModelGroupModules::helperGetObjects() const
+        std::vector<GroupModulesShared> tst_ModelGroupModules::helperGetObjects() const
         {
-            return std::vector<GroupModules> {vectorSize, {"en", "name", "region"}};
+            std::vector<GroupModulesShared> objects;
+            for ( size_t in = 0; in < vectorSize; in++) {
+                objects.push_back(std::make_shared<GroupModules>("en", "name", "region", in + 1));
+            }
+            return objects;
         }
 
-        // tests
+       std::vector<GroupModulesUnique> tst_ModelGroupModules::helperGetObjectsUnique() const
+        {
+            std::vector<GroupModulesUnique> objects;
+            for ( size_t in = 0; in < vectorSize; in++) {
+                objects.push_back(std::make_unique<GroupModules>("en", "name", "region", in + 1));
+            }
+            return objects;
+        }
+
+//      tests
         void tst_ModelGroupModules::contructor_data()
         {
             QTest::addColumn<bool>("available");
@@ -122,9 +137,14 @@ namespace modules {
                                     "downloads",
                                     QJsonArray {
                                         QJsonObject {
-                                            {"fil", "name"},
-                                            {"des", "description"},
-                                            {"abr", "abbreviation"}
+                                            {"fil", "100EJ-p.plan"},
+                                        },
+                                        QJsonObject {
+                                            {"fil", "10CD-p.plan"},
+                                        },
+                                        QJsonObject {
+                                            {"fil", "2000.dictionary"},
+                                            {"lng", "en"},
                                         }
                                     },
                                 },
@@ -142,21 +162,25 @@ namespace modules {
             QSignalSpy spy(&modelGroupModules, &ModelGroupModules::updateDone);
             QSignalSpy spyChangeNewVersionAvailable(&modelGroupModules, &ModelGroupModules::changeNewVersionAvailable);
             QSignalSpy spyChangeUpdateCompleted(&modelGroupModules, &ModelGroupModules::changeUpdateCompleted);
+            QSignalSpy spyModulesUpdateCompleted(modelGroupModules.m_managerGroup->m_modelModule.get(), &ModelModule::updateDone);
 
-            modelGroupModules.m_managerGroup->m_managerRegistry->m_registry.reset(
-                        new Registry {
+            modelGroupModules.m_managerGroup->m_managerRegistry->m_modelRegistry->m_objects.clear();
+            modelGroupModules.m_managerGroup->m_managerRegistry->m_modelRegistry->m_objects.push_back(
+                        std::make_unique<Registry>(
                             QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
                             QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
-                        });
+                        )
+            );
 
             modelGroupModules.downloadRegistry();
             QCOMPARE(modelGroupModules.m_newVersionAvailable, false);
             QVERIFY(spy.wait());
+            QCOMPARE(spyModulesUpdateCompleted.count(), 1);
             QCOMPARE(spy.count(), 1);
             QCOMPARE(modelGroupModules.m_updateCompleted, true);
             QCOMPARE(spyChangeUpdateCompleted.count(), 1);
             QCOMPARE(spyChangeNewVersionAvailable.count(), 1);
-            QCOMPARE(modelGroupModules.m_objects.size(), static_cast<size_t>(1));
+            QCOMPARE(modelGroupModules.m_objects.size(), static_cast<size_t>(2));
         }
 
         void tst_ModelGroupModules::updateObjects_data()
@@ -167,10 +191,15 @@ namespace modules {
 
         void tst_ModelGroupModules::updateObjects()
         {
+            const auto &objects = helperGetObjectsUnique();
+
             ModelGroupModules modelGroupModules;
             modelGroupModules.updateObjects();
-            QCOMPARE(modelGroupModules.m_objects.size(), vectorSize);
-            QCOMPARE(modelGroupModules.m_objects, helperGetObjects());
+            QCOMPARE(modelGroupModules.m_objects.size(), objects.size());
+            QCOMPARE(std::equal(dereference_iterator(modelGroupModules.m_objects.begin()),
+                       dereference_iterator(modelGroupModules.m_objects.end()),
+                       dereference_iterator(objects.begin())
+                       ), true);
             QCOMPARE(modelGroupModules.objectsCount, 0);
         }
 
@@ -178,30 +207,37 @@ namespace modules {
         {
             cleanTable();
             helperSave();
-            helperSave({{"ru", "translate", ""}});
+            std::vector<GroupModulesShared>objects;
+            objects.push_back(
+                std::make_unique<GroupModules>("ru", "translate", "")
+            );
+            helperSave(std::move(objects));
 
             QTest::addColumn<QString>("needle");
-            QTest::addColumn<std::vector<GroupModules>>("objects");
+            QTest::addColumn<std::vector<GroupModulesShared>>("objects");
 
             QTest::newRow("language exists English") << "eng" << helperGetObjects();
-            QTest::newRow("not started language") << "env" << std::vector<GroupModules>();
-            QTest::newRow("language not exists Maithili") << "ma" << std::vector<GroupModules>();
+            QTest::newRow("not started language") << "env" << std::vector<GroupModulesShared>();
+            QTest::newRow("language not exists Maithili") << "ma" << std::vector<GroupModulesShared>();
             QTest::newRow("started name") << "na" << helperGetObjects();
-            QTest::newRow("not started name") << "me" << std::vector<GroupModules>();
+            QTest::newRow("not started name") << "me" << std::vector<GroupModulesShared>();
             QTest::newRow("started region") << "reg" << helperGetObjects();
         }
 
         void tst_ModelGroupModules::search()
         {
-            qRegisterMetaType<std::vector<GroupModules>>("std::vector<GroupModules>");
+            qRegisterMetaType<std::vector<GroupModulesShared>>("std::vector<GroupModulesShared>");
 
             QFETCH(QString, needle);
-            QFETCH(std::vector<GroupModules>, objects);
+            QFETCH(std::vector<GroupModulesShared>, objects);
 
             ModelGroupModules modelGroupModules;
             modelGroupModules.search(needle);
             QCOMPARE(modelGroupModules.m_objects.size(), objects.size());
-            QCOMPARE(modelGroupModules.m_objects, objects);
+            QCOMPARE(std::equal(dereference_iterator(modelGroupModules.m_objects.begin()),
+                       dereference_iterator(modelGroupModules.m_objects.end()),
+                       dereference_iterator(objects.begin())
+                       ), true);
             QCOMPARE(modelGroupModules.objectsCount, 0);
         }
 

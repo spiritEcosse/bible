@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QDate>
+#include <memory>
 
 #include "locallanguage.h"
 
@@ -64,7 +65,8 @@ namespace modules {
                 const QString& copyright = "",
                 const QDate& update = QDate(),
                 const bool& hidden = false,
-                const bool& defaultDownload = false);
+                const bool& defaultDownload = false,
+                const int& id = 0);
         Module(const QJsonObject& qJsonModule);
         QString nativeLanguageNameShow() const;
         QString languageNameShow() const;
@@ -83,7 +85,7 @@ namespace modules {
         QDate m_update;
         bool m_hidden;
         bool m_defaultDownload;
-        int m_id;
+        int m_id = 0;
 
         bool operator==(const Module& other) const;
 
@@ -94,6 +96,9 @@ namespace modules {
         friend QDebug operator<<(QDebug debug, const Module& module);
     #endif
     };
+
+    using ModuleShared = decltype(std::shared_ptr<Module>());
+    using ModuleUnique = decltype(std::unique_ptr<Module>());
 
 }
 

@@ -5,6 +5,7 @@ include_directories(include)
 set(RESOURCES
     include/global.h
     include/locallanguage.h
+    include/dereferenceiterator.h
     src/locallanguage.cpp
     )
 

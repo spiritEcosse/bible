@@ -2,6 +2,7 @@
 #include "modelmodule.h"
 #include "modelgroupmodules.h"
 #include "modelregistry.h"
+#include "dereferenceiterator.h"
 
 namespace tests {
 
@@ -18,6 +19,7 @@ namespace tests {
         dir.mkdir(pathFiles);
         dir.setCurrent(pathFiles);
         dir.mkdir(dirDownload);
+        m_db = db::Db<T>::getInstance();
         cleanTable();
     }
 
@@ -28,11 +30,12 @@ namespace tests {
     }
 
     template <class T, class O>
-    std::vector<T> BaseTest<T, O>::helperSave(const std::vector<T>& entries) const
+    std::vector<std::shared_ptr<T>>
+    BaseTest<T, O>::helperSave(std::vector<std::shared_ptr<T>>&& entries)
     {
-        const std::vector<T>& objects = entries.size() == 0 ? helperGetObjects() : entries;
+        const auto &objects = entries.size() == 0 ? helperGetObjects() : std::move(entries);
         m_db->save(objects.begin(), objects.end());
-        return objects;
+        return std::move(objects);
     }
 
     template <class T, class O>
@@ -42,9 +45,15 @@ namespace tests {
     }
 
     template <class T, class O>
-    std::vector<T> BaseTest<T, O>::helperGetObjects() const
+    std::vector<std::shared_ptr<T>> BaseTest<T, O>::helperGetObjects() const
     {
-        return std::vector<T>{};
+        return std::vector<std::shared_ptr<T>>{};
+    }
+
+    template<class T, class O>
+    std::vector<std::unique_ptr<T>> BaseTest<T, O>::helperGetObjectsUnique() const
+    {
+        return std::vector<std::unique_ptr<T>>{};
     }
 
     // tests
@@ -54,11 +63,16 @@ namespace tests {
         O model;
         QSignalSpy spyLast(&model, &O::updateDone);
 
-        const std::vector<T>& objects = helperGetObjects();
-        model.update(objects);
+        const auto &objects = helperGetObjectsUnique();
+        model.updateUnique(objects);
 
         QCOMPARE(spyLast.count(), 1);
-        QCOMPARE(m_db->count(), static_cast<int>(vectorSize));
+        QCOMPARE(m_db->count(), static_cast<int>(objects.size()));
+        // add check all inserts from db
+//        QCOMPARE(std::equal(dereference_iterator(m_objects.begin()),
+//                   dereference_iterator(m_objects.end()),
+//                   dereference_iterator(objects.begin())
+//                   ), true);
     }
 
     template class BaseTest<modules::Module, modules::ModelModule>;

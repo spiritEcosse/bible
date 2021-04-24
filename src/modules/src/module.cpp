@@ -27,7 +27,6 @@ namespace modules {
         if (m_name.isEmpty()) {
             throw(ModuleInvalidData("Invalid data."));
         }
-        m_id = 0;
         convertSize(moduleJson.value("siz").toString());
         convertUpdate(moduleJson.value("upd").toString());
     }
@@ -44,7 +43,8 @@ namespace modules {
             const QString& copyright,
             const QDate& update,
             const bool& hidden,
-            const bool& defaultDownload)
+            const bool& defaultDownload,
+            const int& id)
         : m_name { std::move(name) },
           m_description { std::move(description) },
           m_abbreviation { std::move(abbreviation) },
@@ -56,7 +56,8 @@ namespace modules {
           m_copyright { std::move(copyright) },
           m_update { std::move(update) },
           m_hidden { std::move(hidden) },
-          m_defaultDownload { std::move(defaultDownload) }
+          m_defaultDownload { std::move(defaultDownload) },
+          m_id { std::move(id) }
     {}
 
     bool Module::operator==(const Module &other) const

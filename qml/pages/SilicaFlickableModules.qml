@@ -7,6 +7,7 @@ SilicaFlickable {
     width: parent.width
     height: parent.height
     clip: true
+    property int activeIndex: -1
 
     Column {
         id: columnModules
@@ -23,7 +24,7 @@ SilicaFlickable {
             height: parent.height - pageHeaderModules.height
 
             SilicaListView {
-                id: listModules
+                id: listViewModules
                 model: groupModules
                 width: parent.width
                 height: parent.height
@@ -42,199 +43,146 @@ SilicaFlickable {
                     }
                 }
 
-                delegate: ExpandingSectionPatch {
-                    title: Theme.highlightText(
-                               model.titleGroup.substr(0, model.titleGroup.length),
-                               searchField.text,
-                               Theme.highlightColor);
+                delegate: Column {
+                    width: parent.width
 
-                    content.sourceComponent: SilicaListView {
-                        width: parent.width
-                        spacing: Theme.paddingMedium
-                        model: modules
+                    ExpandingSectionPatch {
+                        title: Theme.highlightText(
+                                   model.titleGroup.substr(0, model.titleGroup.length),
+                                   searchField.text,
+                                   Theme.highlightColor);
+                        property int indexM: activeIndex
+                        onIndexMChanged: {
+                            if (activeIndex != index) {
+                                expanded = false
+                            }
+                        }
+                        onExpandedChanged: {
+                            if (expanded) {
+                                activeIndex = index
+                            }
+                        }
 
-                        clip: true
-                        snapMode: ListView.SnapToItem
-                        highlightRangeMode: ListView.StrictlyEnforceRange
+                        content.sourceComponent: Column {
+                            width: parent.width
+
+                            SilicaListView {
+                                id: listModules
+                                width: parent.width
+                                model: modules
+                                height: count_modules > 4 ? Screen.height / 2 : Screen.height / 4
+                                focus: true
+                                clip: true
+                                y: Theme.paddingLarge
+                                VerticalScrollDecorator {}
+
+                                delegate: ListItem {
+                                    id: listItem
+                                    menu: contextMenu
+                                    contentHeight: child.height + separator.height + Theme.paddingMedium
+                                    RemorseItem { id: remorse }
+                                    enabled: !hid
+                                    function download() {
+                                        remorseAction("Downloading", function() { console.log(index) })
+                                    }
+
+                                    Label {
+                                        id: moduleNumber
+                                        color: Theme.highlightColor
+                                        width: 2.5 * Theme.paddingLarge
+                                        text: index + 1 + '. '
+                                        font.italic: true
+                                        font.pixelSize: Theme.fontSizeMedium
+                                        horizontalAlignment: Text.AlignRight
+                                        anchors {
+                                            left: parent.left
+                                        }
+                                    }
+
+                                    Item {
+                                        id: child
+                                        opacity: hid ? 0.5 : 1
+                                        height: childrenRect.height
+                                        anchors.left: moduleNumber.right
+                                        anchors.right: parent.right
+
+                                        Label {
+                                            id: abr
+                                            wrapMode: Text.WordWrap
+                                            truncationMode: TruncationMode.Fade
+                                            text: abbreviation
+                                            font.pixelSize: moduleNumber.font.pixelSize
+                                            anchors {
+                                                left: parent.left
+                                                right: parent.right
+                                            }
+                                        }
+                                        Label {
+                                            id: dateUpdate
+                                            font.pixelSize: Theme.fontSizeExtraSmall
+                                            text: qsTrId("Last update date: ") + Qt.formatDate(date, 'dd.MM.yyyy')
+                                            anchors {
+                                                top: abr.bottom
+                                                left: parent.left
+                                                topMargin: Theme.paddingSmall
+                                            }
+                                        }
+                                        Label {
+                                            text: "- " + Format.formatFileSize(size, 2)
+                                            font.pixelSize: Theme.fontSizeExtraSmall * 3 / 4
+                                            font.italic: true
+                                            anchors {
+                                                top: abr.bottom
+                                                right: parent.right
+                                                left: dateUpdate.right
+                                                topMargin: Theme.paddingSmall
+                                            }
+                                        }
+                                        Label {
+                                            id: des
+                                            horizontalAlignment: Text.AlignLeft
+                                            font.pixelSize: Theme.fontSizeExtraSmall
+                                            textFormat: Text.RichText
+                                            truncationMode: TruncationMode.Fade
+                                            wrapMode: Text.WordWrap
+                                            text: description
+                                            anchors {
+                                                top: dateUpdate.bottom
+                                                left: parent.left
+                                                right: parent.right
+                                            }
+                                        }
+                                    }
+
+                                    ContextMenu {
+                                        id: contextMenu
+
+                                        MenuItem {
+                                            text: qsTr("Copy text");
+                                        }
+                                        MenuItem {
+                                            text: "Download"
+                                            onClicked: download()
+                                        }
+                                    }
+
+                                    Separator {
+                                        id: separator
+                                        anchors {
+                                            bottom: parent.bottom
+                                            bottomMargin: -1
+                                        }
+
+                                        width: parent.width
+                                        color: Theme.primaryColor
+                                        horizontalAlignment: Qt.AlignHCenter
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
     }
 }
-
-//Pages {
-//    id: page
-//    property bool searchMode
-
-//    SilicaFlickable {
-//        anchors.top: parent.top
-//        anchors.bottom: parent.bottom
-//        width: parent.width
-
-//        FlippingPageHeader {
-//            id: header
-//            animate: page.status === PageStatus.Active
-//            width: parent.width
-//            title: listView.currentSection
-//        }
-
-//        Image {
-//            width: parent.width
-//            height: header.height
-//            source: "image://theme/graphic-gradient-edge"
-//            rotation: 180
-//        }
-
-//        SilicaListView {
-//            id: listView
-//            clip: true
-//            anchors {
-//                left: parent.left
-//                right: parent.right
-//                top: header.bottom
-//                bottom: bottomImg.top
-//            }
-//            spacing: Theme.paddingLarge
-//            snapMode: ListView.SnapToItem
-//            highlightRangeMode: ListView.StrictlyEnforceRange
-
-//            header: PageHeader {
-//                title: qsTrId("Modules")
-//            }
-
-//            model: moduleProxyModel
-
-//            section {
-//                property: 'section'
-
-//                delegate: SectionHeader {
-//                    text: section
-//                    height: Theme.itemSizeExtraSmall
-//                }
-//            }
-
-//            VerticalScrollDecorator {}
-
-//            delegate: ListItem {
-//                id: listItem
-//                menu: contextMenu
-//                contentHeight: child.height
-//                onClicked: remorse.execute(
-//                               listItem,
-//                               qsTrId("Upload"),
-//                               function() { console.log("Upload") }
-//                               )
-
-
-//                RemorseItem { id: remorse }
-
-//                Item {
-//                    id: child
-//                    x: Theme.paddingMedium
-//                    height: childrenRect.height
-//                    width: parent.width - 2 * x
-
-//                    Label {
-//                        id: desc
-//                        wrapMode: Text.WordWrap
-//                        truncationMode: TruncationMode.Fade
-//                        text: {
-//                            var string = description + ' (' + abbreviation + ')';
-//                            string ? Theme.highlightText(
-//                                          string.substr(0, string.length),
-//                                          searchField.text,
-//                                          Theme.highlightColor) : "";
-//                        }
-//                        font.pixelSize: Theme.fontSizeMedium
-//                        anchors {
-//                            left: parent.left
-//                            right: parent.right
-//                        }
-//                    }
-//                    Label {
-//                        id: dateUpdate
-//                        horizontalAlignment: Text.AlignLeft
-//                        font.pixelSize: Theme.fontSizeExtraSmall
-//                        text: qsTrId("Last module update date: ") + Qt.formatDate(updateDate, 'dd.MM.yyyy')
-//                        anchors {
-//                            top: desc.bottom
-//                            topMargin: Theme.paddingSmall
-//                            left: parent.left
-//                        }
-//                    }
-//                    Label {
-//                        text: "- " + Format.formatFileSize(size, 2)
-//                        font.pixelSize: Theme.fontSizeExtraSmall * 3 / 4
-//                        font.italic: true
-//                        anchors {
-//                            top: desc.bottom
-//                            topMargin: Theme.paddingSmall
-//                            left: dateUpdate.right
-//                            right: parent.right
-//                        }
-//                    }
-//                }
-
-//                ContextMenu {
-//                    id: contextMenu
-
-//                    MenuItem {
-//                        text: qsTrId("Information")
-//                        onClicked: pageStack.push(
-//                                       moduleInformation,
-//                                       {
-//                                           'information': information,
-//                                           'comment': comment
-//                                       })
-//                    }
-//                }
-//            }
-//        }
-
-//        PushUpMenu {
-//            id: pushUpMenu
-//            MenuItem {
-//                text: qsTrId("Search")
-//                onDelayedClick: searchMode = true
-//            }
-//        }
-
-//        Image {
-//            id: bottomImg
-//            width: parent.width
-//            property int defHeight: searchField.enabled ? 0 : Theme.itemSizeExtraSmall
-//            height: defHeight + searchField.height
-//            source: "image://theme/graphic-gradient-edge"
-//            anchors.bottom: parent.bottom
-//        }
-
-//        SearchField {
-//            id: searchField
-//            property bool active: activeFocus || text.length > 0
-//            property bool needle: text.length > 2
-//            onActiveChanged: if (!active) searchMode = false
-//            onEnabledChanged: {
-//                if (enabled) {
-//                    text = ""
-//                    forceActiveFocus()
-//                }
-//            }
-//            anchors.bottom: parent.bottom
-//            onTextChanged: {
-//                if (text.length > 2 || text.length === 0) {
-//                    listView.model.setFilterRegExp(text)
-//                    listView.currentIndex = 0
-//                }
-//            }
-//            enabled: searchMode
-//            width: parent.width
-//            height: enabled ? implicitHeight : 0.0
-//            opacity: enabled ? 1.0 : 0.0
-//            Behavior on opacity { FadeAnimator {} }
-//            Behavior on height { NumberAnimation { duration: 200; easing.type: Easing.InOutQuad } }
-//            EnterKey.iconSource: "image://theme/icon-m-enter-close"
-//            EnterKey.onClicked: focus = false
-//        }
-//    }
-//}

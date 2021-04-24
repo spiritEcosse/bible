@@ -31,51 +31,33 @@ namespace modules {
     {
         const QJsonArray& source = getDownloads(document);
 
-        std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual> mGMap;
         std::vector<Module> modules;
 
         try {
             int id = 1;
             for (auto it = source.begin(); it != source.end(); it++)
             {
-                Module module {it->toObject()};
-                GroupModules groupModules(it->toObject());
+                Module module (it->toObject());
+                GroupModulesUnique groupModules = std::make_unique<GroupModules>(it->toObject());
                 const MGKey mgKey {
-                    groupModules.nameToStdString(),
-                    groupModules.languageCodeToStdString(),
-                    groupModules.regionToStdString()
+                    groupModules->nameToStdString(),
+                    groupModules->languageCodeToStdString(),
+                    groupModules->regionToStdString()
                 };
-                if (mGMap.insert({mgKey, groupModules}).second)
-                {
-                    groupModules.m_id = id++;
-                }
-
-                module.m_idGroupModules = groupModules.m_id;
-                modules.push_back(module);
+                groupModules->m_groupId = id;
+                const auto &ob = m_objects.insert({mgKey, std::move(groupModules)});
+                if (ob.second)
+                    id++;
+                module.m_idGroupModules = ob.first->second->m_groupId;
+                ob.first->second->m_countModules++;
+                modules.push_back(std::move(module));
             }
 
             emit makeModulesSuccess(modules);
-            transform(mGMap);
+            emit makeGroupModulesSuccess();
         } catch(const ModuleInvalidData& e) {
             qInfo() << e.what();
             emit error("An error occured, please try in time.");
         }
     }
-
-    void ManagerGroup::transform(const std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual> &source)
-    {
-        typedef std::unordered_map<MGKey, GroupModules, MGKeyHash, MGKeyEqual>::const_iterator Iter;
-
-        std::vector<GroupModules> target;
-        std::transform(std::move_iterator<Iter>(source.begin()),
-                std::move_iterator<Iter>(source.end()),
-                std::back_inserter(target),
-                [](std::pair<MGKey, GroupModules>&& entry)
-        {
-            return std::move(entry.second);
-        });
-
-        emit makeGroupModulesSuccess(target);
-    }
-
 }

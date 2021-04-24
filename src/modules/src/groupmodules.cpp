@@ -5,6 +5,7 @@
 #ifndef QT_NO_DEBUG_STREAM
 #include <QDebug>
 #endif
+#include "modelmodule.h"
 
 #include "groupmodules.h"
 #define MODULES_SPLIT_NAME "^(.+)\\.(.+)$"
@@ -24,10 +25,12 @@ namespace modules {
 
     GroupModules::GroupModules(const QString& language,
                                const QString& name,
-                               const QString& region)
+                               const QString& region,
+                               int groupId)
         : m_language { std::move(language) },
           m_name { std::move(name) },
-          m_region { std::move(region) }
+          m_region { std::move(region) },
+          m_groupId { groupId }
     {}
 
     GroupModules::~GroupModules()
@@ -51,6 +54,7 @@ namespace modules {
         QString title(language.isEmpty() ? std::move(languageCode()) : std::move(language));
         title += title.isEmpty() ? "" : " - ";
         title += std::move(m_name);
+        title += " - " + QString::number(m_countModules);
         return title;
     }
 
@@ -113,7 +117,8 @@ namespace modules {
         return m_language == other.m_language &&
                 m_name == other.m_name &&
                 m_region == other.m_region &&
-                m_languageName == other.m_languageName;
+                m_languageName == other.m_languageName &&
+                m_groupId == other.m_groupId;
     }
 
     #ifndef QT_NO_DEBUG_STREAM

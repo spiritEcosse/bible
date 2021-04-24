@@ -127,17 +127,17 @@ Pages {
                     text: "Expanding sections"
                 }
 
-                ExpandingSectionGroup {
+                ExpandingSectionGroupPatch {
                     currentIndex: 0
 
                     Repeater {
                         model: 5
 
-                        ExpandingSection {
+                        ExpandingSectionPatch {
                             id: section
 
                             property int sectionIndex: model.index
-                            title: "Section " + (model.index + 1)
+                            title: "Section wewe" + (model.index + 1)
 
                             content.sourceComponent: Column {
                                 width: section.width

@@ -29,10 +29,12 @@ namespace db {
                     make_table(
                         "group_modules",
                         make_column("id", &GroupModules::m_id, primary_key()),
+                        make_column("group_id", &GroupModules::m_groupId),
                         make_column("language", &GroupModules::m_language),
                         make_column("name", &GroupModules::m_name),
                         make_column("region", &GroupModules::m_region),
-                        make_column("language_name", &GroupModules::getLanguageName, &GroupModules::setLanguageName)
+                        make_column("language_name", &GroupModules::getLanguageName, &GroupModules::setLanguageName),
+                        make_column("count_modules", &GroupModules::m_countModules, default_value(0))
                         ),
                     make_table(
                         "modules",
@@ -54,6 +56,7 @@ namespace db {
 
     using Storage = decltype(userStorage(""));
 
+
     template<class T>
     class Db
     {
@@ -63,6 +66,10 @@ namespace db {
         Db& operator=(const Db&);
 
     public:
+        using vector_unique_iterator = typename std::vector<std::unique_ptr<T>>::const_iterator;
+        using vector_shared_iterator = typename std::vector<std::shared_ptr<T>>::const_iterator;
+        using vector_iterator = typename std::vector<T>::const_iterator;
+
         std::unique_ptr<Storage> storage;
         static std::shared_ptr<Db> getInstance();
         static std::shared_ptr<Db> m_db;
@@ -70,8 +77,17 @@ namespace db {
         int count();
         int64 lastInsertRowid();
         void save(
-                const typename std::vector<T>::const_iterator& begin,
-                const typename std::vector<T>::const_iterator& end);
+                const vector_unique_iterator& begin,
+                const vector_unique_iterator& end);
+        void save(
+                const vector_shared_iterator& begin,
+                const vector_shared_iterator& end);
+        void save(
+                const MapValueIterator& begin,
+                const MapValueIterator& end);
+        void save(
+                const vector_iterator& begin,
+                const vector_iterator& end);
     };
 
 }

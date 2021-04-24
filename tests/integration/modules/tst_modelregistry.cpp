@@ -1,19 +1,22 @@
 #include <QtTest>
 #include "modelregistry.h"
 #include "basetest.h"
+#include "dereferenceiterator.h"
 
-Q_DECLARE_METATYPE(modules::Registry)
+Q_DECLARE_METATYPE(modules::RegistryShared)
+Q_DECLARE_METATYPE(std::vector<modules::RegistryShared>)
 
 namespace modules {
 
     namespace tests {
 
-        class tst_ModelRegistry : public ::tests::BaseTest<Registry, ModelRegistry> {
+        class tst_ModelRegistry : public ::tests::BaseTest<Registry, ModelRegistry>  {
             Q_OBJECT
 
         private:
-            std::vector<Registry> helperGetObjects() const override;
-            std::vector<Registry> helperGetBaseRegistries() const;
+            std::vector<RegistryShared> helperGetObjects() const override;
+            std::vector<RegistryShared> helperGetBaseRegistries() const;
+            std::vector<RegistryUnique> helperGetObjectsUnique() const override;
 
         public:
             tst_ModelRegistry();
@@ -25,9 +28,7 @@ namespace modules {
             void update() override;
             void setRegistries_data();
             void setRegistries();
-            void getRegistry_data();
-            void getRegistry();
-            void getRegistry_NoRegistry();
+            void constructor();
         };
 
         tst_ModelRegistry::tst_ModelRegistry() {}
@@ -46,16 +47,34 @@ namespace modules {
 
         //helpers
 
-        std::vector<Registry> tst_ModelRegistry::helperGetObjects() const {
-            return std::vector<Registry> {vectorSize, {"bGluazE=", "bGluazEx", 1}};
+        std::vector<RegistryShared> tst_ModelRegistry::helperGetObjects() const
+        {
+            std::vector<RegistryShared> objects;
+            for ( size_t in = 0; in < vectorSize; in++) {
+                objects.push_back(std::make_shared<Registry>("bGluazE=", "bGluazEx", 1));
+            }
+            return objects;
         }
 
-        std::vector<Registry> tst_ModelRegistry::helperGetBaseRegistries() const
+        std::vector<RegistryShared> tst_ModelRegistry::helperGetBaseRegistries() const
         {
-            return std::vector<Registry> {{
-                "aHR0cDovL21waDQucnUvcmVnaXN0cnkuemlw",
-                "aHR0cDovL21waDQucnUvcmVnaXN0cnlfaW5mby5qc29u"
-            }};
+            std::vector<RegistryShared> objects;
+            objects.push_back(
+                        std::make_shared<Registry>(
+                            "aHR0cDovL21waDQucnUvcmVnaXN0cnkuemlw",
+                            "aHR0cDovL21waDQucnUvcmVnaXN0cnlfaW5mby5qc29u"
+                        )
+            );
+            return objects;
+        }
+
+        std::vector<RegistryUnique> tst_ModelRegistry::helperGetObjectsUnique() const
+        {
+            std::vector<RegistryUnique> objects;
+            for ( size_t in = 0; in < vectorSize; in++) {
+                objects.push_back(std::make_unique<Registry>("bGluazE=", "bGluazEx", 1));
+            }
+            return objects;
         }
 
         // tests
@@ -69,65 +88,36 @@ namespace modules {
         {
             cleanTable();
 
-            QTest::addColumn<std::vector<Registry>>("m_registries");
+            QTest::addColumn<std::vector<RegistryShared>>("objects");
             QTest::addColumn<bool>("result");
 
             QTest::newRow("exists rows in table") << helperSave() << true;
-            QTest::newRow("empty table") << helperGetBaseRegistries() << false;
         }
 
         void tst_ModelRegistry::setRegistries()
         {
-            QFETCH(std::vector<Registry>, m_registries);
+            QFETCH(std::vector<RegistryShared>, objects);
             QFETCH(bool, result);
 
             ModelRegistry modelRegistry;
             QCOMPARE(modelRegistry.setRegistries(), result);
-            QCOMPARE(modelRegistry.m_objects, m_registries);
-            cleanTable();
+            QCOMPARE(modelRegistry.m_objects.size(), objects.size());
+            QCOMPARE(std::equal(dereference_iterator(modelRegistry.m_objects.begin()),
+                       dereference_iterator(modelRegistry.m_objects.end()),
+                       dereference_iterator(objects.begin())
+                       ), true);
         }
 
-        void tst_ModelRegistry::getRegistry_data()
+        void tst_ModelRegistry::constructor()
         {
-            cleanTable();
-
-            QTest::addColumn<Registry>("registry");
-            QTest::addColumn<int>("index");
-
-            QTest::newRow("get registry without query to db") << helperGetBaseRegistries()[0] << 0;
-            QTest::newRow("get registry with query (get a bunch of registers) to db") << helperSave()[1] << 1;
-        }
-
-        void tst_ModelRegistry::getRegistry()
-        {
-            qRegisterMetaType<Registry>("Registry");
-
-            QFETCH(Registry, registry);
-            QFETCH(int, index);
-
+            const auto &objects = helperGetBaseRegistries();
             ModelRegistry modelRegistry;
-            QSignalSpy spy(&modelRegistry, &ModelRegistry::registry);
-
-            modelRegistry.index = index;
-            modelRegistry.getRegistry();
-
-            QList<QVariant> arguments = spy.takeFirst();
-            QCOMPARE(arguments[0].value<Registry>(), registry);
+            QCOMPARE(modelRegistry.m_objects.size(), objects.size());
+            QCOMPARE(std::equal(dereference_iterator(modelRegistry.m_objects.begin()),
+                       dereference_iterator(modelRegistry.m_objects.end()),
+                       dereference_iterator(objects.begin())
+                       ), true);
         }
-
-        void tst_ModelRegistry::getRegistry_NoRegistry()
-        {
-            cleanTable();
-
-            ModelRegistry modelRegistry;
-            QSignalSpy spy(&modelRegistry, &ModelRegistry::error);
-            modelRegistry.index = 1;
-
-            modelRegistry.getRegistry();
-            QList<QVariant> arguments = spy.takeFirst();
-            QCOMPARE(arguments[0].toString(), QString("An error occured, please try in time."));
-        }
-
     }
 
 }
