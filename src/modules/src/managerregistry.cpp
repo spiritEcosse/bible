@@ -9,6 +9,7 @@
 #include <JlCompress.h>
 #include <mutex>
 
+#include <invaliddata.h>
 #include "managerregistry.h"
 
 namespace modules {
@@ -16,6 +17,7 @@ namespace modules {
     ManagerRegistry::ManagerRegistry(QObject *parent)
         : QObject(parent),
           m_modelRegistry { new ModelRegistry {} },
+          m_modelHost { new ModelHost {} },
           m_manager { new DownloadManager {} }
     {
     }
@@ -26,8 +28,8 @@ namespace modules {
         connect(m_manager.get(), &DownloadManager::readyRead, this, &ManagerRegistry::extractRegistry);
         connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::removeRegistry);
         connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::retrieveData);
-        connect(this, &ManagerRegistry::retrieveDataSuccess, &ManagerRegistry::transform);
-        connect(this, &ManagerRegistry::transformSuccess, m_modelRegistry.get(), &ModelRegistry::update);
+        connect(this, &ManagerRegistry::retrieveDataSuccess, m_modelRegistry.get(), &ModelRegistry::transform);
+        connect(this, &ManagerRegistry::retrieveDataSuccess, m_modelHost.get(), &ModelHost::transform);
 
         downloadFile(ModelRegistry::RegistryRoles::UrlRole);
     }
@@ -86,11 +88,6 @@ namespace modules {
         });
     }
 
-    const QJsonArray ManagerRegistry::getRegistries(const QJsonDocument &document) const
-    {
-        return document.object().value("registries").toArray();
-    }
-
     void ManagerRegistry::tryOther(int role)
     {
         index++;
@@ -109,21 +106,6 @@ namespace modules {
     void ManagerRegistry::tryOtherUrl()
     {
         tryOther(ModelRegistry::RegistryRoles::UrlRole);
-    }
-
-    void ManagerRegistry::transform(const QJsonDocument &document)
-    {
-        try {
-            const QJsonArray& source = getRegistries(document);
-
-            std::vector<Registry> target;
-            std::transform(source.begin(), source.end(), std::back_inserter(target),
-                           [](const QJsonValue& entry)
-            {
-                return std::move(Registry(entry.toObject()));
-            });
-            emit transformSuccess(target);
-        } catch(const RegistryInvalidData& e) {}
     }
 
     // version

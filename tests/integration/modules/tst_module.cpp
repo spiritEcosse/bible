@@ -1,6 +1,7 @@
 #include <QtTest>
 #include "module.h"
 #include "locallanguage.h"
+#include "entitybase.h"
 
 Q_DECLARE_METATYPE(modules::Module)
 
@@ -8,7 +9,7 @@ namespace modules {
 
     namespace tests {
 
-        class tst_Module : public QObject {
+        class tst_Module : public ::tests::EntityBase<Module> {
             Q_OBJECT
         public:
             tst_Module();
@@ -19,7 +20,7 @@ namespace modules {
 
         private slots:
             void constructor_data();
-            void constructor();
+            void constructor() override;
             void convertSize_data();
             void convertSize();
             void m_languageShow_data();
@@ -54,8 +55,8 @@ namespace modules {
 
         void tst_Module::constructor_data()
         {
-            QTest::addColumn<QJsonObject>("object");
-            QTest::addColumn<Module>("registry");
+            QTest::addColumn<QJsonObject>("json_object");
+            QTest::addColumn<Module>("object");
             QTest::addColumn<bool>("except");
 
             QJsonObject data {
@@ -90,15 +91,7 @@ namespace modules {
 
         void tst_Module::constructor()
         {
-            QFETCH(QJsonObject, object);
-            QFETCH(Module, registry);
-            QFETCH(bool, except);
-
-            if (except) {
-                QVERIFY_EXCEPTION_THROWN(Module {object}, ModuleInvalidData);
-            } else {
-                QCOMPARE(Module {object}, registry);
-            }
+            ::tests::EntityBase<Module>::constructor();
         }
 
         void tst_Module::convertSize_data()

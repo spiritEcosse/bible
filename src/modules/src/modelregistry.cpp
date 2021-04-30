@@ -5,6 +5,7 @@ namespace modules {
 
     ModelRegistry::ModelRegistry()
     {
+        connect(this, &ModelRegistry::transformSuccess, this, &ModelRegistry::updateObjectsFromJson);
         m_objects.push_back(baseRegistry());
     }
 

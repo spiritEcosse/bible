@@ -1,6 +1,6 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-
+import bible.QuickDownload 1.0
 
 SilicaFlickable {
     id: silicaFlickableModules
@@ -8,6 +8,13 @@ SilicaFlickable {
     height: parent.height
     clip: true
     property int activeIndex: -1
+
+    GlassItem {
+        id: defaultItem
+        visible: false
+        falloffRadius: 0.1500
+        radius: 0.1500
+    }
 
     Column {
         id: columnModules
@@ -80,10 +87,16 @@ SilicaFlickable {
                                     id: listItem
                                     menu: contextMenu
                                     contentHeight: child.height + separator.height + Theme.paddingMedium
+                                    width: parent.width
                                     RemorseItem { id: remorse }
                                     enabled: !hid
                                     function download() {
-                                        remorseAction("Downloading", function() { console.log(index) })
+                                        remorseAction("Downloading", function() {
+                                            console.log(index)
+                                            progressBar.visible = true
+                                            child.height += progressBar.implicitHeight
+                                            downloadModule.running = true
+                                        })
                                     }
 
                                     Label {
@@ -101,10 +114,15 @@ SilicaFlickable {
 
                                     Item {
                                         id: child
+                                        width: parent.width
                                         opacity: hid ? 0.5 : 1
                                         height: childrenRect.height
                                         anchors.left: moduleNumber.right
                                         anchors.right: parent.right
+                                        anchors.rightMargin: moduleNumber.width
+                                        Behavior on height {
+                                            NumberAnimation { duration: 200; easing.type: Easing.InOutQuad }
+                                        }
 
                                         Label {
                                             id: abr
@@ -151,6 +169,37 @@ SilicaFlickable {
                                                 left: parent.left
                                                 right: parent.right
                                             }
+                                        }
+
+                                        QuickDownload {
+                                            id: downloadModule
+
+                                            url: "http://s4.igrnt.info/m/10CD-p.plan.zip"
+                                            destination: "file:///home/nemo/.local/share/spirit/bible/download/10CD-p.plan.zip"
+
+                                            running: false
+                                            overwrite: true
+
+                                            followRedirects: true
+//                                            onRedirected: console.log('Redirected',url,'->',redirectUrl)
+
+                                            onStarted: console.log('Started download',url)
+                                            onError: console.error(errorString)
+                                            onProgressChanged: console.log(url,'progress:',progress)
+                                            onFinished: console.info(url,'done')
+                                        }
+
+                                        ProgressBar {
+                                            id: progressBar
+                                            width: parent.width
+                                            leftMargin: 5
+                                            rightMargin: 5
+                                            minimumValue: 0
+                                            maximumValue: 1
+                                            value: downloadModule.progress
+                                            anchors.top: des.bottom
+                                            visible: false
+                                            height: visible ? height : 0
                                         }
                                     }
 

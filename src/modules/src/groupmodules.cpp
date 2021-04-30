@@ -33,10 +33,7 @@ namespace modules {
           m_groupId { groupId }
     {}
 
-    GroupModules::~GroupModules()
-    {
-
-    }
+    GroupModules::~GroupModules() {}
 
     QString GroupModules::nativeLanguageName() const
     {

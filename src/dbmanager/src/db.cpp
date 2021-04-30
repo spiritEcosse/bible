@@ -5,7 +5,7 @@
 namespace db {
 
     template <class T>
-    std::shared_ptr<Db<T>> Db<T>::m_db = nullptr;
+    std::unique_ptr<Db<T>> Db<T>::m_db = nullptr;
 
     template <class T>
     Db<T>::Db()
@@ -15,13 +15,13 @@ namespace db {
     }
 
     template <class T>
-    std::shared_ptr<Db<T>> Db<T>::getInstance()
+    std::unique_ptr<Db<T>> Db<T>::getInstance()
     {
         if (m_db == nullptr)
         {
             m_db.reset(new Db<T> {});
         }
-        return m_db;
+        return std::move(m_db);
     }
 
     template <class T>
@@ -69,4 +69,5 @@ namespace db {
     template class Db<Registry>;
     template class Db<Module>;
     template class Db<GroupModules>;
+    template class Db<Host>;
 }

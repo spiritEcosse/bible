@@ -2,7 +2,6 @@
 #define MODELGROUPMODULES_H
 
 #include "modelupdate.h"
-#include "groupmodules.h"
 #include "managergroup.h"
 
 
@@ -33,6 +32,7 @@ namespace modules {
         Q_INVOKABLE virtual void downloadRegistry();
         Q_INVOKABLE virtual void search(const QString& needle);
         Q_INVOKABLE void getAll();
+        inline const QString getNameJson() override { return QString("downloads"); };
     private:
         friend class tests::tst_ModelGroupModules;
         bool newVersionAvailable() const;

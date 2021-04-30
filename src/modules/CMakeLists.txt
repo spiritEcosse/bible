@@ -6,16 +6,20 @@ set(RESOURCES
     include/modelgroupmodules.h
     include/modelregistry.h
     include/modelupdate.h
+    include/modelhost.h
     src/modelmodule.cpp
     src/modelgroupmodules.cpp
     src/modelregistry.cpp
     src/modelupdate.cpp
+    src/modelhost.cpp
 
     #entities
     include/registry.h
     include/module.h
     include/groupmodules.h
+    include/host.h
     src/registry.cpp
+    src/host.cpp
     src/module.cpp
     src/groupmodules.cpp
 

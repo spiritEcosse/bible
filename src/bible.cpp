@@ -5,6 +5,7 @@
 //#include "historymodel.h"
 //#include "commentsmodel.h"
 #include "modelgroupmodules.h"
+#include "quickdownload.h"
 
 void createAppDir() {
     const QDir writeDirApp = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
@@ -36,6 +37,8 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     createAppDir();
 
     modules::ModelGroupModules::registerMe();
+//    qmlRegisterType<ModelGroupModules>("bible.ModelGroupModules", 1, 0, "ModelGroupModules");
+    qmlRegisterType<QuickDownload>("bible.QuickDownload", 1, 0, "QuickDownload");
 //    qmlRegisterType<BooksModel>("bible.BooksModel", 1, 0, "BooksModel");
 //    qmlRegisterType<CommentsModel>("bible.CommentsModel", 1, 0, "CommentsModel");
 //    qmlRegisterType<ModulesModel>("bible.ModulesModel", 1, 0, "ModulesModel");

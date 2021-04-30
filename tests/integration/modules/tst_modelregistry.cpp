@@ -26,6 +26,8 @@ namespace modules {
             void initTestCase() override;
             void cleanupTestCase() override;
             void update() override;
+            void transform_data() override;
+            void transform() override;
             void setRegistries_data();
             void setRegistries();
             void constructor();
@@ -117,6 +119,16 @@ namespace modules {
                        dereference_iterator(modelRegistry.m_objects.end()),
                        dereference_iterator(objects.begin())
                        ), true);
+        }
+
+        void tst_ModelRegistry::transform_data()
+        {
+            ::tests::BaseTest<Registry, ModelRegistry>::transform_data();
+        }
+
+        void tst_ModelRegistry::transform()
+        {
+            ::tests::BaseTest<Registry, ModelRegistry>::transform();
         }
     }
 

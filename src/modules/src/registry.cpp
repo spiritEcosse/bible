@@ -3,8 +3,9 @@
 #include <QMetaProperty>
 #include <stdio.h>
 #include <ctype.h>
-
 #include <QDebug>
+
+#include "invaliddata.h"
 #include "registry.h"
 
 namespace modules {
@@ -21,7 +22,7 @@ namespace modules {
           m_test { registryJson.value("test").toBool() }
     {
         if (m_url.isEmpty() || m_infoUrl.isEmpty()) {
-            throw(RegistryInvalidData("Invalid data."));
+            throw(core::InvalidData("Invalid data."));
         }
     }
 

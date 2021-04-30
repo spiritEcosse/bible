@@ -5,6 +5,7 @@
 #include "binding.h"
 #include "registry.h"
 #include "module.h"
+#include "host.h"
 #include "groupmodules.h"
 #include <unordered_map>
 
@@ -22,9 +23,17 @@ namespace db {
                         "registries",
                         make_column("id", &Registry::m_id, primary_key()),
                         make_column("url", &Registry::m_url),
-                        make_column("priority", &Registry::m_priority),
+                        make_column("priority", &Registry::m_priority, default_value(0)),
                         make_column("info_url", &Registry::m_infoUrl),
                         make_column("test", &Registry::m_test, default_value(false))
+                        ),
+                    make_table(
+                        "hosts",
+                        make_column("id", &Host::m_id, primary_key()),
+                        make_column("alias", &Host::m_alias, default_value("")),
+                        make_column("path", &Host::m_path),
+                        make_column("priority", &Host::m_priority, default_value(0)),
+                        make_column("weight", &Host::m_weight, default_value(0))
                         ),
                     make_table(
                         "group_modules",
@@ -71,8 +80,8 @@ namespace db {
         using vector_iterator = typename std::vector<T>::const_iterator;
 
         std::unique_ptr<Storage> storage;
-        static std::shared_ptr<Db> getInstance();
-        static std::shared_ptr<Db> m_db;
+        static std::unique_ptr<Db> getInstance();
+        static std::unique_ptr<Db> m_db;
         void removeAll();
         int count();
         int64 lastInsertRowid();

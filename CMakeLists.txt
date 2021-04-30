@@ -36,7 +36,7 @@ if(Qt5_VERSION VERSION_GREATER_EQUAL QT_5_12_VERSION)
     find_package (Qt5 COMPONENTS QuickCompiler REQUIRED)
 endif()
 
-if ( ${SAILFISH} )    
+if ( ${SAILFISH} )
     include(FindPkgConfig)
     pkg_search_module(SAILFISH sailfishapp REQUIRED)
 
@@ -55,9 +55,9 @@ if ( ${SAILFISH} )
         ${SQLITE_ORM_INCLUDE_DIR}
     >)
     target_link_libraries(${PROJECT_NAME}
+        Qt5::Network
         Qt5::Quick
         Qt5::Widgets
-        Qt5::Qml
         ${SAILFISH_LDFLAGS}
         modules
         dbmanager
@@ -110,6 +110,18 @@ endif()
 
 set(CMAKE_AUTOUIC ON)
 add_subdirectory(src)
+
+add_library(tag SHARED IMPORTED)
+set_target_properties(tag PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/build/taglib/lib/libtag.so)
+
+#ExternalProject_Add(quickdownload
+#                    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/quickdownload
+#                    URL https://github.com/Larpon/QuickDownload.git
+#                    DOWNLOAD_DIR ${QGLViewer_DSTDIR}
+#                    BUILD_IN_SOURCE 1
+#                    CONFIGURE_COMMAND qmake quickdownload.pro PREFIX=${CMAKE_CURRENT_BINARY_DIR}/3rdparty/quickdownload
+#                    BUILD_COMMAND make
+#                   )
 
 if ( BUILD_TESTING )
     enable_testing()

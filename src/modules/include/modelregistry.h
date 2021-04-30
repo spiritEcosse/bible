@@ -2,7 +2,6 @@
 #define MODELREGISTRY_H
 
 #include "modelupdate.h"
-#include "registry.h"
 
 namespace modules {
 
@@ -30,6 +29,7 @@ namespace modules {
         virtual QHash<int, QByteArray> roleNames() const override;
         virtual QUrl data(int index, int role) const;
         bool setRegistries();
+        inline const QString getNameJson() override { return QString("registries"); };
     private:
         friend class tests::tst_ManagerRegistry;
         friend class tests::tst_ManagerGroup;

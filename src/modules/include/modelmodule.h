@@ -2,8 +2,6 @@
 #define MODELMODULE_H
 
 #include "modelupdate.h"
-#include "module.h"
-
 
 namespace modules {
 
@@ -33,10 +31,11 @@ namespace modules {
 
         ModelModule();
         ModelModule(int idGroupModules);
-        virtual ~ModelModule();
+        ~ModelModule();
         virtual QVariant data(const QModelIndex &index, int role) const override;
         virtual QHash<int, QByteArray> roleNames() const override;
         void updateObjects();
+        inline const QString getNameJson() override { return QString("downloads"); };
     private:
         friend class tests::tst_ModelModule;
         int m_idGroupModules = 0;

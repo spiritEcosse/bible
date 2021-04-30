@@ -3,7 +3,7 @@
 #include <QJsonDocument>
 #include <algorithm>
 #include <iterator>
-
+#include "invaliddata.h"
 #include "managergroup.h"
 
 namespace modules {
@@ -55,7 +55,7 @@ namespace modules {
 
             emit makeModulesSuccess(modules);
             emit makeGroupModulesSuccess();
-        } catch(const ModuleInvalidData& e) {
+        } catch(const core::InvalidData& e) {
             qInfo() << e.what();
             emit error("An error occured, please try in time.");
         }

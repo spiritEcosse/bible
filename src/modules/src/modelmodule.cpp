@@ -1,9 +1,9 @@
-#include <QtQuick>
 #include "modelmodule.h"
+#include <QObject>
 
 namespace modules {
 
-using namespace sqlite_orm;
+    using namespace sqlite_orm;
 
     ModelModule::ModelModule(int idGroupModules)
         : m_idGroupModules (idGroupModules)

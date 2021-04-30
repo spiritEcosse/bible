@@ -1,5 +1,6 @@
 #include <QtTest>
 #include "registry.h"
+#include "entitybase.h"
 
 Q_DECLARE_METATYPE(modules::Registry)
 
@@ -7,7 +8,7 @@ namespace modules {
 
     namespace tests {
 
-        class tst_Registry : public QObject {
+        class tst_Registry : public ::tests::EntityBase<Registry> {
             Q_OBJECT
 
         public:
@@ -15,11 +16,11 @@ namespace modules {
             ~tst_Registry();
 
         private:
-            Registry helperGetRegistry();
+            Registry helperGetObject();
 
         private slots:
             void constructor_data();
-            void constructor();
+            void constructor() override;
             void urlToQUrl();
             void infoUrlToQUrl();
         };
@@ -28,19 +29,19 @@ namespace modules {
 
         tst_Registry::~tst_Registry() {}
 
-        Registry tst_Registry::helperGetRegistry()
+        Registry tst_Registry::helperGetObject()
         {
             return Registry ("bGluazE=", "bGluazEx", 1, true);
         }
 
         void tst_Registry::constructor_data()
         {
-            QTest::addColumn<QJsonObject>("object");
-            QTest::addColumn<Registry>("registry");
+            QTest::addColumn<QJsonObject>("json_object");
+            QTest::addColumn<Registry>("object");
             QTest::addColumn<bool>("except");
 
             QJsonObject data {{"url", "link1"}, {"priority", 1}, {"info_url", "link11"}, {"test", true}};
-            QTest::newRow("valid data") << data << helperGetRegistry() << false;
+            QTest::newRow("valid data") << data << helperGetObject() << false;
 
             data = {
                 {"url", "link1"},
@@ -57,26 +58,18 @@ namespace modules {
 
         void tst_Registry::constructor()
         {
-            QFETCH(QJsonObject, object);
-            QFETCH(Registry, registry);
-            QFETCH(bool, except);
-
-            if (except) {
-                QVERIFY_EXCEPTION_THROWN(Registry {object}, RegistryInvalidData);
-            } else {
-                QCOMPARE(Registry {object}, registry);
-            }
+            ::tests::EntityBase<Registry>::constructor();
         }
 
         void tst_Registry::urlToQUrl()
         {
-            const Registry& registry = helperGetRegistry();
+            const Registry& registry = helperGetObject();
             QCOMPARE(registry.urlToQUrl(), QUrl("link1"));
         }
 
         void tst_Registry::infoUrlToQUrl()
         {
-            const Registry& registry = helperGetRegistry();
+            const Registry& registry = helperGetObject();
             QCOMPARE(registry.infoUrlToQUrl(), QUrl("link11"));
         }
 

@@ -1,8 +1,10 @@
 project(base_test LANGUAGES CXX)
 
 set(RESOURCES
+    include/entitybase.h
     include/basetest.h
     src/basetest.cpp
+    src/entitybase.cpp
 )
 
 add_library(${PROJECT_NAME} STATIC ${RESOURCES})

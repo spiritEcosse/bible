@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "downloadmanager.h"
+#include "modelhost.h"
 #include "modelregistry.h"
 
 class QJsonParseError;
@@ -37,6 +38,7 @@ namespace modules {
         friend class ModelGroupModules;
 
         std::unique_ptr<ModelRegistry> m_modelRegistry;
+        std::unique_ptr<ModelHost> m_modelHost;
         std::unique_ptr<DownloadManager> m_manager;
 
         int index = 0;
@@ -50,18 +52,14 @@ namespace modules {
         virtual void getDocument(QFile& file);
         virtual void setRegistriesOnce();
         virtual void setVersion(bool available, int version) const;
-        virtual const QJsonArray getRegistries(const QJsonDocument &document) const;
         void downloadFile(int role);
         virtual void tryOther(int role);
-
     signals:
         void newRegistryAvailable(bool available, int version);
         void retrieveDataSuccess(const QJsonDocument& document);
         void removeRegistrySuccess();
         void removeInfoSuccess();
         void getDocumentSuccess(const QJsonDocument& document);
-        void transformSuccess(const std::vector<Registry>& container);
-
     private slots:
         virtual void retrieveData(const QJsonDocument& document);
         virtual void retrieveDataInfo(const QJsonDocument& document);
@@ -69,7 +67,6 @@ namespace modules {
         virtual void removeRegistry();
         virtual void removeInfo();
         virtual void retrieveVersion(const QString& fileName);
-        virtual void transform(const QJsonDocument& document);
         virtual void tryOtherUrl();
         virtual void tryOtherInfoUrl();
     };

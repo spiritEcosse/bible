@@ -1,5 +1,9 @@
 #include "modelupdate.h"
 #include <QtDebug>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include "invaliddata.h"
 
 namespace modules {
 
@@ -36,6 +40,12 @@ namespace modules {
         beginInsertRows(QModelIndex(), objectsCount, objectsCount + itemsToFetch - 1);
         objectsCount += itemsToFetch;
         endInsertRows();
+    }
+
+    template<class T>
+    void ModelUpdate<T>::updateWrapper()
+    {
+        update(m_objectsFromJson);
     }
 
     template <class T>
@@ -94,7 +104,23 @@ namespace modules {
         }
     }
 
+    template <class T>
+    void ModelUpdate<T>::transform(const QJsonDocument &document)
+    {
+        try {
+            const QJsonArray& source = document.object().value(getNameJson()).toArray();
+
+            std::transform(source.begin(), source.end(), std::back_inserter(m_objectsFromJson),
+                           [](const QJsonValue& entry)
+            {
+                return std::move(T(entry.toObject()));
+            });
+            emit transformSuccess();
+        } catch(const core::InvalidData& e) {}
+    }
+
     template class ModelUpdate<GroupModules>;
     template class ModelUpdate<Module>;
     template class ModelUpdate<Registry>;
+    template class ModelUpdate<Host>;
 }

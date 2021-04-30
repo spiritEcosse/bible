@@ -6,6 +6,7 @@
 #include <QDebug>
 #endif
 
+#include "invaliddata.h"
 #include "module.h"
 
 #define MODULES_DATE_FORMAT QString("yyyy-MM-dd")
@@ -25,7 +26,7 @@ namespace modules {
           m_defaultDownload { moduleJson.value("def").toBool() }
     {
         if (m_name.isEmpty()) {
-            throw(ModuleInvalidData("Invalid data."));
+            throw(core::InvalidData("Invalid data."));
         }
         convertSize(moduleJson.value("siz").toString());
         convertUpdate(moduleJson.value("upd").toString());

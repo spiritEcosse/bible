@@ -19,7 +19,7 @@ namespace modules {
             QFile fileRegistry { "registry.json" };
             const QFile fileRegistryArchive { "registry.zip" };
             const QFile fileRegistryInfo { "registry_info.json" };
-            QJsonDocument helperGetInvalidDocument() const;
+//            QJsonDocument helperGetInvalidDocument() const;
             void setQSettings(int value = 0, QString key = "registryVersion");
 
         public:

@@ -39,7 +39,7 @@ namespace modules {
             void setQSettings(int value = 0, QString key = "registryVersion");
             const int version = 10;
             const size_t vectorSize = 3;
-            std::shared_ptr<db::Db<Registry>> m_db;
+            std::unique_ptr<db::Db<Registry>> m_db;
             QJsonDocument helperGetInvalidDocument() const;
             std::vector<RegistryShared> helperGetObjects() const;
 
@@ -56,8 +56,6 @@ namespace modules {
             void hasNewRegistry();
             void extractRegistry_data();
             void extractRegistry();
-            void transform_data();
-            void transform();
             void getDocument_data();
             void getDocument();
             void retrieveVersion();
@@ -175,9 +173,11 @@ namespace modules {
             QSignalSpy spyReadyRead(managerRegistry.m_manager.get(), &DownloadManager::readyRead);
             QSignalSpy spyGetDocumentSuccess(&managerRegistry, &ManagerRegistry::getDocumentSuccess);
             QSignalSpy spyRetrieveDataSuccess(&managerRegistry, &ManagerRegistry::retrieveDataSuccess);
-            QSignalSpy spyTransformSuccess(&managerRegistry, &ManagerRegistry::transformSuccess);
             QSignalSpy spyRemoveRegistry(&managerRegistry, &ManagerRegistry::removeRegistrySuccess);
+            QSignalSpy spyTransformSuccess(managerRegistry.m_modelRegistry.get(), &ModelRegistry::transformSuccess);
+            QSignalSpy spyTransformSuccessHost(managerRegistry.m_modelHost.get(), &ModelRegistry::transformSuccess);
             QSignalSpy spyUpdateDone(managerRegistry.m_modelRegistry.get(), &ModelRegistry::updateDone);
+            QSignalSpy spyUpdateDoneHost(managerRegistry.m_modelHost.get(), &ModelRegistry::updateDone);
 
             managerRegistry.m_modelRegistry->m_objects.clear();
             managerRegistry.m_modelRegistry->m_objects.push_back(
@@ -191,9 +191,11 @@ namespace modules {
 
             QVERIFY(spyUpdateDone.wait());
             QCOMPARE(spyReadyRead.count(), 1);
+            QCOMPARE(spyUpdateDoneHost.count(), 1);
             QCOMPARE(spyGetDocumentSuccess.count(), 1);
             QCOMPARE(spyRetrieveDataSuccess.count(), 1);
             QCOMPARE(spyTransformSuccess.count(), 1);
+            QCOMPARE(spyTransformSuccessHost.count(), 1);
             QCOMPARE(spyRemoveRegistry.count(), 1);
             QCOMPARE(spyUpdateDone.count(), 1);
         }
@@ -393,41 +395,6 @@ namespace modules {
 
             QFETCH(QString, fileName);
             manager.extractRegistry(fileName);
-        }
-
-        void tst_ManagerRegistry::transform_data()
-        {
-            QTest::addColumn<QJsonDocument>("document");
-            QTest::addColumn<std::vector<RegistryShared>>("objects");
-            QTest::addColumn<bool>("hit");
-
-            QTest::newRow("valid data") << helperGetDocument() << helperGetObjects() << true;
-            QTest::newRow("not valid data") << helperGetInvalidDocument() << std::vector<RegistryShared>() << false;
-        }
-
-        void tst_ManagerRegistry::transform()
-        {
-            qRegisterMetaType<std::vector<Registry>>("std::vector<Registry>");
-
-            QFETCH(QJsonDocument, document);
-            QFETCH(std::vector<RegistryShared>, objects);
-            QFETCH(bool, hit);
-
-            ManagerRegistry manager;
-            QSignalSpy spy(&manager, &ManagerRegistry::transformSuccess);
-            manager.transform(document);
-
-            QCOMPARE(spy.count(), int(hit));
-
-            if (hit) {
-                QList<QVariant> arguments = spy.takeFirst();
-                const auto& objects_actual = arguments[0].value<std::vector<Registry>>();
-                QCOMPARE(objects_actual.size(), objects.size());
-                QCOMPARE(std::equal(objects_actual.begin(),
-                           objects_actual.end(),
-                           dereference_iterator(objects.begin())
-                           ), true);
-            }
         }
 
         // version
