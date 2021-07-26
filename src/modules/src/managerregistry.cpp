@@ -14,6 +14,8 @@
 
 namespace modules {
 
+    static std::once_flag flagSetRegistries;
+
     ManagerRegistry::ManagerRegistry(QObject *parent)
         : QObject(parent),
           m_modelRegistry { new ModelRegistry {} },
@@ -79,8 +81,7 @@ namespace modules {
 
     void ManagerRegistry::setRegistriesOnce()
     {
-        static std::once_flag flag;
-        std::call_once(flag, [&]() {
+        std::call_once(flagSetRegistries, [&]() {
             size_t count = m_modelRegistry->m_db->count();
             if (count && m_modelRegistry->setRegistries()) {
                 index = count >= 2 ? 1 : 0;

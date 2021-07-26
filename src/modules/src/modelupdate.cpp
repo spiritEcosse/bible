@@ -9,8 +9,7 @@ namespace modules {
 
     template <class T>
     ModelUpdate<T>::ModelUpdate()
-    {
-    }
+        : m_db { new db::Db<T>() } {}
 
     template <class T>
     int ModelUpdate<T>::rowCount(const QModelIndex& /* parent */) const
@@ -55,7 +54,7 @@ namespace modules {
           auto guard = m_db->storage->transaction_guard();
 
           m_db->removeAll();
-          int chunkSize = 2000;
+          int chunkSize = 1000;
 
           auto start = container.begin();
           auto end = container.end();
@@ -83,7 +82,7 @@ namespace modules {
           auto guard = m_db->storage->transaction_guard();
 
           m_db->removeAll();
-          int chunkSize = 2000;
+          int chunkSize = 1000;
 
           auto start = container.begin();
           auto end = container.end();
@@ -107,6 +106,7 @@ namespace modules {
     template <class T>
     void ModelUpdate<T>::transform(const QJsonDocument &document)
     {
+        m_objectsFromJson.clear();
         try {
             const QJsonArray& source = document.object().value(getNameJson()).toArray();
 

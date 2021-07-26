@@ -74,7 +74,7 @@ ExpandingSectionPatch {
                 ExpandingSectionPatch {
                     id: expandingSectionBooks
                     title: long_name
-                    obj: model
+//                    obj: model
 
                     content.sourceComponent: Column {
                         width: parent.width

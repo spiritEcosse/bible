@@ -27,6 +27,8 @@ namespace modules {
         int m_weight;
         int m_id;
         QUrl pathToQUrl() const;
+        QString pathToQString() const;
+        QByteArray path() const;
         bool operator==(const Host& other) const;
 
     #ifndef QT_NO_DEBUG_STREAM

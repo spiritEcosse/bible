@@ -25,20 +25,20 @@ namespace modules {
     {
     public:
         ModelUpdate();
-        void update(const std::vector<T>& container);
-        void updateUnique(const std::vector<std::unique_ptr<T>>& container);
+        virtual void update(const std::vector<T>& container);
+        virtual void updateUnique(const std::vector<std::unique_ptr<T>>& container);
         virtual int rowCount(const QModelIndex& parent = {}) const override;
-        void transform(const QJsonDocument& document);
+        virtual void transform(const QJsonDocument& document);
 
         std::vector<std::unique_ptr<T>> m_objects;
         std::vector<T> m_objectsFromJson;
         int objectsCount = 0;
-        std::shared_ptr<db::Db<T>> m_db = db::Db<T>::getInstance();
+        std::unique_ptr<db::Db<T>> m_db;
     protected:
         Q_INVOKABLE bool canFetchMore(const QModelIndex &parent) const override;
         Q_INVOKABLE void fetchMore(const QModelIndex &parent) override;
         const QString nameJson;
-        virtual const QString getNameJson() = 0;
+        virtual const QString getNameJson() {}
     private:
         virtual void updateWrapper() override;
     };

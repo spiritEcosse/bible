@@ -58,7 +58,7 @@ namespace modules {
 
         void tst_Registry::constructor()
         {
-            ::tests::EntityBase<Registry>::constructor();
+            EntityBase<Registry>::constructor();
         }
 
         void tst_Registry::urlToQUrl()

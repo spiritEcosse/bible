@@ -1,13 +1,13 @@
 #include <QtTest>
 #include "modelmodule.h"
-#include "basetest.h"
-
+#include "modeljsontest.h"
+#include "dereferenceiterator.h"
 
 namespace modules {
 
     namespace tests {
 
-        class tst_ModelModule : public ::tests::BaseTest<Module, ModelModule> {
+        class tst_ModelModule : public ::tests::ModelJsonTest<Module, ModelModule> {
             Q_OBJECT
 
         public:
@@ -21,6 +21,8 @@ namespace modules {
             void initTestCase() override;
             void cleanupTestCase() override;
             void update() override;
+            void updateObjects_data();
+            void updateObjects();
         };
 
         tst_ModelModule::tst_ModelModule() {}
@@ -29,12 +31,12 @@ namespace modules {
 
         void tst_ModelModule::initTestCase()
         {
-            ::tests::BaseTest<Module, ModelModule>::initTestCase();
+            ModelJsonTest<Module, ModelModule>::initTestCase();
         }
 
         void tst_ModelModule::cleanupTestCase()
         {
-            ::tests::BaseTest<Module, ModelModule>::cleanupTestCase();
+            ModelJsonTest<Module, ModelModule>::cleanupTestCase();
         }
 
         //helpers
@@ -55,8 +57,7 @@ namespace modules {
                                 "copyright",
                                 QDate(2017, 03, 31),
                                 true,
-                                false
-                                )
+                                false)
                 );
             }
             return objects;
@@ -79,8 +80,7 @@ namespace modules {
                                 "copyright",
                                 QDate(2017, 03, 31),
                                 true,
-                                false
-                                )
+                                false)
                 );
             }
             return objects;
@@ -89,7 +89,27 @@ namespace modules {
         // tests
         void tst_ModelModule::update()
         {
-            ::tests::BaseTest<Module, ModelModule>::update();
+            ModelJsonTest<Module, ModelModule>::update();
+        }
+
+        void tst_ModelModule::updateObjects_data()
+        {
+            cleanTable();
+            helperSave();
+        }
+
+        void tst_ModelModule::updateObjects()
+        {
+            const auto &objects = helperGetObjectsUnique();
+
+            ModelModule modelModule;
+            modelModule.updateObjects();
+            QCOMPARE(modelModule.m_objects.size(), objects.size());
+            QCOMPARE(std::equal(dereference_iterator(modelModule.m_objects.begin()),
+                       dereference_iterator(modelModule.m_objects.end()),
+                       dereference_iterator(objects.begin())
+                       ), true);
+            QCOMPARE(modelModule.objectsCount, 0);
         }
 
     }

@@ -7,6 +7,7 @@
 #include "module.h"
 #include "dereferenceiterator.h"
 #include "modelgroupmodules.h"
+#include "modeljsontest.h"
 
 Q_DECLARE_METATYPE(std::vector<modules::Module>)
 Q_DECLARE_METATYPE(std::vector<modules::GroupModulesShared>)
@@ -15,7 +16,7 @@ namespace modules {
 
     namespace tests {
 
-        class tst_ManagerGroup : public QObject
+        class tst_ManagerGroup : public ::tests::ModelJsonTest<Registry, ModelRegistry>
         {
             Q_OBJECT
 
@@ -24,14 +25,9 @@ namespace modules {
             ~tst_ManagerGroup();
 
         private:
-            const QString pathFiles { "files" };
-            const QString dirDownload = "download";
-            const QString strUrl { "file://" };
-            QFile fileRegistry { "registry.json" };
-            const QFile fileRegistryArchive { "registry.zip" };
-            const QFile fileRegistryInfo { "registry_info.json" };
-            QDir dir;
             QJsonDocument helperGetInvalidDocument() const;
+            std::vector<RegistryUnique> helperGetObjectsUnique() const;
+            std::vector<RegistryShared> helperGetObjects() const;
 
         private slots:
             void initTestCase();
@@ -71,6 +67,20 @@ namespace modules {
                     { "downloads",  array }
                 }
             };
+        }
+
+        std::vector<RegistryUnique> tst_ManagerGroup::helperGetObjectsUnique() const
+        {
+            return std::vector<RegistryUnique>{};
+        }
+
+        std::vector<RegistryShared> tst_ManagerGroup::helperGetObjects() const
+        {
+            std::vector<RegistryShared> objects;
+            for ( size_t in = 0; in < vectorSize; in++) {
+                objects.push_back(std::make_shared<Registry>("bGluazE=", "bGluazEx", 1));
+            }
+            return objects;
         }
 
         // tests

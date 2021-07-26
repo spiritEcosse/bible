@@ -2,16 +2,13 @@
 #include <JlCompress.h>
 #include "managerregistry.h"
 #include "dereferenceiterator.h"
-#include "basetest.h"
-
-Q_DECLARE_METATYPE(std::vector<modules::RegistryShared>)
-Q_DECLARE_METATYPE(std::vector<modules::Registry>)
+#include "modeljsontest.h"
 
 namespace modules {
 
     namespace tests {
 
-        class tst_ManagerRegistry : public ::tests::BaseTest<Registry, ModelRegistry>
+        class tst_ManagerRegistry : public ::tests::ModelJsonTest<Registry, ModelRegistry>
         {
             Q_OBJECT
 
@@ -20,13 +17,6 @@ namespace modules {
             ~tst_ManagerRegistry();
 
         private:
-            const QString pathFiles { "files" };
-            const QString dirDownload { "download" };
-            const QString strUrl { "file://" };
-            const QString fileRegistry { "registry.json" };
-            const QString fileRegistryArchive { "registry.zip" };
-            QFile fileRegistryInfo { "registry_info.json" };
-            const QDir dir;
             void createFileRegistryInfo();
             void createFileRegistry(
                     const QJsonDocument& document = QJsonDocument {},
@@ -35,13 +25,10 @@ namespace modules {
                     const QJsonDocument& document = QJsonDocument {},
                     const QString& fileNameArchive = "registry.zip",
                     const QString& fileNameRegistry = "registry.json");
-            QJsonDocument helperGetDocument();
             void setQSettings(int value = 0, QString key = "registryVersion");
-            const int version = 10;
-            const size_t vectorSize = 3;
-            std::unique_ptr<db::Db<Registry>> m_db;
             QJsonDocument helperGetInvalidDocument() const;
             std::vector<RegistryShared> helperGetObjects() const;
+            std::vector<RegistryUnique> helperGetObjectsUnique() const;
 
         private slots:
             void initTestCase();
@@ -75,12 +62,12 @@ namespace modules {
 
         void tst_ManagerRegistry::initTestCase()
         {
-            ::tests::BaseTest<Registry, ModelRegistry>::initTestCase();
+            ModelJsonTest<Registry, ModelRegistry>::initTestCase();
         }
 
         void tst_ManagerRegistry::cleanupTestCase()
         {
-            ::tests::BaseTest<Registry, ModelRegistry>::cleanupTestCase();
+            ModelJsonTest<Registry, ModelRegistry>::cleanupTestCase();
         }
 
         tst_ManagerRegistry::tst_ManagerRegistry() {}
@@ -89,6 +76,11 @@ namespace modules {
 
         // helpers
 
+        std::vector<RegistryUnique> tst_ManagerRegistry::helperGetObjectsUnique() const
+        {
+            return std::vector<RegistryUnique>{};
+        }
+
         std::vector<RegistryShared> tst_ManagerRegistry::helperGetObjects() const
         {
             std::vector<RegistryShared> objects;
@@ -96,22 +88,6 @@ namespace modules {
                 objects.push_back(std::make_shared<Registry>("bGluazE=", "bGluazEx", 1));
             }
             return objects;
-        }
-
-        QJsonDocument tst_ManagerRegistry::helperGetDocument()
-        {
-            QJsonArray array;
-            array << QJsonObject {{"url", "link1"}, {"priority", 1}, {"info_url", "link11"}};
-            array << QJsonObject {{"url", "link1"}, {"priority", 1}, {"info_url", "link11"}};
-            array << QJsonObject {{"url", "link1"}, {"priority", 1}, {"info_url", "link11"}};
-
-            return QJsonDocument {
-                QJsonObject {
-                    { "registries",  array },
-                    { "downloads", {{"key", "val"}} },
-                    { "version", 1 }
-                }
-            };
         }
 
         QJsonDocument tst_ManagerRegistry::helperGetInvalidDocument() const
@@ -166,7 +142,7 @@ namespace modules {
         {
             qRegisterMetaType<std::vector<Registry>>("std::vector<Registry>");
             setQSettings();
-            createFileRegistryArchive(helperGetDocument());
+            createFileRegistryArchive(ModelJsonTest<Registry, ModelRegistry>::helperGetDocument());
 
             ManagerRegistry managerRegistry;
 
@@ -212,7 +188,7 @@ namespace modules {
             }
             helperSave(std::move(objects));
             setQSettings();
-            createFileRegistryArchive(helperGetDocument());
+            createFileRegistryArchive(ModelJsonTest<Registry, ModelRegistry>::helperGetDocument());
 
             ManagerRegistry managerRegistry;
 
@@ -330,9 +306,9 @@ namespace modules {
             QString fileRegistryDoesntExist { "registry_doesnt_exist_file.json" };
             QTest::newRow("error : doesn`t exist file") << fileRegistryDoesntExist << document << 0;
 
-            document = helperGetDocument();
+            document = ModelJsonTest<Registry, ModelRegistry>::helperGetDocument();
             createFileRegistry(document);
-            QTest::newRow("success") << fileRegistry << document << 1;
+            QTest::newRow("success") << fileRegistry.fileName() << document << 1;
         }
 
         void tst_ManagerRegistry::getDocument()
@@ -363,8 +339,8 @@ namespace modules {
 
             QSignalSpy spy(&managerRegistry, &ManagerRegistry::removeRegistrySuccess);
 
-            managerRegistry.registryArchive.setFileName(fileRegistryArchive);
-            managerRegistry.fileRegistry.setFileName(fileRegistry);
+            managerRegistry.registryArchive.setFileName(fileRegistryArchive.fileName());
+            managerRegistry.fileRegistry.setFileName(fileRegistry.fileName());
 
             QVERIFY(managerRegistry.registryArchive.exists());
             QVERIFY(managerRegistry.fileRegistry.exists());
@@ -381,7 +357,7 @@ namespace modules {
             QTest::addColumn<QString>("fileName");
 
             createFileRegistryArchive();
-            QTest::newRow("success") << fileRegistryArchive;
+            QTest::newRow("success") << fileRegistryArchive.fileName();
 
             QString file { "registry_other.zip" };
 

@@ -28,6 +28,7 @@ namespace modules {
         if (m_name.isEmpty()) {
             throw(core::InvalidData("Invalid data."));
         }
+
         convertSize(moduleJson.value("siz").toString());
         convertUpdate(moduleJson.value("upd").toString());
     }
@@ -59,7 +60,8 @@ namespace modules {
           m_hidden { std::move(hidden) },
           m_defaultDownload { std::move(defaultDownload) },
           m_id { std::move(id) }
-    {}
+    {
+    }
 
     bool Module::operator==(const Module &other) const
     {

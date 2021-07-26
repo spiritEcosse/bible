@@ -2,9 +2,6 @@
 #define ENTITYBASE_H
 
 #include <QtTest>
-#include "registry.h"
-#include "host.h"
-#include "module.h"
 
 namespace tests {
 

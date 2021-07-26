@@ -19,6 +19,7 @@ Source100:  bible.yaml
 Requires:   sailfishsilica-qt5 >= 0.10.9
 Requires:   quazip
 Requires:   sqlite
+Requires:   qmllive-sailfish
 Requires:   qt5-qttest
 Requires:   sdk-deploy-rpm
 BuildRequires:  pkgconfig(sailfishapp) >= 1.0.2

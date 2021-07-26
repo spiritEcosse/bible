@@ -16,10 +16,9 @@ namespace tests {
         ~BaseTest();
 
     protected:
-        virtual QJsonDocument helperGetDocument();
-        virtual QJsonDocument helperGetInvalidDocument() const;
-
         const size_t vectorSize = 3;
+        const int version = 10;
+        const QString strUrl { "file://" };
         const QString pathFiles { "files" };
         const QString dirDownload = "download";
         QDir dir;
@@ -30,9 +29,6 @@ namespace tests {
         virtual std::vector<std::unique_ptr<T>> helperGetObjectsUnique() const;
         virtual void initTestCase();
         virtual void cleanupTestCase();
-        virtual void update();
-        virtual void transform_data();
-        virtual void transform();
 
         using ModelShared = decltype(std::shared_ptr<T>());
         using ModelUnique = decltype(std::unique_ptr<T>());

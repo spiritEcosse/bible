@@ -4,7 +4,6 @@
 #include <QString>
 #include <QDate>
 #include <memory>
-
 #include "locallanguage.h"
 
 class QJsonObject;

@@ -54,7 +54,7 @@ namespace modules {
 
         void tst_Host::constructor()
         {
-            ::tests::EntityBase<Host>::constructor();
+            EntityBase<Host>::constructor();
         }
 
         void tst_Host::pathToQUrl()

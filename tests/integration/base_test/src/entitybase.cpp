@@ -1,5 +1,8 @@
 #include "entitybase.h"
 #include "invaliddata.h"
+#include "registry.h"
+#include "host.h"
+#include "module.h"
 
 Q_DECLARE_METATYPE(modules::Registry)
 Q_DECLARE_METATYPE(modules::Host)

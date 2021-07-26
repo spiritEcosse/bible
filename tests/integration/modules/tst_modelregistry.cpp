@@ -1,6 +1,6 @@
 #include <QtTest>
 #include "modelregistry.h"
-#include "basetest.h"
+#include "modeljsontest.h"
 #include "dereferenceiterator.h"
 
 Q_DECLARE_METATYPE(modules::RegistryShared)
@@ -10,7 +10,7 @@ namespace modules {
 
     namespace tests {
 
-        class tst_ModelRegistry : public ::tests::BaseTest<Registry, ModelRegistry>  {
+        class tst_ModelRegistry : public ::tests::ModelJsonTest<Registry, ModelRegistry>  {
             Q_OBJECT
 
         private:
@@ -39,12 +39,12 @@ namespace modules {
 
         void tst_ModelRegistry::initTestCase()
         {
-            ::tests::BaseTest<Registry, ModelRegistry>::initTestCase();
+            ModelJsonTest<Registry, ModelRegistry>::initTestCase();
         }
 
         void tst_ModelRegistry::cleanupTestCase()
         {
-            ::tests::BaseTest<Registry, ModelRegistry>::cleanupTestCase();
+            ModelJsonTest<Registry, ModelRegistry>::cleanupTestCase();
         }
 
         //helpers
@@ -83,7 +83,7 @@ namespace modules {
 
         void tst_ModelRegistry::update()
         {
-            ::tests::BaseTest<Registry, ModelRegistry>::update();
+            ModelJsonTest<Registry, ModelRegistry>::update();
         }
 
         void tst_ModelRegistry::setRegistries_data()
@@ -123,12 +123,12 @@ namespace modules {
 
         void tst_ModelRegistry::transform_data()
         {
-            ::tests::BaseTest<Registry, ModelRegistry>::transform_data();
+            ModelJsonTest<Registry, ModelRegistry>::transform_data();
         }
 
         void tst_ModelRegistry::transform()
         {
-            ::tests::BaseTest<Registry, ModelRegistry>::transform();
+            ModelJsonTest<Registry, ModelRegistry>::transform();
         }
     }
 

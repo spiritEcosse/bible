@@ -1,16 +1,13 @@
 #include <QtTest>
 #include "modelhost.h"
-#include "basetest.h"
+#include "modeljsontest.h"
 #include "dereferenceiterator.h"
-
-Q_DECLARE_METATYPE(modules::HostShared)
-Q_DECLARE_METATYPE(std::vector<modules::HostShared>)
 
 namespace modules {
 
     namespace tests {
 
-        class tst_ModelHost : public ::tests::BaseTest<Host, ModelHost>  {
+        class tst_ModelHost : public ::tests::ModelJsonTest<Host, ModelHost>  {
             Q_OBJECT
 
         private:
@@ -27,6 +24,7 @@ namespace modules {
             void update() override;
             void transform_data() override;
             void transform() override;
+            void populateStaticObjects();
         };
 
         tst_ModelHost::tst_ModelHost() {}
@@ -35,12 +33,12 @@ namespace modules {
 
         void tst_ModelHost::initTestCase()
         {
-            ::tests::BaseTest<Host, ModelHost>::initTestCase();
+            ModelJsonTest<Host, ModelHost>::initTestCase();
         }
 
         void tst_ModelHost::cleanupTestCase()
         {
-            ::tests::BaseTest<Host, ModelHost>::cleanupTestCase();
+            ModelJsonTest<Host, ModelHost>::cleanupTestCase();
         }
 
         //helpers
@@ -65,19 +63,35 @@ namespace modules {
 
         // tests
 
+
+        void tst_ModelHost::populateStaticObjects()
+        {
+            cleanTable();
+            helperSave();
+
+            const auto &objects = helperGetObjectsUnique();
+            ModelHost model;
+            model.populateStaticObjects();
+            QCOMPARE(model.objectsStatic.size(), objects.size());
+            QCOMPARE(std::equal(dereference_iterator(model.objectsStatic.begin()),
+                       dereference_iterator(model.objectsStatic.end()),
+                       dereference_iterator(objects.begin())
+                       ), true);
+        }
+
         void tst_ModelHost::update()
         {
-            ::tests::BaseTest<Host, ModelHost>::update();
+            ModelJsonTest<Host, ModelHost>::update();
         }
 
         void tst_ModelHost::transform_data()
         {
-            ::tests::BaseTest<Host, ModelHost>::transform_data();
+            ModelJsonTest<Host, ModelHost>::transform_data();
         }
 
         void tst_ModelHost::transform()
         {
-            ::tests::BaseTest<Host, ModelHost>::transform();
+            ModelJsonTest<Host, ModelHost>::transform();
         }
 
     }

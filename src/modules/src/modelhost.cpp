@@ -1,8 +1,12 @@
 #include "modelhost.h"
+#include <mutex>
+#include <QDebug>
 
 namespace modules {
 
     using namespace sqlite_orm;
+
+    std::vector<HostUnique> ModelHost::objectsStatic;
 
     ModelHost::ModelHost()
     {
@@ -11,22 +15,31 @@ namespace modules {
 
     ModelHost::~ModelHost() {}
 
-    QUrl ModelHost::data(int index, int role) const
+    QString ModelHost::data(int index, int role) const
     {
-        QUrl url;
+        QString str;
         if (index > static_cast<int>(m_objects.size())) {
-            return url;
+            return str;
         }
 
-        const auto &object = m_objects.at(index);
+        const auto &object = objectsStatic.at(index);
 
         switch (role) {
             case HostRoles::PathRole:
-                url = object->pathToQUrl();
+                str = object->pathToQString();
                 break;
         }
 
-        return url;
+        return str;
+    }
+
+    void ModelHost::populateStaticObjects()
+    {
+        objectsStatic = m_db->storage->get_all_pointer<Host>(
+                    multi_order_by(
+                        order_by(&Host::m_weight).desc(),
+                        order_by(&Host::m_priority)
+                    ));
     }
 
     // overridden from qt

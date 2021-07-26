@@ -35,6 +35,11 @@ namespace modules {
         return m_updateCompleted;
     }
 
+    QString ModelGroupModules::needle() const
+    {
+        return m_needle;
+    }
+
     void ModelGroupModules::update()
     {
         try {
@@ -62,6 +67,62 @@ namespace modules {
         }
     }
 
+    void ModelGroupModules::doSearchByModules()
+    {
+        beginResetModel();
+        objectsCount = 0;
+
+        m_objects = m_db->storage->get_all_pointer<GroupModules>(
+                inner_join<Module>(on(c(&Module::m_idGroupModules) == &GroupModules::m_groupId)),
+                where(
+                    like(&Module::m_abbreviation, m_needle + "%")
+                ),
+                group_by(&GroupModules::m_groupId),
+                multi_order_by(
+                    order_by(&GroupModules::m_region),
+                    order_by(&GroupModules::getLanguageName),
+                    order_by(&GroupModules::m_name)
+                ));
+        endResetModel();
+    }
+
+    void ModelGroupModules::doSearchByGroups()
+    {
+        beginResetModel();
+        objectsCount = 0;
+
+        m_objects = m_db->storage->get_all_pointer<GroupModules>(
+            where(
+                like(&GroupModules::m_region, m_needle + "%") or
+                like(&GroupModules::m_name, m_needle + "%") or
+                like(&GroupModules::getLanguageName, m_needle + "%")
+            ),
+            multi_order_by(
+                order_by(&GroupModules::m_region),
+                order_by(&GroupModules::getLanguageName),
+                order_by(&GroupModules::m_name)
+            ));
+        endResetModel();
+    }
+
+    void ModelGroupModules::search(const QString& needle)
+    {
+        setFieldSearch(needle);
+
+        if (m_needle.length() >= 2) {
+            emit changeNeedle();
+
+            switch (m_entitySearch) {
+                case ModuleSearch :
+                    doSearchByModules();
+                    break;
+                case GroupSearch :
+                    doSearchByGroups();
+                    break;
+            }
+        }
+    }
+
     void ModelGroupModules::setUpdateCompleted()
     {
         m_updateCompleted = true;
@@ -83,25 +144,8 @@ namespace modules {
 
     void ModelGroupModules::getAll()
     {
+        m_entitySearch = EntitySearch::GroupSearch;
         updateObjects();
-    }
-
-    void ModelGroupModules::search(const QString& needle)
-    {
-        beginResetModel();
-        objectsCount = 0;
-        m_objects = m_db->storage->get_all_pointer<GroupModules>(
-                    where(
-                        like(&GroupModules::m_region, needle + "%") or
-                        like(&GroupModules::m_name, needle + "%") or
-                        like(&GroupModules::getLanguageName, needle + "%")
-                    ),
-                    multi_order_by(
-                        order_by(&GroupModules::m_region),
-                        order_by(&GroupModules::getLanguageName),
-                        order_by(&GroupModules::m_name)
-                    ));
-        endResetModel();
     }
 
     void ModelGroupModules::downloadRegistry()
@@ -109,6 +153,16 @@ namespace modules {
         m_newVersionAvailable = false;
         emit changeNewVersionAvailable();
         QTimer::singleShot(0, m_managerGroup.get(), &ManagerGroup::downloadRegistry);
+    }
+
+    bool ModelGroupModules::searchByModules() const
+    {
+        return m_entitySearch == ModuleSearch;
+    }
+
+    bool ModelGroupModules::searchByGroups() const
+    {
+        return m_entitySearch == GroupSearch;
     }
 
     QVariant ModelGroupModules
@@ -130,11 +184,21 @@ namespace modules {
                 data = std::move(groupModules->region());
                 break;
             case ModulesRole :
-                groupModules->m_modules.reset(new ModelModule(groupModules->m_groupId));
+                if (groupModules->m_modules == nullptr) {
+                    groupModules->m_modules.reset(
+                                new ModelModule(groupModules->m_groupId, searchByModules() ? m_needle : "")
+                                );
+                }
                 data = qVariantFromValue(groupModules->m_modules.get());
                 break;
             case CountModulesRole :
                 data = std::move(groupModules->m_countModules);
+                break;
+            case IdRole :
+                data = std::move(groupModules->m_id);
+                break;
+            case GroupIdRole :
+                data = std::move(groupModules->m_groupId);
                 break;
         }
 
@@ -148,7 +212,24 @@ namespace modules {
             { RegionRole, "region" },
             { ModulesRole, "modules" },
             { CountModulesRole, "count_modules" },
+            { IdRole, "id" },
+            { GroupIdRole, "group_id" },
         };
+    }
+
+    void ModelGroupModules::setFieldSearch(const QString& needle)
+    {
+        QRegularExpression re("^([m|M]\\s)([\\w]*)$", QRegularExpression::CaseInsensitiveOption);
+        QRegularExpressionMatch match = re.match(std::move(needle));
+
+        if (match.hasMatch())
+        {
+            m_entitySearch = EntitySearch::ModuleSearch;
+            m_needle = match.captured(2);
+        } else {
+            m_entitySearch = EntitySearch::GroupSearch;
+            m_needle = std::move(needle);
+        }
     }
 
 }

@@ -2,7 +2,7 @@
 #include "modelgroupmodules.h"
 #include "groupmodules.h"
 #include <JlCompress.h>
-#include "basetest.h"
+#include "modeljsontest.h"
 #include "dereferenceiterator.h"
 
 Q_DECLARE_METATYPE(std::vector<modules::GroupModulesShared>)
@@ -11,16 +11,8 @@ namespace modules {
 
     namespace tests {
 
-        class tst_ModelGroupModules : public ::tests::BaseTest<GroupModules, ModelGroupModules> {
+        class tst_ModelGroupModules : public ::tests::ModelJsonTest<GroupModules, ModelGroupModules> {
             Q_OBJECT
-
-        private:
-            const QString strUrl { "file://" };
-            QFile fileRegistry { "registry.json" };
-            const QFile fileRegistryArchive { "registry.zip" };
-            const QFile fileRegistryInfo { "registry_info.json" };
-//            QJsonDocument helperGetInvalidDocument() const;
-            void setQSettings(int value = 0, QString key = "registryVersion");
 
         public:
             tst_ModelGroupModules();
@@ -28,6 +20,7 @@ namespace modules {
 
         private:
             std::vector<GroupModulesShared> helperGetObjects() const override;
+            void setQSettings(int value = 0, QString key = "registryVersion");
             std::vector<GroupModulesUnique> helperGetObjectsUnique() const override;
 
         private slots:
@@ -46,6 +39,8 @@ namespace modules {
             void search();
             void getAll_data();
             void getAll();
+            void setFieldSearch();
+            void setFieldSearch_data();
         };
 
         tst_ModelGroupModules::tst_ModelGroupModules() {}
@@ -54,12 +49,12 @@ namespace modules {
 
         void tst_ModelGroupModules::initTestCase()
         {
-            ::tests::BaseTest<GroupModules, ModelGroupModules>::initTestCase();
+            ModelJsonTest<GroupModules, ModelGroupModules>::initTestCase();
         }
 
         void tst_ModelGroupModules::cleanupTestCase()
         {
-            ::tests::BaseTest<GroupModules, ModelGroupModules>::cleanupTestCase();
+            ModelJsonTest<GroupModules, ModelGroupModules>::cleanupTestCase();
         }
 
         //helpers
@@ -122,7 +117,7 @@ namespace modules {
 
         void tst_ModelGroupModules::update()
         {
-            ::tests::BaseTest<GroupModules, ModelGroupModules>::update();
+            ModelJsonTest<GroupModules, ModelGroupModules>::update();
         }
 
         void tst_ModelGroupModules::downloadRegistry_data() {
@@ -249,6 +244,31 @@ namespace modules {
         void tst_ModelGroupModules::getAll()
         {
             updateObjects();
+        }
+
+        void tst_ModelGroupModules::setFieldSearch_data()
+        {
+            QTest::addColumn<QString>("needle");
+            QTest::addColumn<int>("entitySearch");
+            QTest::addColumn<QString>("m_needle");
+
+            QTest::newRow("needle: russ") << "russ" << 0 << "russ";
+            QTest::newRow("needle: m russ") << "m russ" << 1 << "russ";
+            QTest::newRow("needle: eng") << "eng" << 0 << "eng";
+            QTest::newRow("needle: M eng") << "M eng" << 1 << "eng";
+        }
+
+        void tst_ModelGroupModules::setFieldSearch()
+        {
+            QFETCH(QString, needle);
+            QFETCH(int, entitySearch);
+            QFETCH(QString, m_needle);
+
+            ModelGroupModules modelGroupModules;
+            modelGroupModules.setFieldSearch(needle);
+
+            QCOMPARE(modelGroupModules.m_entitySearch, entitySearch);
+            QCOMPARE(modelGroupModules.m_needle, m_needle);
         }
     }
 

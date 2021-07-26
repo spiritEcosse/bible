@@ -2,7 +2,10 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 //import bible.BooksModel 1.0
 import bible.ModelGroupModules 1.0
+import bible.ModelModuleDownload 1.0
+import bible.ModelModule 1.0
 //import bible.HistoryModel 1.0
+import "../components"
 
 Pages {
     id: page
@@ -14,6 +17,36 @@ Pages {
     property int bookNumber
     property int chapterIndex
     property int verseIndex
+    property var selectedModules: []
+    property var downloadedModules: []
+    property var downloadModulesLater: []
+    property bool isSelecting: selectedModules.length
+
+    ModelModuleDownload {
+        id: moduleDownload
+
+        Component.onCompleted: {
+            var selectionArray = [];
+            var downloadedArray = [];
+
+            for (var i = 0; i < moduleDownload.rowCount(); i++) {
+                var module_id = moduleDownload.data(moduleDownload.index(i, 0), 0);
+                var group_id = moduleDownload.data(moduleDownload.index(i, 0), 1);
+                var selecting = moduleDownload.data(moduleDownload.index(i, 0), 2);
+                var downloaded = moduleDownload.data(moduleDownload.index(i, 0), 3);
+
+                if (selecting) {
+                    selectionArray.push({"selecting": selecting, "moduleId": module_id, "groupId": group_id});
+                }
+                if (downloaded) {
+                    downloadedArray.push({"downloaded": downloaded, "moduleId": module_id, "groupId": group_id});
+                }
+            }
+            selectedModules = selectionArray;
+            downloadedModules = downloadedArray;
+            moduleDownload.clearObjects();
+        }
+    }
 
 //    HistoryModel {
 //        id: historyModel
@@ -37,6 +70,10 @@ Pages {
 
     ModelGroupModules {
         id: groupModules
+    }
+
+    ModelModule {
+        id: modelModule
     }
 
     VisualItemModel {
@@ -106,7 +143,7 @@ Pages {
             }
         }
 
-        SilicaFlickableModules {}
+        ModulesPage {}
 
         SilicaFlickable {
             id: silicaFlickableSearch
@@ -127,13 +164,13 @@ Pages {
                     text: "Expanding sections"
                 }
 
-                ExpandingSectionGroupPatch {
+                ExpandingSectionGroup {
                     currentIndex: 0
 
                     Repeater {
-                        model: 5
+                        model: 50
 
-                        ExpandingSectionPatch {
+                        ExpandingSection {
                             id: section
 
                             property int sectionIndex: model.index
@@ -164,23 +201,15 @@ Pages {
         id: silicaFlickableMenu
         anchors.bottom: parent.bottom
         width: parent.width
-        height: slideshow.height + panel.height
-        contentHeight: slideshow.height + panel.height
+        height: slideshow.height
+        contentHeight: slideshow.height
 
         SlideshowView {
             id: slideshow
             width: parent.width
             itemWidth: parent.width
-            height: page.height - panel.height
+            height: page.height
             model: visualModel
-            anchors.bottomMargin: panel.height
-        }
-
-        Image {
-            width: parent.width
-            height: panel.height
-            source: "image://theme/graphic-gradient-edge"
-            anchors.top: slideshow.bottom
         }
 
         SilicaListView {
@@ -262,29 +291,6 @@ Pages {
             }
         }
 
-        SearchField {
-            id: searchField
-            visible: slideshow.currentIndex == 1
-            onVisibleChanged: {
-                enabled = visible
-            }
-            anchors.bottom: parent.bottom
-            onTextChanged: {
-                if (text.length >= 2) {
-                    groupModules.search(text)
-                } else if (text.length === 0) {
-                     groupModules.getAll()
-                }
-            }
-            width: parent.width
-            height: enabled ? implicitHeight : 0.0
-            opacity: enabled ? 1.0 : 0.0
-            Behavior on opacity { FadeAnimator {} }
-            Behavior on height { NumberAnimation { duration: 200; easing.type: Easing.InOutQuad } }
-            EnterKey.iconSource: "image://theme/icon-m-enter-close"
-            EnterKey.onClicked: focus = false
-        }
-
         PushUpMenu {
             id: pushUpMenu
 
@@ -306,6 +312,29 @@ Pages {
             MenuItem {
                 text: qsTrId("Some action")
                 visible: slideshow.currentIndex == 0
+            }
+
+            MenuItem {
+                text: qsTrId("Download bulk")
+                visible: slideshow.currentIndex == 1
+                enabled: isSelecting
+                onClicked: {
+                    for (var i = 0; i < selectedModules.length; i++) {
+                        var selected = selectedModules[i];
+                        if (selected.module.download === false) {
+                            selected.module.download = true
+                        } else {
+                            console.log(">>> not exists not exists not exists", selected.id)
+                            downloadModulesLater.push(selected.id)
+                        }
+
+//                        var selected = selectedModules[i];
+//                        console.log(selected.groupIndex, selected.moduleIndex, groupModules.index(selected.groupIndex, 0), groupModules.data(groupModules.index(selected.groupIndex, 0), 2));
+//                        var mod = groupModules.data(groupModules.index(selected.groupIndex, 0), 2);
+//                        console.log(mod.data(mod.index(selected.moduleIndex, 0), 0));
+                    }
+                    selectedModules = []
+                }
             }
         }
     }

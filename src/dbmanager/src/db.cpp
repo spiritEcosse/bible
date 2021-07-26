@@ -5,23 +5,10 @@
 namespace db {
 
     template <class T>
-    std::unique_ptr<Db<T>> Db<T>::m_db = nullptr;
-
-    template <class T>
     Db<T>::Db()
     {
         storage.reset(new Storage(userStorage("user.sqlite")));
         storage->sync_schema();
-    }
-
-    template <class T>
-    std::unique_ptr<Db<T>> Db<T>::getInstance()
-    {
-        if (m_db == nullptr)
-        {
-            m_db.reset(new Db<T> {});
-        }
-        return std::move(m_db);
     }
 
     template <class T>
@@ -45,6 +32,9 @@ namespace db {
     template<class T>
     void Db<T>::save(const vector_unique_iterator& begin, const vector_unique_iterator& end)
     {
+//        storage->insert_range<T>(begin, end, [](const std::unique_ptr<T> &pointer) -> const T & {
+//            return *pointer;
+//        });
         storage->insert_range(dereference_iterator(begin), dereference_iterator(end));
     }
 
@@ -70,4 +60,5 @@ namespace db {
     template class Db<Module>;
     template class Db<GroupModules>;
     template class Db<Host>;
+    template class Db<ModuleDownload>;
 }

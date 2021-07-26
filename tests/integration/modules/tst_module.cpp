@@ -91,7 +91,7 @@ namespace modules {
 
         void tst_Module::constructor()
         {
-            ::tests::EntityBase<Module>::constructor();
+            EntityBase<Module>::constructor();
         }
 
         void tst_Module::convertSize_data()

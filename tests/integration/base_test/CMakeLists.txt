@@ -3,7 +3,9 @@ project(base_test LANGUAGES CXX)
 set(RESOURCES
     include/entitybase.h
     include/basetest.h
+    include/modeljsontest.h
     src/basetest.cpp
+    src/modeljsontest.cpp
     src/entitybase.cpp
 )
 

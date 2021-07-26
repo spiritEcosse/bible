@@ -35,6 +35,16 @@ namespace modules {
         return QUrl::fromEncoded(QByteArray::fromBase64(m_path));
     }
 
+    QString Host::pathToQString() const
+    {
+        return std::move(QByteArray::fromBase64(m_path));
+    }
+
+    QByteArray Host::path() const
+    {
+        return m_path;
+    }
+
     bool Host::operator==(const Host &other) const
     {
         return m_alias == other.m_alias &&
