@@ -24,6 +24,11 @@ namespace modules {
         objectsCount = 0;
     }
 
+    void ModelModuleDownload::removeAllObjects()
+    {
+        m_db->storage->remove_all<ModuleDownload>();
+    }
+
     void ModelModuleDownload::updateObjects()
     {
         beginResetModel();

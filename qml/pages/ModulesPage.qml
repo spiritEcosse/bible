@@ -9,6 +9,12 @@ SilicaFlickable {
     height: parent.height
     clip: true
 
+    function selectedModulesDelete()
+    {
+        selectedModules = [];
+        moduleDownload.removeAllObjects();
+    }
+
     function foundModule(moduleId) {
         var foundIndex = -1;
         if(selectedModules.length > 0) {
@@ -108,7 +114,7 @@ SilicaFlickable {
             id: listViewModules
             model: groupModules
             width: parent.width
-            height: parent.height - header.height - searchField.height
+            height: parent.height - header.height - panel.height
             clip: true
             snapMode: ListView.SnapToItem
             highlightRangeMode: ListView.StrictlyEnforceRange
@@ -449,11 +455,59 @@ SilicaFlickable {
             source: "image://theme/graphic-gradient-edge"
             anchors.bottom: parent.bottom
 
+            states: [
+                State {
+                    name: "searchFieldActive"
+                    when: searchField.enabled
+                    PropertyChanges { target: searchField; opacity: 1 }
+                    PropertyChanges { target: searchField; height : panel.height }
+                    PropertyChanges { target: iconDownload; opacity: 1 }
+                    PropertyChanges { target: iconDownload; height : panel.height }
+                    PropertyChanges { target: selectedMessagesActions; opacity: 0 }
+                    PropertyChanges { target: selectedMessagesActions; height : 0 }
+                },
+
+                State {
+                    name: "selectedMessagesActionsActive"
+                    when: selectedMessagesActions.enabled
+                    PropertyChanges { target: searchField; opacity: 0 }
+                    PropertyChanges { target: searchField; height : 0 }
+                    PropertyChanges { target: selectedMessagesActions; opacity: 1 }
+                    PropertyChanges { target: selectedMessagesActions; height : panel.height }
+                }
+            ]
+
+            transitions: [
+                Transition {
+                    to: "searchFieldActive"
+                    ParallelAnimation {
+                        PropertyAnimation { target: searchField; property: "height"; duration: 200; easing.type: Easing.InOutQuad }
+                        PropertyAnimation { target: searchField; property: "opacity"; duration: 200; from: 0; to: 1; easing.type: Easing.InOutQuad  }
+                        PropertyAnimation { target: iconDownload; property: "height"; duration: 200; easing.type: Easing.InOutQuad }
+                        PropertyAnimation { target: iconDownload; property: "opacity"; duration: 200; from: 0; to: 1; easing.type: Easing.InOutQuad  }
+                        RotationAnimation { target: selectedMessagesActions; property: "height"; duration: 200; easing.type: Easing.InOutQuad  }
+                        PropertyAnimation { target: selectedMessagesActions; property: "opacity"; duration: 200; from: 1; to: 0; easing.type: Easing.InOutQuad  }
+                    }
+                },
+                Transition {
+                    to: "selectedMessagesActionsActive"
+                    ParallelAnimation {
+                        PropertyAnimation { target: searchField; property: "height"; duration: 200; easing.type: Easing.InOutQuad }
+                        PropertyAnimation { target: searchField; property: "opacity"; duration: 200; from: 1; to: 0; easing.type: Easing.InOutQuad  }
+                        PropertyAnimation { target: iconDownload; property: "height"; duration: 200; easing.type: Easing.InOutQuad }
+                        PropertyAnimation { target: iconDownload; property: "opacity"; duration: 200; from: 1; to: 0; easing.type: Easing.InOutQuad  }
+                        PropertyAnimation { target: selectedMessagesActions; property: "height"; duration: 200; easing.type: Easing.InOutQuad  }
+                        PropertyAnimation { target: selectedMessagesActions; property: "opacity"; duration: 200; from: 0; to: 1; easing.type: Easing.InOutQuad  }
+                    }
+                }
+            ]
+
             SearchField {
                 id: searchField
                 property var needle: groupModules.needle
                 property bool searchByModules: false
                 property bool searchByGroups: true
+                enabled: !selectedMessagesActions.enabled
                 onNeedleChanged: {
                     searchByModules = groupModules.searchByModules()
                     searchByGroups = groupModules.searchByGroups()
@@ -466,14 +520,96 @@ SilicaFlickable {
                         groupModules.getAll()
                     }
                 }
-                enabled: true
-                width: parent.width
-                height: enabled ? panel.height : 0.0
-                opacity: enabled ? 1.0 : 0.0
-                Behavior on opacity { FadeAnimator {} }
-                Behavior on height { NumberAnimation { duration: 200; easing.type: Easing.InOutQuad } }
+//                width: parent.width - iconDownload.width
                 EnterKey.iconSource: "image://theme/icon-m-enter-close"
                 EnterKey.onClicked: focus = false
+                anchors.right: iconDownload.left
+                anchors.left: parent.left
+            }
+
+            IconButton {
+                id: iconDownload
+                icon.source: "image://theme/icon-m-back"
+                rotation: 180
+                icon.sourceSize: Qt.size(Theme.iconSizeMedium, Theme.iconSizeMedium)
+                visible: searchField.enabled && isSelecting
+                onClicked: selectedMessagesActions.enabled = true
+                anchors {
+                    right: parent.right
+                    rightMargin: Theme.horizontalPageMargin
+                    verticalCenter: parent.verticalCenter
+                }
+            }
+
+            Loader {
+                id: selectedMessagesActions
+                asynchronous: true
+                anchors.bottom: parent.bottom
+                enabled: isSelecting
+                property var selecting: isSelecting
+                onSelectingChanged: enabled = isSelecting
+                width: parent.width
+                sourceComponent: Component {
+                    Item {
+                        IconButton {
+                            anchors {
+                                left: parent.left
+                                leftMargin: Theme.horizontalPageMargin
+                                verticalCenter: parent.verticalCenter
+                            }
+                            icon.source: "image://theme/icon-m-cancel"
+                            onClicked: {
+                                selectedModulesDelete()
+                            }
+                        }
+
+                        Row {
+                            spacing: Theme.paddingSmall
+                            anchors {
+                                right: parent.right
+                                rightMargin: Theme.horizontalPageMargin
+                                verticalCenter: parent.verticalCenter
+                            }
+
+                            IconButton {
+                                icon.source: "image://theme/icon-m-cloud-download"
+                                icon.sourceSize: Qt.size(Theme.iconSizeMedium, Theme.iconSizeMedium)
+                                onClicked: {
+                                    //                        Clipboard.text = Functions.getMessagesArrayText(chatPage.selectedMessages);
+                                    //                        appNotification.show(qsTr("%Ln messages have been copied", "", selectedMessages.length));
+                                    selectedModulesClear()
+                                }
+                            }
+
+                            IconButton {
+                                icon.source: "image://theme/icon-m-delete"
+        //                        visible: chatInformation.id === chatPage.myUserId || selectedMessages.every(function(message){
+        //                            return message.can_be_deleted_for_all_users
+        //                        })
+                                icon.sourceSize: Qt.size(Theme.iconSizeMedium, Theme.iconSizeMedium)
+                                onClicked: {
+            //                        var ids = Functions.getMessagesArrayIds(selectedMessages);
+            //                        var chatId = chatInformation.id
+            //                        var wrapper = tdLibWrapper;
+            //                        Remorse.popupAction(chatPage, qsTr("%Ln Messages deleted", "", ids.length), function() {
+            //                            wrapper.deleteMessages(chatId, ids);
+            //                        });
+                                    selectedModulesClear()
+                                }
+                            }
+
+                            IconButton {
+                                icon.source: "image://theme/icon-m-search"
+                                icon.sourceSize: Qt.size(Theme.iconSizeMedium, Theme.iconSizeMedium)
+                                onClicked: {
+                                    selectedMessagesActions.enabled = false
+            //                        Clipboard.text = Functions.getMessagesArrayText(chatPage.selectedMessages);
+            //                        appNotification.show(qsTr("%Ln messages have been copied", "", selectedMessages.length));
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }

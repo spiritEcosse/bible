@@ -30,6 +30,7 @@ namespace modules {
         void create(const QString& abbreviation, bool selecting, bool downloaded = false);
         void remove(int id);
         Q_INVOKABLE void clearObjects();
+        Q_INVOKABLE void removeAllObjects();
         Q_INVOKABLE void crudWithSelecting(const QString& abbreviation, bool selecting);
         Q_INVOKABLE void crudWithDownloaded(const QString& abbreviation, bool downloaded);
 
