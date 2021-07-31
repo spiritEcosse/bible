@@ -24,8 +24,8 @@ namespace modules {
             void cleanupTestCase() override;
             void updateObjects_data();
             void updateObjects();
-            void getOrCreate();
-            void updateOrDelete();
+            void crudWithSelecting();
+            void crudWithDownloaded();
             void remove();
         };
 
@@ -120,36 +120,54 @@ namespace modules {
             QCOMPARE(model.objectsCount, static_cast<int>(objects.size()));
         }
 
-        void tst_ModelModuleDownload::getOrCreate()
-        {
-            cleanTable();
-
-            ModelModuleDownload model;
-//            int id = model.getOrCreate("abbreviation1", true, false);
-//            const auto &object = m_db->storage->get_pointer<ModuleDownload>(id);
-//            QVERIFY(object->m_selecting);
-//            QCOMPARE(object->m_downloaded, false);
-//            QCOMPARE(model.getOrCreate("abbreviation1", true, false), id);
-            QCOMPARE(m_db->count(), 1);
-        }
-
-        void tst_ModelModuleDownload::updateOrDelete()
+        void tst_ModelModuleDownload::crudWithSelecting()
         {
             cleanTable();
             helperSave();
 
             ModelModuleDownload model;
-            int id = 1;
-            //update
-//            model.updateOrDelete("abbreviation1", true);
-            const auto &object = m_db->storage->get_pointer<ModuleDownload>(id);
+            //create
+            model.crudWithSelecting("abbreviation4", true);
+            const auto &object = m_db->storage->get_pointer<ModuleDownload>(4);
             QVERIFY(object->m_selecting);
             QCOMPARE(object->m_downloaded, false);
-            QCOMPARE(m_db->count(), static_cast<int>(vectorSize));
+            QCOMPARE(m_db->count(), 4);
+
+            // update
+            model.crudWithSelecting("abbreviation1", true);
+            const auto &object1 = m_db->storage->get_pointer<ModuleDownload>(1);
+            QVERIFY(object1->m_selecting);
+            QCOMPARE(object1->m_downloaded, false);
+            QCOMPARE(m_db->count(), 4);
 
             //delete
-//            model.updateOrDelete("abbreviation1", false);
-            QCOMPARE(m_db->count(), 2);
+            model.crudWithSelecting("abbreviation1", false);
+            QCOMPARE(m_db->count(), 3);
+        }
+
+        void tst_ModelModuleDownload::crudWithDownloaded()
+        {
+            cleanTable();
+            helperSave();
+
+            ModelModuleDownload model;
+            //create
+            model.crudWithDownloaded("abbreviation4", true);
+            const auto &object = m_db->storage->get_pointer<ModuleDownload>(4);
+            QVERIFY(object->m_downloaded);
+            QCOMPARE(object->m_selecting, false);
+            QCOMPARE(m_db->count(), 4);
+
+            // update
+            model.crudWithDownloaded("abbreviation1", true);
+            const auto &object1 = m_db->storage->get_pointer<ModuleDownload>(1);
+            QVERIFY(object1->m_downloaded);
+            QCOMPARE(object1->m_selecting, false);
+            QCOMPARE(m_db->count(), 4);
+
+            //delete
+            model.crudWithDownloaded("abbreviation1", false);
+            QCOMPARE(m_db->count(), 3);
         }
 
         void tst_ModelModuleDownload::remove()
