@@ -4,7 +4,6 @@
 //#include "booksmodel.h"
 //#include "historymodel.h"
 //#include "commentsmodel.h"
-#include "modelmoduledownload.h"
 #include "modelgroupmodules.h"
 #include "quickdownload.h"
 
@@ -41,7 +40,6 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     modules::ModelGroupModules::registerMe();
 //    qmlRegisterType<ModelGroupModules>("bible.ModelGroupModules", 1, 0, "ModelGroupModules");
     qmlRegisterType<netmanager::QuickDownload>("bible.QuickDownload", 1, 0, "QuickDownload");
-    modules::ModelModuleDownload::registerMe();
     modules::ModelModule::registerMe();
 //    qmlRegisterType<BooksModel>("bible.BooksModel", 1, 0, "BooksModel");
 //    qmlRegisterType<CommentsModel>("bible.CommentsModel", 1, 0, "CommentsModel");

@@ -33,6 +33,8 @@ namespace modules {
         ~ModelModule();
         static void registerMe();
         Q_INVOKABLE int countAll();
+        Q_INVOKABLE void updateSelecting(int id, bool selecting) const;
+        Q_INVOKABLE void updateDownloaded(int id, bool selecting) const;
         virtual QVariant data(const QModelIndex &index, int role) const override;
         virtual QHash<int, QByteArray> roleNames() const override;
         void updateObjects();
@@ -42,6 +44,10 @@ namespace modules {
         friend class tests::tst_ModelModule;
         int m_idGroupModules = 0;
         QString m_needle = "";
+    public slots:
+        void saveExtraFieldsFromDb();
+    private slots:
+        void saveExtraFieldsToDb();
     };
 
 }

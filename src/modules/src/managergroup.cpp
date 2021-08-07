@@ -5,26 +5,18 @@
 #include <iterator>
 #include "invaliddata.h"
 #include "managergroup.h"
+#include <QDebug>
 
 namespace modules {
 
     ManagerGroup::ManagerGroup(QObject *parent)
-        : QObject(parent),
-          m_managerRegistry { new ManagerRegistry {} },
-          m_modelModule { new ModelModule {} }
+        : QObject(parent)
     {
-        connect(m_managerRegistry.get(), &ManagerRegistry::retrieveDataSuccess, this, &ManagerGroup::makeCollections);
-        connect(this, &ManagerGroup::makeModulesSuccess, m_modelModule.get(), &ModelModule::update);
     }
 
     const QJsonArray ManagerGroup::getDownloads(const QJsonDocument& document) const
     {
         return document.object().value("downloads").toArray();
-    }
-
-    void ManagerGroup::downloadRegistry()
-    {
-        m_managerRegistry->download();
     }
 
     void ManagerGroup::makeCollections(const QJsonDocument& document)

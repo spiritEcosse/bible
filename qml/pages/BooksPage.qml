@@ -2,7 +2,6 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 //import bible.BooksModel 1.0
 import bible.ModelGroupModules 1.0
-import bible.ModelModuleDownload 1.0
 import bible.ModelModule 1.0
 //import bible.HistoryModel 1.0
 import "../components"
@@ -17,36 +16,17 @@ Pages {
     property int bookNumber
     property int chapterIndex
     property int verseIndex
-    property var selectedModules: []
-    property var downloadedModules: []
-    property var downloadModulesLater: []
-    property bool isSelecting: selectedModules.length
+    property var selectedModules: [];
+    property var downloadedModules: [];
+    property var downloadModulesLater: [];
+    property bool isSelecting: selectedModules.length;
 
-    ModelModuleDownload {
-        id: moduleDownload
-
-        Component.onCompleted: {
-            var selectionArray = [];
-            var downloadedArray = [];
-
-            for (var i = 0; i < moduleDownload.rowCount(); i++) {
-                var module_id = moduleDownload.data(moduleDownload.index(i, 0), 0);
-                var group_id = moduleDownload.data(moduleDownload.index(i, 0), 1);
-                var selecting = moduleDownload.data(moduleDownload.index(i, 0), 2);
-                var downloaded = moduleDownload.data(moduleDownload.index(i, 0), 3);
-
-                if (selecting) {
-                    selectionArray.push({"selecting": selecting, "moduleId": module_id, "groupId": group_id});
-                }
-                if (downloaded) {
-                    downloadedArray.push({"downloaded": downloaded, "moduleId": module_id, "groupId": group_id});
-                }
-            }
-            selectedModules = selectionArray;
-            downloadedModules = downloadedArray;
-            moduleDownload.clearObjects();
-        }
-    }
+//if (selecting) {
+//    selectionArray.push({"selecting": selecting, "moduleId": module_id, "groupId": group_id});
+//}
+//if (downloaded) {
+//    downloadedArray.push({"downloaded": downloaded, "moduleId": module_id, "groupId": group_id});
+//}
 
 //    HistoryModel {
 //        id: historyModel
@@ -74,6 +54,11 @@ Pages {
 
     ModelModule {
         id: modelModule
+
+        Component.onCompleted: {
+            selectedModules = JSON.parse(groupModules.selecteds);
+            downloadedModules = JSON.parse(groupModules.downloaded);
+        }
     }
 
     VisualItemModel {

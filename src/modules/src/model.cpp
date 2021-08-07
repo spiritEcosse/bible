@@ -36,5 +36,4 @@ namespace modules {
         endInsertRows();
     }
 
-    template class Model<ModuleDownload>;
 }

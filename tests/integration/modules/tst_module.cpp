@@ -50,7 +50,9 @@ namespace modules {
                         "copyright",
                         QDate(2017, 03, 31),
                         true,
-                        true);
+                        true,
+                        false,
+                        false);
         }
 
         void tst_Module::constructor_data()

@@ -1,5 +1,4 @@
 #include "db.h"
-#include <QDebug>
 #include "dereferenceiterator.h"
 
 namespace db {
@@ -60,5 +59,4 @@ namespace db {
     template class Db<Module>;
     template class Db<GroupModules>;
     template class Db<Host>;
-    template class Db<ModuleDownload>;
 }

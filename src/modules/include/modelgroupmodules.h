@@ -3,7 +3,8 @@
 
 #include "modelupdate.h"
 #include "managergroup.h"
-
+#include "managerregistry.h"
+#include "modelmodule.h"
 
 namespace modules {
 
@@ -18,6 +19,8 @@ namespace modules {
         Q_PROPERTY(bool newVersionAvailable READ newVersionAvailable NOTIFY changeNewVersionAvailable)
         Q_PROPERTY(bool updateCompleted READ updateCompleted NOTIFY changeUpdateCompleted)
         Q_PROPERTY(QString needle READ needle NOTIFY changeNeedle)
+        Q_PROPERTY(QVariant selected READ getSelected)
+        Q_PROPERTY(QVariant downloaded READ getDownloaded)
     public:
         enum GroupModulesRoles {
             TitleRole = 0,
@@ -41,7 +44,9 @@ namespace modules {
         Q_INVOKABLE void getAll();
         Q_INVOKABLE bool searchByModules() const;
         Q_INVOKABLE bool searchByGroups() const;
-        inline const QString getNameJson() override { return QString("downloads"); };
+        const QString getNameJson() override;
+        const QVariantList & getSelected() const;
+        const QVariantList & getDownloaded() const;
     private:
         friend class tests::tst_ModelGroupModules;
         bool newVersionAvailable() const;
@@ -52,7 +57,13 @@ namespace modules {
         int m_entitySearch = GroupSearch;
         bool m_updateCompleted = false;
         std::unique_ptr<ManagerGroup> m_managerGroup;
+        std::unique_ptr<ManagerRegistry> m_managerRegistry;
+        std::unique_ptr<ModelModule> m_modelModule;
+        QVariant m_selected;
+        QVariant m_downloaded;
+
         virtual void update();
+        virtual void getRowsExtraFields();
         virtual void setFieldSearch(const QString& needle);
         virtual void doSearchByModules();
         virtual void doSearchByGroups();

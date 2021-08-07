@@ -5,7 +5,6 @@
 #include "binding.h"
 #include "registry.h"
 #include "module.h"
-#include "moduledownload.h"
 #include "host.h"
 #include "groupmodules.h"
 #include <unordered_map>
@@ -21,8 +20,6 @@ namespace db {
     {
         return make_storage(
                     name,
-                    make_unique_index("idx_modules_download_abbreviation", &ModuleDownload::m_abbreviation),
-                    make_index("idx_modules_download_selecting", &ModuleDownload::m_selecting),
                     make_index("idx_id_group_modules", &Module::m_idGroupModules),
                     make_index("idx_module_abbreviation", &Module::m_abbreviation),
                     make_index("idx_group_name", &GroupModules::m_name),
@@ -67,14 +64,9 @@ namespace db {
                         make_column("comment", &Module::m_comment, default_value("")),
                         make_column("copyright", &Module::m_copyright, default_value("")),
                         make_column("update", &Module::m_update),
-                        make_column("hidden", &Module::m_hidden, default_value(false))
-                    ),
-                    make_table(
-                        "modules_download",
-                        make_column("id", &ModuleDownload::m_id, primary_key()),
-                        make_column("abbreviation", &ModuleDownload::m_abbreviation),
-                        make_column("selecting", &ModuleDownload::m_selecting, default_value(false)),
-                        make_column("downloaded", &ModuleDownload::m_downloaded, default_value(false))
+                        make_column("hidden", &Module::m_hidden, default_value(false)),
+                        make_column("downloaded", &Module::m_downloaded, default_value(false)),
+                        make_column("selecting", &Module::m_selecting, default_value(false))
                     ));
     }
 

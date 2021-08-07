@@ -11,6 +11,7 @@ namespace modules {
         : m_idGroupModules (idGroupModules),
           m_needle (std::move(needle))
     {
+        connect(this, &ModelModule::updateDone, this, &ModelModule::saveExtraFieldsToDb);
         updateObjects();
     }
 
@@ -55,9 +56,33 @@ namespace modules {
         endResetModel();
     }
 
+    void ModelModule::saveExtraFieldsFromDb()
+    {
+
+    }
+
+    void ModelModule::saveExtraFieldsToDb()
+    {
+
+    }
+
     int ModelModule::countAll()
     {
         return m_db->storage->count<Module>();
+    }
+
+    void ModelModule::updateSelecting(int id, bool selecting) const
+    {
+        const auto &object = m_db->storage->get_pointer<Module>(id);
+        object->m_selecting = selecting;
+        m_db->storage->update(*object);
+    }
+
+    void ModelModule::updateDownloaded(int id, bool downloaded) const
+    {
+        const auto &object = m_db->storage->get_pointer<Module>(id);
+        object->m_downloaded = downloaded;
+        m_db->storage->update(*object);
     }
 
     QVariant ModelModule
