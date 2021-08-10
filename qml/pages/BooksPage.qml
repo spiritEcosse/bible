@@ -21,13 +21,6 @@ Pages {
     property var downloadModulesLater: [];
     property bool isSelecting: selectedModules.length;
 
-//if (selecting) {
-//    selectionArray.push({"selecting": selecting, "moduleId": module_id, "groupId": group_id});
-//}
-//if (downloaded) {
-//    downloadedArray.push({"downloaded": downloaded, "moduleId": module_id, "groupId": group_id});
-//}
-
 //    HistoryModel {
 //        id: historyModel
 //    }
@@ -56,8 +49,9 @@ Pages {
         id: modelModule
 
         Component.onCompleted: {
-            selectedModules = JSON.parse(groupModules.selecteds);
-            downloadedModules = JSON.parse(groupModules.downloaded);
+            var data = modelModule.getExtraFields();
+            selectedModules = data["selected"];
+            downloadedModules = data["downloaded"];
         }
     }
 

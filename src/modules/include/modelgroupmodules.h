@@ -19,8 +19,6 @@ namespace modules {
         Q_PROPERTY(bool newVersionAvailable READ newVersionAvailable NOTIFY changeNewVersionAvailable)
         Q_PROPERTY(bool updateCompleted READ updateCompleted NOTIFY changeUpdateCompleted)
         Q_PROPERTY(QString needle READ needle NOTIFY changeNeedle)
-        Q_PROPERTY(QVariant selected READ getSelected)
-        Q_PROPERTY(QVariant downloaded READ getDownloaded)
     public:
         enum GroupModulesRoles {
             TitleRole = 0,
@@ -45,8 +43,6 @@ namespace modules {
         Q_INVOKABLE bool searchByModules() const;
         Q_INVOKABLE bool searchByGroups() const;
         const QString getNameJson() override;
-        const QVariantList & getSelected() const;
-        const QVariantList & getDownloaded() const;
     private:
         friend class tests::tst_ModelGroupModules;
         bool newVersionAvailable() const;
@@ -59,11 +55,8 @@ namespace modules {
         std::unique_ptr<ManagerGroup> m_managerGroup;
         std::unique_ptr<ManagerRegistry> m_managerRegistry;
         std::unique_ptr<ModelModule> m_modelModule;
-        QVariant m_selected;
-        QVariant m_downloaded;
 
         virtual void update();
-        virtual void getRowsExtraFields();
         virtual void setFieldSearch(const QString& needle);
         virtual void doSearchByModules();
         virtual void doSearchByGroups();

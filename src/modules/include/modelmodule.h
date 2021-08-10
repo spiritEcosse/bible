@@ -2,6 +2,9 @@
 #define MODELMODULE_H
 
 #include "modelupdate.h"
+#include <QJsonDocument>
+#include <QJsonArray>
+#include "db.h"
 
 namespace modules {
 
@@ -33,8 +36,10 @@ namespace modules {
         ~ModelModule();
         static void registerMe();
         Q_INVOKABLE int countAll();
-        Q_INVOKABLE void updateSelecting(int id, bool selecting) const;
-        Q_INVOKABLE void updateDownloaded(int id, bool selecting) const;
+        Q_INVOKABLE void updateSelected(int id, bool selected) const;
+        Q_INVOKABLE void updateSelectedBulk(const QVariantList& ids) const;
+        Q_INVOKABLE void updateDownloaded(int id, bool downloaded) const;
+        Q_INVOKABLE virtual QVariant getExtraFields();
         virtual QVariant data(const QModelIndex &index, int role) const override;
         virtual QHash<int, QByteArray> roleNames() const override;
         void updateObjects();

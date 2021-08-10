@@ -47,7 +47,7 @@ namespace modules {
             bool hidden,
             bool defaultDownload,
             bool downloaded,
-            bool selecting,
+            bool selected,
             int id)
         : m_name { std::move(name) },
           m_description { std::move(description) },
@@ -62,7 +62,7 @@ namespace modules {
           m_hidden { hidden },
           m_defaultDownload { defaultDownload },
           m_downloaded { downloaded },
-          m_selecting { selecting },
+          m_selected { selected },
           m_id { id } {}
 
     bool Module::operator==(const Module &other) const
@@ -80,7 +80,7 @@ namespace modules {
                 m_languageShow == other.m_languageShow &&
                 m_idGroupModules == other.m_idGroupModules &&
                 m_downloaded == other.m_downloaded &&
-                m_selecting == other.m_selecting;
+                m_selected == other.m_selected;
     }
 
     void Module::convertSize(const QString& str)
@@ -129,7 +129,7 @@ namespace modules {
         return debug << module.m_name << module.m_description << module.m_abbreviation << module.m_size
                      << module.m_information << module.m_comment << module.m_copyright << module.m_update
                      << module.m_hidden << module.m_defaultDownload << module.m_languageShow << module.m_id
-                     << module.m_idGroupModules << module.m_downloaded << module.m_selecting;
+                     << module.m_idGroupModules << module.m_downloaded << module.m_selected;
     }
     #endif
 

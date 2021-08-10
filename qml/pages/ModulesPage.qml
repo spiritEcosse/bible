@@ -11,8 +11,8 @@ SilicaFlickable {
 
     function selectedModulesDelete()
     {
+        modelModule.updateSelectedBulk(selectedModules);
         selectedModules = [];
-        moduleDownload.removeAllObjects();
     }
 
     function foundModule(moduleId) {
@@ -49,7 +49,7 @@ SilicaFlickable {
         } else {
             selectionArray.push(object);
         }
-        moduleDownload.crudWithSelecting(object.abbreviation, object.selecting)
+        modelModule.updateSelected(object.moduleId, object.selecting)
         selectedModules = selectionArray;
     }
 
@@ -61,7 +61,7 @@ SilicaFlickable {
         } else {
             downloadedArray.push(object);
         }
-        moduleDownload.crudWithDownloaded(object.abbreviation, object.downloaded)
+        modelModule.updateDownloaded(object.moduleId, object.downloaded)
         downloadedModules = downloadedArray;
     }
 

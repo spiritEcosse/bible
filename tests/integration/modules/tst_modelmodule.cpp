@@ -27,6 +27,7 @@ namespace modules {
             void updateSelecting();
             void updateDownloaded_data();
             void updateDownloaded();
+            void getExtraFields();
         };
 
         tst_ModelModule::tst_ModelModule() {}
@@ -133,9 +134,9 @@ namespace modules {
 
             ModelModule model;
             int id = 1;
-            model.updateSelecting(id, value);
+            model.updateSelected(id, value);
             const auto &object = m_db->storage->get_pointer<Module>(id);
-            QCOMPARE(object->m_selecting, value);
+            QCOMPARE(object->m_selected, value);
         }
 
         void tst_ModelModule::updateDownloaded_data()
@@ -145,7 +146,6 @@ namespace modules {
             QTest::newRow("m_downloaded is true") << true;
             QTest::newRow("m_downloaded is false") << false;
         }
-
 
         void tst_ModelModule::updateDownloaded()
         {
@@ -159,6 +159,15 @@ namespace modules {
             model.updateDownloaded(id, value);
             const auto &object = m_db->storage->get_pointer<Module>(id);
             QCOMPARE(object->m_downloaded, value);
+        }
+
+        void tst_ModelModule::getExtraFields()
+        {
+            cleanTable();
+            helperSave();
+
+            ModelModule model;
+            model.getExtraFields();
         }
     }
 }

@@ -66,7 +66,7 @@ namespace db {
                         make_column("update", &Module::m_update),
                         make_column("hidden", &Module::m_hidden, default_value(false)),
                         make_column("downloaded", &Module::m_downloaded, default_value(false)),
-                        make_column("selecting", &Module::m_selecting, default_value(false))
+                        make_column("selecting", &Module::m_selected, default_value(false))
                     ));
     }
 

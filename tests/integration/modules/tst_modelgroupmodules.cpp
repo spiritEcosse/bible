@@ -157,7 +157,7 @@ namespace modules {
             QSignalSpy spy(&modelGroupModules, &ModelGroupModules::updateDone);
             QSignalSpy spyChangeNewVersionAvailable(&modelGroupModules, &ModelGroupModules::changeNewVersionAvailable);
             QSignalSpy spyChangeUpdateCompleted(&modelGroupModules, &ModelGroupModules::changeUpdateCompleted);
-            QSignalSpy spyModulesUpdateCompleted(modelGroupModules.m_managerGroup->m_modelModule.get(), &ModelModule::updateDone);
+            QSignalSpy spyModulesUpdateCompleted(modelGroupModules.m_modelModule.get(), &ModelModule::updateDone);
 
             modelGroupModules.m_managerRegistry->m_modelRegistry->m_objects.clear();
             modelGroupModules.m_managerRegistry->m_modelRegistry->m_objects.push_back(

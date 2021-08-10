@@ -14,8 +14,6 @@ namespace modules {
           m_modelModule { new ModelModule {} }
     {
         m_newVersionAvailable = m_managerRegistry->hasNewRegistry();
-        m_newVersionAvailable = true;
-        getRowsExtraFields();
         updateObjects();
         connect(m_managerRegistry.get(), &ManagerRegistry::retrieveDataSuccess, m_managerGroup.get(), &ManagerGroup::makeCollections);
         connect(m_managerRegistry.get(), &ManagerRegistry::retrieveDataSuccess, m_modelModule.get(), &ModelModule::saveExtraFieldsFromDb);
@@ -162,36 +160,6 @@ namespace modules {
         QTimer::singleShot(0, m_managerRegistry.get(), &ManagerRegistry::download);
     }
 
-    void ModelGroupModules::getRowsExtraFields()
-    {
-        const auto &data = m_db->storage->select(
-                    columns(
-                            &Module::m_selecting,
-                            &Module::m_downloaded,
-                            &Module::m_id,
-                            &Module::m_idGroupModules
-                        ),
-                    where(c(&Module::m_selecting) == true or c(&Module::m_downloaded) == true)
-                    );
-
-        QJsonArray selectedArray;
-        QJsonArray downloadedArray;
-
-        for(const auto &row : data) {
-            if (bool selected = std::get<0>(row))
-            {
-                selectedArray << QJsonObject { {"selecting", selected }, { "moduleId", std::get<2>(row) }, { "groupId", std::get<3>(row) } };
-            }
-
-            if (bool downloaded = std::get<1>(row))
-            {
-                downloadedArray << QJsonObject { {"downloaded", downloaded }, { "moduleId", std::get<2>(row) }, { "groupId", std::get<3>(row) } };
-            }
-        }
-        m_selected = QJsonDocument(std::move(selectedArray));
-        m_downloaded = QJsonDocument(std::move(downloadedArray));
-    }
-
     bool ModelGroupModules::searchByModules() const
     {
         return m_entitySearch == ModuleSearch;
@@ -203,10 +171,6 @@ namespace modules {
     }
 
     const QString ModelGroupModules::getNameJson() { return QString("downloads"); }
-
-    const QVariantList &ModelGroupModules::getSelected() const { return m_selected; }
-
-    const QVariantList &ModelGroupModules::getDownloaded() const { return m_downloaded; }
 
     QVariant ModelGroupModules
     ::data(const QModelIndex & index, int role) const {
