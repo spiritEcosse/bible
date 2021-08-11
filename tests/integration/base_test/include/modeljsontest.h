@@ -26,8 +26,6 @@ namespace tests {
 
         virtual QJsonDocument helperGetDocument();
         virtual QJsonDocument helperGetInvalidDocument() const;
-        virtual std::vector<std::shared_ptr<T>> helperGetObjects() const = 0;
-        virtual std::vector<std::unique_ptr<T>> helperGetObjectsUnique() const = 0;
 
         using ModelShared = decltype(std::shared_ptr<T>());
         using ModelUnique = decltype(std::unique_ptr<T>());

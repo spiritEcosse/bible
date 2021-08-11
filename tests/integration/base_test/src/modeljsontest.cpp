@@ -80,7 +80,7 @@ namespace tests {
         O model;
         QSignalSpy spyLast(&model, &O::updateDone);
 
-        const auto &objects = helperGetObjectsUnique();
+        const auto &objects = ModelJsonTest<T, O>::helperGetObjectsUnique();
         model.updateUnique(objects);
 
         QCOMPARE(spyLast.count(), 1);
@@ -100,7 +100,7 @@ namespace tests {
         QTest::addColumn<std::vector<ModelShared>>("objects");
         QTest::addColumn<bool>("hit");
 
-        QTest::newRow("valid data") << helperGetDocument() << helperGetObjects() << true;
+        QTest::newRow("valid data") << helperGetDocument() << ModelJsonTest<T, O>::helperGetObjects() << true;
         QTest::newRow("not valid data") << helperGetInvalidDocument() << std::vector<ModelShared>() << false;
     }
 

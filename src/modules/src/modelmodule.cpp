@@ -2,6 +2,8 @@
 #include <QObject>
 #include <QDebug>
 #include <QtQuick>
+#include <QJsonDocument>
+#include <QJsonArray>
 
 namespace modules {
 
@@ -15,7 +17,8 @@ namespace modules {
                             &Module::m_selected,
                             &Module::m_downloaded,
                             &Module::m_id,
-                            &Module::m_idGroupModules
+                            &Module::m_idGroupModules,
+                            &Module::m_abbreviation
                         ),
                     where(c(&Module::m_selected) == true or c(&Module::m_downloaded) == true)
                )
@@ -75,9 +78,13 @@ namespace modules {
         endResetModel();
     }
 
-    void ModelModule::saveExtraFieldsFromDb()
+    void ModelModule::getExtraFieldsFromDb()
     {
+        m_extraFields = {};
 
+        for(const auto &row : m_db->storage->execute(statementExtraFields())) {
+            m_extraFields.push_back(std::tuple(std::get<4>(row), std::get<0>(row), std::get<1>(row)));
+        }
     }
 
     void ModelModule::saveExtraFieldsToDb()
@@ -85,9 +92,9 @@ namespace modules {
 
     }
 
-    int ModelModule::countAll()
+    int ModelModule::countActive()
     {
-        return m_db->storage->count<Module>();
+        return m_db->storage->count<Module>(where(c(&Module::m_hidden) == false));
     }
 
     void ModelModule::updateSelected(int id, bool selected) const

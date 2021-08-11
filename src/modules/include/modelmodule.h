@@ -2,9 +2,6 @@
 #define MODELMODULE_H
 
 #include "modelupdate.h"
-#include <QJsonDocument>
-#include <QJsonArray>
-#include "db.h"
 
 namespace modules {
 
@@ -35,7 +32,7 @@ namespace modules {
         ModelModule(int idGroupModules, const QString& needle = "");
         ~ModelModule();
         static void registerMe();
-        Q_INVOKABLE int countAll();
+        Q_INVOKABLE int countActive();
         Q_INVOKABLE void updateSelected(int id, bool selected) const;
         Q_INVOKABLE void updateSelectedBulk(const QVariantList& ids) const;
         Q_INVOKABLE void updateDownloaded(int id, bool downloaded) const;
@@ -49,8 +46,9 @@ namespace modules {
         friend class tests::tst_ModelModule;
         int m_idGroupModules = 0;
         QString m_needle = "";
+        std::vector<std::tuple <QString,bool,bool>> m_extraFields;
     public slots:
-        void saveExtraFieldsFromDb();
+        void getExtraFieldsFromDb();
     private slots:
         void saveExtraFieldsToDb();
     };

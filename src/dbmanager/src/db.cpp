@@ -1,13 +1,14 @@
 #include "db.h"
 #include "dereferenceiterator.h"
+#include <QDebug>
+
 
 namespace db {
 
     template <class T>
     Db<T>::Db()
     {
-        storage.reset(new Storage(userStorage("user.sqlite")));
-        storage->sync_schema();
+        storage = MySingleton::getInstance().storage;
     }
 
     template <class T>
