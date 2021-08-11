@@ -3,3 +3,6 @@
 
 CodeFactor
 [![CodeFactor](https://www.codefactor.io/repository/github/spiritecosse/bible/badge)](https://www.codefactor.io/repository/github/spiritecosse/bible)
+
+cpp-linter
+[![cpp-linter](https://github.com/spiritEcosse/bible/actions/workflows/cpp-linter.yml/badge.svg)](https://github.com/spiritEcosse/bible/actions/workflows/cpp-linter.yml)
