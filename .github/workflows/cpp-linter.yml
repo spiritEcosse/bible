@@ -10,7 +10,7 @@ jobs:
         name: cpp-linter
         runs-on: ubuntu-latest
         steps:
-            - name: cpp-linter
+          - name: cpp-linter
             uses: shenxianpeng/cpp-linter-action@master
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
