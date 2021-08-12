@@ -4,11 +4,13 @@ env:
   global:
     # Global build options and C++ flags
     - CXX_FLAGS="-Wall -Wpedantic -Werror -Wno-variadic-macros -Wno-long-long -Wno-shadow"
+    - CMAKE_VERSION=3.19.3
+    - DEPS_DIR=${TRAVIS_BUILD_DIR}/deps
 
 matrix:
  include:
   - os: linux
-    dist: xenial
+    dist: 21.04
     sudo: required
     compiler: g++
     env:
@@ -16,7 +18,6 @@ matrix:
     addons:
       apt:
         packages: 
-#          - gcc
           - g++
           - valgrind
           # Misc
@@ -25,11 +26,6 @@ matrix:
           - libopencv-dev
           - mesa-common-dev
           - libglu1-mesa-dev
-#            - libquazip5-headers
-#            - libquazip5-1
-#            - libquazip5-dev
-#            - qt5-default
-#            - qttools5-dev-tools
 
 before_install:
   - if [ "$QT_BASE" = "56" ]; then sudo add-apt-repository ppa:beineri/opt-qt562-xenial -y; sudo apt-get update; fi
@@ -46,8 +42,8 @@ install:
   # Download and install recent cmake
   - |
     if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
-      CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v3.20.2/cmake-3.20.2-linux-x86_64.tar.gz"
-      mkdir -p ${DEPS_DIR}/cmake
+      CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.tar.gz"
+      sudo mkdir -p ${DEPS_DIR}/cmake
       travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C ${DEPS_DIR}/cmake
       export PATH=${DEPS_DIR}/cmake/bin:${PATH}
     fi
@@ -59,6 +55,7 @@ script:
   ############################################################################
   # Build main and tests
   ############################################################################
+  - echo "gcc -v && g++ -v && cmake --version: " && gcc -v && g++ -v && cmake --version
   - mkdir -p build
   - cd build
   - cmake ${CMAKE_OPTIONS} -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTING=ON .. 
