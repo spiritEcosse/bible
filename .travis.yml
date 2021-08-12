@@ -40,6 +40,7 @@ install:
   # Download and install cmake
   - |
     if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
+      sudo mkdir -p ${DEPS_DIR}/cmake
       sudo wget --no-check-certificate --quiet -O - ${CMAKE_URL} | sudo tar --strip-components=1 -xz -C ${DEPS_DIR}/cmake
       export PATH=${DEPS_DIR}/cmake/bin:${PATH}
     fi
@@ -51,7 +52,7 @@ script:
   ############################################################################
   # Build main and tests
   ############################################################################
-  - /opt/qt514/bin/qt514-env.sh
+  - /opt/qt56/bin/qt56-env.sh
   - echo ${PATH}
   - echo ${CXX}
   - ${CXX} --version
