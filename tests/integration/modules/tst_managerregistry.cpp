@@ -26,13 +26,13 @@ namespace modules {
                     const QString& fileNameArchive = "registry.zip",
                     const QString& fileNameRegistry = "registry.json");
             void setQSettings(int value = 0, QString key = "registryVersion");
-            QJsonDocument helperGetInvalidDocument() const;
-            std::vector<RegistryShared> helperGetObjects() const;
-            std::vector<RegistryUnique> helperGetObjectsUnique() const;
+            QJsonDocument helperGetInvalidDocument() const override;
+            std::vector<RegistryShared> helperGetObjects() const override;
+            std::vector<RegistryUnique> helperGetObjectsUnique() const override;
 
         private slots:
-            void initTestCase();
-            void cleanupTestCase();
+            void initTestCase() override;
+            void cleanupTestCase() override;
             void download();
             void downloadManagerFailed();
             void downloadManagerFailedWithoutRecursion();

@@ -16,6 +16,9 @@ namespace tests {
     protected:
         void initTestCase() override;
         void cleanupTestCase() override;
+        virtual std::vector<std::shared_ptr<T>> helperGetObjects() const override = 0;
+        virtual std::vector<std::unique_ptr<T>> helperGetObjectsUnique() const override = 0;
+
         QFile fileRegistry { "registry.json" };
         const QFile fileRegistryArchive { "registry.zip" };
         QFile fileRegistryInfo { "registry_info.json" };
