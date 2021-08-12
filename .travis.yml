@@ -30,7 +30,7 @@ matrix:
 #            - qttools5-dev-tools
 
 before_install:
-  - if [ "$QT_BASE" = "56" ]; then sudo add-apt-repository ppa:beineri/opt-qt562-xenial -y; fi
+  - if [ "$QT_BASE" = "56" ]; then sudo add-apt-repository ppa:beineri/opt-qt562-xenial -y; sudo apt-get update; fi
 
 install:
   - if [ "$QT_BASE" = "56" ]; then sudo apt-get install -qq qt56base; source /opt/qt56/bin/qt56-env.sh; fi
