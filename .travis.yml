@@ -13,39 +13,33 @@ matrix:
   - os: linux
     dist: xenial
     sudo: required
-    compiler: g++
-    env:
-      - QT_BASE=56
+    compiler: gcc
     addons:
       apt:
-        packages: 
-          - g++
+        sources:
+          - ubuntu-toolchain-r-test
+          - sourceline: 'ppa:beineri/opt-qt563-xenial'
+        update: true
+        packages:
+          - qt563base
+          - qt563tools
+          - gcc-9
+          - g++-9
+          - libc6-i386
+          - libgl-dev
+          - libgl1-mesa-dev
+          - mesa-common-dev
           - valgrind
           # Misc
           - python-yaml
           - lcov
-          - libopencv-dev
-          - mesa-common-dev
-          - libglu1-mesa-dev
-
-before_install:
-  - if [ "$QT_BASE" = "56" ]; then sudo add-apt-repository ppa:beineri/opt-qt562-xenial -y; sudo apt-get update; fi
-  - sudo apt-get update -qq;
-  - sudo apt-get install -y qt5-default qttools5-dev-tools qtdeclarative5-dev
 
 install:
-  - if [ "$QT_BASE" = "56" ]; then sudo apt-get install -qq qt56base; source /opt/qt56/bin/qt56-env.sh; fi
-  - if [ "$CXX" = "clang++" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then export CXX="clang++-6.0" CC="clang-6.0"; fi
-  - echo ${PATH}
-  - echo ${CXX}
-  - ${CXX} --version
-  - ${CXX} -v
   - sudo pip install codecov
 
   # Download and install cmake
   - |
     if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
-      sudo mkdir -p ${DEPS_DIR}/cmake
       sudo wget --no-check-certificate --quiet -O - ${CMAKE_URL} | sudo tar --strip-components=1 -xz -C ${DEPS_DIR}/cmake
       export PATH=${DEPS_DIR}/cmake/bin:${PATH}
     fi
@@ -57,7 +51,11 @@ script:
   ############################################################################
   # Build main and tests
   ############################################################################
-  - echo "gcc -v && g++ -v && cmake --version " && gcc -v && g++ -v && cmake --version
+  - /opt/qt514/bin/qt514-env.sh
+  - echo ${PATH}
+  - echo ${CXX}
+  - ${CXX} --version
+  - ${CXX} -v
   - mkdir -p build
   - cd build
   - cmake ${CMAKE_OPTIONS} -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTING=ON .. 
