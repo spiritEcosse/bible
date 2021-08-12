@@ -27,12 +27,11 @@ matrix:
           - libopencv-dev
           - mesa-common-dev
           - libglu1-mesa-dev
-          - qt5-default
-          - qttools5-dev-tools
-          - qtdeclarative5-dev
 
 before_install:
   - if [ "$QT_BASE" = "56" ]; then sudo add-apt-repository ppa:beineri/opt-qt562-xenial -y; sudo apt-get update; fi
+  - sudo apt-get update -qq;
+  - sudo apt-get install -y qt5-default qttools5-dev-tools
 
 install:
   - if [ "$QT_BASE" = "56" ]; then sudo apt-get install -qq qt56base; source /opt/qt56/bin/qt56-env.sh; fi
