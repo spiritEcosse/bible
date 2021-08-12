@@ -35,7 +35,7 @@ matrix:
           - lcov
 
 install:
-  - sudo get-get install gcc-9 g++-9
+  - sudo apt-get install gcc-9 g++-9
   - sudo update-alternatives --config gcc
   - sudo pip install codecov
 
