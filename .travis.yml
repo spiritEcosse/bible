@@ -11,11 +11,9 @@ env:
 matrix:
  include:
   - os: linux
-    dist: xenial
+    dist: hirsute
     sudo: required
     compiler: gcc
-    env:
-      - MATRIX_EVAL="CC=gcc-9 && CXX=g++-9"
     addons:
       apt:
         sources:
@@ -25,8 +23,8 @@ matrix:
         packages:
           - qt56base
           - qt56tools
-          - gcc-9
-          - g++-9
+          - gcc
+          - g++
           - libc6-i386
           - libgl-dev
           - libgl1-mesa-dev
@@ -37,10 +35,6 @@ matrix:
           - lcov
 
 install:
-  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 --slave /usr/bin/g++ g++ /usr/bin/g++-9
-  - sudo update-alternatives --set cc /usr/bin/gcc
-  - sudo update-alternatives --set c++ /usr/bin/g++
-  - sudo update-alternatives --config gcc
   - sudo pip install codecov
 
   # Download and install cmake
