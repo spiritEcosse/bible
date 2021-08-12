@@ -27,8 +27,8 @@ matrix:
           - libopencv-dev
           - mesa-common-dev
           - libglu1-mesa-dev
-#          - qt5-default
-#          - qttools5-dev-tools
+          - qt5-default
+          - qttools5-dev-tools
           - qtdeclarative5-dev
 
 before_install:
