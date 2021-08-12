@@ -10,7 +10,7 @@ env:
 matrix:
  include:
   - os: linux
-    dist: 21.04
+    dist: hirsute
     sudo: required
     compiler: g++
     env:
