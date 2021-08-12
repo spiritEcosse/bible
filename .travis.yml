@@ -1,5 +1,10 @@
 language: cpp
 
+env:
+  global:
+    # Global build options and C++ flags
+    - CXX_FLAGS="-Wall -Wpedantic -Werror -Wno-variadic-macros -Wno-long-long -Wno-shadow"
+
 matrix:
  include:
   - os: linux
@@ -7,33 +12,57 @@ matrix:
     sudo: required
     compiler: g++
     env:
-     - QT_BASE=56
+      - QT_BASE=56
+    addons:
+      apt:
+        packages: 
+          - gcc-7
+          - g++-7
+          - valgrind
+          # Misc
+          - python-yaml
+          - lcov
+          - libopencv-dev
+#            - libquazip5-headers
+#            - libquazip5-1
+#            - libquazip5-dev
+#            - qt5-default
+#            - qttools5-dev-tools
 
 before_install:
   - if [ "$QT_BASE" = "56" ]; then sudo add-apt-repository ppa:beineri/opt-qt562-xenial -y; fi
-  - sudo apt-get update -qq;
-  - sudo apt-get install -y xvfb libquazip5-headers libquazip5-1 libquazip5-dev qt5-default qttools5-dev-tools qt5-qmake
-  # Codecov
-  - sudo pip install codecov
-  
+
 install:
   - if [ "$QT_BASE" = "56" ]; then sudo apt-get install -qq qt56base; source /opt/qt56/bin/qt56-env.sh; fi
-  # Codecov
-  - sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-5 90
+  - if [ "$CXX" = "clang++" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then export CXX="clang++-6.0" CC="clang-6.0"; fi
+  - echo ${PATH}
+  - echo ${CXX}
+  - ${CXX} --version
+  - ${CXX} -v
+  - sudo pip install codecov
+
+  # Download and install recent cmake
+  - |
+    if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
+      CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v3.20.2/cmake-3.20.2-linux-x86_64.tar.gz"
+      mkdir -p ${DEPS_DIR}/cmake
+      travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C ${DEPS_DIR}/cmake
+      export PATH=${DEPS_DIR}/cmake/bin:${PATH}
+    fi
 
 notifications:
   email: false
-  
+
 script:
-    ############################################################################
-    # Build main and tests
-    ############################################################################
-     - mkdir -p build
-     - cd build
-     - cmake ${CMAKE_OPTIONS} -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON .. 
-     - make
-     - make bible_coverage
-     - ctest
+  ############################################################################
+  # Build main and tests
+  ############################################################################
+  - mkdir -p build
+  - cd build
+  - cmake ${CMAKE_OPTIONS} -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTING=ON .. 
+  - make
+  - make bible_coverage
+  - ctest
 
 after_success:
   # Codecov
@@ -43,4 +72,3 @@ after_success:
   - lcov --list coverage.info # debug info
   # Uploading report to CodeCov
   - bash <(curl -s https://codecov.io/bash) -f coverage.info || echo "Codecov did not collect coverage reports"
-  
