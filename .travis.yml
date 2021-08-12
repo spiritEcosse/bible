@@ -3,7 +3,7 @@ language: cpp
 env:
   global:
     # Global build options and C++ flags
-    - CXX_FLAGS=""
+    - CXX_FLAGS="-Wall -Wpedantic -Werror -Wno-variadic-macros -Wno-long-long -Wno-shadow"
     - CMAKE_VERSION=3.19.3
     - DEPS_DIR=${TRAVIS_BUILD_DIR}/deps
     - CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.tar.gz"
@@ -23,8 +23,8 @@ matrix:
         packages:
           - qt56base
           - qt56tools
-          - gcc-9
-          - g++-9
+          - gcc-12
+          - g++-12
           - libc6-i386
           - libgl-dev
           - libgl1-mesa-dev
