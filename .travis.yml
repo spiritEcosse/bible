@@ -41,7 +41,6 @@ install:
   - sudo update-alternatives --set cc /usr/bin/gcc
   - sudo update-alternatives --set c++ /usr/bin/g++
   - sudo update-alternatives --config gcc
-  - sudo update-alternatives --config g++
   - sudo pip install codecov
 
   # Download and install cmake
