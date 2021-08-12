@@ -37,6 +37,11 @@ matrix:
           - lcov
 
 install:
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 --slave /usr/bin/g++ g++ /usr/bin/g++-9 90 --slave /usr/bin/cc cc /usr/bin/gcc-9 90
+  - sudo update-alternatives --set cc /usr/bin/gcc
+  - sudo update-alternatives --set c++ /usr/bin/g++
+  - sudo update-alternatives --config gcc
+  - sudo update-alternatives --config g++
   - sudo pip install codecov
 
   # Download and install cmake
