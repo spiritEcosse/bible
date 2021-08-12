@@ -3,7 +3,7 @@ language: cpp
 env:
   global:
     # Global build options and C++ flags
-    - CXX_FLAGS="-Wall -Wpedantic -Werror -Wno-variadic-macros -Wno-long-long -Wno-shadow"
+    - CXX_FLAGS=""
     - CMAKE_VERSION=3.19.3
     - DEPS_DIR=${TRAVIS_BUILD_DIR}/deps
     - CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.tar.gz"
@@ -59,7 +59,7 @@ script:
   - ${CXX} -v
   - mkdir -p build
   - cd build
-  - cmake -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCODE_COVERAGE=ON -DBUILD_TESTING=ON ..
+  - cmake -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCODE_COVERAGE=ON -DBUILD_TESTING=ON -DQUAZIP_ENABLE_TESTS=OFF ..
   - cmake --build . --config Debug -- -j $(nproc)
   - ctest -j $(nproc) --output-on-failure
 
