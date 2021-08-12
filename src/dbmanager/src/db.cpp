@@ -1,14 +1,14 @@
 #include "db.h"
-#include <QDebug>
 #include "dereferenceiterator.h"
+#include <QDebug>
+
 
 namespace db {
 
     template <class T>
     Db<T>::Db()
     {
-        storage.reset(new Storage(userStorage("user.sqlite")));
-        storage->sync_schema();
+        storage = MySingleton::getInstance().storage;
     }
 
     template <class T>
@@ -60,5 +60,4 @@ namespace db {
     template class Db<Module>;
     template class Db<GroupModules>;
     template class Db<Host>;
-    template class Db<ModuleDownload>;
 }

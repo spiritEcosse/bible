@@ -23,6 +23,11 @@ namespace modules {
             void update() override;
             void updateObjects_data();
             void updateObjects();
+            void updateSelecting_data();
+            void updateSelecting();
+            void updateDownloaded_data();
+            void updateDownloaded();
+            void getExtraFields();
         };
 
         tst_ModelModule::tst_ModelModule() {}
@@ -112,8 +117,59 @@ namespace modules {
             QCOMPARE(modelModule.objectsCount, 0);
         }
 
-    }
+        void tst_ModelModule::updateSelecting_data()
+        {
+            QTest::addColumn<bool>("value");
 
+            QTest::newRow("m_selecting is true") << true;
+            QTest::newRow("m_selecting is false") << false;
+        }
+
+        void tst_ModelModule::updateSelecting()
+        {
+            QFETCH(bool, value);
+
+            cleanTable();
+            helperSave();
+
+            ModelModule model;
+            int id = 1;
+            model.updateSelected(id, value);
+            const auto &object = m_db->storage->get_pointer<Module>(id);
+            QCOMPARE(object->m_selected, value);
+        }
+
+        void tst_ModelModule::updateDownloaded_data()
+        {
+            QTest::addColumn<bool>("value");
+
+            QTest::newRow("m_downloaded is true") << true;
+            QTest::newRow("m_downloaded is false") << false;
+        }
+
+        void tst_ModelModule::updateDownloaded()
+        {
+            QFETCH(bool, value);
+
+            cleanTable();
+            helperSave();
+
+            ModelModule model;
+            int id = 1;
+            model.updateDownloaded(id, value);
+            const auto &object = m_db->storage->get_pointer<Module>(id);
+            QCOMPARE(object->m_downloaded, value);
+        }
+
+        void tst_ModelModule::getExtraFields()
+        {
+            cleanTable();
+            helperSave();
+
+            ModelModule model;
+            model.getExtraFields();
+        }
+    }
 }
 
 QTEST_MAIN(modules::tests::tst_ModelModule)

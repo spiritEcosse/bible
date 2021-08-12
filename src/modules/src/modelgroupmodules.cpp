@@ -9,11 +9,16 @@ namespace modules {
     using namespace sqlite_orm;
 
     ModelGroupModules::ModelGroupModules()
-        : m_managerGroup { new ManagerGroup {} }
+        : m_managerGroup { new ManagerGroup {} },
+          m_managerRegistry { new ManagerRegistry {} },
+          m_modelModule { new ModelModule {} }
     {
-        m_newVersionAvailable = m_managerGroup->m_managerRegistry->hasNewRegistry();
+        m_newVersionAvailable = m_managerRegistry->hasNewRegistry();
         updateObjects();
+        connect(m_managerRegistry.get(), &ManagerRegistry::retrieveDataSuccess, m_managerGroup.get(), &ManagerGroup::makeCollections);
+        connect(m_managerRegistry.get(), &ManagerRegistry::retrieveDataSuccess, m_modelModule.get(), &ModelModule::getExtraFieldsFromDb);
         connect(m_managerGroup.get(), &ManagerGroup::makeGroupModulesSuccess, this, &ModelGroupModules::update);
+        connect(m_managerGroup.get(), &ManagerGroup::makeModulesSuccess, m_modelModule.get(), &ModelModule::update);
         connect(this, &ModelGroupModules::updateDone, this, &ModelGroupModules::setUpdateCompleted);
         connect(this, &ModelGroupModules::updateDone, this, &ModelGroupModules::updateObjects);
     }
@@ -152,7 +157,7 @@ namespace modules {
     {
         m_newVersionAvailable = false;
         emit changeNewVersionAvailable();
-        QTimer::singleShot(0, m_managerGroup.get(), &ManagerGroup::downloadRegistry);
+        QTimer::singleShot(0, m_managerRegistry.get(), &ManagerRegistry::download);
     }
 
     bool ModelGroupModules::searchByModules() const
@@ -164,6 +169,8 @@ namespace modules {
     {
         return m_entitySearch == GroupSearch;
     }
+
+    const QString ModelGroupModules::getNameJson() { return QString("downloads"); }
 
     QVariant ModelGroupModules
     ::data(const QModelIndex & index, int role) const {

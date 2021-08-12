@@ -8,11 +8,11 @@ set(RESOURCES
     include/modelupdate.h
     include/modelhost.h
     include/moduledownload.h
-    include/modelmoduledownload.h
+#    include/modelmoduledownload.h
     include/model.h
     src/model.cpp
     src/moduledownload.cpp
-    src/modelmoduledownload.cpp
+#    src/modelmoduledownload.cpp
     src/modelmodule.cpp
     src/modelgroupmodules.cpp
     src/modelregistry.cpp

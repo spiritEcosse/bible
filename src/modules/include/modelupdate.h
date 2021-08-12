@@ -38,11 +38,10 @@ namespace modules {
         Q_INVOKABLE bool canFetchMore(const QModelIndex &parent) const override;
         Q_INVOKABLE void fetchMore(const QModelIndex &parent) override;
         const QString nameJson;
-        virtual const QString getNameJson() {}
+        virtual const QString getNameJson() = 0;
     private:
         virtual void updateWrapper() override;
     };
-
 }
 
 #endif // MODELUPDATE_H

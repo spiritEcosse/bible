@@ -74,7 +74,7 @@ namespace modules {
             return objects;
         }
 
-       std::vector<GroupModulesUnique> tst_ModelGroupModules::helperGetObjectsUnique() const
+        std::vector<GroupModulesUnique> tst_ModelGroupModules::helperGetObjectsUnique() const
         {
             std::vector<GroupModulesUnique> objects;
             for ( size_t in = 0; in < vectorSize; in++) {
@@ -157,10 +157,10 @@ namespace modules {
             QSignalSpy spy(&modelGroupModules, &ModelGroupModules::updateDone);
             QSignalSpy spyChangeNewVersionAvailable(&modelGroupModules, &ModelGroupModules::changeNewVersionAvailable);
             QSignalSpy spyChangeUpdateCompleted(&modelGroupModules, &ModelGroupModules::changeUpdateCompleted);
-            QSignalSpy spyModulesUpdateCompleted(modelGroupModules.m_managerGroup->m_modelModule.get(), &ModelModule::updateDone);
+            QSignalSpy spyModulesUpdateCompleted(modelGroupModules.m_modelModule.get(), &ModelModule::updateDone);
 
-            modelGroupModules.m_managerGroup->m_managerRegistry->m_modelRegistry->m_objects.clear();
-            modelGroupModules.m_managerGroup->m_managerRegistry->m_modelRegistry->m_objects.push_back(
+            modelGroupModules.m_managerRegistry->m_modelRegistry->m_objects.clear();
+            modelGroupModules.m_managerRegistry->m_modelRegistry->m_objects.push_back(
                         std::make_unique<Registry>(
                             QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
                             QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
@@ -270,6 +270,7 @@ namespace modules {
             QCOMPARE(modelGroupModules.m_entitySearch, entitySearch);
             QCOMPARE(modelGroupModules.m_needle, m_needle);
         }
+
     }
 
 }

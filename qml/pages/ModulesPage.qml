@@ -11,8 +11,8 @@ SilicaFlickable {
 
     function selectedModulesDelete()
     {
+        modelModule.updateSelectedBulk(selectedModules);
         selectedModules = [];
-        moduleDownload.removeAllObjects();
     }
 
     function foundModule(moduleId) {
@@ -49,7 +49,7 @@ SilicaFlickable {
         } else {
             selectionArray.push(object);
         }
-        moduleDownload.crudWithSelecting(object.abbreviation, object.selecting)
+        modelModule.updateSelected(object.moduleId, object.selecting)
         selectedModules = selectionArray;
     }
 
@@ -61,28 +61,13 @@ SilicaFlickable {
         } else {
             downloadedArray.push(object);
         }
-        moduleDownload.crudWithDownloaded(object.abbreviation, object.downloaded)
+        modelModule.updateDownloaded(object.moduleId, object.downloaded)
         downloadedModules = downloadedArray;
     }
 
     SilicaFlickable {
         width: parent.width
         height: parent.height
-
-        states: [
-            State {
-                name: "selectModules"
-                when: isSelecting
-                PropertyChanges {
-                    target: headerMainText
-                    title: qsTr("Select Modules")
-                }
-                PropertyChanges {
-                    target: headerAddText
-                    text: qsTr("%Ln modules selected", "number of modules selected", selectedModules.length)
-                }
-            }
-        ]
 
         Column {
             id: header
@@ -96,8 +81,9 @@ SilicaFlickable {
 
                 FlippingLabelPatch {
                     id: headerAddText
-                    text: qsTr("%Ln modules available, ", "number of modules available", modelModule.countAll()) +
-                          qsTr("%Ln modules downloaded", "number of modules downloaded", downloadedModules.length)
+                    text: qsTr("%Ln available, ", "available", modelModule.countActive()) +
+                          qsTr("%Ln downloaded, ", "downloaded", downloadedModules.length) +
+                          qsTr("%Ln selected", "selected", selectedModules.length)
                     width: parent.width
                     fontSize: isPortrait ? Theme.fontSizeExtraSmall : Theme.fontSizeTiny
                     fontFamily: Theme.fontFamilyHeading

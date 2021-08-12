@@ -3,9 +3,8 @@
 
 #include <QObject>
 
-#include "managerregistry.h"
 #include "groupmodules.h"
-#include "modelmodule.h"
+#include "module.h"
 
 namespace modules {
 
@@ -21,9 +20,6 @@ namespace modules {
     public:
         ManagerGroup(QObject *parent = nullptr);
         virtual ~ManagerGroup() {}
-    public slots:
-        void downloadRegistry();
-
     signals:
         void makeModulesSuccess(const std::vector<Module>& modules);
         void error(const QString& error);
@@ -35,8 +31,6 @@ namespace modules {
         friend class ModelGroupModules;
         GroupModulesMap m_objects;
 
-        std::unique_ptr<ManagerRegistry> m_managerRegistry;
-        std::unique_ptr<ModelModule> m_modelModule;
         void addToCollection(const QJsonArray& object);
         virtual const QJsonArray getDownloads(const QJsonDocument& document) const;
     private slots:

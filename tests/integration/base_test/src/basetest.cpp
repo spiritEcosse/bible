@@ -65,5 +65,4 @@ namespace tests {
     template class BaseTest<modules::GroupModules, modules::ModelGroupModules>;
     template class BaseTest<modules::Registry, modules::ModelRegistry>;
     template class BaseTest<modules::Host, modules::ModelHost>;
-    template class BaseTest<modules::ModuleDownload, modules::ModelModuleDownload>;
 }

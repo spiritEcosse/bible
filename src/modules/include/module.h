@@ -22,16 +22,18 @@ namespace modules {
                 const QString& name,
                 const QString& description = "",
                 const QString& abbreviation = "",
-                const int& idGroupModules = 0,
-                const double& size = 0,
+                int idGroupModules = 0,
+                double size = 0,
                 const QString& languageShow = "",
                 const QString& information = "",
                 const QString& comment = "",
                 const QString& copyright = "",
                 const QDate& update = QDate(),
-                const bool& hidden = false,
-                const bool& defaultDownload = false,
-                const int& id = 0);
+                bool hidden = false,
+                bool defaultDownload = false,
+                bool downloaded = false,
+                bool selected = false,
+                int id = 0);
         Module(const QJsonObject& qJsonModule);
         QString nativeLanguageNameShow() const;
         QString languageNameShow() const;
@@ -50,6 +52,8 @@ namespace modules {
         QDate m_update;
         bool m_hidden;
         bool m_defaultDownload;
+        bool m_downloaded = false;
+        bool m_selected = false;
         int m_id = 0;
 
         bool operator==(const Module& other) const;

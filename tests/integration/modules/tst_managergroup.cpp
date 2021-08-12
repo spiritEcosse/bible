@@ -34,8 +34,6 @@ namespace modules {
             void cleanupTestCase();
             void makeCollections_data();
             void makeCollections();
-            void downloadRegistry_data();
-            void downloadRegistry();
         };
 
         tst_ManagerGroup::tst_ManagerGroup() {}
@@ -190,57 +188,6 @@ namespace modules {
                 QList<QVariant> arguments = spyError.takeFirst();
                 QCOMPARE(arguments[0].toString(), QString("An error occured, please try in time."));
             }
-        }
-
-        void tst_ManagerGroup::downloadRegistry_data() {
-            QSettings settings;
-            settings.setValue("registryVersion", 0);
-
-            fileRegistry.open(QFile::WriteOnly);
-            fileRegistry.write(
-                        QJsonDocument {
-                            QJsonObject {
-                                {
-                                    "downloads",
-                                    QJsonArray {
-                                        QJsonObject {
-                                            {"fil", "name"},
-                                            {"des", "description"},
-                                            {"abr", "abbreviation"}
-                                        }
-                                    },
-                                },
-                                {"version", 1}
-                            }
-                        }.toJson());
-            fileRegistry.close();
-
-            QVERIFY(JlCompress::compressFile(fileRegistryArchive.fileName(), fileRegistry.fileName()));
-        }
-
-        void tst_ManagerGroup::downloadRegistry()
-        {
-            ManagerGroup managerGroup;
-            QSignalSpy spy(managerGroup.m_managerRegistry.get(), &ManagerRegistry::retrieveDataSuccess);
-            QSignalSpy spyMakeGroupModulesSuccess(&managerGroup, &ManagerGroup::makeGroupModulesSuccess);
-            QSignalSpy spyMakeModulesSuccess(&managerGroup, &ManagerGroup::makeGroupModulesSuccess);
-            QSignalSpy spyModelUpdate(managerGroup.m_modelModule.get(), &ModelModule::updateDone);
-
-            managerGroup.m_managerRegistry->m_modelRegistry->m_objects.clear();
-            managerGroup.m_managerRegistry->m_modelRegistry->m_objects.push_back(
-                        std::make_unique<Registry>(
-                            QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
-                            QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
-                        )
-            );
-
-            managerGroup.downloadRegistry();
-
-            QVERIFY(spyMakeGroupModulesSuccess.wait());
-            QCOMPARE(spy.count(), 1);
-            QCOMPARE(spyMakeModulesSuccess.count(), 1);
-            QCOMPARE(spyMakeGroupModulesSuccess.count(), 1);
-            QCOMPARE(spyModelUpdate.count(), 1);
         }
 
     }
