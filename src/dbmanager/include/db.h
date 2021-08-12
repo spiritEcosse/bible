@@ -73,6 +73,24 @@ namespace db {
 
     using Storage = decltype(userStorage(""));
 
+
+    class MySingleton{
+    public:
+        static MySingleton& getInstance(){
+            static MySingleton instance;
+            return instance;
+        }
+        std::shared_ptr<Storage> storage;
+    private:
+        MySingleton() {
+            storage.reset(new Storage(userStorage("user.sqlite")));
+            storage->sync_schema();
+        }
+        ~MySingleton()= default;
+        MySingleton(const MySingleton&)= delete;
+        MySingleton& operator=(const MySingleton&)= delete;
+    };
+
     template<class T>
     class Db
     {
@@ -83,7 +101,7 @@ namespace db {
         using vector_shared_iterator = typename std::vector<std::shared_ptr<T>>::const_iterator;
         using vector_iterator = typename std::vector<T>::const_iterator;
 
-        std::unique_ptr<Storage> storage;
+        std::shared_ptr<Storage> storage;
         void removeAll();
         int count();
         int64 lastInsertRowid();
