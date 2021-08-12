@@ -23,6 +23,8 @@ matrix:
           - python-yaml
           - lcov
           - libopencv-dev
+          - mesa-common-dev
+          - libglu1-mesa-dev
 #            - libquazip5-headers
 #            - libquazip5-1
 #            - libquazip5-dev
