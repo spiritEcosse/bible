@@ -61,6 +61,7 @@ script:
   - mkdir -p build
   - cd build
   - cmake -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCODE_COVERAGE=ON -DBUILD_TESTING=ON -DQUAZIP_ENABLE_TESTS=OFF ..
+  - cmake --build . --config Debug -- 
   - ctest --output-on-failure
 
 after_success:
