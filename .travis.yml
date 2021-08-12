@@ -46,7 +46,7 @@ install:
     fi
 
 notifications:
-  email: false
+  email: shevchenkcoigor@gmail.com
 
 script:
   ############################################################################
@@ -59,16 +59,19 @@ script:
   - ${CXX} -v
   - mkdir -p build
   - cd build
-  - cmake ${CMAKE_OPTIONS} -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTING=ON .. 
-  - make
-  - make bible_coverage
-  - ctest
+  - cmake -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCODE_COVERAGE=ON -DBUILD_TESTING=ON ..
+  - cmake --build . --config Debug -- -j $(nproc)
+  - ctest -j $(nproc) --output-on-failure
 
 after_success:
-  # Codecov
   # Create lcov report
-  - lcov --capture --directory . --output-file coverage.info
-  - lcov --remove coverage.info '/usr/*' --output-file coverage.info # filter system-files
-  - lcov --list coverage.info # debug info
-  # Uploading report to CodeCov
+  # capture coverage info
+  - lcov --directory . --capture --output-file coverage.info
+  # filter out system and extra files.
+  # To also not include test code in coverage add them with full path to the patterns: '*/tests/*'
+  - lcov --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' --output-file coverage.info
+  # output coverage data for debugging (optional)
+  - lcov --list coverage.info
+  # Uploading to CodeCov
+  # '-f' specifies file(s) to use and disables manual coverage gathering and file search which has already been done above
   - bash <(curl -s https://codecov.io/bash) -f coverage.info || echo "Codecov did not collect coverage reports"

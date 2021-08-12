@@ -129,15 +129,24 @@ set_target_properties(tag PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DI
 
 if ( BUILD_TESTING )
     enable_testing()
+    option(CODE_COVERAGE "Enable coverage reporting" OFF)
 
-    if (CMAKE_BUILD_TYPE STREQUAL "Coverage")
-      set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/.travis/cmake)
-      include(CodeCoverage)
-#      setup_target_for_coverage(${PROJECT_NAME}_coverage runUnitTests coverage)
+    if(CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+      # Add required flags (GCC & LLVM/Clang)
+      # Code Coverage Configuration
+      add_library(coverage_config INTERFACE)
 
-      SET(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
-      SET(CMAKE_C_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
-    endif() #CMAKE_BUILD_TYPE STREQUAL "Coverage"
+      target_compile_options(coverage_config INTERFACE
+        -O0        # no optimization
+        -g         # generate debug info
+        --coverage # sets all required flags
+      )
+      if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
+        target_link_options(coverage_config INTERFACE --coverage)
+      else()
+        target_link_libraries(coverage_config INTERFACE --coverage)
+      endif()
+    endif(CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 
     add_subdirectory(tests)
 endif()
