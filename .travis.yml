@@ -21,8 +21,8 @@ matrix:
           - sourceline: 'ppa:beineri/opt-qt563-xenial'
         update: true
         packages:
-          - qt563base
-          - qt563tools
+          - qt56base
+          - qt56tools
           - gcc-9
           - g++-9
           - libc6-i386
