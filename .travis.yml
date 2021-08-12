@@ -11,9 +11,11 @@ env:
 matrix:
  include:
   - os: linux
-    dist: hirsute
+    dist: xenial
     sudo: required
     compiler: gcc
+    env:
+      - MATRIX_EVAL="CC=gcc-9 && CXX=g++-9"
     addons:
       apt:
         sources:
@@ -23,8 +25,8 @@ matrix:
         packages:
           - qt56base
           - qt56tools
-          - gcc
-          - g++
+          - gcc-9
+          - g++-9
           - libc6-i386
           - libgl-dev
           - libgl1-mesa-dev
@@ -35,6 +37,10 @@ matrix:
           - lcov
 
 install:
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 --slave /usr/bin/g++ g++ /usr/bin/g++-9
+  - sudo update-alternatives --set cc /usr/bin/gcc
+  - sudo update-alternatives --set c++ /usr/bin/g++
+  - sudo update-alternatives --config gcc
   - sudo pip install codecov
 
   # Download and install cmake
@@ -53,6 +59,8 @@ script:
   # Build main and tests
   ############################################################################
   - /opt/qt56/bin/qt56-env.sh
+  - export CC=/usr/bin/gcc-9
+  - export CXX=/usr/bin/g++-9
   - echo ${PATH}
   - echo ${CXX}
   - ${CXX} --version
@@ -61,7 +69,7 @@ script:
   - cd build
   - cmake -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCODE_COVERAGE=ON -DBUILD_TESTING=ON -DQUAZIP_ENABLE_TESTS=OFF ..
   - cmake --build . --config Debug -- 
-  - ctest --output-on-failure
+  - ctest
 
 after_success:
   # Create lcov report
