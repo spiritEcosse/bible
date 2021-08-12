@@ -47,7 +47,7 @@ install:
   - |
     if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
       sudo mkdir -p ${DEPS_DIR}/cmake
-      sudo travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C ${DEPS_DIR}/cmake
+      sudo wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C ${DEPS_DIR}/cmake
       export PATH=${DEPS_DIR}/cmake/bin:${PATH}
     fi
 
