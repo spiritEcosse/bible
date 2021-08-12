@@ -25,17 +25,22 @@ notifications:
   email: false
   
 script:
-    - cd tests
-    - python -m SimpleHTTPServer 2443 &
-    - qmake tests.pro
-    - make
-    - xvfb-run -a ./tests
-    # Codecov
-    - cd scripts
-    - chmod +x get_code_cov.sh
-    - ./get_code_cov.sh
+    ############################################################################
+    # Build main and tests
+    ############################################################################
+     - mkdir -p build
+     - cd build
+     - cmake ${CMAKE_OPTIONS} -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON .. 
+     - make
+     - make bible_coverage
+     - ctest
 
 after_success:
   # Codecov
-  - bash <(curl -s https://codecov.io/bash)
+  # Create lcov report
+  - lcov --capture --directory . --output-file coverage.info
+  - lcov --remove coverage.info '/usr/*' --output-file coverage.info # filter system-files
+  - lcov --list coverage.info # debug info
+  # Uploading report to CodeCov
+  - bash <(curl -s https://codecov.io/bash) -f coverage.info || echo "Codecov did not collect coverage reports"
   

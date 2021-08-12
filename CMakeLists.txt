@@ -125,5 +125,14 @@ set_target_properties(tag PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DI
 
 if ( BUILD_TESTING )
     enable_testing()
+
+    if (CMAKE_BUILD_TYPE STREQUAL "Coverage")
+      include(CodeCoverage)
+      setup_target_for_coverage(${PROJECT_NAME}_coverage runUnitTests coverage)
+
+      SET(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
+      SET(CMAKE_C_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
+    endif() #CMAKE_BUILD_TYPE STREQUAL "Coverage"
+
     add_subdirectory(tests)
 endif()
