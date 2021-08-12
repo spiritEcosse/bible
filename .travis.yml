@@ -10,7 +10,7 @@ env:
 matrix:
  include:
   - os: linux
-    dist: xenial
+    dist: hirsute
     sudo: required
     compiler: g++
     env:
@@ -56,7 +56,7 @@ script:
   ############################################################################
   # Build main and tests
   ############################################################################
-  - echo "gcc -v && g++ -v && cmake --version: " && gcc -v && g++ -v && cmake --version
+  - echo "gcc -v && g++ -v && cmake --version " && gcc -v && g++ -v && cmake --version
   - mkdir -p build
   - cd build
   - cmake ${CMAKE_OPTIONS} -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTING=ON .. 
