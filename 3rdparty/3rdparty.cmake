@@ -17,12 +17,12 @@ if(EXISTS "${PROJECT_SOURCE_DIR}/.git")
         if (NOT ${SAILFISH})
             set(QUAZIP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/quazip/quazip
                     CACHE PATH "quazip include directory")
+            execute_process(COMMAND bash -c "sed -i '' -e '/add_subdirectory(qztest EXCLUDE_FROM_ALL)/ s/^#*/#/' 3rdparty/quazip/CMakeLists.txt"
+                            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
             add_subdirectory(3rdparty/quazip)
             add_subdirectory(3rdparty/openssl)
         endif()
         execute_process(COMMAND bash -c "sed -e '/add_subdirectory(examples)/ s/^#*/#/' -i 3rdparty/sqlite_orm/CMakeLists.txt"
-                        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}) # remove sinse with sqlite_orm==1.6
-        execute_process(COMMAND bash -c "sed -i '' -e '/add_subdirectory(qztest EXCLUDE_FROM_ALL)/ s/^#*/#/' 3rdparty/quazip/CMakeLists.txt"
                         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}) # remove sinse with sqlite_orm==1.6
         add_subdirectory(3rdparty/sqlite_orm)
     endif()

@@ -130,6 +130,7 @@ set_target_properties(tag PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DI
 if ( BUILD_TESTING )
     enable_testing()
     option(CODE_COVERAGE "Enable coverage reporting" OFF)
+    option(QUAZIP_ENABLE_TESTS "Enable quazip tests" OFF)
 
     if(CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
       # Add required flags (GCC & LLVM/Clang)
