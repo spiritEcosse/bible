@@ -42,6 +42,7 @@ install:
   - sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-9 90
   # Install lcov from tag v1.15
   - sudo git clone https://github.com/linux-test-project/lcov.git && cd lcov && sudo git checkout tags/v1.15 && sudo make install && cd ..
+  - sudo pip install codecov
 
   # Download and install cmake
   - |
@@ -81,4 +82,4 @@ after_success:
   - lcov --list coverage.info
   # Uploading to CodeCov
   # '-f' specifies file(s) to use and disables manual coverage gathering and file search which has already been done above
-  - bash <(curl -s https://codecov.io/bash) -f coverage.info || echo "Codecov did not collect coverage reports"
+  - codecov -X gcov
