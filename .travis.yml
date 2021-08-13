@@ -34,11 +34,12 @@ matrix:
           - valgrind
           # Misc
           - python-yaml
-          - lcov
+          - git
 
 install:
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 --slave /usr/bin/g++ g++ /usr/bin/g++-9
-  - sudo pip install codecov
+  # Install lcov from tag v1.15
+  - sudo git clone https://github.com/linux-test-project/lcov.git && cd lcov && sudo git co tags/v1.15 && sudo make install
 
   # Download and install cmake
   - |
