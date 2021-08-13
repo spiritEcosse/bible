@@ -37,9 +37,12 @@ matrix:
           - git
 
 install:
-  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 --slave /usr/bin/g++ g++ /usr/bin/g++-9
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 90
+  - sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-9 90
   # Install lcov from tag v1.15
-  - sudo git clone https://github.com/linux-test-project/lcov.git && cd lcov && sudo git co tags/v1.15 && sudo make install
+  - sudo git clone https://github.com/linux-test-project/lcov.git && cd lcov && sudo git checkout tags/v1.15 && sudo make install && cd ..
+  - sudo pip install codecov
 
   # Download and install cmake
   - |
@@ -61,6 +64,7 @@ script:
   - echo ${CXX}
   - ${CXX} --version
   - ${CXX} -v
+  - lcov -v
   - mkdir -p build
   - cd build
   - cmake -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCODE_COVERAGE=ON -DBUILD_TESTING=ON ..
@@ -73,9 +77,9 @@ after_success:
   - lcov --directory . --capture --output-file coverage.info
   # filter out system and extra files.
   # To also not include test code in coverage add them with full path to the patterns: '*/tests/*'
-  - lcov --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' --output-file coverage.info
+  - lcov --remove coverage.info '/usr/*' "${HOME}" '/.cache/*' --output-file coverage.info
   # output coverage data for debugging (optional)
   - lcov --list coverage.info
   # Uploading to CodeCov
   # '-f' specifies file(s) to use and disables manual coverage gathering and file search which has already been done above
-  - bash <(curl -s https://codecov.io/bash) -f coverage.info || echo "Codecov did not collect coverage reports"
+  - codecov -X gcov
