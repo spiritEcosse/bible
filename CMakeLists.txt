@@ -132,10 +132,13 @@ if ( BUILD_TESTING )
     option(CODE_COVERAGE "Enable coverage reporting" OFF)
     option(QUAZIP_ENABLE_TESTS "Enable quazip tests" OFF)
 
-    if(CODE_COVERAGE)
-        SET(CMAKE_CXX_FLAGS "-g -O0 -Wall -fprofile-arcs -ftest-coverage")
-        SET(CMAKE_C_FLAGS "-g -O0 -Wall -W -fprofile-arcs -ftest-coverage")
-        SET(CMAKE_EXE_LINKER_FLAGS "-fprofile-arcs -ftest-coverage")
+    if (CODE_COVERAGE)
+      set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/.travis/cmake)
+      include(CodeCoverage)
+#      setup_target_for_coverage(${PROJECT_NAME}_coverage runUnitTests coverage)
+
+      SET(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
+      SET(CMAKE_C_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
     endif()
 
     add_subdirectory(tests)
