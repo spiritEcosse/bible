@@ -27,7 +27,6 @@ matrix:
           - qt56tools
           - gcc-9
           - g++-9
-          - gcov-9
           - libc6-i386
           - libgl-dev
           - libgl1-mesa-dev
