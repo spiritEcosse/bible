@@ -39,7 +39,7 @@ matrix:
 install:
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 --slave /usr/bin/g++ g++ /usr/bin/g++-9
   # Install lcov from tag v1.15
-  - sudo git clone https://github.com/linux-test-project/lcov.git && cd lcov && sudo git checkout tags/v1.15 && sudo make install
+  - sudo git clone https://github.com/linux-test-project/lcov.git && cd lcov && sudo git checkout tags/v1.15 && sudo make install && cd ..
 
   # Download and install cmake
   - |
