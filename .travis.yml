@@ -3,7 +3,7 @@ language: cpp
 env:
   global:
     # Global build options and C++ flags
-    - CXX_FLAGS=""
+    - CXX_FLAGS="-Wall -Wpedantic -Werror -Wno-variadic-macros -Wno-long-long -Wno-shadow"
     - CMAKE_VERSION=3.19.3
     - DEPS_DIR=${TRAVIS_BUILD_DIR}/deps
     - CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.tar.gz"
@@ -38,8 +38,8 @@ matrix:
 
 install:
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 --slave /usr/bin/g++ g++ /usr/bin/g++-9
-  # Install lcov from tag v1.15
-  - sudo git clone https://github.com/linux-test-project/lcov.git && cd lcov && sudo git checkout tags/v1.15 && sudo make install && cd ..
+  # Install lcov from master
+  - sudo git clone https://github.com/linux-test-project/lcov.git && cd lcov && sudo make install && cd ..
 
   # Download and install cmake
   - |
@@ -74,7 +74,7 @@ after_success:
   - lcov --directory . --capture --output-file coverage.info
   # filter out system and extra files.
   # To also not include test code in coverage add them with full path to the patterns: '*/tests/*'
-  - lcov --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' --output-file coverage.info
+  - lcov --remove coverage.info '/usr/*' "${HOME}" '/.cache/*' --output-file coverage.info
   # output coverage data for debugging (optional)
   - lcov --list coverage.info
   # Uploading to CodeCov
