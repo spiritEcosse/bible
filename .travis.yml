@@ -4,7 +4,7 @@ env:
   global:
     # Global build options and C++ flags
     - CXX_FLAGS="-Wall -Wpedantic -Werror -Wno-variadic-macros -Wno-long-long -Wno-shadow"
-    - CMAKE_VERSION=3.19.2
+    - CMAKE_VERSION=3.19.3
     - DEPS_DIR=${TRAVIS_BUILD_DIR}/deps
     - CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.tar.gz"
 
@@ -27,6 +27,7 @@ matrix:
           - qt56tools
           - gcc-9
           - g++-9
+          - gcov-9
           - libc6-i386
           - libgl-dev
           - libgl1-mesa-dev
@@ -37,7 +38,9 @@ matrix:
           - git
 
 install:
-  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 --slave /usr/bin/g++ g++ /usr/bin/g++-9
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 90
+  - sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-9 90
   # Install lcov from tag v1.15
   - sudo git clone https://github.com/linux-test-project/lcov.git && cd lcov && sudo git checkout tags/v1.15 && sudo make install && cd ..
 
