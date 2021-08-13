@@ -61,6 +61,7 @@ script:
   - echo ${CXX}
   - ${CXX} --version
   - ${CXX} -v
+  - lcov -v
   - mkdir -p build
   - cd build
   - cmake -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCODE_COVERAGE=ON -DBUILD_TESTING=ON ..
