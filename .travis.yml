@@ -34,11 +34,12 @@ matrix:
           - valgrind
           # Misc
           - python-yaml
-          - lcov
+          - git
 
 install:
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 90 --slave /usr/bin/g++ g++ /usr/bin/g++-9
-  - sudo pip install codecov
+  # Install lcov from tag v1.15
+  - sudo git clone https://github.com/linux-test-project/lcov.git && cd lcov && sudo git co tags/v1.15 && sudo make install
 
   # Download and install cmake
   - |
@@ -62,8 +63,8 @@ script:
   - ${CXX} -v
   - mkdir -p build
   - cd build
-  - cmake -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCODE_COVERAGE=ON -DBUILD_TESTING=ON -DQUAZIP_ENABLE_TESTS=OFF ..
-  - cmake --build . --config Debug -- 
+  - cmake -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCODE_COVERAGE=ON -DBUILD_TESTING=ON ..
+  - cmake --build . --target all 
   - ctest --output-on-failure
 
 after_success:
