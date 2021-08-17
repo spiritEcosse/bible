@@ -7,12 +7,8 @@ set(RESOURCES
     include/modelregistry.h
     include/modelupdate.h
     include/modelhost.h
-    include/moduledownload.h
-#    include/modelmoduledownload.h
     include/model.h
     src/model.cpp
-    src/moduledownload.cpp
-#    src/modelmoduledownload.cpp
     src/modelmodule.cpp
     src/modelgroupmodules.cpp
     src/modelregistry.cpp
@@ -37,6 +33,7 @@ set(RESOURCES
 )
 
 add_library(${PROJECT_NAME} STATIC ${RESOURCES})
+#target_code_coverage(${PROJECT_NAME} AUTO ALL) # As an executable target, adds to the 'ccov' and ccov-all' targets, and the reports will exclude the non-covered.cpp file, and any files in a test/ folder.
 
 find_package(Qt5 COMPONENTS Core Network REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Quick Qt5::Network sqlite_orm)

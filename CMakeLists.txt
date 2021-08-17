@@ -12,6 +12,9 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+list(APPEND CMAKE_PREFIX_PATH "/Users/admin/Qt5.6.3/5.6.3/clang_64/lib/cmake/Qt5/")
+list(APPEND CMAKE_PREFIX_PATH "/Users/admin/Qt5.6.3/5.6.3/clang_64/bin/")
+
 find_package (Qt5 COMPONENTS Widgets Core Network Qml Gui Quick REQUIRED)
 
 execute_process (
@@ -112,6 +115,39 @@ if ( ${SAILFISH} )
         "${CMAKE_INSTALL_PREFIX}\n${CMAKE_BINARY_DIR}/${PROJECT_NAME}:bin\n")
 endif()
 
+if ( BUILD_TESTING )
+    enable_testing()
+    option(QUAZIP_ENABLE_TESTS "Enable quazip tests" OFF)
+    option(CODE_COVERAGE "Enable coverage reporting" OFF)
+    list(APPEND CMAKE_PREFIX_PATH "/usr/local/Cellar/llvm/12.0.1/lib/cmake/llvm/")
+    list(APPEND CMAKE_PREFIX_PATH "/usr/local/Cellar/llvm/12.0.1/bin/")
+    find_package(LLVM REQUIRED CONFIG)
+
+#    link_directories(/usr/local/opt/llvm/lib)
+#    set (CMAKE_SHARED_LINKER_FLAGS -Wl,-rpath,/usr/local/opt/llvm/lib)
+    message(${LLVM_INCLUDE_DIRS})
+    message(${LLVM_DEFINITIONS})
+#    include_directories(${LLVM_INCLUDE_DIRS})
+#    add_definitions(${LLVM_DEFINITIONS})
+
+    message(STATUS "Found LLVM version : ${LLVM_PACKAGE_VERSION}")
+    message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
+
+#    LDFLAGS="-L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib"
+
+#    find_package(clang)
+#    if (CODE_COVERAGE)
+      set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/.travis/cmake)
+      include(CodeCoverage)
+      add_code_coverage_all_targets() # Adds the 'ccov-all' target set and sets it to exclude all files in test/ folders.
+
+#      setup_target_for_coverage(${PROJECT_NAME}_coverage runUnitTests coverage)
+
+      SET(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
+      SET(CMAKE_C_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
+#    endif()
+endif()
+
 set(CMAKE_AUTOUIC ON)
 add_subdirectory(src)
 
@@ -128,18 +164,5 @@ set_target_properties(tag PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DI
 #                   )
 
 if ( BUILD_TESTING )
-    enable_testing()
-    option(CODE_COVERAGE "Enable coverage reporting" OFF)
-    option(QUAZIP_ENABLE_TESTS "Enable quazip tests" OFF)
-
-    if (CODE_COVERAGE)
-      set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/.travis/cmake)
-      include(CodeCoverage)
-#      setup_target_for_coverage(${PROJECT_NAME}_coverage runUnitTests coverage)
-
-      SET(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
-      SET(CMAKE_C_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
-    endif()
-
     add_subdirectory(tests)
 endif()
