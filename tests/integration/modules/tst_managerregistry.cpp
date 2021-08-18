@@ -10,6 +10,7 @@ namespace modules {
 
         class tst_ManagerRegistry : public ::tests::ModelJsonTest<Registry, ModelRegistry>
         {
+            Q_OBJECT
 
         public:
             tst_ManagerRegistry();
