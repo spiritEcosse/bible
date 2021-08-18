@@ -584,6 +584,6 @@ namespace modules {
     }
 }
 
-//QTEST_MAIN(modules::tests::tst_ManagerRegistry)
+QTEST_MAIN(modules::tests::tst_ManagerRegistry)
 
-//#include "tst_managerregistry.moc"
+#include "tst_managerregistry.moc"
