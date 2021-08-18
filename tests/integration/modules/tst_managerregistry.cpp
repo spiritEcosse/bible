@@ -10,7 +10,6 @@ namespace modules {
 
         class tst_ManagerRegistry : public ::tests::ModelJsonTest<Registry, ModelRegistry>
         {
-            Q_OBJECT
 
         public:
             tst_ManagerRegistry();
@@ -584,6 +583,6 @@ namespace modules {
     }
 }
 
-QTEST_MAIN(modules::tests::tst_ManagerRegistry)
+//QTEST_MAIN(modules::tests::tst_ManagerRegistry)
 
-#include "tst_managerregistry.moc"
+//#include "tst_managerregistry.moc"

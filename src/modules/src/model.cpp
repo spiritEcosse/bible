@@ -4,7 +4,7 @@ namespace modules {
 
     template <class T>
     Model<T>::Model()
-        : m_db { new db::Db<T>("user.sqlite") } {}
+        : m_db { new db::Db<T>() } {}
 
     template <class T>
     int Model<T>::rowCount(const QModelIndex& /* parent */) const
