@@ -76,14 +76,14 @@ namespace db {
 
     class MySingleton{
     public:
-        static MySingleton& getInstance(){
-            static MySingleton instance;
+        static MySingleton& getInstance(const std::string& name){
+            static MySingleton instance(name);
             return instance;
         }
         std::shared_ptr<Storage> storage;
     private:
-        MySingleton() {
-            storage.reset(new Storage(userStorage("user.sqlite")));
+        MySingleton(const std::string& name) {
+            storage.reset(new Storage(userStorage(name)));
             storage->sync_schema();
         }
         ~MySingleton()= default;
@@ -96,7 +96,7 @@ namespace db {
     {
 
     public:
-        Db();
+        Db(const std::string& name = "user.sqlite");
         using vector_unique_iterator = typename std::vector<std::unique_ptr<T>>::const_iterator;
         using vector_shared_iterator = typename std::vector<std::shared_ptr<T>>::const_iterator;
         using vector_iterator = typename std::vector<T>::const_iterator;

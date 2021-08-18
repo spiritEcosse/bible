@@ -22,7 +22,7 @@ namespace tests {
         dir.mkdir(pathFiles);
         dir.setCurrent(pathFiles);
         dir.mkdir(dirDownload);
-        m_db.reset(new db::Db<T>());
+        m_db.reset(new db::Db<T>(""));
         cleanTable();
     }
 

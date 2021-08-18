@@ -6,9 +6,11 @@
 namespace db {
 
     template <class T>
-    Db<T>::Db()
+    Db<T>::Db(const std::string& name)
     {
-        storage = MySingleton::getInstance().storage;
+        storage = MySingleton::getInstance(name).storage;
+//        storage.reset(new Storage(userStorage(name)));
+//        storage->sync_schema();
     }
 
     template <class T>
