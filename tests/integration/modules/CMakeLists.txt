@@ -19,7 +19,7 @@ foreach( TEST_FILE ${TEST_FILES} )
     endif()
 
     include_directories(${SQLITE_ORM_INCLUDE_DIR})
-    target_code_coverage(${TEST_NAME} AUTO ALL)
+#    target_code_coverage(${TEST_NAME} AUTO ALL)
     target_link_libraries(${TEST_NAME} PRIVATE
         Qt5::Test Qt5::Network core dbmanager netmanager modules base_test)
 endforeach( TEST_FILE ${TEST_FILES} )
