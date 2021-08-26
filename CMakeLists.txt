@@ -12,6 +12,9 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+#list(APPEND CMAKE_PREFIX_PATH "/Users/admin/Qt5.6.3/5.6.3/clang_64/lib/cmake/Qt5/")
+#list(APPEND CMAKE_PREFIX_PATH "/Users/admin/Qt5.6.3/5.6.3/clang_64/bin/")
+
 find_package (Qt5 COMPONENTS Widgets Core Network Qml Gui Quick REQUIRED)
 
 execute_process (
@@ -112,6 +115,31 @@ if ( ${SAILFISH} )
         "${CMAKE_INSTALL_PREFIX}\n${CMAKE_BINARY_DIR}/${PROJECT_NAME}:bin\n")
 endif()
 
+if ( BUILD_TESTING )
+    enable_testing()
+    option(QUAZIP_ENABLE_TESTS "Enable quazip tests" OFF)
+    option(CODE_COVERAGE "Enable coverage reporting" OFF)
+
+    if (CODE_COVERAGE)
+#        list(APPEND CMAKE_PREFIX_PATH "/usr/local/Cellar/llvm/12.0.1/lib/cmake/llvm/")
+#        list(APPEND CMAKE_PREFIX_PATH "/usr/local/Cellar/llvm/12.0.1/bin/")
+        find_package(LLVM REQUIRED CONFIG)
+
+        message(${LLVM_INCLUDE_DIRS})
+        message(${LLVM_DEFINITIONS})
+
+        message(STATUS "Found LLVM version : ${LLVM_PACKAGE_VERSION}")
+        message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
+
+        set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/.travis/cmake)
+        include(CodeCoverage)
+        add_code_coverage_all_targets(EXCLUDE 3rdparty/* tests/*) # Adds the 'ccov-all' target set and sets it to exclude all files in test/ folders.
+
+        SET(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
+        SET(CMAKE_C_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
+    endif()
+endif()
+
 set(CMAKE_AUTOUIC ON)
 add_subdirectory(src)
 
@@ -128,15 +156,5 @@ set_target_properties(tag PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DI
 #                   )
 
 if ( BUILD_TESTING )
-    enable_testing()
-    option(CODE_COVERAGE "Enable coverage reporting" OFF)
-    option(QUAZIP_ENABLE_TESTS "Enable quazip tests" OFF)
-
-    if(CODE_COVERAGE)
-        SET(CMAKE_CXX_FLAGS "-g -O0 -Wall -fprofile-arcs -ftest-coverage")
-        SET(CMAKE_C_FLAGS "-g -O0 -Wall -W -fprofile-arcs -ftest-coverage")
-        SET(CMAKE_EXE_LINKER_FLAGS "-fprofile-arcs -ftest-coverage")
-    endif()
-
     add_subdirectory(tests)
 endif()
