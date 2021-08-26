@@ -1,7 +1,6 @@
 ﻿#include "basetest.h"
 #include "modelmodule.h"
 #include "modelgroupmodules.h"
-#include "modelmoduledownload.h"
 #include "modelregistry.h"
 #include "modelhost.h"
 #include "dereferenceiterator.h"
