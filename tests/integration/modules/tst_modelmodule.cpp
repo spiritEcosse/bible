@@ -28,6 +28,7 @@ namespace modules {
             void updateDownloaded_data();
             void updateDownloaded();
             void getExtraFields();
+            void saveExtraFieldsToDb();
         };
 
         tst_ModelModule::tst_ModelModule() {}
@@ -168,6 +169,15 @@ namespace modules {
 
             ModelModule model;
             model.getExtraFields();
+        }
+
+        void tst_ModelModule::saveExtraFieldsToDb()
+        {
+            cleanTable();
+            helperSave();
+
+            ModelModule model;
+            model.saveExtraFieldsToDb();
         }
     }
 }
