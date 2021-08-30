@@ -7,6 +7,8 @@ namespace modules {
 
     namespace tests {
 
+        using namespace sqlite_orm;
+
         class tst_ModelModule : public ::tests::ModelJsonTest<Module, ModelModule> {
             Q_OBJECT
 
@@ -27,7 +29,10 @@ namespace modules {
             void updateSelecting();
             void updateDownloaded_data();
             void updateDownloaded();
-            void getExtraFields();
+//            void getExtraFields();
+            void getExtraFieldsFromDb();
+            void saveExtraFieldsToDb();
+            void saveExtraFieldsToDb_data();
         };
 
         tst_ModelModule::tst_ModelModule() {}
@@ -53,7 +58,7 @@ namespace modules {
                             std::make_shared<Module>(
                                 "name",
                                 "description",
-                                "abbreviation",
+                                QString("abbreviation_%1").arg(in),
                                 0,
                                 102400,
                                 "en",
@@ -61,7 +66,7 @@ namespace modules {
                                 "comment",
                                 "copyright",
                                 QDate(2017, 03, 31),
-                                true,
+                                false,
                                 false)
                 );
             }
@@ -84,7 +89,7 @@ namespace modules {
                                 "comment",
                                 "copyright",
                                 QDate(2017, 03, 31),
-                                true,
+                                false,
                                 false)
                 );
             }
@@ -161,13 +166,56 @@ namespace modules {
             QCOMPARE(object->m_downloaded, value);
         }
 
-        void tst_ModelModule::getExtraFields()
+        void tst_ModelModule::getExtraFieldsFromDb()
+        {
+            cleanTable();
+            helperSave();
+
+            m_db->storage->update_all(set(assign(&Module::m_downloaded, true)));
+            m_db->storage->update_all(set(assign(&Module::m_selected, true)));
+
+            ModelModule model;
+            model.getExtraFieldsFromDb();
+
+            QCOMPARE(model.selected->size(), vectorSize);
+            QCOMPARE(model.downloaded->size(), vectorSize);
+        }
+
+        void tst_ModelModule::saveExtraFieldsToDb_data()
         {
             cleanTable();
             helperSave();
 
             ModelModule model;
-            model.getExtraFields();
+            model.downloaded = std::make_unique<ModelModule::Downloaded> ();
+            model.downloaded->push_back(std::make_tuple("abbreviation_0"));
+            model.downloaded->push_back(std::make_tuple("abbreviation_2"));
+
+            model.selected = std::make_unique<ModelModule::Downloaded> ();
+            model.selected->push_back(std::make_tuple("abbreviation_0"));
+            model.selected->push_back(std::make_tuple("abbreviation_2"));
+            model.saveExtraFieldsToDb();
+
+            QTest::addColumn<int>("id");
+            QTest::addColumn<bool>("selected");
+            QTest::addColumn<bool>("downloaded");
+
+            QTest::newRow("abbreviation_0 m_downloaded and m_selected is true") << 1 << true << true;
+            QTest::newRow("abbreviation_1 m_downloaded and m_selected is false") << 2 << false << false;
+            QTest::newRow("abbreviation_2 m_downloaded and m_selected is true") << 3 << true << true;
+            QCOMPARE(int(model.selected->size()), 0);
+            QCOMPARE(int(model.downloaded->size()), 0);
+        }
+
+        void tst_ModelModule::saveExtraFieldsToDb()
+        {
+            QFETCH(int, id);
+            QFETCH(bool, selected);
+            QFETCH(bool, downloaded);
+
+            const auto &object = m_db->storage->get_pointer<Module>(id);
+            QCOMPARE(object->m_downloaded, downloaded);
+            QCOMPARE(object->m_selected, selected);
         }
     }
 }
