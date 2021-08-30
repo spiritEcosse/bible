@@ -44,9 +44,12 @@ namespace modules {
         inline const QString getNameJson() override { return QString("downloads"); };
     private:
         friend class tests::tst_ModelModule;
+        using Selected = decltype(std::vector<std::tuple<QString>>());
+        using Downloaded = decltype(std::vector<std::tuple<QString>>());
         int m_idGroupModules = 0;
         QString m_needle = "";
-        std::vector<std::tuple <QString,bool,bool>> m_extraFields;
+        std::unique_ptr<Selected> selected;
+        std::unique_ptr<Downloaded> downloaded;
     public slots:
         void getExtraFieldsFromDb();
     private slots:

@@ -80,16 +80,30 @@ namespace modules {
 
     void ModelModule::getExtraFieldsFromDb()
     {
-        m_extraFields = {};
-
-        for(const auto &row : m_db->storage->execute(statementExtraFields())) {
-            m_extraFields.push_back(std::tuple(std::get<4>(row), std::get<0>(row), std::get<1>(row)));
-        }
+        selected = std::make_unique<Selected>(m_db->storage->select(
+                            select(
+                                columns(&Module::m_abbreviation),
+                                where(c(&Module::m_selected) == true)
+                       )
+                    ));
+        downloaded = std::make_unique<Downloaded>(m_db->storage->select(
+                            select(
+                                columns(&Module::m_abbreviation),
+                                where(c(&Module::m_downloaded) == true)
+                        )
+                    ));
     }
 
     void ModelModule::saveExtraFieldsToDb()
     {
-
+        m_db->storage->update_all(
+                    set(assign(&Module::m_downloaded, true)),
+                    where(in(&Module::m_abbreviation, *downloaded)));
+        m_db->storage->update_all(
+                    set(assign(&Module::m_selected, true)),
+                    where(in(&Module::m_abbreviation, *selected)));
+        selected->clear();
+        downloaded->clear();
     }
 
     int ModelModule::countActive()
