@@ -41,6 +41,7 @@ namespace modules {
         friend class tests::tst_ModelHost;
         friend class netmanager::tests::tst_QuickDownload;
         static std::vector<HostUnique> objectsStatic;
+        HostUnique baseHost() const;
     };
 
 }

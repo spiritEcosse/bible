@@ -112,7 +112,7 @@ namespace netmanager {
     void QuickDownload::setUrl(const QUrl &url)
     {
         if(_url != url) {
-            _url = url;
+            _url = std::move(url);
             emit urlChanged();
         }
     }
@@ -125,7 +125,7 @@ namespace netmanager {
     void QuickDownload::setModuleName(const QString &moduleName)
     {
         if(_moduleName != moduleName) {
-            _moduleName = moduleName;
+            _moduleName = std::move(moduleName);
             setDestination();
             emit moduleNameChanged();
         }
@@ -151,9 +151,9 @@ namespace netmanager {
                     _saveFile->cancelWriting();
                     shutdownSaveFile();
                 }
-            } else
+            } else {
                 start();
-
+            }
             emit runningChanged();
         }
 
@@ -196,14 +196,16 @@ namespace netmanager {
     void QuickDownload::componentComplete()
     {
         _componentComplete = true;
-        if(_running)
+        if(_running) {
             start();
+        }
     }
 
     void QuickDownload::start(QUrl url)
     {
-        if(!_componentComplete)
+        if(!_componentComplete) {
             return;
+        }
 
         if(url.isEmpty()) {
             emit error(Error::ErrorUrl,"Url is empty");
@@ -216,6 +218,7 @@ namespace netmanager {
         }
 
         setUrl(url);
+        qDebug() << _url;
 
         QString destination = _destination;
 
@@ -227,9 +230,11 @@ namespace netmanager {
         }
 
         // Cancel and delete any previous open _saveFile disregarding it's state
-        if(_saveFile)
+        if(_saveFile) {
             _saveFile->cancelWriting();
+        }
         shutdownSaveFile();
+
         _saveFile = new QSaveFile(destination);
         if (!_saveFile->open(QIODevice::WriteOnly)) {
             emit error(Error::ErrorDestination,_saveFile->errorString());
@@ -256,7 +261,6 @@ namespace netmanager {
             m_modelHost->populateStaticObjects();
         });
 
-
         makeUrl();
         start(_url);
     }
@@ -268,8 +272,10 @@ namespace netmanager {
 
     void QuickDownload::onReadyRead()
     {
-        if (_saveFile)
+        qDebug() << "onReadyRead";
+        if (_saveFile) {
             _saveFile->write(_networkReply->readAll());
+        }
     }
 
     void QuickDownload::onFinished()
@@ -308,6 +314,7 @@ namespace netmanager {
                 shutdownSaveFile();
                 setProgress(1.0);
                 setRunning(false);
+                qDebug() << "finished";
                 emit finished();
             } else {
                 if(_saveFile)
@@ -373,7 +380,7 @@ namespace netmanager {
     void QuickDownload::makeUrl()
     {
         _url = std::move(QString().sprintf(
-                    std::move(m_modelHost->data(_index, modules::ModelHost::HostRoles::PathRole).toLocal8Bit().data()),
+                    std::move("http://s3.igrnt.info/m/%s.zip"),
                     std::move(_moduleName.toLocal8Bit().data())));
     }
 

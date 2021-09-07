@@ -10,8 +10,15 @@
 	path = 3rdparty/sqlite_orm
 	url = https://github.com/fnc12/sqlite_orm
 	branch = 1.6
+[submodule "3rdparty/curlpp"]
+	path = 3rdparty/curlpp
+	url = https://github.com/jpbarrette/curlpp.git
+	branch = 0.8.1
 #[submodule "3rdparty/boost"]
 #	path = 3rdparty/boost
 #	url = https://github.com/boostorg/boost.git
 #	branch = boost-1.73.0
 	
+[submodule "3rdparty/curlpp"]
+	path = 3rdparty/curlpp
+	url = https://github.com/jpbarrette/curlpp.git

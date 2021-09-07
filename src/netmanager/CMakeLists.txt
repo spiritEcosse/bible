@@ -3,13 +3,17 @@ project(netmanager LANGUAGES CXX)
 include_directories(include)
 
 add_library(${PROJECT_NAME} STATIC
+  # headers
   include/netmanager_global.h
   include/downloadmanager.h
   include/textprogressbar.h
   include/quickdownload.h
+  include/downloader.h
+  # sources
   src/textprogressbar.cpp
   src/quickdownload.cpp
   src/downloadmanager.cpp
+  src/downloader.cpp
 )
 
 find_package(Qt5 COMPONENTS Core Network Qml REQUIRED)

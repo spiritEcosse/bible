@@ -4,10 +4,15 @@
 #include <QtQuick>
 #include <QJsonDocument>
 #include <QJsonArray>
+#include "downloader.h"
+#include "quickdownload.h"
+#include <chrono>
+#include <thread>
 
 namespace modules {
 
     using namespace sqlite_orm;
+    using namespace netmanager;
 
     inline auto statementExtraFields() {
         std::unique_ptr<db::Db<Module>> m_db { new db::Db<Module>() };
@@ -136,7 +141,7 @@ namespace modules {
                     where(c(&Module::m_id) == id));
     }
 
-    QVariant ModelModule::getExtraFields()
+    const QVariant ModelModule::getExtraFields() const
     {
         const auto &data = m_db->storage->execute(statementExtraFields());
 
@@ -160,6 +165,64 @@ namespace modules {
             {"downloaded", std::move(downloadedArray)}
         };
         return std::move(document);
+    }
+
+    void ModelModule::downloadModules(const std::unique_ptr<Downloaded> &downloaded) const
+    {
+        Downloader::multiple(downloaded);
+//        for(QNetworkReply *reply: replies){
+//            qDebug() << "===============================";
+//            qDebug() << "url:" << reply->url() << "\nhas error?" << (reply->error() != QNetworkReply::NoError);
+//            qDebug() << "===============================";
+//        }
+//        qDebug() << "Completed";
+//        qDeleteAll(replies.begin(), replies.end());
+//        replies.clear();
+
+//        QEventLoop waitLoop;
+//        std::vector<std::unique_ptr<Downloader>> downloaders;
+//        unsigned int signalCount = 1;
+//        QNetworkAccessManager manager;
+//        QList<QNetworkReply *> replies;
+
+//        const auto signalReceived = [&signalCount,&waitLoop]()->void {
+//            if(--signalCount == 0) {
+//                waitLoop.quit();
+//            }
+//        };
+//        std::unique_ptr<Downloader> downloader = std::make_unique<Downloader>("AGP");
+////        QNetworkReply *reply = manager.get(QNetworkRequest(downloader->getUrl()));
+//        connect(downloader->m_networkReply, &QNetworkReply::finished, signalReceived);
+//        downloader->start();
+
+//        for (auto it = downloaded->begin(); it != downloaded->end(); it++) {
+//            std::unique_ptr<Downloader> downloader = std::make_unique<Downloader>(get<0>(*it));
+//            QNetworkReply *reply = manager.get(QNetworkRequest(downloader->getUrl()));
+//            connect(downloader.get(), &Downloader::finished, signalReceived);
+//            downloader->start();
+//            connect(reply, &QNetworkReply::finished, signalReceived);
+////            connect(reply, &QNetworkReply::finished, this, &ModelModule::test);
+//        }
+
+//        std::for_each(downloaded->begin(), downloaded->end(), [&manager, &signalReceived]
+//                      (const auto& abbreviation) {
+//            std::unique_ptr<Downloader> downloader = std::make_unique<Downloader>(get<0>(abbreviation));
+//            QNetworkReply *reply = manager.get(QNetworkRequest(downloader->getUrl()));
+//            connect(reply, &QNetworkReply::finished, signalReceived);
+//            connect(reply, &QNetworkReply::finished, this, &ModelModule::test);
+////            downloaders.push_back(std::move(downloader));
+//        });
+//        waitLoop.exec();
+//        for(const auto &downloader : downloaders) {
+//            qDebug() << "===============================";
+//            qDebug() << "url:" << downloader->getUrl() << "\nhas error?" << (downloader->error() != QNetworkReply::NoError);
+//            qDebug() << "===============================";
+//        }
+//        qDebug() << "Completed";
+    }
+
+    void ModelModule::onReadyRead() {
+        qDebug() << "onReadyRead";
     }
 
     QVariant ModelModule

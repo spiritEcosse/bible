@@ -40,6 +40,18 @@ namespace modules {
                         order_by(&Host::m_weight).desc(),
                         order_by(&Host::m_priority)
                     ));
+        if (!objectsStatic.size()) {
+            objectsStatic.push_back(baseHost());
+        }
+    }
+
+    std::unique_ptr<Host>
+    ModelHost::baseHost() const
+    {
+        return std::make_unique<Host>(
+            "p4",
+            "aHR0cDovL3MzLmlncm50LmluZm8vbS8lcy56aXA="
+        );
     }
 
     // overridden from qt

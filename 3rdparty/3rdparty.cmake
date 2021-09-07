@@ -23,6 +23,7 @@ if(EXISTS "${PROJECT_SOURCE_DIR}/.git")
             add_subdirectory(3rdparty/openssl)
         endif()
         add_subdirectory(3rdparty/sqlite_orm)
+        add_subdirectory(3rdparty/curlpp)
     endif()
 endif()
 
