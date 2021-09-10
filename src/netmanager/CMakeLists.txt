@@ -8,16 +8,19 @@ add_library(${PROJECT_NAME} STATIC
   include/downloadmanager.h
   include/textprogressbar.h
   include/quickdownload.h
-  include/downloader.h
+  include/curlmulti.h
+  include/curleasy.h
   # sources
   src/textprogressbar.cpp
   src/quickdownload.cpp
   src/downloadmanager.cpp
-  src/downloader.cpp
+  src/curlmulti.cpp
+  src/curleasy.cpp
 )
 
 find_package(Qt5 COMPONENTS Core Network Qml REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Network Qt5::Qml sqlite_orm)
+find_package(CURL)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Network Qt5::Qml sqlite_orm CURL)
 
 if (NOT ${SAILFISH})
     target_link_libraries(${PROJECT_NAME} PRIVATE ssl crypto)

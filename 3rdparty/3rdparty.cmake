@@ -13,6 +13,8 @@ if(EXISTS "${PROJECT_SOURCE_DIR}/.git")
     else()
         set(SQLITE_ORM_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/sqlite_orm/include/sqlite_orm
                 CACHE PATH "sqlite_orm include directory")
+        set(CURLPP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/curlpp/include/
+                CACHE PATH "curlpp include directory")
 
         if (NOT ${SAILFISH})
             set(QUAZIP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/quazip/quazip

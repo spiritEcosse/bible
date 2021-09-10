@@ -13,7 +13,7 @@
 [submodule "3rdparty/curlpp"]
 	path = 3rdparty/curlpp
 	url = https://github.com/jpbarrette/curlpp.git
-	branch = 0.8.1
+	branch = v0.8.1
 #[submodule "3rdparty/boost"]
 #	path = 3rdparty/boost
 #	url = https://github.com/boostorg/boost.git

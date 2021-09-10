@@ -21,7 +21,7 @@ namespace modules {
         QString m_needle = "";
         std::unique_ptr<Selected> selected;
         std::unique_ptr<Downloaded> downloaded;
-        virtual void downloadModules(const std::unique_ptr<Downloaded> &downloaded) const;
+        virtual void downloadModules(std::vector<QUrl> &&downloaded) const;
     public:
         enum ModuleRoles {
             Name = 0,
