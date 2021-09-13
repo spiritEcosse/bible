@@ -3,9 +3,11 @@
 #include "modeljsontest.h"
 #include "dereferenceiterator.h"
 #include "quickdownload.h"
-
+#include <chrono>
 
 namespace modules {
+    typedef std::chrono::high_resolution_clock Clock;
+    typedef std::chrono::milliseconds milliseconds;
 
     namespace tests {
 
@@ -223,12 +225,85 @@ namespace modules {
 
         void tst_ModelModule::downloadModules()
         {
-            std::unique_ptr<ModelModule::Downloaded> downloaded = std::make_unique<ModelModule::Downloaded> ();
-            downloaded->push_back(std::make_tuple("AGP"));
-            downloaded->push_back(std::make_tuple("ARC"));
+//            std::unique_ptr<ModelModule::Downloaded> downloaded = std::make_unique<ModelModule::Downloaded> ();
+//            downloaded->push_back(std::make_tuple("AGP"));
+//            downloaded->push_back(std::make_tuple("ARC"));
 
             ModelModule model;
-            model.downloadModules({QUrl("https://sabnzbd.org/tests/internetspeed/50MB.bin")});
+            Clock::time_point t0 = Clock::now();
+            model.downloadModules({QUrl("https://sabnzbd.org/tests/internetspeed/50MB.bin"), QUrl("https://github.com/yourkin/fileupload-fastapi/raw/a85a697cab2f887780b3278059a0dd52847d80f3/tests/data/test-5mb.bin"), QUrl("https://speed.hetzner.de/100MB.bin")});
+            Clock::time_point t1 = Clock::now();
+            milliseconds ms = std::chrono::duration_cast<milliseconds>(t1 - t0);
+            qDebug() << ms.count() << "ms\n";
+
+//            t0 = Clock::now();
+//            QList<QUrl> urls {
+////                QUrl("https://speed.hetzner.de/100MB.bin"),
+//                QUrl("https://sabnzbd.org/tests/internetspeed/50MB.bin"),
+////                QUrl("https://www.dundeecity.gov.uk/sites/default/files/publications/civic_renewal_forms.zip"),
+////                QUrl("https://telegram.org/dl/desktop/mac")
+//            };
+//            QNetworkAccessManager manager;
+//            QEventLoop loop;
+//            int total = 1;
+
+//            QFile file = QFile(QDir::currentPath() + "/modules/test_0");
+
+//            if (!file.open(QIODevice::WriteOnly)) {
+//                qDebug() << "sdsd" << file.errorString();
+//            }
+
+//            QNetworkReply *reply = manager.get(QNetworkRequest(urls[0]));
+//            QObject::connect(reply, &QNetworkReply::finished, [&total, &loop](){
+//                total--;
+//                if(total == 0) {
+//                    loop.quit();
+//                }
+//            });
+//            QObject::connect(reply, &QNetworkReply::readyRead, [&file, &reply](){
+//                file.write(reply->readAll());
+//            });
+
+
+
+////            QFile file_1 = QFile(QDir::currentPath() + "/modules/test_1");
+
+////            if (!file_1.open(QIODevice::WriteOnly)) {
+////                qDebug() << "sdsd" << file.errorString();
+////            }
+
+////            QNetworkReply *reply_1 = manager.get(QNetworkRequest(urls[1]));
+////            QObject::connect(reply_1, &QNetworkReply::finished, [&total, &loop](){
+////                total--;
+////                if(total == 0) {
+////                    loop.quit();
+////                }
+////            });
+////            QObject::connect(reply_1, &QNetworkReply::readyRead, [&file_1, &reply_1](){
+////                file_1.write(reply_1->readAll());
+////            });
+
+////            QFile file_2 = QFile(QDir::currentPath() + "/modules/test_2");
+
+////            if (!file_2.open(QIODevice::WriteOnly)) {
+////                qDebug() << "sdsd" << file.errorString();
+////            }
+
+////            QNetworkReply *reply_2 = manager.get(QNetworkRequest(urls[2]));
+////            QObject::connect(reply_2, &QNetworkReply::finished, [&total, &loop](){
+////                total--;
+////                if(total == 0) {
+////                    loop.quit();
+////                }
+////            });
+////            QObject::connect(reply_2, &QNetworkReply::readyRead, [&file_2, &reply_2](){
+////                file_2.write(reply_2->readAll());
+////            });
+//            loop.exec();
+////            m_saveFile.commit();
+//            t1 = Clock::now();
+//            ms = std::chrono::duration_cast<milliseconds>(t1 - t0);
+//            qDebug() << ms.count() << "ms\n";
         }
     }
 }

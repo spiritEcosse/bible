@@ -19,40 +19,28 @@ namespace netmanager {
         QSocketNotifier *errorNotifier = nullptr;
     };
 
-    CurlMulti::CurlMulti(std::vector<QUrl>&& urls, bool options, QObject *parent)
+    CurlMulti::CurlMulti(std::vector<QUrl>&& urls, QObject *parent)
         : QObject(parent)
-        , m_timer(new QTimer(this))
     {
         qDebug() << "begin init CurlMulti";
         createMultiHandle();
         createTransfersFromUrls(std::move(urls));
-
-        m_timer->setSingleShot(true);
-        connect(m_timer.get(), &QTimer::timeout, this, &CurlMulti::curlMultiTimeout);
-
-        if (options) {
-            additionalOptions();
-        }
     }
 
     CurlMulti::~CurlMulti()
     {
         removeTransfers();
-    }
 
-    void CurlMulti::additionalOptions()
-    {
-        curl_multi_setopt(handle_->get(), CURLMOPT_SOCKETFUNCTION, staticCurlSocketFunction);
-        curl_multi_setopt(handle_->get(), CURLMOPT_SOCKETDATA, this);
-        curl_multi_setopt(handle_->get(), CURLMOPT_TIMERFUNCTION, staticCurlTimerFunction);
-        curl_multi_setopt(handle_->get(), CURLMOPT_TIMERDATA, this);
+        if (m_handle) {
+            curl_multi_cleanup(m_handle);
+        }
     }
 
     void CurlMulti::createMultiHandle()
     {
-        handle_.reset(new MultiHandle(curl_multi_init(), curl_multi_cleanup));
+        m_handle = curl_multi_init();
 
-        if (!handle_)
+        if (!m_handle)
         {
             throw std::runtime_error("Failed creating CURL multi object");
         }
@@ -60,10 +48,17 @@ namespace netmanager {
 
     void CurlMulti::multiLoop()
     {
+//        int runningHandles;
+//        CURLMcode rc = curl_multi_socket_action(m_handle, CURL_SOCKET_TIMEOUT, 0, &runningHandles);
+//        if (rc != 0) {
+//            // TODO: Handle global curl errors
+//        }
+
+
         int still_running = 0; /* keep number of running handles */
 
         /* we start some action by calling perform right away */
-        curl_multi_perform(handle_->get(), &still_running);
+        curl_multi_perform(m_handle, &still_running);
         qDebug() << "curl_multi_perform";
 
         while (still_running) {
@@ -74,13 +69,51 @@ namespace netmanager {
             if (rc >= 0)
             {
                 /* timeout or readable/writable sockets */
-                qDebug() << "curl_multi_perform curl_multi_perform";
-                curl_multi_perform(handle_->get(), &still_running);
+                curl_multi_perform(m_handle, &still_running);
             }
             /* else select error */
         }
-        qDebug() << "curl_multi_perform";
 
+        int messagesLeft = 0;
+        do {
+            CURLMsg *message = curl_multi_info_read(m_handle, &messagesLeft);
+
+            if (message == nullptr)
+                break;
+
+            if (message->easy_handle == nullptr)
+                continue;
+
+            CurlEasy *transfer = nullptr;
+            curl_easy_getinfo(message->easy_handle, CURLINFO_PRIVATE, &transfer);
+
+            if (transfer == nullptr)
+                continue;
+
+            transfer->onCurlMessage(message);
+        } while (messagesLeft);
+
+//        while((msg = curl_multi_info_read(multi_handle, &msgs_left))) {
+//            if(msg->msg == CURLMSG_DONE) {
+//                int idx;
+
+//                /* Find out which handle this message is about */
+//                for(idx = 0; idx < HANDLECOUNT; idx++) {
+//                    int found = (msg->easy_handle == handles[idx]);
+//                    if(found)
+//                        break;
+//                }
+
+////                switch(idx) {
+////                    case HTTP_HANDLE:
+////                        printf("HTTP transfer completed with status %d\n", msg->data.result);
+////                        break;
+////                    case FTP_HANDLE:
+////                        printf("FTP transfer completed with status %d\n", msg->data.result);
+////                        break;
+////                }
+//            }
+//        }
     }
 
     void CurlMulti::perform()
@@ -97,7 +130,7 @@ namespace netmanager {
 
     void CurlMulti::addTransfer(std::unique_ptr<CurlEasy> transfer)
     {
-        curl_multi_add_handle(handle_->get(), transfer->handle());
+        curl_multi_add_handle(m_handle, transfer->handle());
         transfers_.push_back(std::move(transfer));
     }
 
@@ -111,7 +144,7 @@ namespace netmanager {
         FD_ZERO(&fdexcep);
         int maxfd = -1;
         /* get file descriptors from the transfers */
-        auto mc = curl_multi_fdset(handle_->get(), &fdread, &fdwrite, &fdexcep, &maxfd);
+        auto mc = curl_multi_fdset(m_handle, &fdread, &fdwrite, &fdexcep, &maxfd);
 
         if (mc != CURLM_OK) {
             qDebug() << "curl_multi_fdset() failed, code " << mc << ".";
@@ -135,7 +168,7 @@ namespace netmanager {
         timeout.tv_sec = 1;
         timeout.tv_usec = 0;
 
-        curl_multi_timeout(handle_->get(), &curl_timeo);
+        curl_multi_timeout(m_handle, &curl_timeo);
         if (curl_timeo >= 0) {
             timeout.tv_sec = curl_timeo / 1000;
             if (timeout.tv_sec > 1)
@@ -149,137 +182,9 @@ namespace netmanager {
     void CurlMulti::removeTransfers()
     {
         std::for_each(transfers_.begin(), transfers_.end(), [this] (auto& transfer_) {
-            curl_multi_remove_handle(handle_->get(), transfer_->handle());
+            curl_multi_remove_handle(m_handle, transfer_->handle());
         });
         transfers_.clear();
-    }
-
-    int CurlMulti::curlSocketFunction(CURL *easyHandle, curl_socket_t socketDescriptor, int action, CurlMultiSocket *socket)
-    {
-        Q_UNUSED(easyHandle);
-        if (!socket) {
-            if (action == CURL_POLL_REMOVE || action == CURL_POLL_NONE)
-                return 0;
-
-            socket = new CurlMultiSocket;
-            socket->socketDescriptor = socketDescriptor;
-            curl_multi_assign(handle_->get(), socketDescriptor, socket);
-        }
-
-        if (action == CURL_POLL_REMOVE) {
-            curl_multi_assign(handle_->get(), socketDescriptor, nullptr);
-
-            // Note: deleteLater will NOT work here since there are
-            //       situations where curl subscribes same sockect descriptor
-            //       until events processing is done and actual delete happen.
-            //       This causes QSocketNotifier not to register notifications again.
-            if (socket->readNotifier) delete socket->readNotifier;
-            if (socket->writeNotifier) delete socket->writeNotifier;
-            if (socket->errorNotifier) delete socket->errorNotifier;
-            delete socket;
-            return 0;
-        }
-
-        if (action == CURL_POLL_IN || action == CURL_POLL_INOUT) {
-            if (!socket->readNotifier) {
-                socket->readNotifier = new QSocketNotifier(socket->socketDescriptor, QSocketNotifier::Read);
-                connect(socket->readNotifier, &QSocketNotifier::activated, this, &CurlMulti::socketReadyRead);
-            }
-            socket->readNotifier->setEnabled(true);
-        } else {
-            if (socket->readNotifier)
-                socket->readNotifier->setEnabled(false);
-        }
-
-        if (action == CURL_POLL_OUT || action == CURL_POLL_INOUT) {
-            if (!socket->writeNotifier) {
-                socket->writeNotifier = new QSocketNotifier(socket->socketDescriptor, QSocketNotifier::Write);
-                connect(socket->writeNotifier, &QSocketNotifier::activated, this, &CurlMulti::socketReadyWrite);
-            }
-            socket->writeNotifier->setEnabled(true);
-        } else {
-            if (socket->writeNotifier)
-                socket->writeNotifier->setEnabled(false);
-        }
-
-        return 0;
-    }
-
-    int CurlMulti::curlTimerFunction(int timeoutMsec)
-    {
-        if (timeoutMsec >= 0)
-            m_timer->start(timeoutMsec);
-        else
-            m_timer->stop();
-
-        return 0;
-    }
-
-    void CurlMulti::curlMultiTimeout()
-        { curlSocketAction(CURL_SOCKET_TIMEOUT, 0); }
-
-    void CurlMulti::socketReadyRead(int socketDescriptor)
-        { curlSocketAction(socketDescriptor, CURL_CSELECT_IN); }
-
-    void CurlMulti::socketReadyWrite(int socketDescriptor)
-        { curlSocketAction(socketDescriptor, CURL_CSELECT_OUT); }
-
-    void CurlMulti::socketException(int socketDescriptor)
-        { curlSocketAction(socketDescriptor, CURL_CSELECT_ERR); }
-
-    void CurlMulti::curlSocketAction(curl_socket_t socketDescriptor, int eventsBitmask)
-    {
-        int runningHandles;
-        CURLMcode rc = curl_multi_socket_action(handle_->get(), socketDescriptor, eventsBitmask, &runningHandles);
-        if (rc != 0) {
-            // TODO: Handle global curl errors
-        }
-
-        int messagesLeft = 0;
-        do {
-            CURLMsg *message = curl_multi_info_read(handle_->get(), &messagesLeft);
-
-            if (message == nullptr)
-                break;
-
-            if (message->easy_handle == nullptr)
-                continue;
-
-            CurlEasy *transfer = nullptr;
-            curl_easy_getinfo(message->easy_handle, CURLINFO_PRIVATE, &transfer);
-
-            if (transfer == nullptr)
-                continue;
-
-            transfer->onCurlMessage(message);
-        } while (messagesLeft);
-    }
-
-    int CurlMulti::staticCurlSocketFunction(CURL *easyHandle, curl_socket_t socketDescriptor, int what, void *userp, void *sockp)
-    {
-        Q_UNUSED(easyHandle);
-        CurlMulti *multi = static_cast<CurlMulti*>(userp);
-        Q_ASSERT(multi != nullptr);
-
-        return multi->curlSocketFunction(easyHandle, socketDescriptor, what, static_cast<CurlMultiSocket*>(sockp));
-    }
-
-    int CurlMulti::staticCurlTimerFunction(CURLM *multiHandle, long timeoutMs, void *userp)
-    {
-        Q_UNUSED(multiHandle);
-        CurlMulti *multi = static_cast<CurlMulti*>(userp);
-        Q_ASSERT(multi != nullptr);
-
-        int intTimeoutMs;
-
-        if (timeoutMs >= std::numeric_limits<int>::max())
-            intTimeoutMs = std::numeric_limits<int>::max();
-        else if (timeoutMs >= 0)
-            intTimeoutMs = static_cast<int>(timeoutMs);
-        else
-            intTimeoutMs = -1;
-
-        return multi->curlTimerFunction(intTimeoutMs);
     }
 
 
@@ -428,6 +333,8 @@ namespace netmanager {
 //            qDebug() << urls[i] << i;
 //            i++;
 //        });
+
+
 
 //        /* add the individual transfers */
 //        std::for_each(handles.begin(), handles.end(), [&multi_handle](auto& handle) {

@@ -17,36 +17,20 @@ namespace netmanager {
     {
         Q_OBJECT
     public:
-        explicit CurlMulti(std::vector<QUrl>&& urls, bool options = false, QObject *parent = nullptr);
+        explicit CurlMulti(std::vector<QUrl>&& urls, QObject *parent = nullptr);
         virtual ~CurlMulti();
 
         void createTransfersFromUrls(std::vector<QUrl>&& urls);
         void addTransfer(std::unique_ptr<CurlEasy> transfer);
         void perform();
-
-    protected slots:
-        void curlMultiTimeout();
-        void socketReadyRead(int socketDescriptor);
-        void socketReadyWrite(int socketDescriptor);
-        void socketException(int socketDescriptor);
-
-    protected:
-        void curlSocketAction(curl_socket_t socketDescriptor, int eventsBitmask);
-        int curlTimerFunction(int timeoutMsec);
-        int curlSocketFunction(CURL *easyHandle, curl_socket_t socketDescriptor, int action, CurlMultiSocket *socket);
-        static int staticCurlTimerFunction(CURLM *multiHandle, long timeoutMs, void *userp);
-        static int staticCurlSocketFunction(CURL *easyHandle, curl_socket_t socketDescriptor, int what, void *userp, void *sockp);
-
-        std::unique_ptr<QTimer> m_timer = nullptr;
-        std::unique_ptr<MultiHandle> handle_ = nullptr;
-        std::vector<std::unique_ptr<CurlEasy>> transfers_;
     private:
+        CURLM* m_handle = nullptr;
+        std::vector<std::unique_ptr<CurlEasy>> transfers_;
         void removeTransfers();
         void multiLoop();
         void createMultiHandle();
         int waitIfNeeded(timeval& timeout);
         timeval getTimeout();
-        void additionalOptions();
     };
 
 //    class Downloader : public QObject

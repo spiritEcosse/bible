@@ -42,16 +42,16 @@ namespace netmanager {
 
     void CurlEasy::setSaveFile()
     {
-        downloadFile.reset(new QFile(QDir::currentPath() + "/modules/" + m_url.toString().split("/").last()));
+        downloadFile.reset(new QSaveFile(QDir::currentPath() + "/modules/" + m_url.toString().split("/").last()));
         qDebug() << m_url << downloadFile->fileName();
         initSaveFile();
     }
 
     void CurlEasy::createEasyHandle()
     {
-        handle_.reset(new EasyHandle(curl_easy_init(), curl_easy_cleanup));
+        m_handle = curl_easy_init();
 
-        if (!handle_)
+        if (!m_handle)
         {
             throw std::runtime_error("Failed creating CURL easy object");
         }
@@ -61,9 +61,9 @@ namespace netmanager {
     {
 //        removeFromMulti();
 
-//        if (handle_) {
-//            curl_easy_cleanup(handle_);
-//        }
+        if (m_handle) {
+            curl_easy_cleanup(m_handle);
+        }
 
 //        if (curlHttpHeaders_) {
 //            curl_slist_free_all(curlHttpHeaders_);
@@ -114,10 +114,11 @@ namespace netmanager {
 
     void CurlEasy::onCurlMessage(CURLMsg *message)
     {
-        qDebug() << "onCurlMessage";
         if (message->msg == CURLMSG_DONE) {
             removeFromMulti();
             lastResult_ = message->data.result;
+            qDebug() << "done";
+            downloadFile->commit();
             emit done(lastResult_);
         }
     }
@@ -186,8 +187,7 @@ namespace netmanager {
     size_t CurlEasy::staticCurlWriteFunction(char *data, size_t size, size_t nitems, void *easyPtr)
     {
         CurlEasy *easy = static_cast<CurlEasy*>(easyPtr);
-        qDebug() << "staticCurlWriteFunction";
-        qint64 bytesWritten = easy->downloadFile->write(data, static_cast<qint64>(size));
+        qint64 bytesWritten = easy->downloadFile->write(data, size*nitems);
         return static_cast<size_t>(bytesWritten);
     }
 

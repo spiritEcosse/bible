@@ -24,7 +24,7 @@ namespace netmanager {
     {
         Q_OBJECT
     private:
-        std::unique_ptr<QFile> downloadFile;
+        std::unique_ptr<QSaveFile> downloadFile;
         QUrl m_url;
         void createEasyHandle();
         void initSaveFile();
@@ -49,7 +49,7 @@ namespace netmanager {
 
         // For the list of available set options and valid parameter types consult curl_easy_setopt manual
         template<typename T> bool set(CURLoption option, T parameter) {
-            return curl_easy_setopt(handle_.get()->get(), option, parameter) == CURLE_OK;
+            return curl_easy_setopt(m_handle, option, parameter) == CURLE_OK;
         }
         bool set(CURLoption option, const QString &parameter); // Convenience override for const char* parameters
         bool set(CURLoption option, const QUrl &parameter); // Convenience override for const char* parameters
@@ -59,7 +59,7 @@ namespace netmanager {
 
         // For the list of available get options and valid parameter types consult curl_easy_getinfo manual
         template<typename T> bool get(CURLINFO info, T *pointer) {
-            return curl_easy_getinfo(handle_.get()->get(), info, pointer) == CURLE_OK;
+            return curl_easy_getinfo(m_handle, info, pointer) == CURLE_OK;
         }
         template<typename T> T get(CURLINFO info);
 
@@ -72,7 +72,7 @@ namespace netmanager {
         QByteArray httpHeaderRaw(const QString &header) const;
         void setHttpHeaderRaw(const QString &header, const QByteArray &encodedValue);
 
-        CURL* handle() { return handle_->get(); }
+        CURL* handle() { return m_handle; }
 //        void setPreferredMulti(CurlMulti *multi) { preferredMulti_ = multi; }
 
         // Safety hack: substitue QObject's deleteLater whenever possible to make sure
@@ -96,7 +96,7 @@ namespace netmanager {
         static int staticCurlXferInfoFunction(void *easyPtr, curl_off_t downloadTotal, curl_off_t downloadNow, curl_off_t uploadTotal, curl_off_t uploadNow);
 
 
-        std::unique_ptr<EasyHandle> handle_ = nullptr;
+        CURL* m_handle = nullptr;
 //        CurlMulti       *preferredMulti_ = nullptr;
 //        CurlMulti       *runningOnMulti_ = nullptr;
         CURLcode        lastResult_ = CURLE_OK;
