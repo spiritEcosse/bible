@@ -1,7 +1,7 @@
 [submodule "3rdparty/openssl"]
 	path = 3rdparty/openssl
 	url = https://github.com/janbar/openssl-cmake
-	branch = 1.0.2
+	branch = 1.1.1g-20200510
 [submodule "3rdparty/quazip"]
 	path = 3rdparty/quazip
 	url = https://github.com/stachenov/quazip
@@ -10,15 +10,12 @@
 	path = 3rdparty/sqlite_orm
 	url = https://github.com/fnc12/sqlite_orm
 	branch = 1.6
-[submodule "3rdparty/curlpp"]
-	path = 3rdparty/curlpp
-	url = https://github.com/jpbarrette/curlpp.git
-	branch = v0.8.1
+[submodule "3rdparty/curl"]
+	path = 3rdparty/curl
+	url = https://github.com/curl/curl.git
+	branch = curl-7_78_0
 #[submodule "3rdparty/boost"]
 #	path = 3rdparty/boost
 #	url = https://github.com/boostorg/boost.git
 #	branch = boost-1.73.0
 	
-[submodule "3rdparty/curlpp"]
-	path = 3rdparty/curlpp
-	url = https://github.com/jpbarrette/curlpp.git

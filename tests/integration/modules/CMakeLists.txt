@@ -3,7 +3,6 @@ project(tst_modules LANGUAGES CXX)
 enable_testing()
 
 find_package(Qt5 COMPONENTS Test Network Qml REQUIRED)
-FIND_PACKAGE(CURL)
 
 set(QT_TEST_SERVER 1)
 file( GLOB TEST_FILES *.cpp )
@@ -19,7 +18,6 @@ foreach( TEST_FILE ${TEST_FILES} )
         target_link_libraries(${TEST_NAME} PRIVATE QuaZip)
     endif()
 
-    include_directories(${SQLITE_ORM_INCLUDE_DIR})
     target_link_libraries(${TEST_NAME} PRIVATE
-        Qt5::Test Qt5::Network Qt5::Qml core dbmanager netmanager modules base_test CURL)
+        Qt5::Test Qt5::Network Qt5::Qml core dbmanager netmanager modules base_test)
 endforeach( TEST_FILE ${TEST_FILES} )

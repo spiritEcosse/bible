@@ -231,7 +231,7 @@ namespace modules {
 
             ModelModule model;
             Clock::time_point t0 = Clock::now();
-            model.downloadModules({QUrl("https://sabnzbd.org/tests/internetspeed/50MB.bin"), QUrl("https://github.com/yourkin/fileupload-fastapi/raw/a85a697cab2f887780b3278059a0dd52847d80f3/tests/data/test-5mb.bin"), QUrl("https://speed.hetzner.de/100MB.bin")});
+            model.downloadModules({QUrl("https://sabnzbd.org/tests/internetspeed/50MB.bin"), QUrl("https://github.com/yourkin/fileupload-fastapi/raw/a85a697cab2f887780b3278059a0dd52847d80f3/tests/data/test-5mb.bin")});
             Clock::time_point t1 = Clock::now();
             milliseconds ms = std::chrono::duration_cast<milliseconds>(t1 - t0);
             qDebug() << ms.count() << "ms\n";

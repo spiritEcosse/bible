@@ -36,6 +36,15 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 endif()
 
 include(3rdparty/3rdparty.cmake)
+# Add path for custom CMake libs.
+# list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/modules")
+# set(USE_BUNDLED_DEPS ON)
+# if(CMAKE_SYSTEM_NAME MATCHES "SunOS")
+#         set(CMD_MAKE gmake)
+# else()
+#         set(CMD_MAKE make)
+# endif()
+# include(modules/curl.cmake)
 
 set(QT_5_12_VERSION 5.12.0)
 

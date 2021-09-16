@@ -35,8 +35,8 @@ set(RESOURCES
 add_library(${PROJECT_NAME} STATIC ${RESOURCES})
 
 find_package(Qt5 COMPONENTS Core Network REQUIRED)
-find_package(CURL)
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Quick Qt5::Network sqlite_orm CURL)
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    Qt5::Core Qt5::Quick Qt5::Network sqlite_orm)
 
 message("------------------------------------------------------------------------------Quazip---------------------------------------------------------")
 if (${SAILFISH})
@@ -52,7 +52,6 @@ target_include_directories(${PROJECT_NAME}
         include
     PRIVATE
         src
-        ${SQLITE_ORM_INCLUDE_DIR}
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE core dbmanager netmanager)
