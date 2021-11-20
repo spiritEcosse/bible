@@ -23,21 +23,30 @@ namespace modules {
         private:
             std::vector<ModuleShared> helperGetObjects() const override;
             std::vector<ModuleUnique> helperGetObjectsUnique() const override;
+            std::vector<HostUnique> helperGetHostsUnique();
+            HostUnique helperGetHostsUniqueNotExists() const;
+            HostUnique helperGetHostUnique() const;
+            QVariantList helperGetSelected() const;
         private slots:
             void initTestCase() override;
             void cleanupTestCase() override;
             void update() override;
+            void init_model();
             void updateObjects_data();
             void updateObjects();
-            void updateSelecting_data();
-            void updateSelecting();
+            void updateSelected_data();
+            void updateSelected();
             void updateDownloaded_data();
             void updateDownloaded();
-//            void getExtraFields();
             void getExtraFieldsFromDb();
             void saveExtraFieldsToDb();
             void saveExtraFieldsToDb_data();
+            void downloadModules_data();
             void downloadModules();
+            void downloadModules_withoutRecursion();
+            void deleteModules();
+            void retrieveDownloaded();
+            void retrieveSelected();
         };
 
         tst_ModelModule::tst_ModelModule() {}
@@ -61,9 +70,9 @@ namespace modules {
             for ( size_t in = 0; in < vectorSize; in++) {
                 objects.push_back(
                             std::make_shared<Module>(
-                                "name",
+                                QString("name.%1").arg(in),
                                 "description",
-                                QString("abbreviation_%1").arg(in),
+                                QString("abbreviation.%1").arg(in),
                                 0,
                                 102400,
                                 "en",
@@ -84,9 +93,9 @@ namespace modules {
             for ( size_t in = 0; in < vectorSize; in++) {
                 objects.push_back(
                             std::make_unique<Module>(
-                                "name",
+                                QString("name.%1").arg(in),
                                 "description",
-                                "abbreviation",
+                                QString("abbreviation.%1").arg(in),
                                 0,
                                 102400,
                                 "en",
@@ -101,10 +110,45 @@ namespace modules {
             return objects;
         }
 
+        HostUnique tst_ModelModule::helperGetHostUnique() const
+        {
+            return std::make_unique<modules::Host>("alias", urlModuleToBase64(), 1, 2);
+        }
+
+        QVariantList tst_ModelModule::helperGetSelected() const
+        {
+            QMap<QString, QVariant> objects;
+            objects.insert("moduleId", 1);
+            return QVariantList({objects});
+        }
+
+        HostUnique tst_ModelModule::helperGetHostsUniqueNotExists() const
+        {
+            return std::make_unique<modules::Host>("alias", QString(strUrl + urlMask).toUtf8().toBase64(), 1, 2);
+        }
+
+        std::vector<modules::HostUnique> tst_ModelModule::helperGetHostsUnique()
+        {
+            std::vector<modules::HostUnique> objects;
+            objects.push_back(helperGetHostUnique());
+            return objects;
+        }
+
         // tests
         void tst_ModelModule::update()
         {
-//            ModelJsonTest<Module, ModelModule>::update();
+            ModelJsonTest<Module, ModelModule>::update();
+        }
+
+        void tst_ModelModule::init_model()
+        {
+            ModelModule model;
+            QSignalSpy spySelected(&model, &ModelModule::changeSelected);
+            QSignalSpy spyDownloaded(&model, &ModelModule::changeDownloaded);
+            model.init();
+            model.init();
+            QCOMPARE(spySelected.count(), 1);
+            QCOMPARE(spyDownloaded.count(), 1);
         }
 
         void tst_ModelModule::updateObjects_data()
@@ -120,14 +164,14 @@ namespace modules {
             ModelModule modelModule;
             modelModule.updateObjects();
             QCOMPARE(modelModule.m_objects.size(), objects.size());
-//            QCOMPARE(std::equal(dereference_iterator(modelModule.m_objects.begin()),
-//                       dereference_iterator(modelModule.m_objects.end()),
-//                       dereference_iterator(objects.begin())
-//                       ), true);
+            QCOMPARE(std::equal(dereference_iterator(modelModule.m_objects.begin()),
+                       dereference_iterator(modelModule.m_objects.end()),
+                       dereference_iterator(objects.begin())
+                       ), true);
             QCOMPARE(modelModule.objectsCount, 0);
         }
 
-        void tst_ModelModule::updateSelecting_data()
+        void tst_ModelModule::updateSelected_data()
         {
             QTest::addColumn<bool>("value");
 
@@ -135,7 +179,7 @@ namespace modules {
             QTest::newRow("m_selecting is false") << false;
         }
 
-        void tst_ModelModule::updateSelecting()
+        void tst_ModelModule::updateSelected()
         {
             QFETCH(bool, value);
 
@@ -182,8 +226,8 @@ namespace modules {
             ModelModule model;
             model.getExtraFieldsFromDb();
 
-            QCOMPARE(model.selected->size(), vectorSize);
-            QCOMPARE(model.downloaded->size(), vectorSize);
+            QCOMPARE(model.m_selectedBackup.size(), vectorSize);
+            QCOMPARE(model.m_downloadedBackup.size(), vectorSize);
         }
 
         void tst_ModelModule::saveExtraFieldsToDb_data()
@@ -192,24 +236,23 @@ namespace modules {
             helperSave();
 
             ModelModule model;
-            model.downloaded = std::make_unique<ModelModule::Downloaded> ();
-            model.downloaded->push_back(std::make_tuple("abbreviation_0"));
-            model.downloaded->push_back(std::make_tuple("abbreviation_2"));
+            model.m_downloadedBackup.push_back(std::make_tuple("name.0"));
+            model.m_downloadedBackup.push_back(std::make_tuple("name.2"));
 
-            model.selected = std::make_unique<ModelModule::Downloaded> ();
-            model.selected->push_back(std::make_tuple("abbreviation_0"));
-            model.selected->push_back(std::make_tuple("abbreviation_2"));
+            model.m_selectedBackup.push_back(std::make_tuple("name.0"));
+            model.m_selectedBackup.push_back(std::make_tuple("name.2"));
+
             model.saveExtraFieldsToDb();
 
             QTest::addColumn<int>("id");
             QTest::addColumn<bool>("selected");
             QTest::addColumn<bool>("downloaded");
 
-            QTest::newRow("abbreviation_0 m_downloaded and m_selected is true") << 1 << true << true;
-            QTest::newRow("abbreviation_1 m_downloaded and m_selected is false") << 2 << false << false;
-            QTest::newRow("abbreviation_2 m_downloaded and m_selected is true") << 3 << true << true;
-            QCOMPARE(int(model.selected->size()), 0);
-            QCOMPARE(int(model.downloaded->size()), 0);
+            QTest::newRow("name.0 m_downloaded and m_selected is true") << 1 << true << true;
+            QTest::newRow("name.1 m_downloaded and m_selected is false") << 2 << false << false;
+            QTest::newRow("name.2 m_downloaded and m_selected is true") << 3 << true << true;
+            QCOMPARE(int(model.m_selectedBackup.size()), 0);
+            QCOMPARE(int(model.m_downloadedBackup.size()), 0);
         }
 
         void tst_ModelModule::saveExtraFieldsToDb()
@@ -223,87 +266,118 @@ namespace modules {
             QCOMPARE(object->m_selected, selected);
         }
 
+        void tst_ModelModule::downloadModules_data()
+        {
+            cleanTable();
+            helperSave();
+            createFileModule();
+            std::unique_ptr<db::Db<modules::Host>> m_dbHost;
+            m_dbHost.reset(new db::Db<modules::Host>());
+            m_dbHost->removeAll();
+
+            auto entries = helperGetHostsUnique();
+            m_dbHost->save(entries.begin(), entries.end());
+
+            QTest::addColumn<int>("spyDownloadedCount");
+            QTest::newRow("updateSuccessfullyDownloaded") << 1;
+            QTest::newRow("retryFailedDownloaded") << 2;
+        }
+
         void tst_ModelModule::downloadModules()
         {
-//            std::unique_ptr<ModelModule::Downloaded> downloaded = std::make_unique<ModelModule::Downloaded> ();
-//            downloaded->push_back(std::make_tuple("AGP"));
-//            downloaded->push_back(std::make_tuple("ARC"));
+            QFETCH(int, spyDownloadedCount);
 
             ModelModule model;
-            Clock::time_point t0 = Clock::now();
-            model.downloadModules({QUrl("https://sabnzbd.org/tests/internetspeed/50MB.bin"), QUrl("https://github.com/yourkin/fileupload-fastapi/raw/a85a697cab2f887780b3278059a0dd52847d80f3/tests/data/test-5mb.bin")});
-            Clock::time_point t1 = Clock::now();
-            milliseconds ms = std::chrono::duration_cast<milliseconds>(t1 - t0);
-            qDebug() << ms.count() << "ms\n";
+            if (spyDownloadedCount == 2) {
+                model.m_worker->m_modelHost->m_objects.clear();
+                model.m_worker->m_modelHost->m_objects.push_back(helperGetHostsUniqueNotExists());
+            } else {
+                model.m_worker->m_modelHost->m_objects = helperGetHostsUnique();
+            }
+            QCOMPARE(m_db->storage->get<Module>(1).m_downloaded, false);
+            model.downloadModules(helperGetSelected());
+            QSignalSpy spy(&model, &ModelModule::changeDownloaded);
+            QSignalSpy spyChangeDownloadCompleted(&model, &ModelModule::changeDownloadCompleted);
+            QVERIFY(spy.wait());
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spyChangeDownloadCompleted.count(), 1);
+            QCOMPARE(m_db->storage->get<Module>(1).m_downloaded, true);
+            QVERIFY(folderModuleInModules.exists());
+            QVERIFY(!QFile::exists(getModuleFilePath(fileModuleArchiveInModules)));
 
-//            t0 = Clock::now();
-//            QList<QUrl> urls {
-////                QUrl("https://speed.hetzner.de/100MB.bin"),
-//                QUrl("https://sabnzbd.org/tests/internetspeed/50MB.bin"),
-////                QUrl("https://www.dundeecity.gov.uk/sites/default/files/publications/civic_renewal_forms.zip"),
-////                QUrl("https://telegram.org/dl/desktop/mac")
-//            };
-//            QNetworkAccessManager manager;
-//            QEventLoop loop;
-//            int total = 1;
+            cleanTable();
+            helperSave();
+        }
 
-//            QFile file = QFile(QDir::currentPath() + "/modules/test_0");
+        void tst_ModelModule::downloadModules_withoutRecursion()
+        {
+            std::unique_ptr<db::Db<modules::Host>> m_dbHost;
+            m_dbHost.reset(new db::Db<modules::Host>());
+            m_dbHost->removeAll();
 
-//            if (!file.open(QIODevice::WriteOnly)) {
-//                qDebug() << "sdsd" << file.errorString();
-//            }
+//            auto start = std::chrono::system_clock::now();
+            ModelModule model;
+            SingletonModelHost::getInstance().m_objects.clear();
+            model.m_worker->m_modelHost->m_objects.clear();
+            model.m_worker->m_modelHost->m_objects.push_back(helperGetHostsUniqueNotExists());
+            QSignalSpy spy(&model, &ModelModule::changeDownloaded);
+            QSignalSpy spyChangeDownloadCompleted(&model, &ModelModule::changeDownloadCompleted);
+            QCOMPARE(model.m_downloadCompleted, true);
+            model.downloadModules(helperGetSelected());
+            QCOMPARE(model.m_downloadCompleted, false);
+            QVERIFY(spy.wait());
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spyChangeDownloadCompleted.count(), 2);
+            QCOMPARE(model.m_downloadCompleted, true);
+//            auto end = std::chrono::system_clock::now();
+//            std::chrono::duration<double> elapsed_seconds = end-start;
+//            std::time_t end_time = std::chrono::system_clock::to_time_t(end);
 
-//            QNetworkReply *reply = manager.get(QNetworkRequest(urls[0]));
-//            QObject::connect(reply, &QNetworkReply::finished, [&total, &loop](){
-//                total--;
-//                if(total == 0) {
-//                    loop.quit();
-//                }
-//            });
-//            QObject::connect(reply, &QNetworkReply::readyRead, [&file, &reply](){
-//                file.write(reply->readAll());
-//            });
+//            qDebug() << "elapsed time: " << elapsed_seconds.count();
+//            QCOMPARE(spyCurlDownloaded.count(), 1);
+        }
 
+        void tst_ModelModule::deleteModules()
+        {
+            cleanTable();
+            helperSave();
+            createFolderModuleInModules();
 
+            m_db->storage->update_all(set(assign(&Module::m_downloaded, true)));
+            QCOMPARE(m_db->storage->get<Module>(1).m_downloaded, true);
 
-////            QFile file_1 = QFile(QDir::currentPath() + "/modules/test_1");
+            ModelModule model;
+            QSignalSpy spy(&model, &ModelModule::changeDownloaded);
+            QSignalSpy spyChangeDeleteCompleted(&model, &ModelModule::changeDeleteCompleted);
+            QCOMPARE(model.m_deleteCompleted, true);
+            model.deleteModules(helperGetSelected());
+            QCOMPARE(model.m_deleteCompleted, false);
+            QVERIFY(spy.wait());
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spyChangeDeleteCompleted.count(), 2);
+            QCOMPARE(m_db->storage->get<Module>(1).m_downloaded, false);
+            QCOMPARE(model.m_deleteCompleted, true);
+            QVERIFY(!folderModuleInModules.exists());
+        }
 
-////            if (!file_1.open(QIODevice::WriteOnly)) {
-////                qDebug() << "sdsd" << file.errorString();
-////            }
+        void tst_ModelModule::retrieveDownloaded()
+        {
+            cleanTable();
+            helperSave();
+            m_db->storage->update_all(set(assign(&Module::m_downloaded, true)));
 
-////            QNetworkReply *reply_1 = manager.get(QNetworkRequest(urls[1]));
-////            QObject::connect(reply_1, &QNetworkReply::finished, [&total, &loop](){
-////                total--;
-////                if(total == 0) {
-////                    loop.quit();
-////                }
-////            });
-////            QObject::connect(reply_1, &QNetworkReply::readyRead, [&file_1, &reply_1](){
-////                file_1.write(reply_1->readAll());
-////            });
+            ModelModule model;
+            model.retrieveDownloaded();
+        }
 
-////            QFile file_2 = QFile(QDir::currentPath() + "/modules/test_2");
+        void tst_ModelModule::retrieveSelected()
+        {
+            cleanTable();
+            helperSave();
+            m_db->storage->update_all(set(assign(&Module::m_selected, true)));
 
-////            if (!file_2.open(QIODevice::WriteOnly)) {
-////                qDebug() << "sdsd" << file.errorString();
-////            }
-
-////            QNetworkReply *reply_2 = manager.get(QNetworkRequest(urls[2]));
-////            QObject::connect(reply_2, &QNetworkReply::finished, [&total, &loop](){
-////                total--;
-////                if(total == 0) {
-////                    loop.quit();
-////                }
-////            });
-////            QObject::connect(reply_2, &QNetworkReply::readyRead, [&file_2, &reply_2](){
-////                file_2.write(reply_2->readAll());
-////            });
-//            loop.exec();
-////            m_saveFile.commit();
-//            t1 = Clock::now();
-//            ms = std::chrono::duration_cast<milliseconds>(t1 - t0);
-//            qDebug() << ms.count() << "ms\n";
+            ModelModule model;
+            model.retrieveSelecteded();
         }
     }
 }

@@ -12,25 +12,32 @@ namespace netmanager {
     struct CurlMultiSocket;
 
     using MultiHandle = std::unique_ptr<CURLM, std::function<void(CURLM*)>>;
+    using Downloaded = decltype(std::vector<std::tuple<QString>>());
 
     class CurlMulti : public QObject
     {
         Q_OBJECT
     public:
-        explicit CurlMulti(std::vector<QUrl>&& urls, QObject *parent = nullptr);
+
+        explicit CurlMulti(std::vector<QString>&& urls, QObject *parent = nullptr);
         virtual ~CurlMulti();
 
-        void createTransfersFromUrls(std::vector<QUrl>&& urls);
-        void addTransfer(std::unique_ptr<CurlEasy> transfer);
-        void perform();
+        virtual void createTransfersFromUrls(std::vector<QString>&& urls);
+        virtual void addTransfer(std::unique_ptr<CurlEasy> transfer);
+        virtual void perform();
+        virtual Downloaded getSuccessfullyDownloaded();
+        virtual Downloaded getFailedDownloaded();
     private:
         CURLM* m_handle = nullptr;
         std::vector<std::unique_ptr<CurlEasy>> transfers_;
         void removeTransfers();
         void multiLoop();
         void createMultiHandle();
-        int waitIfNeeded(timeval& timeout);
-        timeval getTimeout();
+    private slots:
+        void onTransferDone();
+    signals:
+        void done();
+        void downloaded();
     };
 
 //    class Downloader : public QObject

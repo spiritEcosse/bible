@@ -25,7 +25,6 @@ target_include_directories(${PROJECT_NAME}
         include
     PRIVATE
         src
-        ${SQLITE_ORM_INCLUDE_DIR}
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE modules core)

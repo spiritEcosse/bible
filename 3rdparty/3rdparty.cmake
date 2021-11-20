@@ -1,8 +1,24 @@
 find_package(Git QUIET)
 
-message("${CMD_MAKE} : CMD_MAKE")
-option(BUILD_EXAMPLES OFF) # option BUILD_EXAMPLES available sinse with sqlite_orm==1.6
-option(SqliteOrm_BuildTests OFF)
+#set(REBUILD_CURL On)
+#set(REBUILD_NGHTTP2 On)
+option(USE_BUNDLED_DEPS "Enable bundled dependencies instead of using the system ones" ON)
+option(REBUILD_OPENSSL OFF)
+option(REBUILD_AUTOCONF OFF)
+option(REBUILD_AUTOMAKE OFF)
+option(REBUILD_LIBTOOL OFF)
+option(REBUILD_CURL OFF)
+option(REBUILD_NGHTTP2 OFF)
+set(LIB_AUTOCONF autoconf)
+set(LIB_NGHTTP2 nghttp2)
+set(LIB_AUTOMAKE automake)
+set(LIBTOOL libtool)
+set(LIB_CURL curl)
+set(LIB_OPENSSL openssl)
+set(LIB_SQLITE_ORM sqlite_orm)
+set(LIB_QUAZIP quazip)
+include(ProcessorCount)
+ProcessorCount(CORES)
 
 if(EXISTS "${PROJECT_SOURCE_DIR}/.git")
     message(STATUS "========================Submodule update========================")
@@ -12,39 +28,8 @@ if(EXISTS "${PROJECT_SOURCE_DIR}/.git")
     if(NOT GIT_SUBMOD_RESULT EQUAL "0")
         message(FATAL_ERROR "git submodule update --init failed with : ${GIT_SUBMOD_RESULT}, please checkout submodules")
     else()
-        set(SQLITE_ORM_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/sqlite_orm/include/sqlite_orm
-                CACHE PATH "sqlite_orm include directory")
-
-        if (NOT ${SAILFISH})
-            set(QUAZIP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/quazip/quazip
-                    CACHE PATH "quazip include directory")
-#            execute_process(COMMAND bash -c "sed -i '' -e '/add_subdirectory(qztest EXCLUDE_FROM_ALL)/ s/^#*/#/' 3rdparty/quazip/CMakeLists.txt"
-#                            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-            add_subdirectory(3rdparty/quazip)
-
-#            set(OPENSSL_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/openssl/include )
-#            set(OPENSSL_CRYPTO_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/openssl/crypto )
-#            set(OPENSSL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/openssl/include )
-#            set(OPENSSL_SSL_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/openssl/ssl )
-
-#            add_subdirectory(3rdparty/openssl)
-#            include_directories(${OPENSSL_INCLUDE_DIR})
-#            message("OPENSSL_INCLUDE_DIR: ${OPENSSL_INCLUDE_DIR}")
-        endif()
-        add_subdirectory(3rdparty/sqlite_orm)
-
-#        execute_process(COMMAND bash
-#                        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-#        add_subdirectory(3rdparty/curl)
+        include(${LIB_QUAZIP})
+        include(${LIB_SQLITE_ORM})
+        include(${LIB_CURL})
     endif()
 endif()
-
-if(NOT EXISTS "${PROJECT_SOURCE_DIR}/3rdparty/quazip/CMakeLists.txt")
-    message(FATAL_ERROR "The submodules were not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
-endif()
-
-include_directories(${SQLITE_ORM_INCLUDE_DIR})
-link_directories("/Users/admin/projects/Build-OpenSSL-cURL/curl/lib/")
-link_directories("/Users/admin/projects/Build-OpenSSL-cURL/openssl/main/lib")
-#include_directories("/Users/admin/projects/Build-OpenSSL-cURL/openssl/main/include")
-include_directories("/Users/admin/projects/Build-OpenSSL-cURL/curl/include/")

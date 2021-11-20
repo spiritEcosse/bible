@@ -71,12 +71,12 @@ namespace modules {
 
             const auto &objects = helperGetObjectsUnique();
             ModelHost model;
-            model.populateStaticObjects();
-            QCOMPARE(model.objectsStatic.size(), objects.size());
-            QCOMPARE(std::equal(dereference_iterator(model.objectsStatic.begin()),
-                       dereference_iterator(model.objectsStatic.end()),
-                       dereference_iterator(objects.begin())
-                       ), true);
+//            model.populateStaticObjects();
+//            QCOMPARE(model.objectsStatic.size(), objects.size());
+//            QCOMPARE(std::equal(dereference_iterator(model.objectsStatic.begin()),
+//                       dereference_iterator(model.objectsStatic.end()),
+//                       dereference_iterator(objects.begin())
+//                       ), true);
         }
 
         void tst_ModelHost::update()

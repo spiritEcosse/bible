@@ -6,52 +6,46 @@ namespace modules {
 
     using namespace sqlite_orm;
 
-    std::vector<HostUnique> ModelHost::objectsStatic;
-
-    ModelHost::ModelHost()
+    SingletonModelHost::SingletonModelHost()
     {
-        connect(this, &ModelHost::transformSuccess, this, &ModelHost::updateObjectsFromJson);
+        populateObjects();
+        qDebug() << "SingletonModelHost";
     }
 
-    ModelHost::~ModelHost() {}
-
-    QString ModelHost::data(int index, int role) const
-    {
-        QString str;
-        if (index > static_cast<int>(m_objects.size())) {
-            return str;
-        }
-
-        const auto &object = objectsStatic.at(index);
-
-        switch (role) {
-            case HostRoles::PathRole:
-                str = object->pathToQString();
-                break;
-        }
-
-        return str;
-    }
-
-    void ModelHost::populateStaticObjects()
-    {
-        objectsStatic = m_db->storage->get_all_pointer<Host>(
+    void SingletonModelHost::populateObjects() {
+        m_objects = m_db->storage->get_all_pointer<Host>(
                     multi_order_by(
                         order_by(&Host::m_weight).desc(),
                         order_by(&Host::m_priority)
                     ));
-        if (!objectsStatic.size()) {
-            objectsStatic.push_back(baseHost());
-        }
+        m_objects.insert(m_objects.begin(), ModelHost::baseHost());
     }
 
-    std::unique_ptr<Host>
-    ModelHost::baseHost() const
+    ModelHost::ModelHost()
+    {
+        connect(this, &ModelHost::transformSuccess, this, &ModelHost::updateObjectsFromJson);
+        m_objects.push_back(baseHost());
+    }
+
+    ModelHost::~ModelHost() {}
+
+    std::unique_ptr<Host> ModelHost::baseHost()
     {
         return std::make_unique<Host>(
             "p4",
-            "aHR0cDovL3MzLmlncm50LmluZm8vbS8lcy56aXA="
+            "aHR0cDovL21waDQucnUvbS8lcy56aXA="
         );
+    }
+
+    QString ModelHost::getUrl(int index) const
+    {
+        return index > 0 ? SingletonModelHost::getInstance().m_objects[index]->pathToQString() :
+                           m_objects[0]->pathToQString();
+    }
+
+    bool ModelHost::existsIndex(int index) const
+    {
+        return index < static_cast<int>(SingletonModelHost::getInstance().m_objects.size());
     }
 
     // overridden from qt

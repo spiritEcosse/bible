@@ -23,6 +23,7 @@ namespace db {
                     name,
                     make_index("idx_id_group_modules", &Module::m_idGroupModules),
                     make_index("idx_module_abbreviation", &Module::m_abbreviation),
+                    make_index("idx_module_name", &Module::m_name),
                     make_index("idx_group_name", &GroupModules::m_name),
                     make_index("idx_group_region", &GroupModules::m_region),
                     make_index("idx_group_language", &GroupModules::getLanguageName),
@@ -66,8 +67,9 @@ namespace db {
                         make_column("copyright", &Module::m_copyright, default_value("")),
                         make_column("update", &Module::m_update),
                         make_column("hidden", &Module::m_hidden, default_value(false)),
+                        make_column("defaultDownload", &Module::m_defaultDownload, default_value(false)),
                         make_column("downloaded", &Module::m_downloaded, default_value(false)),
-                        make_column("selecting", &Module::m_selected, default_value(false))
+                        make_column("selected", &Module::m_selected, default_value(false))
                     ));
     }
 

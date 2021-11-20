@@ -26,7 +26,6 @@ namespace tests {
         virtual void update();
         virtual void transform_data();
         virtual void transform();
-
         virtual QJsonDocument helperGetDocument();
         virtual QJsonDocument helperGetInvalidDocument() const;
 

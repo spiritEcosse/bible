@@ -46,8 +46,8 @@ namespace netmanager {
         void tst_QuickDownload::makeUrl()
         {
             QuickDownload download;
-            download.m_modelHost->objectsStatic = helperGetHostsUnique();
             download._moduleName = "abbr";
+            download.m_modelHost->m_objects = helperGetHostsUnique();
             download.makeUrl();
 
             QCOMPARE(download._url, QUrl("http://domain.com/test/abbr.zip"));

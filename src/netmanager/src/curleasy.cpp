@@ -8,8 +8,9 @@ namespace netmanager {
         : QObject(parent),
           m_url { std::move(url) }
     {
-        qDebug() << "init CurlEasy";
         createEasyHandle();
+
+//        set(CURLOPT_MAXAGE_CONN, 1L);
 
         set(CURLOPT_PRIVATE, this);
         set(CURLOPT_XFERINFOFUNCTION, staticCurlXferInfoFunction);
@@ -20,6 +21,7 @@ namespace netmanager {
         set(CURLOPT_FAILONERROR, 1L); // Do not return CURL_OK in case valid server responses reporting errors.
         set(CURLOPT_NOPROGRESS, progress ? 0L : 1L);
         set(CURLOPT_VERBOSE, 1L);
+//        set(CURLOPT_FORBID_REUSE, 1L);
 
         auto ssl = sslVerify ? 1L : 0L;
         set(CURLOPT_SSL_VERIFYPEER, ssl);
@@ -29,12 +31,13 @@ namespace netmanager {
         set(CURLOPT_WRITEDATA, this);
 
         setSaveFile();
+        connect(this, &CurlEasy::done, &CurlEasy::onTransferDone);
     }
 
     void CurlEasy::initSaveFile()
     {
         if (!downloadFile->open(QIODevice::WriteOnly)) {
-            qDebug() << "sdsd" << downloadFile->errorString();
+            qDebug() << downloadFile->errorString();
 //            emit error(Error::ErrorDestination, m_saveFile->errorString());
 //            shutdownSaveFile();
         }
@@ -45,6 +48,12 @@ namespace netmanager {
         downloadFile.reset(new QSaveFile(QDir::currentPath() + "/modules/" + m_url.toString().split("/").last()));
         qDebug() << m_url << downloadFile->fileName();
         initSaveFile();
+    }
+
+    QString CurlEasy::getFileName()
+    {
+        QFileInfo fileInfo(downloadFile->fileName());
+        return fileInfo.fileName();
     }
 
     void CurlEasy::createEasyHandle()
@@ -62,6 +71,7 @@ namespace netmanager {
 //        removeFromMulti();
 
         if (m_handle) {
+            qDebug() << "curl_easy_cleanup >>> curl_easy_cleanup";
             curl_easy_cleanup(m_handle);
         }
 
@@ -115,11 +125,19 @@ namespace netmanager {
     void CurlEasy::onCurlMessage(CURLMsg *message)
     {
         if (message->msg == CURLMSG_DONE) {
-            removeFromMulti();
             lastResult_ = message->data.result;
-            qDebug() << "done";
-            downloadFile->commit();
             emit done(lastResult_);
+        }
+    }
+
+    void CurlEasy::onTransferDone()
+    {
+        m_successCommited = result() == CURLE_OK;
+
+        if (m_successCommited) {
+            downloadFile->commit();
+        } else {
+            downloadFile->cancelWriting();
         }
     }
 

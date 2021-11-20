@@ -60,7 +60,6 @@ rm -rf %{buildroot}
 DESTDIR=%{buildroot} make install
 mkdir -p %{_bindir}
 # << install pre
-
 # >> install post
 # << install post
 
@@ -70,10 +69,35 @@ desktop-file-install --delete-original       \
 
 %files
 %defattr(-,root,root,-)
-/usr/include/sqlite_orm.h
-/usr/lib/cmake/sqlite_orm/SqliteOrmConfig.cmake
-/usr/lib/cmake/sqlite_orm/SqliteOrmConfigVersion.cmake
-/usr/lib/cmake/sqlite_orm/SqliteOrmTargets.cmake
+/usr/include/sqlite_orm/sqlite_orm.h
+/usr/lib/cmake/SqliteOrm/SqliteOrmConfig.cmake
+/usr/lib/cmake/SqliteOrm/SqliteOrmConfigVersion.cmake
+/usr/lib/cmake/SqliteOrm/SqliteOrmTargets.cmake
+/usr/include/QuaZip-Qt5-1.1/quazip/JlCompress.h
+/usr/include/QuaZip-Qt5-1.1/quazip/ioapi.h
+/usr/include/QuaZip-Qt5-1.1/quazip/minizip_crypt.h
+/usr/include/QuaZip-Qt5-1.1/quazip/quaadler32.h
+/usr/include/QuaZip-Qt5-1.1/quazip/quachecksum32.h
+/usr/include/QuaZip-Qt5-1.1/quazip/quacrc32.h
+/usr/include/QuaZip-Qt5-1.1/quazip/quagzipfile.h
+/usr/include/QuaZip-Qt5-1.1/quazip/quaziodevice.h
+/usr/include/QuaZip-Qt5-1.1/quazip/quazip.h
+/usr/include/QuaZip-Qt5-1.1/quazip/quazip_global.h
+/usr/include/QuaZip-Qt5-1.1/quazip/quazip_qt_compat.h
+/usr/include/QuaZip-Qt5-1.1/quazip/quazipdir.h
+/usr/include/QuaZip-Qt5-1.1/quazip/quazipfile.h
+/usr/include/QuaZip-Qt5-1.1/quazip/quazipfileinfo.h
+/usr/include/QuaZip-Qt5-1.1/quazip/quazipnewinfo.h
+/usr/include/QuaZip-Qt5-1.1/quazip/unzip.h
+/usr/include/QuaZip-Qt5-1.1/quazip/zip.h
+/usr/lib/cmake/QuaZip-Qt5-1.1/QuaZip-Qt5Config.cmake
+/usr/lib/cmake/QuaZip-Qt5-1.1/QuaZip-Qt5ConfigVersion.cmake
+/usr/lib/cmake/QuaZip-Qt5-1.1/QuaZip-Qt5_SharedTargets-relwithdebinfo.cmake
+/usr/lib/cmake/QuaZip-Qt5-1.1/QuaZip-Qt5_SharedTargets.cmake
+/usr/lib/libquazip1-qt5.so
+/usr/lib/libquazip1-qt5.so.1.0.0
+/usr/lib/libquazip1-qt5.so.1.1
+/usr/lib/pkgconfig/quazip1-qt5.pc
 %{_bindir}
 %{_datadir}/%{name}
 %{_datadir}/%{name}/translations/

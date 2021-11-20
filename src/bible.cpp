@@ -1,5 +1,7 @@
 #include <QtQuick>
+#ifdef SAILFISH
 #include <sailfishapp.h>
+#endif
 
 //#include "booksmodel.h"
 //#include "historymodel.h"
@@ -29,8 +31,10 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     //
     // To display the view, call "show()" (will show fullscreen on device).
 
+#ifdef SAILFISH
     QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
     QScopedPointer<QQuickView> view(SailfishApp::createView());
+#endif
 
     QCoreApplication::setOrganizationName("spirit");
     QCoreApplication::setApplicationName("bible");
@@ -57,7 +61,11 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 //    moduleProxyModel.sort(0, Qt::AscendingOrder);
 //    ctxt->setContextProperty("moduleProxyModel", &moduleProxyModel);
 
+#ifdef SAILFISH
     view->setSource(SailfishApp::pathToMainQml());
     view->show();
     return app->exec();
+#else
+    return 0;
+#endif
 }

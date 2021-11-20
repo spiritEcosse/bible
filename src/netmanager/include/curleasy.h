@@ -9,6 +9,7 @@
 #include <ctime>
 #include <iostream>
 #include <chrono>
+#include <memory>
 #include <QDebug>
 #include <QSaveFile>
 #include <QFile>
@@ -29,6 +30,7 @@ namespace netmanager {
         void createEasyHandle();
         void initSaveFile();
         void setSaveFile();
+        void onTransferDone();
     public:
         using DataFunction = std::function<size_t(char *buffer, size_t size)>;
         using SeekFunction = std::function<int(qint64 offset, int origin)>;
@@ -37,13 +39,11 @@ namespace netmanager {
         virtual ~CurlEasy();
         Clock::time_point t0;
 
+        QString getFileName();
         void perform();
         void abort();
         bool isRunning() { /*return runningOnMulti_ != nullptr;*/ }
         CURLcode result() {
-            Clock::time_point t1 = Clock::now();
-            milliseconds ms = std::chrono::duration_cast<milliseconds>(t1 - t0);
-            qDebug() << ms.count() << "ms\n";
             return lastResult_;
         }
 
@@ -104,6 +104,7 @@ namespace netmanager {
         DataFunction    writeFunction_;
         DataFunction    headerFunction_;
         SeekFunction    seekFunction_;
+        bool            m_successCommited;
 
         bool                        httpHeadersWereSet_ = false;
         QMap<QString, QByteArray>   httpHeaders_;

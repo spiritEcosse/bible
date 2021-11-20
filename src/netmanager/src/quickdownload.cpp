@@ -7,8 +7,6 @@
 
 namespace netmanager {
 
-    static std::once_flag flagSetHosts;
-
     QuickDownloadMaster *QuickDownloadMaster::self = 0;
 
     QuickDownloadMaster::QuickDownloadMaster(QObject *parent):
@@ -257,10 +255,6 @@ namespace netmanager {
 
     void QuickDownload::start()
     {
-        std::call_once(flagSetHosts, [&]() {
-            m_modelHost->populateStaticObjects();
-        });
-
         makeUrl();
         start(_url);
     }
@@ -379,9 +373,8 @@ namespace netmanager {
 
     void QuickDownload::makeUrl()
     {
-        _url = std::move(QString().sprintf(
-                    std::move("http://s3.igrnt.info/m/%s.zip"),
-                    std::move(_moduleName.toLocal8Bit().data())));
+        _url = std::move(QString().sprintf(std::move(m_modelHost->getUrl(_index).toLocal8Bit().data()),
+                                           std::move(_moduleName.toLocal8Bit().data())));
     }
 
 }

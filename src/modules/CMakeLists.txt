@@ -36,16 +36,17 @@ add_library(${PROJECT_NAME} STATIC ${RESOURCES})
 
 find_package(Qt5 COMPONENTS Core Network REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE
-    Qt5::Core Qt5::Quick Qt5::Network sqlite_orm)
+    Qt5::Core Qt5::Quick Qt5::Network core dbmanager netmanager QuaZip sqlite_orm)
 
-message("------------------------------------------------------------------------------Quazip---------------------------------------------------------")
-if (${SAILFISH})
-    find_package(QuaZip5)
-    include_directories(${QUAZIP_INCLUDE_DIRS})
-    target_link_libraries(${PROJECT_NAME} PRIVATE ${QUAZIP_LIBRARIES})
-else()
-    target_link_libraries(${PROJECT_NAME} PRIVATE QuaZip)
-endif()
+#if (${SAILFISH})
+#    find_package(QuaZip5)
+#    include_directories(${QUAZIP_INCLUDE_DIRS})
+#    target_link_libraries(${PROJECT_NAME} PRIVATE ${QUAZIP_LIBRARIES})
+#else()
+#    target_link_libraries(${PROJECT_NAME} PRIVATE QuaZip)
+#endif()
+
+#target_link_libraries(${PROJECT_NAME} PRIVATE QuaZip)
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC
@@ -54,5 +55,5 @@ target_include_directories(${PROJECT_NAME}
         src
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE core dbmanager netmanager)
+#target_link_libraries(${PROJECT_NAME} PRIVATE core dbmanager netmanager)
 target_compile_definitions(${PROJECT_NAME} PRIVATE MODULES_LIBRARY)

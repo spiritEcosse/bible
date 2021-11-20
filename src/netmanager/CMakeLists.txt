@@ -22,7 +22,7 @@ add_library(${PROJECT_NAME} STATIC
 find_package(Qt5 COMPONENTS Core Network Qml REQUIRED)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
-    Qt5::Core Qt5::Network Qt5::Qml modules core dbmanager ssl crypto curl)
+    Qt5::Core Qt5::Network Qt5::Qml modules core dbmanager ssl crypto curl ZLIB::ZLIB nghttp2 dl)
 
 #if (NOT ${SAILFISH})
 #    target_link_libraries(${PROJECT_NAME} INTERFACE openssl)

@@ -1,35 +1,88 @@
-#include "modelmodule.h"
+﻿#include "modelmodule.h"
 #include <QObject>
 #include <QDebug>
 #include <QtQuick>
 #include <QJsonDocument>
 #include <QJsonArray>
-#include "curlmulti.h"
-#include "quickdownload.h"
-#include <chrono>
-#include <thread>
+#include <JlCompress.h>
 
 namespace modules {
 
-    using namespace sqlite_orm;
-    using namespace netmanager;
+    static std::once_flag flagInit;
 
-    inline auto statementExtraFields() {
-        std::unique_ptr<db::Db<Module>> m_db { new db::Db<Module>() };
-        return m_db->storage->prepare(
-                    select(
-                        columns(
-                            &Module::m_selected,
-                            &Module::m_downloaded,
-                            &Module::m_id,
-                            &Module::m_idGroupModules,
-                            &Module::m_abbreviation
-                        ),
-                    where(c(&Module::m_selected) == true or c(&Module::m_downloaded) == true)
-               )
-        );
+    Worker::Worker(QObject *parent)
+        : QObject(parent),
+          m_modelHost { new ModelHost {} }
+    {
     }
 
+    Worker::~Worker() {}
+
+    // helpers
+    bool Worker::bulkUpdateDownloaded(const Downloaded &downloaded, bool value)
+    {
+        updateAllIn(&Module::m_downloaded, value, &Module::m_name, downloaded);
+        return true;
+    }
+
+    // delete
+    void Worker::deleteFiles(const Downloaded &downloaded)
+    {
+        std::for_each(downloaded.begin(), downloaded.end(), [](const auto& module) {
+            QDir dir (QDir::currentPath() + "/modules/" + std::get<0>(module));
+            dir.removeRecursively();
+        });
+        bulkUpdateDownloaded(downloaded, false);
+        emit deleteCompleted();
+    }
+
+    // download
+    bool Worker::startDownloadModules(const Downloaded &downloaded)
+    {
+        m_multi.reset(new CurlMulti(makeUrls(downloaded)));
+        connect(m_multi.get(), &CurlMulti::downloaded, this, &Worker::updateSuccessfullyDownloaded);
+        connect(m_multi.get(), &CurlMulti::downloaded, this, &Worker::retryFailedDownloaded);
+        QTimer::singleShot(0, m_multi.get(), &CurlMulti::perform);
+        return true;
+    }
+
+    std::vector<QString> Worker::makeUrls(const Downloaded& downloaded) const
+    {
+        std::vector<QString> urls;
+        std::transform(downloaded.begin(), downloaded.end(), std::back_inserter(urls),
+                       [this](const auto& moduleName)
+        {
+            return std::move(QString().sprintf(std::move(m_modelHost->getUrl(index).toLocal8Bit().data()),
+                                               std::move(std::get<0>(moduleName).toLocal8Bit().data())));
+        });
+        return urls;
+    }
+
+    bool Worker::unarchiveModules(const Downloaded &downloaded)
+    {
+        const QString dir = QDir::currentPath() + "/modules/";
+        std::for_each(downloaded.begin(), downloaded.end(), [&dir](const auto& module) {
+            const QString& moduleName = std::get<0>(module);
+            JlCompress::extractDir(dir + moduleName + ".zip", dir + "/" + moduleName);
+            QFile::remove(dir + moduleName + ".zip");
+        });
+        return true;
+    }
+
+    void Worker::updateSuccessfullyDownloaded()
+    {
+        const Downloaded& downloaded = m_multi->getSuccessfullyDownloaded();
+        !downloaded.empty() && bulkUpdateDownloaded(downloaded) && unarchiveModules(downloaded);
+    }
+
+    void Worker::retryFailedDownloaded()
+    {
+        const Downloaded &downloaded = m_multi->getFailedDownloaded();
+        (!downloaded.empty() && m_modelHost->existsIndex(++index) && startDownloadModules(downloaded)) ||
+                emit downloadCompleted();
+    }
+
+    // ModelModule
     ModelModule::ModelModule(int idGroupModules, const QString& needle)
         : m_idGroupModules (idGroupModules),
           m_needle (std::move(needle))
@@ -38,15 +91,57 @@ namespace modules {
         updateObjects();
     }
 
+    ModelModule::ModelModule(QObject *parent)
+        : ModelUpdate(parent),
+          m_worker { new Worker() }
+    {
+        qRegisterMetaType<Downloaded>("Downloaded");
+        m_worker->moveToThread(&workerThread);
+//        connect(&workerThread, &QThread::finished, m_worker.get(), &QObject::deleteLater);
+        connect(this, &ModelModule::startDeleteFiles, m_worker.get(), &Worker::deleteFiles);
+        connect(this, &ModelModule::startDownloadModules, m_worker.get(), &Worker::startDownloadModules);
+        connect(m_worker.get(), &Worker::deleteCompleted, this, &ModelModule::postDeleteFiles);
+        connect(m_worker.get(), &Worker::downloadCompleted, this, &ModelModule::postDownloaded);
+        workerThread.start();
+    }
+
+    ModelModule::~ModelModule()
+    {
+        workerThread.quit();
+        workerThread.wait();
+    }
+
+    // helpers
+    void ModelModule::init()
+    {
+        std::call_once(flagInit, [this]() {
+            retrieveDownloaded();
+            retrieveSelecteded();
+        });
+    }
+
     void ModelModule::registerMe()
     {
         qmlRegisterType<ModelModule>("bible.ModelModule", 1, 0, "ModelModule");
     }
 
-    ModelModule::ModelModule() {}
+    Downloaded ModelModule::transformFromQVariant(const QVariantList& downloaded) const
+    {
+        Downloaded data;
+        std::transform(downloaded.begin(), downloaded.end(), std::back_inserter(data),
+                       [](const auto& obj)
+        {
+            return std::make_tuple(obj.toMap()["moduleId"].toString());
+        });
+        return data;
+    }
 
-    ModelModule::~ModelModule() {}
+    const QString ModelModule::getNameJson()
+    {
+        return QString("downloads");
+    }
 
+    // db queries get
     void ModelModule::updateObjects()
     {
         if (m_needle.isEmpty())
@@ -83,44 +178,15 @@ namespace modules {
         endResetModel();
     }
 
-    void ModelModule::getExtraFieldsFromDb()
-    {
-        selected = std::make_unique<Selected>(m_db->storage->select(
-                            select(
-                                columns(&Module::m_abbreviation),
-                                where(c(&Module::m_selected) == true)
-                       )
-                    ));
-        downloaded = std::make_unique<Downloaded>(m_db->storage->select(
-                            select(
-                                columns(&Module::m_abbreviation),
-                                where(c(&Module::m_downloaded) == true)
-                        )
-                    ));
-    }
-
-    void ModelModule::saveExtraFieldsToDb()
-    {
-        m_db->storage->update_all(
-                    set(assign(&Module::m_downloaded, true)),
-                    where(in(&Module::m_abbreviation, *downloaded)));
-        m_db->storage->update_all(
-                    set(assign(&Module::m_selected, true)),
-                    where(in(&Module::m_abbreviation, *selected)));
-        selected->clear();
-        downloaded->clear();
-    }
-
     int ModelModule::countActive()
     {
         return m_db->storage->count<Module>(where(c(&Module::m_hidden) == false));
     }
 
+    // db queries update
     void ModelModule::updateSelected(int id, bool selected) const
     {
-        m_db->storage->update_all(
-                    set(assign(&Module::m_selected, selected)),
-                    where(c(&Module::m_id) == id));
+        updateAllC(&Module::m_selected, selected, &Module::m_id, id);
     }
 
     void ModelModule::updateSelectedBulk(const QVariantList& data) const
@@ -129,54 +195,125 @@ namespace modules {
         for (const auto &obj : data) {
             ids.push_back(obj.toMap()["moduleId"].toInt());
         }
-        m_db->storage->update_all(
-                    set(assign(&Module::m_selected, false)),
-                    where(in(&Module::m_id, ids)));
+        updateAllIn(&Module::m_selected, false, &Module::m_id, ids);
     }
 
     void ModelModule::updateDownloaded(int id, bool downloaded) const
     {
-        m_db->storage->update_all(
-                    set(assign(&Module::m_downloaded, downloaded)),
-                    where(c(&Module::m_id) == id));
+        updateAllC(&Module::m_downloaded, downloaded, &Module::m_id, id);
     }
 
-    const QVariant ModelModule::getExtraFields() const
+    bool ModelModule::bulkUpdateDownloaded(const Downloaded &downloaded, bool value)
     {
-        const auto &data = m_db->storage->execute(statementExtraFields());
+        updateAllIn(&Module::m_downloaded, value, &Module::m_name, downloaded);
+        return true;
+    }
 
-        QJsonArray selectedArray;
-        QJsonArray downloadedArray;
+    // getters
+    QVariantList ModelModule::getDownloaded()
+    {
+        return m_downloaded;
+    }
 
-        for(const auto &row : data) {
-            if (bool selected = std::get<0>(row))
-            {
-                selectedArray << QJsonObject { {"selecting", selected }, { "moduleId", std::get<2>(row) }, { "groupId", std::get<3>(row) } };
-            }
+    QVariantList ModelModule::getSelected()
+    {
+        return m_selected;
+    }
 
-            if (bool downloaded = std::get<1>(row))
-            {
-                downloadedArray << QJsonObject { {"downloaded", downloaded }, { "moduleId", std::get<2>(row) }, { "groupId", std::get<3>(row) } };
-            }
+    bool ModelModule::getDeleteCompleted()
+    {
+        return m_deleteCompleted;
+    }
+
+    bool ModelModule::getDownloadCompleted()
+    {
+        return m_downloadCompleted;
+    }
+
+    // setters
+    bool ModelModule::setDeleteCompleted(bool value)
+    {
+        m_deleteCompleted = value;
+        emit changeDeleteCompleted();
+        return true;
+    }
+
+    bool ModelModule::setDownloadCompleted(bool value)
+    {
+        m_downloadCompleted = value;
+        emit changeDownloadCompleted();
+        return true;
+    }
+
+    void ModelModule::retrieveDownloaded()
+    {
+        m_downloaded.clear();
+        for(const auto &row: getDataByFieldTrue(&Module::m_downloaded, &Module::m_id,
+                                                &Module::m_idGroupModules))
+        {
+            m_downloaded << QJsonObject {
+                { "moduleId", std::get<0>(row) },
+                { "groupId", std::get<1>(row) }
+            };
         }
-
-        QJsonObject document {
-            {"selected", std::move(selectedArray)},
-            {"downloaded", std::move(downloadedArray)}
-        };
-        return std::move(document);
+        emit changeDownloaded();
     }
 
-    void ModelModule::downloadModules(std::vector<QUrl> &&downloaded) const
+    void ModelModule::retrieveSelecteded()
     {
-        CurlMulti multi(std::move(downloaded));
-        multi.perform();
+        m_selected.clear();
+        for(const auto &row: getDataByFieldTrue(&Module::m_selected, &Module::m_id,
+                                                &Module::m_idGroupModules))
+        {
+            m_selected << QJsonObject {
+                { "moduleId", std::get<0>(row) },
+                { "groupId", std::get<1>(row) }
+            };
+        }
+        emit changeSelected();
     }
 
-    void ModelModule::onReadyRead() {
-        qDebug() << "onReadyRead";
+    void ModelModule::getExtraFieldsFromDb()
+    {
+        m_selectedBackup = getDataByFieldTrue(&Module::m_selected, &Module::m_name);
+        m_downloadedBackup = getDataByFieldTrue(&Module::m_downloaded, &Module::m_name);
     }
 
+    void ModelModule::saveExtraFieldsToDb()
+    {
+        bulkUpdateDownloaded(m_downloadedBackup);
+        m_downloadedBackup.clear();
+        updateAllIn(&Module::m_selected, true, &Module::m_name, m_selectedBackup);
+        m_selectedBackup.clear();
+    }
+
+    // download
+    void ModelModule::downloadModules(const QVariantList& downloaded)
+    {
+        const auto &data = getActualDataByField(&Module::m_id, transformFromQVariant(downloaded), &Module::m_downloaded, false, &Module::m_name);
+        !data.empty() && setDownloadCompleted(false) && emit startDownloadModules(data);
+    }
+
+    void ModelModule::postDownloaded()
+    {
+        setDownloadCompleted(true);
+        retrieveDownloaded();
+    }
+
+    // delete
+    void ModelModule::deleteModules(const QVariantList &downloaded)
+    {
+        const auto &data = getActualDataByField(&Module::m_id, transformFromQVariant(downloaded),  &Module::m_downloaded, true, &Module::m_name);
+        !data.empty() && setDeleteCompleted(false) && emit startDeleteFiles(data);
+    }
+
+    void ModelModule::postDeleteFiles()
+    {
+        setDeleteCompleted(true);
+        retrieveDownloaded();
+    }
+
+    // overriden from qt
     QVariant ModelModule
     ::data(const QModelIndex & index, int role) const {
         QVariant data {};

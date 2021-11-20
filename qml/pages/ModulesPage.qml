@@ -104,7 +104,7 @@ SilicaFlickable {
             clip: true
             snapMode: ListView.SnapToItem
             highlightRangeMode: ListView.StrictlyEnforceRange
-			anchors.bottom: panel.top
+            anchors.bottom: panel.top
             VerticalScrollDecorator {}
             section {
                 property: 'region'
@@ -175,7 +175,7 @@ SilicaFlickable {
                             highlightRangeMode: ListView.StrictlyEnforceRange
 
                             delegate: ListItem {
-                                id: listItem                                
+                                id: listItem
                                 property var myModule: QtObject {
                                     property bool download: false
                                 }
@@ -435,7 +435,7 @@ SilicaFlickable {
         }
 
         Image {
-        	id: panel
+            id: panel
             width: parent.width
             height: Theme.itemSizeMedium
             source: "image://theme/graphic-gradient-edge"
@@ -535,8 +535,13 @@ SilicaFlickable {
                 property var selecting: isSelecting
                 onSelectingChanged: enabled = isSelecting
                 width: parent.width
+                RemorseItem {
+                    id: remorseLoader
+                }
                 sourceComponent: Component {
                     Item {
+                        width: parent.width
+
                         IconButton {
                             anchors {
                                 left: parent.left
@@ -560,37 +565,45 @@ SilicaFlickable {
                             IconButton {
                                 icon.source: "image://theme/icon-m-cloud-download"
                                 icon.sourceSize: Qt.size(Theme.iconSizeMedium, Theme.iconSizeMedium)
+                                enabled: modelModule.downloadCompleted
                                 onClicked: {
-                                    //                        Clipboard.text = Functions.getMessagesArrayText(chatPage.selectedMessages);
-                                    //                        appNotification.show(qsTr("%Ln messages have been copied", "", selectedMessages.length));
-                                    selectedModulesClear()
+                                    remorseLoader.execute(selectedMessagesActions,
+                                                          qsTr("Download %Ln selected modules", "selected", selectedModules.length), function() {
+                                        for (var i = 0; i < selectedModules.length; i++) {
+                                            var selected = selectedModules[i];
+                                            try {
+                                                selected.module.download = true
+                                            }
+                                            catch(err) {
+                                                console.log(err.message);
+                                                console.log(">>> not exists not exists not exists", selected.id)
+                                                downloadModulesLater.push(selectedModules[i]);
+                                            }
+                                        }
+                                        modelModule.downloadModules(downloadModulesLater);
+                                    });
                                 }
                             }
 
                             IconButton {
+                                id: buttonDeleteModules
                                 icon.source: "image://theme/icon-m-delete"
-        //                        visible: chatInformation.id === chatPage.myUserId || selectedMessages.every(function(message){
-        //                            return message.can_be_deleted_for_all_users
-        //                        })
                                 icon.sourceSize: Qt.size(Theme.iconSizeMedium, Theme.iconSizeMedium)
+                                enabled: modelModule.deleteCompleted
                                 onClicked: {
-            //                        var ids = Functions.getMessagesArrayIds(selectedMessages);
-            //                        var chatId = chatInformation.id
-            //                        var wrapper = tdLibWrapper;
-            //                        Remorse.popupAction(chatPage, qsTr("%Ln Messages deleted", "", ids.length), function() {
-            //                            wrapper.deleteMessages(chatId, ids);
-            //                        });
-                                    selectedModulesClear()
+                                    remorseLoader.execute(selectedMessagesActions,
+                                                          qsTr("Delete %Ln selected modules", "selected", selectedModules.length), function() {
+                                        modelModule.deleteModules(selectedModules);
+                                    });
                                 }
                             }
 
                             IconButton {
+                                id: buttonSwitchSearch
                                 icon.source: "image://theme/icon-m-search"
                                 icon.sourceSize: Qt.size(Theme.iconSizeMedium, Theme.iconSizeMedium)
                                 onClicked: {
                                     selectedMessagesActions.enabled = false
-            //                        Clipboard.text = Functions.getMessagesArrayText(chatPage.selectedMessages);
-            //                        appNotification.show(qsTr("%Ln messages have been copied", "", selectedMessages.length));
                                 }
                             }
                         }

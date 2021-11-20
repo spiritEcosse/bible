@@ -20,6 +20,15 @@ Pages {
     property var downloadedModules: [];
     property var downloadModulesLater: [];
     property bool isSelecting: selectedModules.length;
+    property bool initModelModule: false
+
+    ModelModule {
+        id: modelModule
+
+        onChangeDownloaded: {
+            downloadedModules = modelModule.downloaded;
+        }
+    }
 
 //    HistoryModel {
 //        id: historyModel
@@ -43,16 +52,6 @@ Pages {
 
     ModelGroupModules {
         id: groupModules
-    }
-
-    ModelModule {
-        id: modelModule
-
-        Component.onCompleted: {
-            var data = modelModule.getExtraFields();
-            selectedModules = data["selected"];
-            downloadedModules = data["downloaded"];
-        }
     }
 
     VisualItemModel {
@@ -189,6 +188,13 @@ Pages {
             itemWidth: parent.width
             height: page.height
             model: visualModel
+            onCurrentIndexChanged: {
+                if (slideshow.currentIndex === 1 && !initModelModule) {
+                    modelModule.init();
+                    selectedModules = modelModule.selected;
+                    initModelModule = true;
+                }
+            }
         }
 
         SilicaListView {
@@ -291,29 +297,6 @@ Pages {
             MenuItem {
                 text: qsTrId("Some action")
                 visible: slideshow.currentIndex == 0
-            }
-
-            MenuItem {
-                text: qsTrId("Download bulk")
-                visible: slideshow.currentIndex == 1
-                enabled: isSelecting
-                onClicked: {
-                    for (var i = 0; i < selectedModules.length; i++) {
-                        var selected = selectedModules[i];
-                        if (selected.module.download === false) {
-                            selected.module.download = true
-                        } else {
-                            console.log(">>> not exists not exists not exists", selected.id)
-                            downloadModulesLater.push(selected.id)
-                        }
-
-//                        var selected = selectedModules[i];
-//                        console.log(selected.groupIndex, selected.moduleIndex, groupModules.index(selected.groupIndex, 0), groupModules.data(groupModules.index(selected.groupIndex, 0), 2));
-//                        var mod = groupModules.data(groupModules.index(selected.groupIndex, 0), 2);
-//                        console.log(mod.data(mod.index(selected.moduleIndex, 0), 0));
-                    }
-                    selectedModules = []
-                }
             }
         }
     }
