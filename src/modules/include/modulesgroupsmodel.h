@@ -21,7 +21,7 @@
 
 #include "modulesmodel.h"
 //#include "LocaleDesc.h"
-#include "gtest/gtest_prod.h"
+//#include "gtest/gtest_prod.h"
 #include <QAbstractListModel>
 //#include "modulesgroups.h"
 //#include "modulesgroupsreader.h"
@@ -83,18 +83,18 @@ private:
 //    QString* qStringSelectSql = new QString("SELECT COUNT(*) as count FROM %1");
     friend class ModulesGroupsModelTest;
     friend class DownloadModules;
-    FRIEND_TEST(ModulesGroupsModelTest, createTable);
-    FRIEND_TEST(DownloadManagerTest, startNextDownload);
-    FRIEND_TEST(ModulesGroupsModelTest, updateTable);
-    FRIEND_TEST(ModulesGroupsModelTest, compareVersions);
-    FRIEND_TEST(ModulesGroupsModelTest, updateModules);
-    FRIEND_TEST(ModulesGroupsModelTest, setCountOldRows);
+//    FRIEND_TEST(ModulesGroupsModelTest, createTable);
+//    FRIEND_TEST(DownloadManagerTest, startNextDownload);
+//    FRIEND_TEST(ModulesGroupsModelTest, updateTable);
+//    FRIEND_TEST(ModulesGroupsModelTest, compareVersions);
+//    FRIEND_TEST(ModulesGroupsModelTest, updateModules);
+//    FRIEND_TEST(ModulesGroupsModelTest, setCountOldRows);
 
     friend class MockModulesGroupsModel;
-    FRIEND_TEST(MockModulesGroupsModel, updateTable);
+//    FRIEND_TEST(MockModulesGroupsModel, updateTable);
 
     friend class ModulesModelTest;
-    FRIEND_TEST(ModulesGroupsModelTest, correctSize);
+//    FRIEND_TEST(ModulesGroupsModelTest, correctSize);
 
 //signals:
 //    void updateTableSuccess();

@@ -3,9 +3,9 @@
 #include <sailfishapp.h>
 #endif
 
-//#include "booksmodel.h"
-//#include "historymodel.h"
-//#include "commentsmodel.h"
+#include "booksmodel.h"
+#include "historymodel.h"
+#include "commentsmodel.h"
 #include "modelgroupmodules.h"
 #include "quickdownload.h"
 
@@ -42,13 +42,12 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     createAppDir();
 
     modules::ModelGroupModules::registerMe();
-//    qmlRegisterType<ModelGroupModules>("bible.ModelGroupModules", 1, 0, "ModelGroupModules");
     qmlRegisterType<netmanager::QuickDownload>("bible.QuickDownload", 1, 0, "QuickDownload");
     modules::ModelModule::registerMe();
-//    qmlRegisterType<BooksModel>("bible.BooksModel", 1, 0, "BooksModel");
-//    qmlRegisterType<CommentsModel>("bible.CommentsModel", 1, 0, "CommentsModel");
+    qmlRegisterType<BooksModel>("bible.BooksModel", 1, 0, "BooksModel");
+    qmlRegisterType<CommentsModel>("bible.CommentsModel", 1, 0, "CommentsModel");
 //    qmlRegisterType<ModulesModel>("bible.ModulesModel", 1, 0, "ModulesModel");
-//    qmlRegisterType<HistoryModel>("bible.HistoryModel", 1, 0, "HistoryModel");
+    qmlRegisterType<HistoryModel>("bible.HistoryModel", 1, 0, "HistoryModel");
 
 //    connectToDatabase();
 //    ModuleProxyModel moduleProxyModel;
