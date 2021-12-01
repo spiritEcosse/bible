@@ -1,32 +1,10 @@
-#include <QtTest>
-
 #include "groupmodules.h"
 #include "locallanguage.h"
+#include "tst_groupmodules.h"
 
 namespace modules {
 
     namespace tests {
-
-        class tst_GroupModules : public QObject
-        {
-            Q_OBJECT
-
-        public:
-            tst_GroupModules();
-            ~tst_GroupModules();
-
-        private slots:
-            void m_name();
-            void m_name_data();
-            void language();
-            void language_data();
-            void m_region();
-            void m_region_data();
-            void getLanguageName_data();
-            void getLanguageName();
-            void setLanguageName_data();
-            void setLanguageName();
-        };
 
         tst_GroupModules::tst_GroupModules()
         {
@@ -229,6 +207,5 @@ namespace modules {
 
 }
 
-QTEST_APPLESS_MAIN(modules::tests::tst_GroupModules)
 
 #include "tst_groupmodules.moc"

@@ -124,6 +124,7 @@ namespace modules {
         static void registerMe();
         Q_INVOKABLE int countActive();
         Q_INVOKABLE void init();
+        Q_INVOKABLE void activateModule(int id) const;
         Q_INVOKABLE void updateSelected(int id, bool value) const;
         Q_INVOKABLE void updateSelectedBulk(const QVariantList& ids) const;
         Q_INVOKABLE virtual void downloadModules(const QVariantList& downloaded);
@@ -132,6 +133,8 @@ namespace modules {
         virtual QVariant data(const QModelIndex &index, int role) const;
         virtual QHash<int, QByteArray> roleNames() const;
         void updateObjects();
+        Q_INVOKABLE virtual void updateObjectsDownloaded();
+        Q_INVOKABLE virtual void updateObjectsActive();
         void search();
         virtual const QString getNameJson();
     public slots:

@@ -1,31 +1,11 @@
-#include <QtTest>
-#include "module.h"
 #include "locallanguage.h"
-#include "entitybase.h"
+#include "tst_module.h"
 
 Q_DECLARE_METATYPE(modules::Module)
 
 namespace modules {
 
     namespace tests {
-
-        class tst_Module : public ::tests::EntityBase<Module> {
-            Q_OBJECT
-        public:
-            tst_Module();
-            ~tst_Module();
-
-        private:
-            Module helperGetModule();
-
-        private slots:
-            void constructor_data();
-            void constructor() override;
-            void convertSize_data();
-            void convertSize();
-            void m_languageShow_data();
-            void m_languageShow();
-        };
 
         tst_Module::tst_Module()
         {
@@ -165,7 +145,5 @@ namespace modules {
     }
 
 }
-
-QTEST_APPLESS_MAIN(modules::tests::tst_Module)
 
 #include "tst_module.moc"

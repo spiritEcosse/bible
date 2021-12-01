@@ -14,7 +14,6 @@ namespace tests {
     public:
         BaseTest();
         ~BaseTest();
-
     protected:
         const size_t vectorSize = 3;
         const int version = 10;
@@ -29,6 +28,7 @@ namespace tests {
         QDir dir;
         std::unique_ptr<db::Db<T>> m_db;
         std::vector<std::shared_ptr<T>> helperSave(std::vector<std::shared_ptr<T>>&& entries = {});
+        virtual void initDb();
         virtual void cleanTable();
         virtual std::vector<std::shared_ptr<T>> helperGetObjects() const;
         virtual std::vector<std::unique_ptr<T>> helperGetObjectsUnique() const;

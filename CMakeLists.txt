@@ -48,10 +48,10 @@ message("ARCH : ${ARCH}")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(MACOSX TRUE)
-    FILE(GLOB_RECURSE QML_FILES "${CMAKE_SOURCE_DIR}/*.qml")
-    add_custom_target(qml SOURCES ${QML_FILES})
     set(TARGET "darwin64-${ARCH}-cc")
 endif()
+FILE(GLOB_RECURSE QML_FILES "${CMAKE_SOURCE_DIR}/*.qml")
+add_custom_target(qml SOURCES ${QML_FILES})
 
 if(SAILFISH)
     set(TARGET "linux-${ARCH}")

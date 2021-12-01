@@ -23,8 +23,7 @@ namespace tests {
         dir.setCurrent(pathFiles);
         dir.mkdir(dirDownload);
         dir.mkdir("modules");
-        m_db.reset(new db::Db<T>());
-        cleanTable();
+        initDb();
     }
 
     template <class T, class O>
@@ -46,6 +45,13 @@ namespace tests {
     void BaseTest<T, O>::cleanTable()
     {
         m_db->removeAll();
+    }
+
+    template<class T, class O>
+    void BaseTest<T, O>::initDb()
+    {
+        m_db.reset(new db::Db<T>());
+        cleanTable();
     }
 
     template <class T, class O>

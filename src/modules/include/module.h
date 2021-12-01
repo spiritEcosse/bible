@@ -33,6 +33,7 @@ namespace modules {
                 bool defaultDownload = false,
                 bool downloaded = false,
                 bool selected = false,
+                bool active = false,
                 int id = 0);
         Module(const QJsonObject& qJsonModule);
         QString nativeLanguageNameShow() const;
@@ -54,6 +55,7 @@ namespace modules {
         bool m_defaultDownload;
         bool m_downloaded = false;
         bool m_selected = false;
+        bool m_active = false;
         int m_id = 0;
 
         bool operator==(const Module& other) const;

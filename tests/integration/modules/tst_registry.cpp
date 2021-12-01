@@ -1,29 +1,10 @@
-#include <QtTest>
-#include "registry.h"
-#include "entitybase.h"
+#include "tst_registry.h"
 
 Q_DECLARE_METATYPE(modules::Registry)
 
 namespace modules {
 
     namespace tests {
-
-        class tst_Registry : public ::tests::EntityBase<Registry> {
-            Q_OBJECT
-
-        public:
-            tst_Registry();
-            ~tst_Registry();
-
-        private:
-            Registry helperGetObject();
-
-        private slots:
-            void constructor_data();
-            void constructor() override;
-            void urlToQUrl();
-            void infoUrlToQUrl();
-        };
 
         tst_Registry::tst_Registry() {}
 
@@ -76,7 +57,5 @@ namespace modules {
     }
 
 }
-
-QTEST_MAIN(modules::tests::tst_Registry)
 
 #include "tst_registry.moc"

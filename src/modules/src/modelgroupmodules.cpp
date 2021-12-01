@@ -6,6 +6,8 @@ Q_DECLARE_METATYPE(std::shared_ptr<modules::ModelModule>)
 
 namespace modules {
 
+    static std::once_flag flagInitGroupModules;
+
     using namespace sqlite_orm;
 
     ModelGroupModules::ModelGroupModules()
@@ -14,13 +16,19 @@ namespace modules {
           m_modelModule { new ModelModule {} }
     {
         m_newVersionAvailable = m_managerRegistry->hasNewRegistry();
-        updateObjects();
         connect(m_managerRegistry.get(), &ManagerRegistry::retrieveDataSuccess, m_managerGroup.get(), &ManagerGroup::makeCollections);
         connect(m_managerRegistry.get(), &ManagerRegistry::retrieveDataSuccess, m_modelModule.get(), &ModelModule::getExtraFieldsFromDb);
         connect(m_managerGroup.get(), &ManagerGroup::makeGroupModulesSuccess, this, &ModelGroupModules::update);
         connect(m_managerGroup.get(), &ManagerGroup::makeModulesSuccess, m_modelModule.get(), &ModelModule::update);
         connect(this, &ModelGroupModules::updateDone, this, &ModelGroupModules::setUpdateCompleted);
         connect(this, &ModelGroupModules::updateDone, this, &ModelGroupModules::updateObjects);
+    }
+
+    void ModelGroupModules::init()
+    {
+        std::call_once(flagInitGroupModules, [this]() {
+            updateObjects();
+        });
     }
 
     ModelGroupModules::~ModelGroupModules() {}

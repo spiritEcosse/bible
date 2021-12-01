@@ -1,29 +1,10 @@
-#include <QtTest>
-#include "host.h"
-
-#include "entitybase.h"
+#include "tst_host.h"
 
 Q_DECLARE_METATYPE(modules::Host)
 
 namespace modules {
 
     namespace tests {
-
-        class tst_Host : public ::tests::EntityBase<Host> {
-            Q_OBJECT
-
-        public:
-            tst_Host();
-            ~tst_Host();
-
-        private:
-            Host helperGetObject();
-
-        private slots:
-            void constructor_data();
-            void constructor() override;
-            void pathToQUrl();
-        };
 
         tst_Host::tst_Host() {}
 
@@ -65,7 +46,5 @@ namespace modules {
     }
 
 }
-
-QTEST_MAIN(modules::tests::tst_Host)
 
 #include "tst_host.moc"

@@ -142,6 +142,11 @@ namespace modules {
     }
 
     // db queries get
+    int ModelModule::countActive()
+    {
+        return m_db->storage->count<Module>(where(c(&Module::m_hidden) == false));
+    }
+
     void ModelModule::updateObjects()
     {
         if (m_needle.isEmpty())
@@ -178,15 +183,41 @@ namespace modules {
         endResetModel();
     }
 
-    int ModelModule::countActive()
+    void ModelModule::updateObjectsDownloaded()
     {
-        return m_db->storage->count<Module>(where(c(&Module::m_hidden) == false));
+        beginResetModel();
+        objectsCount = 0;
+
+        m_objects = m_db->storage->get_all_pointer<Module>(
+                inner_join<GroupModules>(on(c(&GroupModules::m_groupId) == &Module::m_idGroupModules)),
+                where(c(&Module::m_downloaded) == true and
+                      c(&GroupModules::m_name) == "Translations"),
+                order_by(&Module::m_abbreviation)
+                    );
+        endResetModel();
+    }
+
+    void ModelModule::updateObjectsActive()
+    {
+        beginResetModel();
+        objectsCount = 0;
+
+        m_objects = m_db->storage->get_all_pointer<Module>(
+                where(c(&Module::m_active) == true)
+                    );
+        endResetModel();
     }
 
     // db queries update
     void ModelModule::updateSelected(int id, bool selected) const
     {
         updateAllC(&Module::m_selected, selected, &Module::m_id, id);
+    }
+
+    void ModelModule::activateModule(int id) const
+    {
+        updateAllC(&Module::m_active, false, &Module::m_active, true);
+        updateAllC(&Module::m_active, true, &Module::m_id, id);
     }
 
     void ModelModule::updateSelectedBulk(const QVariantList& data) const

@@ -1,53 +1,14 @@
-#include <QtTest>
-#include "modelmodule.h"
-#include "modeljsontest.h"
+#include "tst_modelgroupmodules.h"
 #include "dereferenceiterator.h"
 #include "quickdownload.h"
 #include <chrono>
+#include "tst_modelmodule.h"
 
 namespace modules {
-    typedef std::chrono::high_resolution_clock Clock;
-    typedef std::chrono::milliseconds milliseconds;
 
     namespace tests {
 
         using namespace sqlite_orm;
-
-        class tst_ModelModule : public ::tests::ModelJsonTest<Module, ModelModule> {
-            Q_OBJECT
-
-        public:
-            tst_ModelModule();
-            ~tst_ModelModule();
-
-        private:
-            std::vector<ModuleShared> helperGetObjects() const override;
-            std::vector<ModuleUnique> helperGetObjectsUnique() const override;
-            std::vector<HostUnique> helperGetHostsUnique();
-            HostUnique helperGetHostsUniqueNotExists() const;
-            HostUnique helperGetHostUnique() const;
-            QVariantList helperGetSelected() const;
-        private slots:
-            void initTestCase() override;
-            void cleanupTestCase() override;
-            void update() override;
-            void init_model();
-            void updateObjects_data();
-            void updateObjects();
-            void updateSelected_data();
-            void updateSelected();
-            void updateDownloaded_data();
-            void updateDownloaded();
-            void getExtraFieldsFromDb();
-            void saveExtraFieldsToDb();
-            void saveExtraFieldsToDb_data();
-            void downloadModules_data();
-            void downloadModules();
-            void downloadModules_withoutRecursion();
-            void deleteModules();
-            void retrieveDownloaded();
-            void retrieveSelected();
-        };
 
         tst_ModelModule::tst_ModelModule() {}
 
@@ -73,7 +34,7 @@ namespace modules {
                                 QString("name.%1").arg(in),
                                 "description",
                                 QString("abbreviation.%1").arg(in),
-                                0,
+                                in + 1,
                                 102400,
                                 "en",
                                 "information",
@@ -81,7 +42,8 @@ namespace modules {
                                 "copyright",
                                 QDate(2017, 03, 31),
                                 false,
-                                false)
+                                false,
+                                true)
                 );
             }
             return objects;
@@ -96,7 +58,7 @@ namespace modules {
                                 QString("name.%1").arg(in),
                                 "description",
                                 QString("abbreviation.%1").arg(in),
-                                0,
+                                in + 1,
                                 102400,
                                 "en",
                                 "information",
@@ -104,7 +66,8 @@ namespace modules {
                                 "copyright",
                                 QDate(2017, 03, 31),
                                 false,
-                                false)
+                                false,
+                                true)
                 );
             }
             return objects;
@@ -163,6 +126,25 @@ namespace modules {
 
             ModelModule modelModule;
             modelModule.updateObjects();
+            QCOMPARE(modelModule.m_objects.size(), objects.size());
+            QCOMPARE(std::equal(dereference_iterator(modelModule.m_objects.begin()),
+                       dereference_iterator(modelModule.m_objects.end()),
+                       dereference_iterator(objects.begin())
+                       ), true);
+            QCOMPARE(modelModule.objectsCount, 0);
+        }
+
+        void tst_ModelModule::updateObjectsDownloaded()
+        {
+            cleanTable();
+            helperSave();
+
+            tst_ModelGroupModules::helperSaveStatic();
+
+            const auto &objects = helperGetObjectsUnique();
+
+            ModelModule modelModule;
+            modelModule.updateObjectsDownloaded();
             QCOMPARE(modelModule.m_objects.size(), objects.size());
             QCOMPARE(std::equal(dereference_iterator(modelModule.m_objects.begin()),
                        dereference_iterator(modelModule.m_objects.end()),
@@ -381,7 +363,5 @@ namespace modules {
         }
     }
 }
-
-QTEST_MAIN(modules::tests::tst_ModelModule)
 
 #include "tst_modelmodule.moc"

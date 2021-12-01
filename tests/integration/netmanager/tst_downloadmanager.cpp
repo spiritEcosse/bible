@@ -26,6 +26,6 @@ namespace tests {
 
 }
 
-QTEST_APPLESS_MAIN(tests::tst_DownloadManager)
+QTEST_MAIN(tests::tst_DownloadManager)
 
 #include "tst_downloadmanager.moc"
