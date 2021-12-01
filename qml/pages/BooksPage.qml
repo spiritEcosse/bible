@@ -1,170 +1,266 @@
 import QtQuick 2.0
-import Sailfish.Silica 1.0
-//import bible.BooksModel 1.0
-import bible.ModelGroupModules 1.0
 import bible.ModelModule 1.0
-//import bible.HistoryModel 1.0
+import Sailfish.Silica 1.0
 import "../components"
 
-Pages {
-    id: page
-    property int listLeftToRight: ListView.LeftToRight;
-    property int listRightToLeft: ListView.RightToLeft;
-    property int listHorizontal: ListView.Horizontal;
-    property int listVertical: ListView.Vertical;
-    property int timerInterval: 400
-    property int bookNumber
-    property int chapterIndex
-    property int verseIndex
-    property var selectedModules: [];
-    property var downloadedModules: [];
-    property var downloadModulesLater: [];
-    property bool isSelecting: selectedModules.length;
-    property bool initModelModule: false
+SilicaFlickable {
+    id: pageBooks
+    width: parent.width
+    height: parent.height
+    clip: true
 
     ModelModule {
-        id: modelModule
+        id: modelModulesActive
 
-        onChangeDownloaded: {
-            downloadedModules = modelModule.downloaded;
+        Component.onCompleted: {
+            modelModulesActive.updateObjectsActive();
+            flagUpdateObjectsActive = true;
         }
     }
 
-//    HistoryModel {
-//        id: historyModel
-//    }
+    Drawer {
+        id: drawer
+        width: parent.width
+        onOpenChanged: {
+            if (open && !flagUpdateObjectsDownloaded) {
+                modelModuleBooks.updateObjectsDownloaded();
+                flagUpdateObjectsDownloaded = true;
+            }
+        }
 
-//    BooksModel {
-//        id: booksOldTestament
+        anchors.bottom: panelImage.top
+        dock: page.isPortrait ? Dock.Bottom : Dock.Right
+        height: parent.height - panelImage.height
 
-//        Component.onCompleted: {
-//            booksOldTestament.oldTestament()
-//        }
-//    }
-
-//    BooksModel {
-//        id: booksNewTestament
-
-//        Component.onCompleted: {
-//            booksNewTestament.newTestament()
-//        }
-//    }
-
-    ModelGroupModules {
-        id: groupModules
-    }
-
-    VisualItemModel {
-        id: visualModel
-
-        SilicaFlickable {
-            id: silicaFlickableBooks
+        background: SilicaFlickable {
             width: parent.width
-            contentHeight: columnBooks.height
-            height: parent.height
-            clip: true
-            VerticalScrollDecorator {}
+            anchors.fill: parent
 
-            Column {
-                id: columnBooks
+            PageHeader {
+                id: headerDrawer
+                title: "Select module"
+            }
+
+            SilicaListView {
+                id: panelModules
+                model: modelModuleBooks
                 width: parent.width
+                anchors.top: headerDrawer.bottom
+                anchors.bottom: parent.bottom
+                snapMode: ListView.SnapToItem
+                highlightRangeMode: ListView.StrictlyEnforceRange
+                clip: true
+                VerticalScrollDecorator {}
 
-                PageHeader {
-                    id: pageHeader
-                    title: "Новый Русский Перевод (НРП)"
-                }
+                delegate: ListItem {
+                    width: parent.width
+                    y : Theme.paddingLarge
+                    contentHeight: child.height + separator.height + Theme.paddingMedium
+                    menu: contextMenu
+                    onClicked: panelModules.currentIndex = index
+                    RemorseItem { id: remorse }
+                    function deleteRemorse() {
+                        remorseAction("Deleting from device" + abbreviation, function() {
 
-                ExpandingSectionGroupPatch {
-                    id: expandingSectionGroup
-                    property bool scrollToBook: false
-                    onCurrentSectionChanged: {
-                        if (currentSection) {
-                            historyModel.testamentIndex = currentIndex
-                        }
+                        })
                     }
-//                    property int testamentIndex: historyModel.testamentIndex
-//                    onTestamentIndexChanged: {
-//                        currentIndex = historyModel.testamentIndex
-//                    }
-
-                    ExpandingSectionBooks {
-                        title: qsTrId("Old testament")
-                        page: page
-//                        model: booksOldTestament
-                    }
-
-                    ExpandingSectionBooks {
-                        title: qsTrId("New testament")
-                        page: page
-//                        model: booksNewTestament
-                        depth: 1
-                    }
-                }
-
-                Column {
-                    id: detail
-                    x: Theme.paddingMedium
-                    width: parent.width - 2 * Theme.paddingMedium
-
-                    SectionHeader {
-                        text: qsTrId("Detailed info")
+                    function activeRemorse() {
+                        remorseAction("Activating " + abbreviation, function() {
+                            modelModuleBooks.activateModule(model.id);
+                            modelModulesActive.updateObjectsActive();
+                        })
                     }
 
                     Label {
+                        id: moduleNumber
+                        color: Theme.highlightColor
+                        width: Math.round(3 * Theme.paddingLarge)
+                        text: index + 1 + '. '
+                        font.italic: true
+                        font.pixelSize: Theme.fontSizeMedium
+                        horizontalAlignment: Text.AlignRight
+                        anchors {
+                            left: parent.left
+                        }
+                    }
+
+                    Item {
+                        id: child
                         width: parent.width
-                        text: "<p>Святая Библия, Новый Русский Перевод<br/> © Biblica, Inc.®, 2006, 2010, 2012, 2014<br/> Используется с разрешения. Все права защищены по всему миру.</p>"
-                        font.pixelSize: Theme.fontSizeSmall
-                        wrapMode: Text.WordWrap
-                        truncationMode: TruncationMode.Fade
+                        height: childrenRect.height
+                        anchors.left: moduleNumber.right
+                        anchors.right: parent.right
+                        anchors.rightMargin: moduleNumber.width
+
+                        Label {
+                            id: abr
+                            wrapMode: Text.WordWrap
+                            truncationMode: TruncationMode.Fade
+                            text: abbreviation;
+                            font.pixelSize: moduleNumber.font.pixelSize
+                            anchors {
+                                left: parent.left
+                                right: parent.right
+                            }
+                        }
+                        Label {
+                            id: des
+                            horizontalAlignment: Text.AlignLeft
+                            font.pixelSize: Theme.fontSizeExtraSmall
+                            textFormat: Text.RichText
+                            wrapMode: Text.WordWrap
+                            truncationMode: TruncationMode.Fade
+                            text: description
+                            anchors {
+                                top: abr.bottom
+                                left: parent.left
+                                right: parent.right
+                            }
+                        }
+                    }
+
+                    ContextMenu {
+                        id: contextMenu
+
+                        MenuItem {
+                            text: qsTr("Active")
+                            onClicked: activeRemorse()
+                        }
+                        MenuItem {
+                            text: qsTr("Copy text");
+                            onClicked: Clipboard.text = abbreviation
+                        }
+                        MenuItem {
+                            text: qsTr("Delete")
+                            onClicked: deleteRemorse()
+                        }
+                    }
+
+                    Separator {
+                        id: separator
+                        anchors {
+                            bottom: parent.bottom
+                            bottomMargin: -1
+                        }
+
+                        width: parent.width
+                        color: Theme.primaryColor
+                        horizontalAlignment: Qt.AlignHCenter
                     }
                 }
             }
         }
 
-        ModulesPage {}
-
         SilicaFlickable {
-            id: silicaFlickableSearch
+            id: silicaFlickableBooks
             width: parent.width
             height: parent.height
-            contentHeight: columnA.height + Theme.paddingLarge
+            anchors.fill: parent
 
-            VerticalScrollDecorator {}
+            MouseArea {
+                enabled: drawer.opened
+                anchors.fill: silicaModules
+                onClicked: drawer.open = false
+            }
 
-            Column {
-                id: columnA
-                spacing: Theme.paddingLarge
+            SilicaFlickable {
+                id: silicaModules
                 width: parent.width
+                height: parent.height
+                enabled: !drawer.opened
 
-                PageHeader { title: "Panels and sections" }
+                Column {
+                    id: pageHeader
+                    width: parent.width
+                    anchors.horizontalCenter: parent.horizontalCenter
 
-                SectionHeader {
-                    text: "Expanding sections"
+                    FlippingPageHeader {
+                        id: headerMainTextBooks
+                        title: qsTrId("Translations")
+                        width: parent.width
+
+                        FlippingLabelPatch {
+                            id: headerAddTextBooks
+                            text: "Новый Русский Перевод (НРП)"
+                            width: parent.width
+                            fontSize: isPortrait ? Theme.fontSizeExtraSmall : Theme.fontSizeTiny
+                            fontFamily: Theme.fontFamilyHeading
+                            y: isPortrait ? Theme.itemSizeSmall : Theme.itemSizeExtraSmall
+                        }
+                    }
+
+                    Item {
+                        width: parent.width
+                        height: Theme.paddingLarge
+                    }
                 }
 
-                ExpandingSectionGroup {
-                    currentIndex: 0
+                SilicaListView {
+                    id: listActiveModules
+                    model: modelModulesActive
+                    snapMode: ListView.SnapToItem
+                    highlightRangeMode: ListView.StrictlyEnforceRange
+                    clip: true
+                    width: parent.width
+                    anchors.top: pageHeader.bottom
+                    height: parent.height - pageHeader.height
+                    VerticalScrollDecorator {}
 
-                    Repeater {
-                        model: 50
+                    delegate: Column {
+                        width: parent.width
 
-                        ExpandingSection {
-                            id: section
-
-                            property int sectionIndex: model.index
-                            title: "Section wewe" + (model.index + 1)
+                        ExpandingSectionPatch {
+                            id: modulesActive
+                            title: abbreviation + ": " + description;
 
                             content.sourceComponent: Column {
-                                width: section.width
+                                width: parent.width
 
-                                Repeater {
-                                    model: (section.sectionIndex + 1) * 2
-
-                                    TextSwitch {
-                                        text: "Option " + (model.index + 1)
-                                        onClicked: {
-                                            console.log(index)
+                                ExpandingSectionGroupPatch {
+                                    id: expandingSectionGroup
+                                    property bool scrollToBook: false
+                                    onCurrentSectionChanged: {
+                                        if (currentSection) {
+                                            historyModel.testamentIndex = currentIndex
                                         }
+                                    }
+//                                            property int testamentIndex: historyModel.testamentIndex
+//                                            onTestamentIndexChanged: {
+//                                                currentIndex = historyModel.testamentIndex
+//                                            }
+
+                                    ExpandingSectionBooks {
+                                        title: qsTrId("Old testament")
+                                        page: page
+                //                        model: booksOldTestament
+                                    }
+
+                                    ExpandingSectionBooks {
+                                        title: qsTrId("New testament")
+                                        page: page
+                //                        model: booksNewTestament
+                                        depth: 1
+                                    }
+                                }
+
+                                SilicaFlickable {
+                                    id: detail
+                                    x: Theme.paddingMedium
+                                    anchors.top: expandingSectionGroup.bottom
+                                    width: parent.width - 2 * Theme.paddingMedium
+
+                                    SectionHeader {
+                                        id: detailHeader
+                                        text: qsTrId("Detailed info")
+                                    }
+
+                                    Label {
+                                        anchors.top: detailHeader.bottom
+                                        width: parent.width
+                                        text: "<p>Святая Библия, Новый Русский Перевод<br/> © Biblica, Inc.®, 2006, 2010, 2012, 2014<br/> Используется с разрешения. Все права защищены по всему миру.</p>"
+                                        font.pixelSize: Theme.fontSizeSmall
+                                        wrapMode: Text.WordWrap
+                                        truncationMode: TruncationMode.Fade
                                     }
                                 }
                             }
@@ -175,133 +271,218 @@ Pages {
         }
     }
 
-    SilicaFlickable {
-        id: silicaFlickableMenu
+    Image {
+        id: panelImage
+        height: Theme.itemSizeMedium
+        source: "image://theme/graphic-gradient-edge"
         anchors.bottom: parent.bottom
-        width: parent.width
-        height: slideshow.height
-        contentHeight: slideshow.height
+        x: Theme.paddingMedium
+        width: parent.width - 2 * x
 
-        SlideshowView {
-            id: slideshow
+        Item {
+            id: panelHistory
+            height: parent.height
             width: parent.width
-            itemWidth: parent.width
-            height: page.height
-            model: visualModel
-            onCurrentIndexChanged: {
-                if (slideshow.currentIndex === 1 && !initModelModule) {
-                    modelModule.init();
-                    selectedModules = modelModule.selected;
-                    initModelModule = true;
-                }
-            }
-        }
+            anchors.top: parent.top
+            enabled: true
 
-        SilicaListView {
-            id: panel
-            height: Theme.itemSizeMedium
-//            model: historyModel
-            snapMode: ListView.SnapToItem
-            orientation: listHorizontal
-            anchors.bottom: parent.bottom
-            currentIndex: 0
-            visible: slideshow.currentIndex != 1
-            clip: true
-            x: Theme.paddingMedium
-            width: parent.width - 2 * Theme.paddingMedium
-            layoutDirection: {
-                switch (page.orientation) {
-                    case Orientation.Portrait: return listLeftToRight;
-                    case Orientation.Landscape: return listLeftToRight;
-                    case Orientation.PortraitInverted: return listRightToLeft;
-                    case Orientation.LandscapeInverted: return listRightToLeft;
-                    default: return listLeftToRight;
-                }
-            }
-
-            delegate: ListItem {
-                width: index == 0 ? panel.width : 2 * Theme.itemSizeLarge
+            SilicaListView {
+                id: sourcePanelHistory
+//                model: historyModel
+                snapMode: ListView.SnapToItem
+                orientation: listHorizontal
                 height: parent.height
-                focus: true
-                contentHeight: parent.height
-                onClicked: {
-                    var changeTestamentIndex = false;
-                    if (expandingSectionGroup.currentIndex !== testament_index) {
-                        expandingSectionGroup.currentIndex = -1;
-                        expandingSectionGroup.currentIndex = testament_index;
-                        changeTestamentIndex = true;
-                    }
-
-                    if (book_index !== historyModel.bookIndex || changeTestamentIndex) {
-                        if (chapter_index === -1) {
-                            expandingSectionGroup.scrollToBook = true;
-                        }
-                        historyModel.copyObject(testament_index, book_index, chapter_index, verse_index);
-                    } else if (chapter_index !== historyModel.chapterIndex) {
-                        historyModel.copyObject(testament_index, book_index, chapter_index, verse_index);
-                    } else if (verse_index !== historyModel.verseIndex) {
-                        historyModel.verseIndex = verse_index;
+                width: parent.width - iconBack.width
+                currentIndex: 0
+                VerticalScrollDecorator {}
+//                    visible: slideshow.currentIndex != 1
+                clip: true
+                anchors.left: parent.left
+                anchors.right: iconBack.left
+                layoutDirection: {
+                    switch (page.orientation) {
+                        case Orientation.Portrait: return listLeftToRight;
+                        case Orientation.Landscape: return listLeftToRight;
+                        case Orientation.PortraitInverted: return listRightToLeft;
+                        case Orientation.LandscapeInverted: return listRightToLeft;
+                        default: return listLeftToRight;
                     }
                 }
 
-                Text {
-                    id: listText
-                    horizontalAlignment: {
-                        switch (page.orientation) {
-                            case Orientation.Portrait: return Text.AlignLeft;
-                            case Orientation.Landscape: return Text.AlignLeft;
-                            case Orientation.PortraitInverted: return Text.AlignRight;
-                            case Orientation.LandscapeInverted: return Text.AlignRight;
-                            default: return Text.AlignLeft;
+                delegate: ListItem {
+                    width: index == 0 ? panelImage.width : 2 * Theme.itemSizeLarge
+                    height: parent.height
+                    focus: true
+                    contentHeight: parent.height
+                    onClicked: {
+                        var changeTestamentIndex = false;
+                        if (expandingSectionGroup.currentIndex !== testament_index) {
+                            expandingSectionGroup.currentIndex = -1;
+                            expandingSectionGroup.currentIndex = testament_index;
+                            changeTestamentIndex = true;
+                        }
+
+                        if (book_index !== historyModel.bookIndex || changeTestamentIndex) {
+                            if (chapter_index === -1) {
+                                expandingSectionGroup.scrollToBook = true;
+                            }
+                            historyModel.copyObject(testament_index, book_index, chapter_index, verse_index);
+                        } else if (chapter_index !== historyModel.chapterIndex) {
+                            historyModel.copyObject(testament_index, book_index, chapter_index, verse_index);
+                        } else if (verse_index !== historyModel.verseIndex) {
+                            historyModel.verseIndex = verse_index;
                         }
                     }
-                    width: parent.width
-                    anchors.verticalCenter: parent.verticalCenter
-                    color: index == 0 ? Theme.highlightColor : Theme.primaryColor
-                    text: {
-                        var title = book_short_name;
 
-                        if (chapter_index !== -1) {
-                            title += ":" + chapter_index;
-
-                            if (verse_index !== -1) {
-                                title += ":" + verse_index;
+                    Text {
+                        id: listText
+                        horizontalAlignment: {
+                            switch (page.orientation) {
+                                case Orientation.Portrait: return Text.AlignLeft;
+                                case Orientation.Landscape: return Text.AlignLeft;
+                                case Orientation.PortraitInverted: return Text.AlignRight;
+                                case Orientation.LandscapeInverted: return Text.AlignRight;
+                                default: return Text.AlignLeft;
                             }
                         }
+                        width: parent.width
+                        anchors.verticalCenter: parent.verticalCenter
+                        color: index == 0 ? Theme.highlightColor : Theme.primaryColor
+                        text: model.text
+//                            text: {
+//                                var title = book_short_name;
 
-                        return title;
+//                                if (chapter_index !== -1) {
+//                                    title += ":" + chapter_index;
+
+//                                    if (verse_index !== -1) {
+//                                        title += ":" + verse_index;
+//                                    }
+//                                }
+
+//                                return title;
+//                            }
+                        font.pixelSize: Theme.fontSizeLarge
                     }
-                    font.pixelSize: Theme.fontSizeLarge
+                }
+            }
+
+            IconButton {
+                id: iconBack
+                icon.source: "image://theme/icon-m-back"
+                rotation: 180
+                icon.sourceSize: Qt.size(Theme.iconSizeMedium, Theme.iconSizeMedium)
+                onClicked: panelHistory.enabled = false
+                anchors {
+                    right: parent.right
+                    verticalCenter: parent.verticalCenter
                 }
             }
         }
 
-        PushUpMenu {
-            id: pushUpMenu
+        states: [
+            State {
+                name: "panelHistoryActive"
+                when: panelHistory.enabled
+                PropertyChanges { target: panelHistory; opacity: 1 }
+                PropertyChanges { target: panelHistory; height : panelImage.height }
+                PropertyChanges { target: expander; opacity: 0 }
+                PropertyChanges { target: expander; height : 0 }
+            },
 
-            MenuItem {
-                id: updateModules
-                text: qsTrId("Update modules")
-                visible: slideshow.currentIndex == 1
-                enabled: groupModules.newVersionAvailable
-                property bool updateСompleted: groupModules.updateCompleted
-                onUpdateСompletedChanged : {
-                    pushUpMenu.busy = false
+            State {
+                name: "panelModuleSelect"
+                when: expander.enabled
+                PropertyChanges { target: panelHistory; opacity: 0 }
+                PropertyChanges { target: panelHistory; height : 0 }
+                PropertyChanges { target: expander; opacity: 1 }
+                PropertyChanges { target: expander; height : panelImage.height }
+            }
+        ]
+
+        transitions: [
+            Transition {
+                to: "panelHistoryActive"
+                ParallelAnimation {
+                    PropertyAnimation { target: panelHistory; property: "height"; duration: 200; easing.type: Easing.InOutQuad }
+                    PropertyAnimation { target: panelHistory; property: "opacity"; duration: 200; from: 0; to: 1; easing.type: Easing.InOutQuad  }
+                    RotationAnimation { target: expander; property: "height"; duration: 200; easing.type: Easing.InOutQuad  }
+                    PropertyAnimation { target: expander; property: "opacity"; duration: 200; from: 1; to: 0; easing.type: Easing.InOutQuad  }
                 }
-                onClicked: {
-                    pushUpMenu.busy = true
-                    groupModules.downloadRegistry()
+            },
+            Transition {
+                to: "panelModuleSelect"
+                ParallelAnimation {
+                    PropertyAnimation { target: panelHistory; property: "height"; duration: 200; easing.type: Easing.InOutQuad }
+                    PropertyAnimation { target: panelHistory; property: "opacity"; duration: 200; from: 1; to: 0; easing.type: Easing.InOutQuad  }
+                    PropertyAnimation { target: expander; property: "height"; duration: 200; easing.type: Easing.InOutQuad  }
+                    PropertyAnimation { target: expander; property: "opacity"; duration: 200; from: 0; to: 1; easing.type: Easing.InOutQuad  }
+                }
+            }
+        ]
+
+        BackgroundItem {
+            id: expander
+            width: parent.width
+            enabled: !panelHistory.enabled
+            onClicked: drawer.open = !drawer.open
+            anchors.bottom: parent.bottom
+
+            Label {
+                id: expanderText
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            IconButton {
+                id: iconHistory
+                icon.source: "image://theme/icon-m-history"
+                icon.sourceSize: Qt.size(Theme.iconSizeMedium, Theme.iconSizeMedium)
+                onClicked: panelHistory.enabled = true
+                anchors {
+                    right: expanderIcon.left
+                    verticalCenter: parent.verticalCenter
                 }
             }
 
-            MenuItem {
-                text: qsTrId("Some action")
-                visible: slideshow.currentIndex == 0
+            IconButton {
+                id: expanderIcon
+                icon.source: "image://theme/icon-s-arrow"
+                anchors {
+                    right: parent.right
+                    verticalCenter: parent.verticalCenter
+                }
             }
+
+            states: [
+                State {
+                    name: "drawerOpen"
+                    when: drawer.opened
+                    PropertyChanges { target: expanderText; text: "Close list modules" }
+                    PropertyChanges { target: expanderIcon; rotation: 180 }
+                },
+                State {
+                    name: "drawerClose"
+                    when: !drawer.opened
+                    PropertyChanges { target: expanderText; text: "Open list modules" }
+                }
+            ]
+
+            transitions: [
+                Transition {
+                    to: "drawerOpen"
+                    ParallelAnimation {
+                        PropertyAnimation { target: panelModules; property: "height"; duration: 200; easing.type: Easing.InOutQuad }
+                        RotationAnimation { target: expanderIcon; property: "rotation"; duration: 200; direction: RotationAnimation.Clockwise; easing.type: Easing.InOutQuad  }
+                    }
+                },
+                Transition {
+                    to: "drawerClose"
+                    ParallelAnimation {
+                        PropertyAnimation { target: panelModules; property: "height"; duration: 200; easing.type: Easing.InOutQuad }
+                        RotationAnimation { target: expanderIcon; property: "rotation"; duration: 200; direction: RotationAnimation.Counterclockwise; easing.type: Easing.InOutQuad  }
+                    }
+                }
+            ]
         }
-    }
-
-    Component.onCompleted: {
-//        expandingSectionGroup.currentIndex = historyModel.testamentIndex;
     }
 }

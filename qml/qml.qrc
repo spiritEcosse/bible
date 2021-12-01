@@ -3,6 +3,7 @@
         <file>bible.qml</file>
         <file>cover/CoverPage.qml</file>
         <file>pages/BooksPage.qml</file>
+        <file>pages/Main.qml</file>
         <file>pages/CommentsPage.qml</file>
         <file>pages/CoverLoader.js</file>
         <file>pages/ExpandingSectionBooks.qml</file>
