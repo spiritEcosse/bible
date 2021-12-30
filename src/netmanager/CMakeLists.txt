@@ -19,10 +19,10 @@ add_library(${PROJECT_NAME} STATIC
   src/curleasy.cpp
 )
 
-find_package(Qt5 COMPONENTS Core Network Qml REQUIRED)
+find_package(Qt5 COMPONENTS Core Network Qml Sql REQUIRED)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
-    Qt5::Core Qt5::Network Qt5::Qml modules core dbmanager ssl crypto curl ZLIB::ZLIB nghttp2 dl)
+    Qt5::Core Qt5::Network Qt5::Qml Qt5::Sql modules core dbmanager ssl crypto curl ZLIB::ZLIB nghttp2 dl)
 
 #if (NOT ${SAILFISH})
 #    target_link_libraries(${PROJECT_NAME} INTERFACE openssl)

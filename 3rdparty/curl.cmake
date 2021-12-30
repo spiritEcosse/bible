@@ -48,11 +48,12 @@ else()
         execute_process(COMMAND bash -c "\
             cd ${PROJECT_BINARY_DIR} && \
             rm -fr ${CURL_INSTALL_DIR} && \
+            export PKG_CONFIG_PATH=${NGHTTP2_INSTALL_DIR}/lib/pkgconfig:$PKG_CONFIG_PATH && \
             curl -LOs https://curl.haxx.se/download/${LIB_CURL}-${CURL_VERSION}.tar.gz && \
             tar xzf ${LIB_CURL}-${CURL_VERSION}.tar.gz && \
             cd ${LIB_CURL}-${CURL_VERSION} && \
             ./configure \
-                --host='aarch64-linux' \
+                --host=${TARGET_CURL} \
                 --prefix=${CURL_INSTALL_DIR} \
                 --enable-static \
                 --with-random=/dev/urandom \
@@ -97,7 +98,12 @@ else()
                 --without-brotli \
                 --without-zstd \
                 && make -j${CORES} \
-                && make install")
+                && make install"
+                RESULT_VARIABLE STATUS_BUILD_CURL)
+
+        if (NOT STATUS_BUILD_CURL EQUAL "0")
+            message(FATAL_ERROR "STATUS_BUILD_CURL : ${STATUS_BUILD_CURL}")
+        endif()
     endif()
 endif()
 

@@ -7,7 +7,6 @@
 #include <memory>
 #include <QThread>
 
-
 namespace modules {
 
     using namespace netmanager;
@@ -116,6 +115,7 @@ namespace modules {
             DefaultDownload = 8,
             Id = 9,
             Downloading = 10,
+            Book = 11,
         };
 
         ModelModule(QObject *parent = nullptr);

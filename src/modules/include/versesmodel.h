@@ -1,13 +1,14 @@
 #ifndef VERSESMODEL_H
 #define VERSESMODEL_H
 
-#include <QSqlQueryModel>
+#include <QSqlTableModel>
 #include <QSqlRecord>
 
-class VersesModel : public QSqlQueryModel
+class VersesModel : public QSqlTableModel
 {
     Q_OBJECT
 public:
+    VersesModel(QSqlDatabase db, QObject *parent = 0);
     VersesModel(QObject *parent = 0);
     ~VersesModel();
 

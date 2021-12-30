@@ -1,10 +1,16 @@
 #include "versesmodel.h"
 #include "dbmanager.h"
 #include <QDebug>
+#include <QSqlQuery>
+
+VersesModel::VersesModel(QSqlDatabase db, QObject *parent)
+    : QSqlTableModel(parent, db)
+{
+}
 
 VersesModel::VersesModel(QObject *parent)
-    : QSqlQueryModel(parent)
 {
+
 }
 
 VersesModel::~VersesModel()
@@ -24,7 +30,9 @@ void VersesModel::getByBookAndChapter(const quint16 &book_number, const quint16 
 {
     QString sql;
     sql = QString(SQL_SELECT).arg(QString::number(book_number), QString::number(chapter));
-    this->setQuery(sql, DbManager::getInstance()->db);
+    qDebug() << "Sdsd";
+    this->setQuery(QSqlQuery(sql, database()));
+    qDebug() << "Sdsd";
     generateRoleNames();
 }
 

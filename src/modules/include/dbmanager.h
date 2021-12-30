@@ -11,13 +11,9 @@
 class DbManager
 {
 public:
-    static DbManager* getInstance();
+    DbManager(QString&& fileName);
     QSqlDatabase db;
     QSqlDatabase db_comments;
-private:
-    DbManager();
-    DbManager(const DbManager& );
-    DbManager& operator=(const DbManager& );
 };
 
 static void connectToDatabase()
@@ -34,7 +30,7 @@ static void connectToDatabase()
         qFatal("Failed to create writable directory at %s", qPrintable(writeDir.absolutePath()));
 
     // Ensure that we have a writable location on all devices.
-    const QString fileName = writeDir.absolutePath() + "/app.sqlite3";
+    const QString fileName = writeDir.absolutePath() + "/user.sqlite";
     qWarning() << fileName;
     // When using the SQLite driver, open() will create the SQLite database if it doesn't exist.
     database.setDatabaseName(fileName);

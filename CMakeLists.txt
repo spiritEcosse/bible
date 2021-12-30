@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.19)
 
 project(bible LANGUAGES CXX)
 
@@ -6,6 +6,7 @@ project(bible LANGUAGES CXX)
 message("CMAKE_CXX_COMPILER_VERSION : ${CMAKE_CXX_COMPILER_VERSION}")
 #- gcc -v && g++ -v && cmake --version
 message("PROJECT_BINARY_DIR : ${PROJECT_BINARY_DIR}")
+message("Qt5_VERSION: ${Qt5_VERSION}")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
@@ -14,10 +15,10 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
-#list(APPEND CMAKE_PREFIX_PATH "/Users/admin/Qt5.6.3/5.6.3/clang_64/lib/cmake/Qt5/")
-#list(APPEND CMAKE_PREFIX_PATH "/Users/admin/Qt5.6.3/5.6.3/clang_64/bin/")
+list(APPEND CMAKE_PREFIX_PATH "/Users/ihor/Qt5.6.3/5.6.3/clang_64/lib/cmake/Qt5/")
+list(APPEND CMAKE_PREFIX_PATH "/Users/ihor/Qt5.6.3/5.6.3/clang_64/bin/")
 
-find_package (Qt5 COMPONENTS Widgets Core Network Qml Gui Quick REQUIRED)
+find_package (Qt5 COMPONENTS Widgets Core Network Qml Gui Quick Sql REQUIRED)
 find_package(ZLIB)
 set(QT_5_12_VERSION 5.12.0)
 
@@ -42,59 +43,66 @@ else()
     else()
         set(ARCH "${CMAKE_HOST_SYSTEM_PROCESSOR}")
     endif()
+    message("CMAKE_HOST_SYSTEM_PROCESSOR : ${CMAKE_HOST_SYSTEM_PROCESSOR}")
+    set(TARGET_CURL "${ARCH}-linux")
+
+    if(SAILFISH)
+        if (${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL "i486")
+            set(ARCH "elf")
+        endif()
+    endif()
 endif()
 
 message("ARCH : ${ARCH}")
+set(TARGET "linux-${ARCH}")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(MACOSX TRUE)
     set(TARGET "darwin64-${ARCH}-cc")
+    set(TARGET_CURL "arm")
 endif()
-FILE(GLOB_RECURSE QML_FILES "${CMAKE_SOURCE_DIR}/*.qml")
-add_custom_target(qml SOURCES ${QML_FILES})
-
-if(SAILFISH)
-    set(TARGET "linux-${ARCH}")
-endif()
+#FILE(GLOB_RECURSE QML_FILES "${CMAKE_SOURCE_DIR}/*.qml")
+#add_custom_target(qml SOURCES ${QML_FILES})
 
 message("TARGET : ${TARGET}")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty")
 include(3rdparty)
 
-set(SOURCE src/${PROJECT_NAME}.cpp)
-add_executable(${PROJECT_NAME} ${SOURCE} ${RESOURCES})
-target_link_libraries(${PROJECT_NAME}
-    Qt5::Network
-    Qt5::Quick
-    Qt5::Widgets
-    modules
-    dbmanager
-    core
-    netmanager
-    sqlite_orm
-    ssl
-    crypto
-    curl
-    ZLIB::ZLIB
-    nghttp2
-    dl
-)
+if(Qt5_VERSION VERSION_GREATER_EQUAL QT_5_12_VERSION)
+    qtquick_compiler_add_resources(RESOURCES qml/qml.qrc)
+else()
+    qt5_add_resources(RESOURCES qml/qml.qrc)
+endif()
+set_property(SOURCE ${RESOURCES} PROPERTY SKIP_AUTOMOC ON)
+
+set(SOURCE src/${PROJECT_NAME}.cpp ${RESOURCES})
+add_executable(${PROJECT_NAME} ${SOURCE})
+
 
 if ( ${SAILFISH} )
     include(FindPkgConfig)
     pkg_search_module(SAILFISH sailfishapp REQUIRED)
 
-    if(Qt5_VERSION VERSION_GREATER_EQUAL QT_5_12_VERSION)
-        qtquick_compiler_add_resources(RESOURCES qml/qml.qrc)
-    else()
-        qt5_add_resources(RESOURCES qml/qml.qrc)
-    endif()
-
-    set_property(SOURCE qrc_qml.cpp PROPERTY SKIP_AUTOGEN ON)
     add_definitions(-DSAILFISH)
 
     target_link_libraries(${PROJECT_NAME}
+        PRIVATE
+        Qt5::Network
+        Qt5::Quick
+        Qt5::Sql
+        Qt5::Widgets
+        modules
+        dbmanager
+        core
+        netmanager
+        sqlite_orm
+        ssl
+        crypto
+        curl
+        ZLIB::ZLIB
+        nghttp2
+        dl
         ${SAILFISH_LDFLAGS}
     )
     target_include_directories(${PROJECT_NAME} PRIVATE
@@ -142,6 +150,25 @@ if ( ${SAILFISH} )
     # format.
     file(WRITE "${CMAKE_BINARY_DIR}/QtCreatorDeployment.txt"
         "${CMAKE_INSTALL_PREFIX}\n${CMAKE_BINARY_DIR}/${PROJECT_NAME}:bin\n")
+else()
+    target_link_libraries(${PROJECT_NAME}
+        PRIVATE
+        Qt5::Network
+        Qt5::Quick
+        Qt5::Sql
+        Qt5::Widgets
+        modules
+        dbmanager
+        core
+        netmanager
+        sqlite_orm
+        ssl
+        crypto
+        curl
+        ZLIB::ZLIB
+        nghttp2
+        dl
+    )
 endif()
 
 if ( BUILD_TESTING )

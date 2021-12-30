@@ -8,6 +8,7 @@
 #include "commentsmodel.h"
 #include "modelgroupmodules.h"
 #include "quickdownload.h"
+#include "dbmanager.h"
 
 void createAppDir() {
     const QDir writeDirApp = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
@@ -31,16 +32,12 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     //
     // To display the view, call "show()" (will show fullscreen on device).
 
-#ifdef SAILFISH
-    QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
-    QScopedPointer<QQuickView> view(SailfishApp::createView());
-#endif
-
     QCoreApplication::setOrganizationName("spirit");
     QCoreApplication::setApplicationName("bible");
 
     createAppDir();
 
+    connectToDatabase();
     modules::ModelGroupModules::registerMe();
     qmlRegisterType<netmanager::QuickDownload>("bible.QuickDownload", 1, 0, "QuickDownload");
     modules::ModelModule::registerMe();
@@ -49,7 +46,6 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 //    qmlRegisterType<ModulesModel>("bible.ModulesModel", 1, 0, "ModulesModel");
     qmlRegisterType<HistoryModel>("bible.HistoryModel", 1, 0, "HistoryModel");
 
-//    connectToDatabase();
 //    ModuleProxyModel moduleProxyModel;
 //    ModuleModel ModuleModel;
 //    moduleProxyModel.setSourceModel(&ModuleModel);
@@ -61,10 +57,18 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 //    ctxt->setContextProperty("moduleProxyModel", &moduleProxyModel);
 
 #ifdef SAILFISH
+    QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
+    QScopedPointer<QQuickView> view(SailfishApp::createView());
     view->setSource(SailfishApp::pathToMainQml());
     view->show();
     return app->exec();
 #else
-    return 0;
+    QGuiApplication app(argc, argv);
+
+    QQuickView view;
+    view.setSource(QUrl("qrc:/bible.qml"));
+    view.showMaximized();
+
+    return app.exec();
 #endif
 }

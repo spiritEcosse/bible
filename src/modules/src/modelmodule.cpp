@@ -387,6 +387,15 @@ namespace modules {
             case Downloading :
                 data = false;
                 break;
+            case Book :
+                qDebug() << "books";
+                if (modules->m_books == nullptr) {
+                    QString fileName (QDir::currentPath() + "/modules/" + modules->m_name + "/.SQLite3");
+                    DbManager db (std::move(fileName));
+                    modules->m_books.reset(new BooksModel(db.db));
+                }
+                data = qVariantFromValue(modules->m_books.get());
+                break;
         }
 
         return data;
@@ -406,6 +415,7 @@ namespace modules {
             { DefaultDownload, "defaultDownload" },
             { Id, "id" },
             { Downloading, "downloading" },
+            { Book, "books" },
         };
     }
 

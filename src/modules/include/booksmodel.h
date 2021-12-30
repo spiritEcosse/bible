@@ -8,19 +8,20 @@
 #include "historymodel.h"
 #include "dbmanager.h"
 
-class BooksModel : public QSqlQueryModel
+class BooksModel : public QSqlTableModel
 {
     Q_OBJECT
     Q_PROPERTY(int currentBook READ currentBook WRITE setCurrentBook NOTIFY changeCurrentBook)
     Q_PROPERTY(int currentChapter READ currentChapter WRITE setCurrentChapter NOTIFY changeCurrentChapter)
     Q_PROPERTY(VersesModel* currentVerses READ currentVerses NOTIFY changeCurrentVerses)
 public:
-    BooksModel(QObject *parent = 0);
+    BooksModel(QSqlDatabase db, QObject *parent = Q_NULLPTR);
+    BooksModel(QObject *parent = Q_NULLPTR);
     static const int COUNT_BOOKS_OLD_TESTAMENT = 39;
 
     Q_INVOKABLE void oldTestament();
     Q_INVOKABLE void newTestament();
-    static int getBookIndex(const int &bookNumber);
+    int getBookIndex(const int &bookNumber);
     QVariant data(const QModelIndex &index, int role) const override;
     QHash<int, QByteArray> roleNames() const;
 
