@@ -24,7 +24,9 @@ jobs:
             cd /home/mersdk ;
             mkdir -p build ;
             cd build ;
-            mb2 -t SailfishOS-$RELEASE-aarch64 build /share/;
+            cp -r /share/* . ;
+            cp -r /share/.* . ;
+            mb2 -t SailfishOS-$RELEASE-aarch64 build .;
             sudo cp -r RPMS/*.rpm /share/output"
 
     - name: Upload build result
