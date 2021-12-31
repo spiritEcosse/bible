@@ -15,8 +15,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
-list(APPEND CMAKE_PREFIX_PATH "/Users/ihor/Qt5.6.3/5.6.3/clang_64/lib/cmake/Qt5/")
-list(APPEND CMAKE_PREFIX_PATH "/Users/ihor/Qt5.6.3/5.6.3/clang_64/bin/")
+#list(APPEND CMAKE_PREFIX_PATH "/Users/ihor/Qt5.6.3/5.6.3/clang_64/lib/cmake/Qt5/")
+#list(APPEND CMAKE_PREFIX_PATH "/Users/ihor/Qt5.6.3/5.6.3/clang_64/bin/")
 
 find_package (Qt5 COMPONENTS Widgets Core Network Qml Gui Quick Sql REQUIRED)
 find_package(ZLIB)
