@@ -25,7 +25,7 @@ jobs:
             mkdir -p build ;
             cd build ;
             cp -r /share/* . ;
-            cp -r /share/.* . ;
+            cp -r /share/.git* . ;
             mb2 -t SailfishOS-$RELEASE-aarch64 build .;
             sudo cp -r RPMS/*.rpm /share/output"
 
