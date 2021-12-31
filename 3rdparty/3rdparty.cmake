@@ -23,7 +23,7 @@ ProcessorCount(CORES)
 if(EXISTS "${PROJECT_SOURCE_DIR}/.git")
     message(STATUS "========================Submodule update========================")
     execute_process(COMMAND bash -c "git submodule init")
-    execute_process(COMMAND bash -c "tree 3rdparty")
+    execute_process(COMMAND bash -c "ls -la 3rdparty/openssl")
     execute_process(COMMAND bash -c "git submodule foreach -q --recursive 'git checkout $(git config -f $toplevel/.gitmodules submodule.$name.branch || echo master)'"
                     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                     RESULT_VARIABLE GIT_SUBMOD_RESULT)
