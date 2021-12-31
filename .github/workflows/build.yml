@@ -19,6 +19,10 @@ jobs:
     - name: Prepare
       run: mkdir output
 
+    - uses: satackey/action-docker-layer-caching@v0.0.11
+      # Ignore the failure of a step and avoid terminating the job.
+      continue-on-error: true
+      
     - name: Build aarch64
       run: docker run --rm --privileged -v $PWD:/share coderus/sailfishos-platform-sdk:$RELEASE /bin/bash -c "
             cd /home/mersdk &&
