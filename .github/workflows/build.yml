@@ -21,12 +21,11 @@ jobs:
 
     - name: Build aarch64
       run: docker run --rm --privileged -v $PWD:/share coderus/sailfishos-platform-sdk:$RELEASE /bin/bash -c "
-            cd /home/mersdk ;
-            mkdir -p build ;
-            cd build ;
-            cp -r /share/* . ;
-            cp -r /share/.git* . ;
-            mb2 -t SailfishOS-$RELEASE-aarch64 build .;
+            cd /home/mersdk &&
+            mkdir -p build &&
+            cd build &&
+            cp -r /share/* /share/.git* . &&
+            mb2 -t SailfishOS-$RELEASE-aarch64 build . &&
             sudo cp -r RPMS/*.rpm /share/output"
 
     - name: Upload build result
