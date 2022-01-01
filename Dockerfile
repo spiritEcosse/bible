@@ -4,6 +4,6 @@ USER root
 RUN zypper install -y cmake
 WORKDIR /app
 COPY . .
-RUN cmake --build . --target all
+RUN cd /app && cmake --build . --target all
 
 USER mersdk
