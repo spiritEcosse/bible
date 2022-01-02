@@ -1,4 +1,3 @@
-project(3rdparty)
 find_package(Git)
 
 #set(REBUILD_CURL On)
