@@ -1,5 +1,5 @@
 project(3rdparty)
-find_package(Git QUIET)
+find_package(Git)
 
 #set(REBUILD_CURL On)
 #set(REBUILD_NGHTTP2 On)
