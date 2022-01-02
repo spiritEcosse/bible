@@ -27,7 +27,7 @@ jobs:
         key: ${{ runner.os }}-3rdparty
 
     - name: Build aarch64
-      run: docker run --rm --privileged -v 3rdparty:/share/3rdparty -v $PWD:/share shevchenkoigor/docker-sailfishos-sdk:$RELEASE /bin/bash -c "
+      run: docker run --rm --privileged $([ "$(ls -A 3rdparty)" ] && echo "-v 3rdparty:/share/3rdparty") -v $PWD:/share shevchenkoigor/docker-sailfishos-sdk:$RELEASE /bin/bash -c "
             cd /home/mersdk &&
             mkdir -p build &&
             cd build &&
