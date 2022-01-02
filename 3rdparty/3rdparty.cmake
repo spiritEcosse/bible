@@ -3,7 +3,7 @@ find_package(Git QUIET)
 
 #set(REBUILD_CURL On)
 #set(REBUILD_NGHTTP2 On)
-option(USE_BUNDLED_DEPS "Enable bundled dependencies instead of using the system ones" OFF)
+option(USE_BUNDLED_DEPS "Enable bundled dependencies instead of using the system ones" ON)
 option(REBUILD_OPENSSL OFF)
 option(REBUILD_CURL OFF)
 option(REBUILD_NGHTTP2 OFF)
