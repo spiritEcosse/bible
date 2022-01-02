@@ -32,8 +32,8 @@ jobs:
             mkdir -p build &&
             cd build &&
             cp -r /share/* /share/.git* . &&
-            mb2 -t SailfishOS-$RELEASE-aarch64 build . &&
-            sudo cp -r RPMS/*.rpm /share/output"
+            #mb2 -t SailfishOS-$RELEASE-aarch64 build . &&
+            ls -la 3rdparty/openssl/build && sudo cp -r RPMS/*.rpm /share/output"
 
     - name: Upload build result
       uses: actions/upload-artifact@v2
