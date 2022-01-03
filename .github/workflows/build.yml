@@ -26,9 +26,6 @@ jobs:
         path: ~/build/
         key: ${{ runner.os }}-build
 
-    - name: ls -la ~/
-      run: ls -la ~/
-
     - name: Build aarch64
       run: docker run --rm --privileged $([ "$(ls -A ~/build)" ] && echo "-v ~/build:/home/mersdk/build") -v $PWD:/share shevchenkoigor/docker-sailfishos-sdk:$RELEASE /bin/bash -c "
             cd /home/mersdk/build &&
