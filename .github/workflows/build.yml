@@ -24,8 +24,8 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ~/build_/
-        key: ${{ runner.os }}-build-
-        restore-keys: ${{ runner.os }}-build-
+        key: ${{ runner.os }}-build_-
+        restore-keys: ${{ runner.os }}-build_-
         
     - name: ls -la ~/build_/
       run: ls -la ~/build_/
