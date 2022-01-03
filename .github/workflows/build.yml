@@ -18,7 +18,10 @@ jobs:
 
     - name: Prepare
       run: mkdir output
-      
+
+    - name: Prepare
+      run: mkdir ~/build_
+
     - name: Cache build
       id: cache-build
       uses: actions/cache@v2
