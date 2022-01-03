@@ -28,7 +28,7 @@ jobs:
 
     - name: Build aarch64
       run: docker run --rm --privileged -v ~/build:/home/mersdk/build -v $PWD:/home/mersdk/src coderus/sailfishos-platform-sdk:$RELEASE /bin/bash -c "
-            cd /home/mersdk/build && ls -la && touch new && ls -la && cd ../src && touch new_1 && cp -fr * ../build/ && ls -la ../build
+            cd /home/mersdk/build && ls -la && sudo touch new && ls -la
             "
 
     - name: ls -la ~/build/3rdparty/openssl/build/
