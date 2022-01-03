@@ -18,16 +18,16 @@ jobs:
 
     - name: Prepare
       run: mkdir output
-
-    - name: ls -la ~/build/3rdparty/openssl/build 
-      run: ls -la ~/build/3rdparty/openssl/build 
-
+      
     - name: Cache build
       id: cache-build
       uses: actions/cache@v2
       with:
         path: ~/build/
         key: ${{ runner.os }}-build
+
+    - name: ls -la ~/build/
+      run: ls -la ~/build/
 
     - name: Build aarch64
       run: docker run --rm --privileged $([ "$(ls -A ~/build)" ] && echo "-v ~/build:/home/mersdk/build") -v $PWD:/share shevchenkoigor/docker-sailfishos-sdk:$RELEASE /bin/bash -c "
