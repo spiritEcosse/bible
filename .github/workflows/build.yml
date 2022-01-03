@@ -23,9 +23,10 @@ jobs:
       id: cache-build
       uses: actions/cache@v2
       with:
-        path: ~/build/
-        key: ${{ runner.os }}-build
-
+        path: ~/build
+        key: ${{ runner.os }}-build-${{ hashFiles('hashFile.txt') }}
+        restore-keys: ${{ runner.os }}-build-
+    
     - name: Build aarch64
       run: docker run --rm --privileged -v ~/build:/home/mersdk/build -v $PWD:/home/mersdk/src coderus/sailfishos-platform-sdk:$RELEASE /bin/bash -c "
             cd /home/mersdk/build && ls -la && sudo touch new && ls -la
