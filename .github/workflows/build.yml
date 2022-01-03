@@ -31,11 +31,12 @@ jobs:
             cd /home/mersdk/ &&
             mkdir build_ &&
             cd build_ &&
-            mb2 -t SailfishOS-$RELEASE-aarch64 build ../src &&
+            cp -fr ../build/* ../build/.* ../src/* ../src/.* . &&
+            mb2 -t SailfishOS-$RELEASE-aarch64 build  &&
             ls -la 3rdparty/openssl/build &&
             sudo cp -r RPMS/*.rpm /share/output &&
             cd ../ &&
-            mv build_ build"
+            cp -fr build_/* build_/.* build"
 
     - name: ls -la ~/build/3rdparty/openssl/build/
       run: ls -la ~/build/3rdparty/openssl/build/
