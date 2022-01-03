@@ -27,12 +27,14 @@ jobs:
         key: ${{ runner.os }}-build-
         restore-keys: ${{ runner.os }}-build-
         
+    - name: ls -la ~/build/
+      run: ls -la ~/build/
+
     - name: Build aarch64
       run: docker run --rm --privileged -v ~/build:/home/mersdk/build -v $PWD:/home/mersdk/src coderus/sailfishos-platform-sdk:$RELEASE /bin/bash -c "
-            cd /home/mersdk/src &&
-            sudo cp -fr ../build/.* . && sudo cp -fr ../build/* . &&
+            cd /home/mersdk/build &&
+            sudo cp -fr ../src/.* ../src/* . &&
             mb2 -t SailfishOS-$RELEASE-aarch64 build . &&
-            sudo cp -fr * .* ../build &&
             sudo cp -r RPMS/*.rpm /share/output
             "
 
