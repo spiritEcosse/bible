@@ -23,24 +23,24 @@ jobs:
       id: cache-build
       uses: actions/cache@v2
       with:
-        path: ~/build/
+        path: ~/build_/
         key: ${{ runner.os }}-build-
         restore-keys: ${{ runner.os }}-build-
         
-    - name: ls -la ~/build/
-      run: ls -la ~/build/
+    - name: ls -la ~/build_/
+      run: ls -la ~/build_/
 
     - name: Build aarch64
-      run: docker run --rm --privileged -v ~/build:/home/mersdk/build -v $PWD:/home/mersdk/src coderus/sailfishos-platform-sdk:$RELEASE /bin/bash -c "
-            cd /home/mersdk/build &&
-            sudo cp -fr /home/mersdk/src/.* /home/mersdk/build/ && 
-            sudo cp -fr /home/mersdk/src/* /home/mersdk/build/ &&
+      run: docker run --rm --privileged -v ~/build_:/home/mersdk/build_ -v $PWD:/home/mersdk/src coderus/sailfishos-platform-sdk:$RELEASE /bin/bash -c "
+            cd /home/mersdk/build_ &&
+            sudo cp -fr /home/mersdk/src/.* /home/mersdk/build_/ && 
+            sudo cp -fr /home/mersdk/src/* /home/mersdk/build_/ &&
             mb2 -t SailfishOS-$RELEASE-aarch64 build . &&
             sudo cp -r RPMS/*.rpm /share/output
             "
 
-    - name: ls -la ~/build/
-      run: ls -la ~/build/
+    - name: ls -la ~/build_/
+      run: ls -la ~/build_/
 
     - name: Upload build result
       uses: actions/upload-artifact@v2
