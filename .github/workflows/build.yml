@@ -19,26 +19,24 @@ jobs:
     - name: Prepare
       run: mkdir output
 
-    - name: ls -la ~/3rdparty/openssl/build 
-      run: ls -la ~/3rdparty/openssl/build 
+    - name: ls -la ~/build/3rdparty/openssl/build 
+      run: ls -la ~/build/3rdparty/openssl/build 
 
-    - name: Cache 3rdparty
-      id: cache-3rdparty
+    - name: Cache build
+      id: cache-build
       uses: actions/cache@v2
       with:
-        path: ~/3rdparty
-        key: ${{ runner.os }}-3rdparty
+        path: ~/build/
+        key: ${{ runner.os }}-build
 
     - name: Build aarch64
-      run: docker run --rm --privileged $([ "$(ls -A ~/3rdparty)" ] && echo "-v ~/3rdparty:/share/3rdparty") -v $PWD:/share shevchenkoigor/docker-sailfishos-sdk:$RELEASE /bin/bash -c "
-            cd /home/mersdk &&
-            mkdir -p build &&
-            cd build &&
-            cp -r /share/* /share/.git* . &&
+      run: docker run --rm --privileged $([ "$(ls -A ~/build)" ] && echo "-v ~/build:/home/mersdk/build") -v $PWD:/share shevchenkoigor/docker-sailfishos-sdk:$RELEASE /bin/bash -c "
+            cd /home/mersdk/build &&
+            mb2 -t SailfishOS-$RELEASE-aarch64 build . &&
             ls -la 3rdparty/openssl/build && sudo cp -r RPMS/*.rpm /share/output"
 
-    - name: ls -la ~/3rdparty/openssl/build/
-      run: ls -la ~/3rdparty/openssl/build/
+    - name: ls -la ~/build/3rdparty/openssl/build/
+      run: ls -la ~/build/3rdparty/openssl/build/
 
     - name: Upload build result
       uses: actions/upload-artifact@v2
