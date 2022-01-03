@@ -27,14 +27,9 @@ jobs:
         key: ${{ runner.os }}-build
 
     - name: Build aarch64
-      run: docker run --rm --privileged -v ~/build:/home/mersdk/build -v $PWD:/home/mersdk/src shevchenkoigor/docker-sailfishos-sdk:$RELEASE /bin/bash -c "
-            cd /home/mersdk/src &&
-            cp -fr /home/mersdk/build/* /home/mersdk/build/.* . &&
-            mb2 -t SailfishOS-$RELEASE-aarch64 build . &&
-            ls -la 3rdparty/openssl/build &&
-            sudo cp -r RPMS/*.rpm /share/output &&
-            cd ../ &&
-            mv src build"
+      run: docker run --rm --privileged -v ~/build:/home/mersdk/build -v $PWD:/home/mersdk/src coderus/sailfishos-platform-sdk:$RELEASE /bin/bash -c "
+            cd /home/mersdk/build && ls -la && touch new && ls -la && cd ../src && touch new_1 && cp -fr * ../build/ && ls -la ../build
+            "
 
     - name: ls -la ~/build/3rdparty/openssl/build/
       run: ls -la ~/build/3rdparty/openssl/build/
