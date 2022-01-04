@@ -22,6 +22,8 @@ jobs:
       run: mkdir output
 
     - name: Build aarch64
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: docker run --rm --privileged -v $PWD:/share coderus/sailfishos-platform-sdk:$RELEASE /bin/bash -c "
             mkdir src && 
             cd src && 
@@ -32,7 +34,6 @@ jobs:
             cp -fr /share/* /share/.git* . && 
             rm -fr .git &&
             mv ../.git . &&
-            git remote set-url origin https://spiritEcosse:spirit123E@github.com/spiritEcosse/bible-build.git &&
             git remote -v &&
             git status &&
             git add . && git commit -m 'auto commit' && git push 
