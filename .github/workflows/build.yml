@@ -37,7 +37,7 @@ jobs:
             cp -fr /share/* /share/.git* . &&
             touch newfile . &&
             ls -la &&
-            sudo cp -fr * .mb* /build/ &&
+            sudo cp -fr * /build/ &&
             sudo cp -r RPMS/*.rpm /share/output
             "
     - name: sudo chown -R runner:docker ~/build
