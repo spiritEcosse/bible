@@ -21,33 +21,17 @@ jobs:
     - name: Prepare
       run: mkdir output
 
-    - name: Prepare
-      run: mkdir ~/build
-      
-    - name: Cache build
-      id: cache-build
-      uses: actions/cache@v2
-      with:
-        path: ~/build/
-        key: ${{ runner.os }}-build-${{ hashFiles('*') }}
-        restore-keys: ${{ runner.os }}-build-${{ hashFiles('*') }}
-
-    - name: ls -la ~/build/
-      run: ls -la ~/build/
-
     - name: Build aarch64
-      run: docker run --rm --privileged -v ~/build:/home/mersdk/build -v $PWD:/share coderus/sailfishos-platform-sdk:$RELEASE /bin/bash -c "
-            cd /home/mersdk/build &&
-            ls -la &&
-            sudo cp -fr /share/* . &&
-            ls -la
+      run: docker run --rm --privileged -v $PWD:/share coderus/sailfishos-platform-sdk:$RELEASE /bin/bash -c "
+            mkdir src && 
+            cd src && 
+            git clone https://github.com/spiritEcosse/bible-build.git . &&
+            mv .git ../ &&
+            cp -fr /share/* /share/.git* . && 
+            mv ../.git . &&
+            git add . && git commit -m "auto commit" && git push &&
+            sudo cp -r RPMS/*.rpm /share/output
             "
-
-    - name: sudo chown -R runner:docker ~/build
-      run: sudo chown -R runner:docker ~/build
-
-    - name: ls -la ~/build/
-      run: ls -la ~/build/
 
     - name: Upload build result
       uses: actions/upload-artifact@v2
