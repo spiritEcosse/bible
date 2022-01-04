@@ -69,6 +69,17 @@ desktop-file-install --delete-original       \
 
 %files
 %defattr(-,root,root,-)
+/usr/lib64/cmake/QuaZip-Qt5-1.1/QuaZip-Qt5Config.cmake
+/usr/lib64/cmake/QuaZip-Qt5-1.1/QuaZip-Qt5ConfigVersion.cmake
+/usr/lib64/cmake/QuaZip-Qt5-1.1/QuaZip-Qt5_SharedTargets-relwithdebinfo.cmake
+/usr/lib64/cmake/QuaZip-Qt5-1.1/QuaZip-Qt5_SharedTargets.cmake
+/usr/lib64/cmake/SqliteOrm/SqliteOrmConfig.cmake
+/usr/lib64/cmake/SqliteOrm/SqliteOrmConfigVersion.cmake
+/usr/lib64/cmake/SqliteOrm/SqliteOrmTargets.cmake
+/usr/lib64/libquazip1-qt5.so
+/usr/lib64/libquazip1-qt5.so.1.0.0
+/usr/lib64/libquazip1-qt5.so.1.1
+/usr/lib64/pkgconfig/quazip1-qt5.pc
 /usr/include/sqlite_orm/sqlite_orm.h
 /usr/include/QuaZip-Qt5-1.1/quazip/JlCompress.h
 /usr/include/QuaZip-Qt5-1.1/quazip/ioapi.h
