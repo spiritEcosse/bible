@@ -16,6 +16,25 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - run: mkdir -p ~/image-cache
+
+    - id: image-cache
+      uses: actions/cache@v2
+      with:
+          path: ~/image-cache
+          # Adjust key to meet your cache time requirements e.g.
+          # ${{ hashFiles(*) }} can be useful here to invalidate
+          # cache on file changes
+          key: image-cache-${{ runner.os }}
+
+    - if: steps.image-cache.outputs.cache-hit != 'true'
+      run: |
+          docker pull coderus/sailfishos-platform-sdk:$RELEASE
+          docker save -o ~/image-cache/sailfishos.tar coderus/sailfishos-platform-sdk:$RELEASE
+
+    - if: steps.image-cache.outputs.cache-hit == 'true'
+      run: docker load -i ~/image-cache/sailfishos.tar
+
     - name: Prepare
       run: mkdir output
       
@@ -35,7 +54,7 @@ jobs:
             mkdir src && cd src && 
             cp -fr /share/* /share/.git* . &&
             mb2 -t SailfishOS-$RELEASE-aarch64 build . &&
-            sudo cp -fr * /build/ &&
+            sudo cp -fr * .* /build/ &&
             sudo cp -r RPMS/*.rpm /share/output
             "
 
