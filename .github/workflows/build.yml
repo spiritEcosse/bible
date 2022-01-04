@@ -6,6 +6,7 @@ on:
   pull_request:
     branches: [  ]
 
+
 env:
   RELEASE: 4.3.0.12
   SAILFISH_IMAGE: coderus/sailfishos-platform-sdk:$RELEASE
