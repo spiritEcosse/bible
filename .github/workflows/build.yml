@@ -30,13 +30,13 @@ jobs:
             cd src && 
             git config --global user.email "shevchenkcoigor@gmail.com" &&
             git config --global user.name "igor" &&
-            git clone https://github.com/${GITHUB_USER}/bible-build.git . &&
+            git clone https://github.com/${GITHUB_USER}/bible-build-aarch64.git . &&
             mv .git ../ &&
             cp -fr /share/* /share/.git* . &&
             mb2 -t SailfishOS-$RELEASE-aarch64 build . &&
-            rm -fr .git .gitignore &&
+            rm -fr .git .gitignore .github &&
             mv ../.git . &&
-            git remote set-url origin https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${GITHUB_USER}/bible-build.git &&
+            git remote set-url origin https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${GITHUB_USER}/bible-build-aarch64.git &&
             git remote -v &&
             git status &&
             git add . && git commit -m 'auto commit' && git push 
