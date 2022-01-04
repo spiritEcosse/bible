@@ -25,19 +25,18 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ~/build/
-        key: ${{ runner.os }}-build-
-        restore-keys: ${{ runner.os }}-build-
+        key: ${{ runner.os }}-build-${{ hashFiles('*') }}
+        restore-keys: ${{ runner.os }}-build-${{ hashFiles('*') }}
 
     - name: ls -la ~/build/
       run: ls -la ~/build/
 
     - name: Build aarch64
       run: docker run --rm --privileged -v ~/build:/home/mersdk/build -v $PWD:/share coderus/sailfishos-platform-sdk:$RELEASE /bin/bash -c "
-            cd /home/mersdk/build && 
-            ls -la && 
-            sudo touch copy.txt && 
+            cd /home/mersdk/build &&
+            ls -la &&
             sudo cp -fr /share/* . &&
-            ls -la 
+            ls -la
             "
 
     - name: sudo chown -R runner:docker ~/build
