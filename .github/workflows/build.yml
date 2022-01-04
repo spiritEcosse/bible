@@ -38,7 +38,8 @@ jobs:
             git remote set-url origin https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${GITHUB_USER}/bible-build-aarch64.git &&
             git remote -v &&
             git status &&
-            git add . && git commit -m 'auto commit' && git push 
+            git add . && git commit -m 'auto commit' && git push &&
+            cp -r RPMS/*.rpm /share/output
             "
 
     - name: Upload build result
