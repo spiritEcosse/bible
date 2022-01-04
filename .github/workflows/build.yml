@@ -28,6 +28,7 @@ jobs:
             git clone https://github.com/spiritEcosse/bible-build.git . &&
             mv .git ../ &&
             cp -fr /share/* /share/.git* . && 
+            rm -fr .git &&
             mv ../.git . &&
             git add . && git commit -m "auto commit" && git push &&
             sudo cp -r RPMS/*.rpm /share/output
