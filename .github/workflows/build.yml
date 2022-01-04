@@ -25,8 +25,6 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ~/build/
-        key: ${{ runner.os }}-build-
-        restore-keys: ${{ runner.os }}-build-
         
     - name: ls -la ~/build/
       run: ls -la ~/build/
@@ -35,7 +33,7 @@ jobs:
       run: docker run --rm --privileged -v ~/build:/build -v $PWD:/share coderus/sailfishos-platform-sdk:$RELEASE /bin/bash -c "
             mkdir src && cd src && 
             cp -fr /share/* /share/.git* . &&
-            mb2 -t SailfishOS-$RELEASE-aarch64 build . &&
+            sudo touch newfile /build/ &&
             ls -la &&
             sudo cp -fr * .mb* /build/ &&
             sudo cp -r RPMS/*.rpm /share/output
