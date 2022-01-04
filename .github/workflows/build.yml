@@ -40,7 +40,10 @@ jobs:
             sudo cp -fr /share/* . &&
             ls -la 
             "
-      
+
+    - name: sudo chown -R runner:docker ~/build &&
+      run: sudo chown -R runner:docker ~/build &&
+
     - name: ls -la ~/build/
       run: ls -la ~/build/
 
