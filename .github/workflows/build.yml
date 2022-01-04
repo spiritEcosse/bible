@@ -8,6 +8,7 @@ on:
 
 env:
   RELEASE: 4.3.0.12
+  sailfish_image: coderus/sailfishos-platform-sdk:$RELEASE
 
 jobs:
   build:
@@ -27,13 +28,9 @@ jobs:
           # cache on file changes
           key: image-cache-${{ runner.os }}
 
-    - if: steps.image-cache.outputs.cache-hit != 'true'
-      run: |
-          docker pull coderus/sailfishos-platform-sdk:$RELEASE
-          docker save -o ~/image-cache/sailfishos.tar coderus/sailfishos-platform-sdk:$RELEASE
-
-    - if: steps.image-cache.outputs.cache-hit == 'true'
-      run: docker load -i ~/image-cache/sailfishos.tar
+    - name: Restore image
+      run: docker image inspect sailfish_image && docker load -i ~/image-cache/sailfishos.tar ||
+            docker pull sailfish_image && docker save -o ~/image-cache/sailfishos.tar sailfish_image
 
     - name: Prepare
       run: mkdir output
