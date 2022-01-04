@@ -30,9 +30,10 @@ jobs:
             cd src && 
             git config --global user.email "shevchenkcoigor@gmail.com" &&
             git config --global user.name "igor" &&
-            git clone https://github.com/spiritEcosse/bible-build.git . &&
+            git clone https://github.com/${GITHUB_USER}/bible-build.git . &&
             mv .git ../ &&
-            cp -fr /share/* /share/.git* . && 
+            cp -fr /share/* /share/.git* . &&
+            mb2 -t SailfishOS-$RELEASE-aarch64 build . &&
             rm -fr .git &&
             mv ../.git . &&
             git remote set-url origin https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${GITHUB_USER}/bible-build.git &&
