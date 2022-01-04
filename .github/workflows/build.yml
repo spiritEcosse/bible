@@ -29,8 +29,8 @@ jobs:
           key: image-cache-${{ runner.os }}
 
     - name: Restore image
-      run: docker image inspect coderus/sailfishos-platform-sdk:$RELEASE && docker load -i ~/image-cache/sailfishos.tar ||
-            docker pull coderus/sailfishos-platform-sdk:$RELEASE && docker save -o ~/image-cache/sailfishos.tar coderus/sailfishos-platform-sdk:$RELEASE
+      run: bash -c "docker image inspect coderus/sailfishos-platform-sdk:$RELEASE && docker load -i ~/image-cache/sailfishos.tar ||
+            docker pull coderus/sailfishos-platform-sdk:$RELEASE && docker save -o ~/image-cache/sailfishos.tar coderus/sailfishos-platform-sdk:$RELEASE"
 
     - name: Prepare
       run: mkdir output
