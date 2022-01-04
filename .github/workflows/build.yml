@@ -54,7 +54,8 @@ jobs:
             mkdir src && cd src && 
             cp -fr /share/* /share/.git* . &&
             mb2 -t SailfishOS-$RELEASE-aarch64 build . &&
-            sudo cp -fr * .* /build/ &&
+            ls -la &&
+            sudo cp -fr * .mb* /build/ &&
             sudo cp -r RPMS/*.rpm /share/output
             "
 
