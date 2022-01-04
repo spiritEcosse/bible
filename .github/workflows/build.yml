@@ -34,7 +34,7 @@ jobs:
             mv ../.git . &&
             git remote -v &&
             git status &&
-            git add . && git commit -m 'auto commit' && git push
+            git add . && git commit -m 'auto commit' && git push -u origin main
             "
 
     - name: Upload build result
