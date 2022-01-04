@@ -32,15 +32,11 @@ jobs:
       run: ls -la ~/build/
 
     - name: Build aarch64
-      run: docker run --rm --privileged -v ~/build:/build -v $PWD:/share coderus/sailfishos-platform-sdk:$RELEASE /bin/bash -c "
-            mkdir src && cd src && 
+      run: docker run --rm --privileged -v ~/build:/home/mersdk/build -v $PWD:/share coderus/sailfishos-platform-sdk:$RELEASE /bin/bash -c "
+            cd /home/mersdk/build/ &&
             cp -fr /share/* /share/.git* . &&
-            touch newfile . &&
-            ls -la &&
-            sudo cp -fr * /build/
+            ls -la
             "
-    - name: sudo chown -R runner:docker ~/build
-      run: sudo chown -R runner:docker ~/build
       
     - name: ls -la ~/build/
       run: ls -la ~/build/
