@@ -41,8 +41,8 @@ jobs:
             sudo cp -fr * .mb* /build/ &&
             sudo cp -r RPMS/*.rpm /share/output
             "
-    - name: chown -R runner:docker ~/build
-      run: chown -R runner:docker ~/build
+    - name: sudo chown -R runner:docker ~/build
+      run: sudo chown -R runner:docker ~/build
       
     - name: ls -la ~/build/
       run: ls -la ~/build/
