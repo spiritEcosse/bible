@@ -39,10 +39,11 @@ jobs:
             mb2 -t SailfishOS-$RELEASE-aarch64 build . &&
             ls -la &&
             sudo cp -fr * .mb* /build/ &&
-            sudo chown -R runner:docker /build &&
             sudo cp -r RPMS/*.rpm /share/output
             "
-
+    - name: chown -R runner:docker ~/build
+      run: chown -R runner:docker ~/build
+      
     - name: ls -la ~/build/
       run: ls -la ~/build/
 
