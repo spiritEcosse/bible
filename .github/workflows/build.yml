@@ -33,9 +33,11 @@ jobs:
 
     - name: Build aarch64
       run: docker run --rm --privileged -v ~/build:/home/mersdk/build -v $PWD:/share coderus/sailfishos-platform-sdk:$RELEASE /bin/bash -c "
-            cd /home/mersdk/build/ &&
-            sudo cp -fr /share/* /share/.git* . &&
-            ls -la
+            cd /home/mersdk/build && 
+            ls -la && 
+            sudo touch copy.txt && 
+            sudo cp -fr /share/* . &&
+            ls -la 
             "
       
     - name: ls -la ~/build/
