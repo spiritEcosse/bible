@@ -100,6 +100,9 @@ else()
                 && make -j${CORES} \
                 && make install"
                 RESULT_VARIABLE STATUS_BUILD_CURL)
+        execute_process(COMMAND bash -c "\
+            rm -fr ${LIB_CURL}-*"
+        )
 
         if (NOT STATUS_BUILD_CURL EQUAL "0")
             message(FATAL_ERROR "STATUS_BUILD_CURL : ${STATUS_BUILD_CURL}")

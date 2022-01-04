@@ -27,10 +27,11 @@ jobs:
       run: docker run --rm --privileged -v $PWD:/share coderus/sailfishos-platform-sdk:$RELEASE /bin/bash -c "
             mkdir src && 
             cd src && 
-            git config --global user.email "shevchenkcoigor@gmail.com" &&
-            git config --global user.name "igor" &&
+            git config --global user.email 'shevchenkcoigor@gmail.com' &&
+            git config --global user.name 'igor' &&
             git clone https://github.com/${GITHUB_USER}/bible-build-aarch64.git . &&
             mv .git ../ &&
+            rsync -a /share/ . &&
             mb2 -t SailfishOS-$RELEASE-aarch64 build . &&
             rm -fr .git* &&
             mv ../.git . &&
