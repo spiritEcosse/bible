@@ -30,10 +30,11 @@ jobs:
             git clone https://github.com/spiritEcosse/bible-build.git . &&
             mv .git ../ &&
             cp -fr /share/* /share/.git* . && 
-            rm -fr .git &&
-            mv ../.git . &&
-            git add . && git commit -m "auto commit" && git push &&
-            sudo cp -r RPMS/*.rpm /share/output
+            echo "rm -fr .git" && rm -fr .git &&
+            echo "mv ../.git . &&" && mv ../.git . &&
+            git remote -v &&
+            git status &&
+            echo "git add ." && git add . && git commit -m "auto commit" && git push
             "
 
     - name: Upload build result
