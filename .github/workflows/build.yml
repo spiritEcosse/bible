@@ -39,7 +39,6 @@ jobs:
         path: output
 
     - name: Create release
-      if: contains(github.ref, 'release')
       run: |
         set -x
         assets=()
