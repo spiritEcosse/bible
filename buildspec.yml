@@ -1,0 +1,19 @@
+version: 0.2
+
+
+phases:
+  build:
+    commands:
+      - RELEASE=4.3.0.12
+      - echo Build started on `date`
+      - echo Building the app...
+      - docker run --rm --privileged -v $PWD:/share coderus/sailfishos-platform-sdk:$RELEASE /bin/bash -c "
+                  mkdir src && 
+                  cd src && 
+                  rsync -a /share/ . &&
+                  mb2 -t SailfishOS-$RELEASE-aarch64 build . &&
+                  sudo cp -r RPMS/*.rpm /share/output
+                  "
+artifacts:
+    files: imagedefinitions.json
+    

@@ -2,11 +2,11 @@ db
 **/logs/
 *.log
 shared/
-*build*
+#*build*
 
 *.autosave
 *.user
-*.sqlite
+ƒ*.sqlite
 
 *autogen/*
 CMakeLists.txt.user*
@@ -15,7 +15,7 @@ bible.creator.user
 
 # This file is used to ignore files which are generated
 # ----------------------------------------------------------------------------
-build*
+#build*
 
 *.a
 *.core
