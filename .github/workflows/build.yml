@@ -31,6 +31,7 @@ jobs:
             git config --global user.name 'igor' &&
             git clone https://github.com/${GITHUB_USER}/bible-build-aarch64.git . &&
             mv .git ../ &&
+            ls -la 3rdparty &&
             mb2 -t SailfishOS-$RELEASE-aarch64 build . &&
             rm -fr .git* &&
             mv ../.git . &&
