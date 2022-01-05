@@ -66,14 +66,15 @@ endif()
 
 message("TARGET : ${TARGET}")
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty")
-include(3rdparty)
 execute_process(COMMAND bash -c "\
     ls -la 3rdparty"
 )
 link_directories("${OPENSSL_LIB_DIR}")
 link_directories("${NGHTTP2_LIB_DIR}")
 link_directories("${CURL_LIB_DIR}")
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty")
+include(3rdparty)
 
 if(Qt5_VERSION VERSION_GREATER_EQUAL QT_5_12_VERSION)
     qtquick_compiler_add_resources(RESOURCES qml/qml.qrc)
