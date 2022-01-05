@@ -86,7 +86,11 @@ set(CURL_BUNDLE_DIR "${PROJECT_BINARY_DIR}/3rdparty/${LIB_CURL}")
 set(CURL_INSTALL_DIR "${CURL_BUNDLE_DIR}/build")
 set(CURL_INCLUDE_DIR "${CURL_INSTALL_DIR}/include")
 set(CURL_LIB_DIR "${CURL_INSTALL_DIR}/lib")
+message("CURL_INCLUDE_DIR : ${CURL_INCLUDE_DIR}")
 include_directories("${CURL_INCLUDE_DIR}")
+execute_process(COMMAND bash -c "\
+    ls -la ${CURL_INCLUDE_DIR}"
+)
 
 link_directories("${OPENSSL_LIB_DIR}")
 link_directories("${NGHTTP2_LIB_DIR}")
