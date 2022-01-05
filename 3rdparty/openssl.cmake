@@ -46,5 +46,9 @@ endif()
 
 link_directories("${OPENSSL_LIB_DIR}")
 include_directories("${OPENSSL_INCLUDE_DIR}")
-message("${OPENSSL_LIB_DIR}")
+message("OPENSSL_LIB_DIR: ${OPENSSL_LIB_DIR}")
+execute_process(COMMAND bash -c "\
+    ls -la ${OPENSSL_LIB_DIR}"
+)
+
 message(STATUS "========================End configure ${LIB_OPENSSL}=======================")
