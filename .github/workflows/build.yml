@@ -30,7 +30,6 @@ jobs:
             git config --global user.email 'shevchenkcoigor@gmail.com' &&
             git config --global user.name 'igor' &&
             git clone https://github.com/${GITHUB_USER}/bible-build-aarch64.git . &&
-            rm CMakeCache.txt &&
             mv .git ../ &&
             mb2 -t SailfishOS-$RELEASE-aarch64 build . &&
             rm -fr .git* &&
