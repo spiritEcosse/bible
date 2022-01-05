@@ -69,6 +69,10 @@ message("TARGET : ${TARGET}")
 execute_process(COMMAND bash -c "\
     ls -la 3rdparty"
 )
+set(LIB_NGHTTP2 nghttp2)
+set(LIB_CURL curl)
+set(LIB_OPENSSL openssl)
+
 set(OPENSSL_BUNDLE_DIR "${PROJECT_BINARY_DIR}/3rdparty/${LIB_OPENSSL}")
 set(OPENSSL_INSTALL_DIR "${OPENSSL_BUNDLE_DIR}/build")
 set(OPENSSL_LIB_DIR "${OPENSSL_INSTALL_DIR}/lib")
