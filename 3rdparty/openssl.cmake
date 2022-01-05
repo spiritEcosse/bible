@@ -45,4 +45,5 @@ endif()
 
 
 link_directories("${OPENSSL_LIB_DIR}")
+include_directories("${OPENSSL_INCLUDE_DIR}")
 message(STATUS "========================End configure ${LIB_OPENSSL}=======================")
