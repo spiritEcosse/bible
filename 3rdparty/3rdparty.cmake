@@ -17,7 +17,6 @@ ProcessorCount(CORES)
 if(EXISTS "${PROJECT_SOURCE_DIR}/.git")
     message(STATUS "========================Submodule update========================")
     execute_process(COMMAND bash -c "git submodule update --init && git submodule foreach -q --recursive 'git checkout $(git config -f $toplevel/.gitmodules submodule.$name.branch || echo master)'"
-    execute_process(COMMAND bash -c "git submodule foreach -q --recursive 'git checkout $(git config -f $toplevel/.gitmodules submodule.$name.branch || echo master)'"
                     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                     RESULT_VARIABLE GIT_SUBMOD_RESULT)
     if(NOT GIT_SUBMOD_RESULT EQUAL "0")
