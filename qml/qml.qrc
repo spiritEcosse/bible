@@ -1,16 +1,17 @@
 <RCC>
-    <qresource prefix="/⁄">
+    <qresource prefix="/">
         <file>bible.qml</file>
         <file>cover/CoverPage.qml</file>
         <file>pages/BooksPage.qml</file>
+        <file>pages/Main.qml</file>
         <file>pages/CommentsPage.qml</file>
         <file>pages/CoverLoader.js</file>
-        <file>pages/ExpandingSectionBooks.qml</file>
         <file>pages/History.qml</file>
         <file>pages/ModuleInformation.qml</file>
         <file>pages/ModulesPage.qml</file>
         <file>pages/Pages.qml</file>
         <file>pages/VersesListView.qml</file>
+        <file>components/ExpandingSectionBooks.qml</file>
         <file>components/ExpandingSectionGroupPatch.qml</file>
         <file>components/ExpandingSectionPatch.qml</file>
         <file>components/FlippingPageHeader.qml</file>

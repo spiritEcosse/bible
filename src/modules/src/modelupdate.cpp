@@ -8,8 +8,17 @@
 namespace modules {
 
     template <class T>
-    ModelUpdate<T>::ModelUpdate()
+    BaseModel<T>::BaseModel()
         : m_db { new db::Db<T>() } {}
+
+    template<class T>
+    BaseModel<T>::~BaseModel() {}
+
+    Base::Base(QObject *parent) : QAbstractListModel(parent) {}
+
+    template <class T>
+    ModelUpdate<T>::ModelUpdate(QObject *parent)
+        : Base(parent), BaseModel<T>() {}
 
     template <class T>
     int ModelUpdate<T>::rowCount(const QModelIndex& /* parent */) const
@@ -123,4 +132,8 @@ namespace modules {
     template class ModelUpdate<Module>;
     template class ModelUpdate<Registry>;
     template class ModelUpdate<Host>;
+    template class BaseModel<Module>;
+    template class BaseModel<GroupModules>;
+    template class BaseModel<Registry>;
+    template class BaseModel<Host>;
 }

@@ -1,47 +1,12 @@
-#include <QtTest>
-#include "modelgroupmodules.h"
-#include "groupmodules.h"
 #include <JlCompress.h>
-#include "modeljsontest.h"
 #include "dereferenceiterator.h"
+#include "tst_modelgroupmodules.h"
 
 Q_DECLARE_METATYPE(std::vector<modules::GroupModulesShared>)
 
 namespace modules {
 
     namespace tests {
-
-        class tst_ModelGroupModules : public ::tests::ModelJsonTest<GroupModules, ModelGroupModules> {
-            Q_OBJECT
-
-        public:
-            tst_ModelGroupModules();
-            ~tst_ModelGroupModules();
-
-        private:
-            std::vector<GroupModulesShared> helperGetObjects() const override;
-            void setQSettings(int value = 0, QString key = "registryVersion");
-            std::vector<GroupModulesUnique> helperGetObjectsUnique() const override;
-
-        private slots:
-            void initTestCase() override;
-            void cleanupTestCase() override;
-            void contructor_data();
-            void contructor();
-            void newVersionAvailable();
-            void updateCompleted();
-            void update() override;
-            void downloadRegistry_data();
-            void downloadRegistry();
-            void updateObjects_data();
-            void updateObjects();
-            void search_data();
-            void search();
-            void getAll_data();
-            void getAll();
-            void setFieldSearch();
-            void setFieldSearch_data();
-        };
 
         tst_ModelGroupModules::tst_ModelGroupModules() {}
 
@@ -69,7 +34,7 @@ namespace modules {
         {
             std::vector<GroupModulesShared> objects;
             for ( size_t in = 0; in < vectorSize; in++) {
-                objects.push_back(std::make_shared<GroupModules>("en", "name", "region", in + 1));
+                objects.push_back(std::make_shared<GroupModules>("en", "Translations", "region", in + 1));
             }
             return objects;
         }
@@ -78,9 +43,20 @@ namespace modules {
         {
             std::vector<GroupModulesUnique> objects;
             for ( size_t in = 0; in < vectorSize; in++) {
-                objects.push_back(std::make_unique<GroupModules>("en", "name", "region", in + 1));
+                objects.push_back(std::make_unique<GroupModules>(
+                                      "en",
+                                      "Translations",
+                                      "region",
+                                      in + 1));
             }
             return objects;
+        }
+
+        void tst_ModelGroupModules::helperSaveStatic()
+        {
+            tst_ModelGroupModules tst_modelGroup;
+            tst_modelGroup.initDb();
+            tst_modelGroup.helperSave();
         }
 
 //      tests
@@ -270,11 +246,7 @@ namespace modules {
             QCOMPARE(modelGroupModules.m_entitySearch, entitySearch);
             QCOMPARE(modelGroupModules.m_needle, m_needle);
         }
-
     }
-
 }
-
-QTEST_MAIN(modules::tests::tst_ModelGroupModules)
 
 #include "tst_modelgroupmodules.moc"

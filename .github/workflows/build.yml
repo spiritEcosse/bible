@@ -1,0 +1,63 @@
+# name: Github CI build
+# 
+# on:
+  # push:
+    # branches: [  ]
+  # pull_request:
+    # branches: [  ]
+# 
+# env:
+  # RELEASE: 4.3.0.12
+  # SAILFISH_IMAGE: coderus/sailfishos-platform-sdk:$RELEASE
+# 
+# jobs:
+  # build:
+    # runs-on: ubuntu-latest
+# 
+    # steps:
+    # - uses: actions/checkout@v2
+# 
+    # - name: Prepare
+      # run: mkdir output
+# 
+    # - name: Build aarch64
+      # env:
+        # GITHUB_TOKEN: ${{ secrets.TOKEN_BUILD }}
+        # GITHUB_USER: spiritEcosse
+      # run: docker run --rm --privileged -v $PWD:/share coderus/sailfishos-platform-sdk:$RELEASE /bin/bash -c "
+            # mkdir src &&
+            # cd src &&
+            # git config --global user.email 'shevchenkcoigor@gmail.com' &&
+            # git config --global user.name 'igor' &&
+            # git clone https://github.com/${GITHUB_USER}/bible-build-aarch64.git . &&
+            # mv .git ../ &&
+            # ls -la 3rdparty &&
+            # rsync -a /share/ . &&
+            # ls -la 3rdparty &&
+            # mb2 -t SailfishOS-$RELEASE-aarch64 build . &&
+            # rm -fr .git* &&
+            # mv ../.git . &&
+            # git remote set-url origin https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${GITHUB_USER}/bible-build-aarch64.git &&
+            # rm CMakeCache.txt &&
+            # git add . && git commit -m 'auto commit' && git push &&
+            # cp -r RPMS/*.rpm /share/output
+            # "
+# 
+    # - name: Upload build result
+      # uses: actions/upload-artifact@v2
+      # with:
+        # name: output-rpms
+        # path: output
+# 
+    # - name: Create release
+      # if: contains(github.ref, 'release')
+      # run: |
+        # set -x
+        # assets=()
+        # for asset in output/*.rpm; do
+          # assets+=("-a" "$asset")
+        # done
+        # tag_name="${GITHUB_REF##*/}"
+        # hub release create "${assets[@]}" -m "$tag_name" "$tag_name"
+      # env:
+        # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

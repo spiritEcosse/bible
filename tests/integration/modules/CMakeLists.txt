@@ -1,24 +1,20 @@
 project(tst_modules LANGUAGES CXX)
 
 enable_testing()
+find_package(Qt5 COMPONENTS Test Network Qml Sql REQUIRED)
+file(GLOB SOURCES *.h *.cpp)
+add_library(${PROJECT_NAME} SHARED ${SOURCES})
+set_target_properties(${PROJECT_NAME} PROPERTIES AUTOMOC TRUE)
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    Qt5::Test Qt5::Network Qt5::Qml Qt5::Sql core dbmanager netmanager modules base_test QuaZip)
 
-find_package(Qt5 COMPONENTS Test Network REQUIRED)
+add_custom_target(tests SOURCES ${SOURCES})
 
-set(QT_TEST_SERVER 1)
-file( GLOB TEST_FILES *.cpp )
+file( GLOB TEST_FILES main/*.cpp )
 foreach( TEST_FILE ${TEST_FILES} )
     get_filename_component(TEST_NAME ${TEST_FILE} NAME_WE)
     add_executable( ${TEST_NAME} ${TEST_FILE})
     add_test(${TEST_NAME} ${TEST_NAME})
-    if (${SAILFISH})
-        find_package(QuaZip5)
-        include_directories(${QUAZIP_INCLUDE_DIRS})
-        target_link_libraries(${TEST_NAME} PRIVATE ${QUAZIP_LIBRARIES})
-    else()
-        target_link_libraries(${TEST_NAME} PRIVATE QuaZip)
-    endif()
-
-    include_directories(${SQLITE_ORM_INCLUDE_DIR})
     target_link_libraries(${TEST_NAME} PRIVATE
-        Qt5::Test Qt5::Network core dbmanager netmanager modules base_test)
+        Qt5::Test Qt5::Network Qt5::Qml Qt5::Sql core dbmanager netmanager modules base_test QuaZip ${PROJECT_NAME})
 endforeach( TEST_FILE ${TEST_FILES} )

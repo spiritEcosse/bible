@@ -1,11 +1,14 @@
 #include <QtQuick>
+#ifdef SAILFISH
 #include <sailfishapp.h>
+#endif
 
-//#include "booksmodel.h"
-//#include "historymodel.h"
-//#include "commentsmodel.h"
+#include "booksmodel.h"
+#include "historymodel.h"
+#include "commentsmodel.h"
 #include "modelgroupmodules.h"
 #include "quickdownload.h"
+#include "dbmanager.h"
 
 void createAppDir() {
     const QDir writeDirApp = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
@@ -29,24 +32,20 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     //
     // To display the view, call "show()" (will show fullscreen on device).
 
-    QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
-    QScopedPointer<QQuickView> view(SailfishApp::createView());
-
     QCoreApplication::setOrganizationName("spirit");
     QCoreApplication::setApplicationName("bible");
 
     createAppDir();
 
+    connectToDatabase();
     modules::ModelGroupModules::registerMe();
-//    qmlRegisterType<ModelGroupModules>("bible.ModelGroupModules", 1, 0, "ModelGroupModules");
     qmlRegisterType<netmanager::QuickDownload>("bible.QuickDownload", 1, 0, "QuickDownload");
     modules::ModelModule::registerMe();
-//    qmlRegisterType<BooksModel>("bible.BooksModel", 1, 0, "BooksModel");
-//    qmlRegisterType<CommentsModel>("bible.CommentsModel", 1, 0, "CommentsModel");
+    qmlRegisterType<BooksModel>("bible.BooksModel", 1, 0, "BooksModel");
+    qmlRegisterType<CommentsModel>("bible.CommentsModel", 1, 0, "CommentsModel");
 //    qmlRegisterType<ModulesModel>("bible.ModulesModel", 1, 0, "ModulesModel");
-//    qmlRegisterType<HistoryModel>("bible.HistoryModel", 1, 0, "HistoryModel");
+    qmlRegisterType<HistoryModel>("bible.HistoryModel", 1, 0, "HistoryModel");
 
-//    connectToDatabase();
 //    ModuleProxyModel moduleProxyModel;
 //    ModuleModel ModuleModel;
 //    moduleProxyModel.setSourceModel(&ModuleModel);
@@ -57,7 +56,19 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 //    moduleProxyModel.sort(0, Qt::AscendingOrder);
 //    ctxt->setContextProperty("moduleProxyModel", &moduleProxyModel);
 
+#ifdef SAILFISH
+    QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
+    QScopedPointer<QQuickView> view(SailfishApp::createView());
     view->setSource(SailfishApp::pathToMainQml());
     view->show();
     return app->exec();
+#else
+    QGuiApplication app(argc, argv);
+
+    QQuickView view;
+    view.setSource(QUrl("qrc:/bible.qml"));
+    view.showMaximized();
+
+    return app.exec();
+#endif
 }

@@ -1,7 +1,5 @@
-#include <QtTest>
-#include "modelregistry.h"
-#include "modeljsontest.h"
 #include "dereferenceiterator.h"
+#include "tst_modelregistry.h"
 
 Q_DECLARE_METATYPE(modules::RegistryShared)
 Q_DECLARE_METATYPE(std::vector<modules::RegistryShared>)
@@ -9,29 +7,6 @@ Q_DECLARE_METATYPE(std::vector<modules::RegistryShared>)
 namespace modules {
 
     namespace tests {
-
-        class tst_ModelRegistry : public ::tests::ModelJsonTest<Registry, ModelRegistry>  {
-            Q_OBJECT
-
-        private:
-            std::vector<RegistryShared> helperGetObjects() const override;
-            std::vector<RegistryShared> helperGetBaseRegistries() const;
-            std::vector<RegistryUnique> helperGetObjectsUnique() const override;
-
-        public:
-            tst_ModelRegistry();
-            ~tst_ModelRegistry();
-
-        private slots:
-            void initTestCase() override;
-            void cleanupTestCase() override;
-            void update() override;
-            void transform_data() override;
-            void transform() override;
-            void setRegistries_data();
-            void setRegistries();
-            void constructor();
-        };
 
         tst_ModelRegistry::tst_ModelRegistry() {}
 
@@ -133,7 +108,5 @@ namespace modules {
     }
 
 }
-
-QTEST_MAIN(modules::tests::tst_ModelRegistry)
 
 #include "tst_modelregistry.moc"

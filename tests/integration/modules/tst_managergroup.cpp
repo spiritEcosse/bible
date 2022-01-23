@@ -1,13 +1,10 @@
-#include <QtTest>
 #include <JlCompress.h>
 #include "managergroup.h"
-#include "groupmodules.h"
 #include "managerregistry.h"
-#include "modelregistry.h"
 #include "module.h"
 #include "dereferenceiterator.h"
 #include "modelgroupmodules.h"
-#include "modeljsontest.h"
+#include "tst_managergroup.h"
 
 Q_DECLARE_METATYPE(std::vector<modules::Module>)
 Q_DECLARE_METATYPE(std::vector<modules::GroupModulesShared>)
@@ -15,26 +12,6 @@ Q_DECLARE_METATYPE(std::vector<modules::GroupModulesShared>)
 namespace modules {
 
     namespace tests {
-
-        class tst_ManagerGroup : public ::tests::ModelJsonTest<Registry, ModelRegistry>
-        {
-            Q_OBJECT
-
-        public:
-            tst_ManagerGroup();
-            ~tst_ManagerGroup();
-
-        private:
-            QJsonDocument helperGetInvalidDocument() const;
-            std::vector<RegistryUnique> helperGetObjectsUnique() const;
-            std::vector<RegistryShared> helperGetObjects() const;
-
-        private slots:
-            void initTestCase();
-            void cleanupTestCase();
-            void makeCollections_data();
-            void makeCollections();
-        };
 
         tst_ManagerGroup::tst_ManagerGroup() {}
 
@@ -179,10 +156,10 @@ namespace modules {
                 QCOMPARE(modules_actual, modules);
 
                 QCOMPARE(managerGroup.m_objects.size(), groupModules.size());
-//                QCOMPARE(std::equal(dereference_iterator(groupModules.begin()),
-//                           dereference_iterator(groupModules.end()),
-//                           MapValueIterator(managerGroup.m_objects.begin())
-//                           ), true);
+                QCOMPARE(std::equal(dereference_iterator(groupModules.begin()),
+                           dereference_iterator(groupModules.end()),
+                           MapValueIterator(managerGroup.m_objects.begin())
+                           ), true);
             } else {
                 QCOMPARE(spyError.count(), 1);
                 QList<QVariant> arguments = spyError.takeFirst();
@@ -193,7 +170,5 @@ namespace modules {
     }
 
 }
-
-QTEST_MAIN(modules::tests::tst_ManagerGroup)
 
 #include "tst_managergroup.moc"

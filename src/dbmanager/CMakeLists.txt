@@ -8,8 +8,8 @@ set(RESOURCES
 
 add_library(${PROJECT_NAME} STATIC ${RESOURCES})
 
-find_package(Qt5 COMPONENTS Core REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core sqlite_orm)
+find_package(Qt5 COMPONENTS Core Sql REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Sql sqlite_orm)
 
 if ( ${SAILFISH} )
     include_directories(/usr/include)
@@ -25,7 +25,6 @@ target_include_directories(${PROJECT_NAME}
         include
     PRIVATE
         src
-        ${SQLITE_ORM_INCLUDE_DIR}
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE modules core)

@@ -34,6 +34,7 @@ namespace modules {
         };
         ModelGroupModules();
         virtual ~ModelGroupModules();
+        Q_INVOKABLE void init();
         static void registerMe();
         virtual QVariant data(const QModelIndex &index = {}, int role = Qt::DisplayRole) const override;
         virtual QHash<int, QByteArray> roleNames() const override;

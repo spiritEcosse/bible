@@ -5,6 +5,7 @@
 #include <QDate>
 #include <memory>
 #include "locallanguage.h"
+#include "booksmodel.h"
 
 class QJsonObject;
 
@@ -33,6 +34,7 @@ namespace modules {
                 bool defaultDownload = false,
                 bool downloaded = false,
                 bool selected = false,
+                bool active = false,
                 int id = 0);
         Module(const QJsonObject& qJsonModule);
         QString nativeLanguageNameShow() const;
@@ -48,13 +50,16 @@ namespace modules {
         core::LocalLanguage m_languageShow;
         QString m_information;
         QString m_comment;
+        QString m_count;
         QString m_copyright;
         QDate m_update;
         bool m_hidden;
         bool m_defaultDownload;
         bool m_downloaded = false;
         bool m_selected = false;
+        bool m_active = false;
         int m_id = 0;
+        std::shared_ptr<BooksModel> m_books;
 
         bool operator==(const Module& other) const;
 
