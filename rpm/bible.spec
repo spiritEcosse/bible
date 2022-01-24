@@ -17,6 +17,8 @@ URL:        http://example.org/
 Source0:    %{name}-%{version}.tar.bz2
 Source100:  bible.yaml
 Requires:   sailfishsilica-qt5 >= 0.10.9
+Requires:   perl-CPAN
+Requires:   perl-IPC-Cmd
 Requires:   quazip
 Requires:   sqlite
 Requires:   qmllive-sailfish
