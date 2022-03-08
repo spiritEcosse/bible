@@ -21,9 +21,9 @@ else()
         SET(REBUILD_CURL ON)
 
         set(CUSTOMCONFIG "enable-ssl3 enable-ssl3-method enable-ssl-trace")
-#        execute_process(COMMAND bash -c "\
-#            rm -fr ${OPENSSL_BUNDLE_DIR} && \
-#            cp -fr ${OPENSSL_SRC_DIR} ${OPENSSL_BUNDLE_DIR}")
+        execute_process(COMMAND bash -c "\
+            rm -fr ${OPENSSL_BUNDLE_DIR} && \
+            cp -fr ${OPENSSL_SRC_DIR} ${OPENSSL_BUNDLE_DIR}")
         if (${TARGET} MATCHES "darwin64-arm64-cc")
             # as it explains in this link https://stackoverflow.com/questions/9952612/mac-os-usr-bin-env-bad-interpreter-operation-not-permitted
             execute_process(COMMAND bash -c "\
