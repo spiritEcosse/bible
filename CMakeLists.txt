@@ -66,36 +66,6 @@ endif()
 
 message("TARGET : ${TARGET}")
 
-execute_process(COMMAND bash -c "\
-    ls -la 3rdparty"
-)
-set(LIB_NGHTTP2 nghttp2)
-set(LIB_CURL curl)
-set(LIB_OPENSSL openssl)
-
-set(OPENSSL_BUNDLE_DIR "${PROJECT_BINARY_DIR}/3rdparty/${LIB_OPENSSL}")
-set(OPENSSL_INSTALL_DIR "${OPENSSL_BUNDLE_DIR}/build")
-set(OPENSSL_LIB_DIR "${OPENSSL_INSTALL_DIR}/lib")
-
-set(NGHTTP2_BUNDLE_DIR "${PROJECT_BINARY_DIR}/3rdparty/${LIB_NGHTTP2}")
-set(NGHTTP2_INSTALL_DIR "${NGHTTP2_BUNDLE_DIR}/build")
-set(NGHTTP2_INCLUDE_DIR "${NGHTTP2_INSTALL_DIR}/include")
-set(NGHTTP2_LIB_DIR "${NGHTTP2_INSTALL_DIR}/lib")
-
-set(CURL_BUNDLE_DIR "${PROJECT_BINARY_DIR}/3rdparty/${LIB_CURL}")
-set(CURL_INSTALL_DIR "${CURL_BUNDLE_DIR}/build")
-set(CURL_INCLUDE_DIR "${CURL_INSTALL_DIR}/include")
-set(CURL_LIB_DIR "${CURL_INSTALL_DIR}/lib")
-message("CURL_INCLUDE_DIR : ${CURL_INCLUDE_DIR}")
-include_directories("${CURL_INCLUDE_DIR}")
-execute_process(COMMAND bash -c "\
-    ls -la ${CURL_INCLUDE_DIR}"
-)
-
-link_directories("${OPENSSL_LIB_DIR}")
-link_directories("${NGHTTP2_LIB_DIR}")
-link_directories("${CURL_LIB_DIR}")
-
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty")
 include(3rdparty)
 
@@ -108,7 +78,6 @@ set_property(SOURCE ${RESOURCES} PROPERTY SKIP_AUTOMOC ON)
 
 set(SOURCE src/${PROJECT_NAME}.cpp ${RESOURCES})
 add_executable(${PROJECT_NAME} ${SOURCE})
-
 
 if ( ${SAILFISH} )
     include(FindPkgConfig)
