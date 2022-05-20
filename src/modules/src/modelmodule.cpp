@@ -52,8 +52,13 @@ namespace modules {
         std::transform(downloaded.begin(), downloaded.end(), std::back_inserter(urls),
                        [this](const auto& moduleName)
         {
+#ifdef Qt6_FOUND
+            return std::move(QString().asprintf(std::move(m_modelHost->getUrl(index).toLocal8Bit().data()),
+                                               std::move(std::get<0>(moduleName).toLocal8Bit().data())));
+#else
             return std::move(QString().sprintf(std::move(m_modelHost->getUrl(index).toLocal8Bit().data()),
                                                std::move(std::get<0>(moduleName).toLocal8Bit().data())));
+#endif
         });
         return urls;
     }
@@ -394,7 +399,11 @@ namespace modules {
                     DbManager db (std::move(fileName));
                     modules->m_books.reset(new BooksModel(db.db));
                 }
+#ifdef Qt6_FOUND
+                data = QVariant::fromValue(modules->m_books.get());
+#else
                 data = qVariantFromValue(modules->m_books.get());
+#endif
                 break;
         }
 

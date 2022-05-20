@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>bible.qml</file>
+        <file>components/ExpandingSection.qml</file>
+        <file>icons/bible/index.theme</file>
+        <file>icons/bible/20x20/right.png</file>
+        <file>icons/bible/20x20@2/right.png</file>
+        <file>icons/bible/20x20@3/right.png</file>
+        <file>icons/bible/20x20@4/right.png</file>
+        <file>qtquickcontrols2.conf</file>
+    </qresource>
+</RCC>

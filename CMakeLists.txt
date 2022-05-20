@@ -6,7 +6,6 @@ project(bible LANGUAGES CXX)
 message("CMAKE_CXX_COMPILER_VERSION : ${CMAKE_CXX_COMPILER_VERSION}")
 #- gcc -v && g++ -v && cmake --version
 message("PROJECT_BINARY_DIR : ${PROJECT_BINARY_DIR}")
-message("Qt5_VERSION: ${Qt5_VERSION}")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
@@ -15,10 +14,11 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
-#list(APPEND CMAKE_PREFIX_PATH "/Users/ihor/Qt5.6.3/5.6.3/clang_64/lib/cmake/Qt5/")
-#list(APPEND CMAKE_PREFIX_PATH "/Users/ihor/Qt5.6.3/5.6.3/clang_64/bin/")
+find_package (Qt6 COMPONENTS Widgets Core Network Qml Gui Quick QuickControls2 Sql REQUIRED)
+if (NOT Qt6_FOUND)
+    find_package (Qt5 COMPONENTS Widgets Core Network Qml Gui Quick Sql REQUIRED)
+endif()
 
-find_package (Qt5 COMPONENTS Widgets Core Network Qml Gui Quick Sql REQUIRED)
 find_package(ZLIB)
 set(QT_5_12_VERSION 5.12.0)
 
@@ -62,6 +62,9 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
     if (${ARCH} MATCHES "arm64")
         set(TARGET_CURL "arm")
+        SET(CMAKE_OSX_ARCHITECTURES "arm64")
+#        set(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE INTERNAL "" FORCE)
+        message("CMAKE_OSX_ARCHITECTURES: ${CMAKE_OSX_ARCHITECTURES}")
     endif()
 endif()
 #FILE(GLOB_RECURSE QML_FILES "${CMAKE_SOURCE_DIR}/*.qml")
@@ -72,15 +75,19 @@ message("TARGET : ${TARGET}")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty")
 include(3rdparty)
 
-if(Qt5_VERSION VERSION_GREATER_EQUAL QT_5_12_VERSION)
+set_property(SOURCE ${RESOURCES} PROPERTY SKIP_AUTOMOC ON)
+set(SOURCE src/${PROJECT_NAME}.cpp ${RESOURCES})
+
+if(Qt6_FOUND)
+    qt_add_executable(${PROJECT_NAME} qml/multi_platform/qml.qrc ${SOURCE})
+    add_definitions(-DQt6_FOUND)
+elseif (Qt5_VERSION VERSION_GREATER_EQUAL QT_5_12_VERSION)
     qtquick_compiler_add_resources(RESOURCES qml/qml.qrc)
+    add_executable(${PROJECT_NAME} ${SOURCE})
 else()
     qt5_add_resources(RESOURCES qml/qml.qrc)
+    add_executable(${PROJECT_NAME} ${SOURCE})
 endif()
-set_property(SOURCE ${RESOURCES} PROPERTY SKIP_AUTOMOC ON)
-
-set(SOURCE src/${PROJECT_NAME}.cpp ${RESOURCES})
-add_executable(${PROJECT_NAME} ${SOURCE})
 
 if ( ${SAILFISH} )
     include(FindPkgConfig)
@@ -153,24 +160,46 @@ if ( ${SAILFISH} )
     file(WRITE "${CMAKE_BINARY_DIR}/QtCreatorDeployment.txt"
         "${CMAKE_INSTALL_PREFIX}\n${CMAKE_BINARY_DIR}/${PROJECT_NAME}:bin\n")
 else()
-    target_link_libraries(${PROJECT_NAME}
-        PRIVATE
-        Qt5::Network
-        Qt5::Quick
-        Qt5::Sql
-        Qt5::Widgets
-        modules
-        dbmanager
-        core
-        netmanager
-        sqlite_orm
-        ssl
-        crypto
-        curl
-        ZLIB::ZLIB
-        nghttp2
-        dl
-    )
+    if(Qt6_FOUND)
+        target_link_libraries(${PROJECT_NAME}
+            PRIVATE
+            Qt6::Network
+            Qt6::Quick
+            Qt6::QuickControls2
+            Qt6::Sql
+            Qt6::Widgets
+            modules
+            dbmanager
+            core
+            netmanager
+            sqlite_orm
+            ssl
+            crypto
+            curl
+            ZLIB::ZLIB
+            nghttp2
+            dl
+        )
+    else()
+        target_link_libraries(${PROJECT_NAME}
+            PRIVATE
+            Qt5::Network
+            Qt5::Quick
+            Qt5::Sql
+            Qt5::Widgets
+            modules
+            dbmanager
+            core
+            netmanager
+            sqlite_orm
+            ssl
+            crypto
+            curl
+            ZLIB::ZLIB
+            nghttp2
+            dl
+        )
+    endif()
 endif()
 
 if ( BUILD_TESTING )

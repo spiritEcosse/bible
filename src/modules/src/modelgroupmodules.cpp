@@ -128,9 +128,11 @@ namespace modules {
             switch (m_entitySearch) {
                 case ModuleSearch :
                     doSearchByModules();
+                    qDebug() << "ModuleSearch";
                     break;
                 case GroupSearch :
                     doSearchByGroups();
+                    qDebug() << "doSearchByGroups";
                     break;
             }
         }
@@ -204,7 +206,11 @@ namespace modules {
                                 new ModelModule(groupModules->m_groupId, searchByModules() ? m_needle : "")
                                 );
                 }
+#ifdef Qt6_FOUND
+                data = QVariant::fromValue(groupModules->m_modules.get());
+#else
                 data = qVariantFromValue(groupModules->m_modules.get());
+#endif
                 break;
             case CountModulesRole :
                 data = std::move(groupModules->m_countModules);

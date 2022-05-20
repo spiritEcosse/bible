@@ -113,7 +113,11 @@ namespace modules {
             QTest::newRow("Avestan") << "ae" << "Avestan" << "Avesta";
             QTest::newRow("Chamorro") << "ch" << "Chamorro" << "Chamoru";
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
             QTest::newRow("Chechen") << "ce" << "Chechen" << "";
+#else
+            QTest::newRow("Chechen") << "ce" << "Chechen" << "\u043D\u043E\u0445\u0447\u0438\u0439\u043D";
+#endif
             QTest::newRow("Bambara") << "bm" << "Bambara" << "bamanakan";
             QTest::newRow("American English") << "en" << "English" << "American English";
             QTest::newRow("Arabic") << "ar" << "Arabic" << "العربية";

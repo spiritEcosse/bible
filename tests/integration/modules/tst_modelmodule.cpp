@@ -34,7 +34,7 @@ namespace modules {
                                 QString("name.%1").arg(in),
                                 "description",
                                 QString("abbreviation.%1").arg(in),
-                                in + 1,
+                                m_idGroupModules ? m_idGroupModules : in + 1,
                                 102400,
                                 "en",
                                 "information",
@@ -43,7 +43,7 @@ namespace modules {
                                 QDate(2017, 03, 31),
                                 false,
                                 false,
-                                true)
+                                m_downloaded)
                 );
             }
             return objects;
@@ -58,7 +58,7 @@ namespace modules {
                                 QString("name.%1").arg(in),
                                 "description",
                                 QString("abbreviation.%1").arg(in),
-                                in + 1,
+                                m_idGroupModules ? m_idGroupModules : in + 1,
                                 102400,
                                 "en",
                                 "information",
@@ -67,7 +67,7 @@ namespace modules {
                                 QDate(2017, 03, 31),
                                 false,
                                 false,
-                                true)
+                                m_downloaded)
                 );
             }
             return objects;
@@ -114,18 +114,18 @@ namespace modules {
             QCOMPARE(spyDownloaded.count(), 1);
         }
 
-        void tst_ModelModule::updateObjects_data()
+        void tst_ModelModule::constructor_params()
         {
+            m_idGroupModules = 1;
+
             cleanTable();
             helperSave();
-        }
+            m_idGroupModules = 2;
+            helperSave();
 
-        void tst_ModelModule::updateObjects()
-        {
             const auto &objects = helperGetObjectsUnique();
 
-            ModelModule modelModule;
-            modelModule.updateObjects();
+            ModelModule modelModule(m_idGroupModules);
             QCOMPARE(modelModule.m_objects.size(), objects.size());
             QCOMPARE(std::equal(dereference_iterator(modelModule.m_objects.begin()),
                        dereference_iterator(modelModule.m_objects.end()),
@@ -136,6 +136,7 @@ namespace modules {
 
         void tst_ModelModule::updateObjectsDownloaded()
         {
+            m_downloaded = true;
             cleanTable();
             helperSave();
 
@@ -214,6 +215,8 @@ namespace modules {
 
         void tst_ModelModule::saveExtraFieldsToDb_data()
         {
+            m_downloaded = false;
+
             cleanTable();
             helperSave();
 
