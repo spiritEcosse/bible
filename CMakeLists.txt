@@ -14,9 +14,11 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
-find_package (Qt6 COMPONENTS Widgets Core Network Qml Gui Quick QuickControls2 Sql REQUIRED)
+find_package (Qt6 COMPONENTS Widgets)
 if (NOT Qt6_FOUND)
     find_package (Qt5 COMPONENTS Widgets Core Network Qml Gui Quick Sql REQUIRED)
+else()
+    find_package (Qt6 COMPONENTS Widgets Core Network Qml Gui Quick QuickControls2 Sql REQUIRED)
 endif()
 
 find_package(ZLIB)
