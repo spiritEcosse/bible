@@ -19,15 +19,15 @@ set(SQLITE_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/${LIB_SQLITE_ORM}/")
 
 
 if(EXISTS "${PROJECT_SOURCE_DIR}/.git")
-    if ( NOT EXISTS ${OPENSSL_SRC_DIR} AND NOT EXISTS ${QUAZIP_SRC_DIR} AND NOT EXISTS ${SQLITE_SRC_DIR} )
-        message(STATUS "========================Submodule update========================")
-        execute_process(COMMAND bash -c "git submodule update --init && git submodule foreach -q --recursive 'git checkout $(git config -f $toplevel/.gitmodules submodule.$name.branch || echo master)'"
-                        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-                        RESULT_VARIABLE GIT_SUBMOD_RESULT)
-        if(NOT GIT_SUBMOD_RESULT EQUAL "0")
-            message(FATAL_ERROR "git submodule update --init failed with : ${GIT_SUBMOD_RESULT}, please checkout submodules")
-        endif()
+#    if ( NOT EXISTS ${OPENSSL_SRC_DIR} AND NOT EXISTS ${QUAZIP_SRC_DIR} AND NOT EXISTS ${SQLITE_SRC_DIR} )
+    message(STATUS "========================Submodule update========================")
+    execute_process(COMMAND bash -c "git submodule update --init && git submodule foreach -q --recursive 'git checkout $(git config -f $toplevel/.gitmodules submodule.$name.branch || echo master)'"
+                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                    RESULT_VARIABLE GIT_SUBMOD_RESULT)
+    if(NOT GIT_SUBMOD_RESULT EQUAL "0")
+        message(FATAL_ERROR "git submodule update --init failed with : ${GIT_SUBMOD_RESULT}, please checkout submodules")
     endif()
+#    endif()
 
     include(${LIB_QUAZIP})
     include(${LIB_SQLITE_ORM})

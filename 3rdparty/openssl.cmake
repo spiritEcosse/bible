@@ -19,7 +19,7 @@ else()
 
         SET(REBUILD_CURL ON)
 
-        set(CUSTOMCONFIG "enable-ssl3 enable-ssl3-method enabl e-ssl-trace")
+        set(CUSTOMCONFIG "enable-ssl3 enable-ssl3-method enable-ssl-trace")
         execute_process(COMMAND bash -c "\
             rm -fr ${OPENSSL_BUNDLE_DIR} && \
             cp -fr ${OPENSSL_SRC_DIR} ${OPENSSL_BUNDLE_DIR}")
