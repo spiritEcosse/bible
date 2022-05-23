@@ -2,7 +2,6 @@ message(STATUS "========================Start configure ${LIB_OPENSSL}==========
 
 option(USE_BUNDLED_OPENSSL "Enable building of the bundled ${LIB_OPENSSL}" ${USE_BUNDLED_DEPS})
 
-set(OPENSSL_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/${LIB_OPENSSL}/")
 set(OPENSSL_BUNDLE_DIR "${PROJECT_BINARY_DIR}/3rdparty/${LIB_OPENSSL}")
 set(OPENSSL_INSTALL_DIR "${OPENSSL_BUNDLE_DIR}/build")
 set(OPENSSL_INCLUDE_DIR "${OPENSSL_INSTALL_DIR}/include")
@@ -20,7 +19,7 @@ else()
 
         SET(REBUILD_CURL ON)
 
-        set(CUSTOMCONFIG "enable-ssl3 enable-ssl3-method enable-ssl-trace")
+        set(CUSTOMCONFIG "enable-ssl3 enable-ssl3-method enabl e-ssl-trace")
         execute_process(COMMAND bash -c "\
             rm -fr ${OPENSSL_BUNDLE_DIR} && \
             cp -fr ${OPENSSL_SRC_DIR} ${OPENSSL_BUNDLE_DIR}")

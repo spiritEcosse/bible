@@ -5,7 +5,7 @@
 [submodule "3rdparty/sqlite_orm"]
 	path = 3rdparty/sqlite_orm
 	url = https://github.com/fnc12/sqlite_orm
-	branch = 1.6
+	branch = v1.7.1
 [submodule "3rdparty/openssl"]
 	path = 3rdparty/openssl
 	url = https://github.com/openssl/openssl.git

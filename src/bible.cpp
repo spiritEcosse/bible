@@ -1,14 +1,17 @@
-//#include <QtQuick>
 #ifdef SAILFISH
 #include <sailfishapp.h>
+#include <QtQuick>
 #endif
 
 #include <QGuiApplication>
+
+#ifdef MACOSX
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QSettings>
 #include <QQuickStyle>
 #include <QIcon>
+#endif
 
 #include "booksmodel.h"
 #include "historymodel.h"
