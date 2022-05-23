@@ -16,9 +16,9 @@ foreach( TEST_FILE ${TEST_FILES} )
 
     if(Qt6_FOUND)
         target_link_libraries(${TEST_NAME} PRIVATE
-            Qt6::Test Qt6::Network Qt6::Qml Qt6::Sql core netmanager modules dbmanager)
+            Qt6::Test Qt6::Network Qt6::Qml Qt6::Sql core netmanager modules dbmanager ssl crypto curl ZLIB::ZLIB nghttp2 dl)
     else()
         target_link_libraries(${TEST_NAME} PRIVATE
-            Qt5::Test Qt5::Network Qt5::Qml Qt5::Sql core netmanager modules dbmanager)
+            Qt5::Test Qt5::Network Qt5::Qml Qt5::Sql core netmanager modules dbmanager ssl crypto curl ZLIB::ZLIB nghttp2 dl)
     endif()
 endforeach( TEST_FILE ${TEST_FILES} )
