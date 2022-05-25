@@ -16,6 +16,7 @@ namespace modules {
           m_modelModule { new ModelModule {} }
     {
         m_newVersionAvailable = m_managerRegistry->hasNewRegistry();
+        m_newVersionAvailable = true;
         connect(m_managerRegistry.get(), &ManagerRegistry::retrieveDataSuccess, m_managerGroup.get(), &ManagerGroup::makeCollections);
         connect(m_managerRegistry.get(), &ManagerRegistry::retrieveDataSuccess, m_modelModule.get(), &ModelModule::getExtraFieldsFromDb);
         connect(m_managerGroup.get(), &ManagerGroup::makeGroupModulesSuccess, this, &ModelGroupModules::update);
