@@ -8,7 +8,9 @@ namespace db {
     template <class T>
     Db<T>::Db()
     {
-        storage = MySingleton::getInstance().storage;
+//        storage = MySingleton::getInstance().storage;
+        storage.reset(new Storage(userStorage("user.sqlite")));
+        storage->sync_schema();
     }
 
     template <class T>
