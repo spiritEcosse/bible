@@ -88,6 +88,7 @@ namespace db {
         MySingleton() {
             storage.reset(new Storage(userStorage("user.sqlite")));
             storage->sync_schema();
+            storage->busy_timeout(5000);
         }
         ~MySingleton()= default;
         MySingleton(const MySingleton&)= delete;
