@@ -82,7 +82,7 @@ set_property(SOURCE ${RESOURCES} PROPERTY SKIP_AUTOMOC ON)
 set(SOURCE src/${PROJECT_NAME}.cpp ${RESOURCES})
 
 if(Qt6_FOUND)
-    qt_add_executable(${PROJECT_NAME} qml_multi_platfom/qml.qrc ${SOURCE})
+    qt_add_executable(${PROJECT_NAME} qml_multi_platform/qml.qrc ${SOURCE})
     add_definitions(-DQt6_FOUND)
 elseif (Qt5_VERSION VERSION_GREATER_EQUAL QT_5_12_VERSION)
     qtquick_compiler_add_resources(RESOURCES qml/qml.qrc)
