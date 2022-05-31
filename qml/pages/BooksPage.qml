@@ -28,9 +28,9 @@ SilicaFlickable {
             }
         }
 
-        anchors.bottom: panelImage.top
         dock: page.isPortrait ? Dock.Bottom : Dock.Right
         height: parent.height - panelImage.height
+        anchors.bottom: panelImage.top
 
         background: SilicaFlickable {
             width: parent.width
@@ -155,7 +155,7 @@ SilicaFlickable {
             id: silicaFlickableBooks
             width: parent.width
             height: parent.height
-            anchors.fill: parent
+            clip: true
 
             MouseArea {
                 enabled: drawer.opened
@@ -167,6 +167,7 @@ SilicaFlickable {
                 id: silicaModules
                 width: parent.width
                 height: parent.height
+                clip: true
                 enabled: !drawer.opened
 
                 Column {
@@ -195,72 +196,269 @@ SilicaFlickable {
                     }
                 }
 
-                SilicaListView {
-                    id: listActiveModules
-                    model: modelModulesActive
-                    snapMode: ListView.SnapToItem
-                    highlightRangeMode: ListView.StrictlyEnforceRange
-                    clip: true
+                SilicaFlickable {
                     width: parent.width
                     anchors.top: pageHeader.bottom
+                    clip: true
                     height: parent.height - pageHeader.height
-                    VerticalScrollDecorator {}
 
-                    delegate: Column {
+                    SilicaListView {
+                        id: listActiveModules
+                        model: modelModulesActive
+                        height: parent.height
+                        snapMode: ListView.SnapToItem
+                        highlightRangeMode: ListView.StrictlyEnforceRange
+                        clip: true
                         width: parent.width
+                        VerticalScrollDecorator {}
 
-                        ExpandingSectionPatch {
-                            id: modulesActive
-                            title: abbreviation + ": " + description;
+                        delegate: Column {
+                            width: parent.width
 
-                            content.sourceComponent: Column {
-                                width: parent.width
+                            ExpandingSectionPatch {
+                                id: modulesActive
+                                title: abbreviation + ": " + description;
+                                clip: true
 
-                                ExpandingSectionGroupPatch {
-                                    id: expandingSectionGroup
-                                    property bool scrollToBook: false
-                                    onCurrentSectionChanged: {
-                                        if (currentSection) {
-                                            historyModel.testamentIndex = currentIndex
+                                content.sourceComponent: SilicaFlickable {
+                                    width: parent.width
+                                    height: Screen.height - pageHeader.height - modulesActive.buttonHeight - panelImage.height
+
+                                    SilicaFlickable {
+                                        width: parent.width
+                                        anchors.fill: parent
+
+                                        SilicaListView {
+                                            id: listBooks
+                                            model: books
+                                            width: parent.width
+                                            height: parent.height
+                                            clip: true
+                                            VerticalScrollDecorator {}
+                                            snapMode: ListView.SnapToItem
+                                            highlightRangeMode: ListView.StrictlyEnforceRange
+                                            currentIndex: historyModel.bookIndex;
+
+                                            delegate: Column {
+                                                id: columnBook
+                                                width: parent.width
+
+                                                ExpandingSectionPatch {
+                                                    title: long_name.trim() + index
+                                                    width: parent.width
+                                                    Timer {
+                                                        id: timerOnExpandedBook
+                                                        interval: 100
+                                                        repeat: false
+                                                        onTriggered: {
+                                                            historyModel.testamentIndex = 0;
+                                                            historyModel.bookIndex = index;
+                                                            historyModel.bookShortName = short_name;
+                                                        }
+                                                    }
+                                                    property int bookIndex: historyModel.bookIndex
+                                                    onBookIndexChanged: {
+                                                        if (bookIndex == index) {
+                                                            expanded = true;
+                                                        }
+                                                    }
+                                                    onExpandedChanged: {
+                                                        if (expanded) {
+                                                            listBooks.model.currentBook = book_number;
+//                                                            timerOnExpandedBook.restart();
+                                                            historyModel.testamentIndex = 0;
+                                                            historyModel.bookIndex = index;
+                                                            historyModel.bookShortName = short_name;
+                                                        }
+                                                    }
+
+                                                    content.sourceComponent: SilicaFlickable {
+                                                        width: parent.width
+                                                        height: Screen.height - pageHeader.height - 3  * modulesActive.buttonHeight - panelImage.height
+
+                                                        SilicaListView {
+                                                            id: listChapters
+                                                            model: chapters
+                                                            width: parent.width
+                                                            height: parent.height
+                                                            clip: true
+                                                            VerticalScrollDecorator {}
+                                                            snapMode: ListView.SnapToItem
+                                                            highlightRangeMode: ListView.StrictlyEnforceRange
+                                                            currentIndex: historyModel.chapterIndex >= 1 ? historyModel.chapterIndex - 1 : 0;
+//                                                            Component.onCompleted: {
+//                                                                currentIndex = historyModel.chapterIndex >= 1 ? historyModel.chapterIndex - 1 : 0;
+//                                                            }
+
+                                                            delegate: Column {
+                                                                width: parent.width
+
+                                                                ExpandingSectionPatch {
+                                                                    id: chapterExpandingSection
+                                                                    property int chapter: index + 1
+                                                                    title: "Chapter " + chapter
+                                                                    width: parent.width
+                                                                    property int chapterIndex: historyModel.chapterIndex
+                                                                    onChapterIndexChanged: {
+                                                                        if (chapterIndex == chapter) {
+                                                                            expanded = true;
+                                                                        }
+                                                                    }
+                                                                    onExpandedChanged: {
+                                                                        if (expanded) {
+//                                                                            listChapters.currentIndex = index;
+                                                                            listBooks.model.currentChapter = chapter;
+                                                                            historyModel.chapterIndex = chapter;
+                                                                        }
+                                                                    }
+
+                                                                    content.sourceComponent: SilicaFlickable {
+                                                                        width: parent.width
+                                                                        height: Screen.height - pageHeader.height - 5  * modulesActive.buttonHeight - panelImage.height
+
+                                                                        SilicaListView {
+                                                                            id: listVerses
+                                                                            model: listBooks.model.currentVerses
+                                                                            width: parent.width
+                                                                            height: parent.height
+                                                                            spacing: 0
+                                                                            clip: true
+                                                                            VerticalScrollDecorator {}
+                                                                            snapMode: ListView.SnapToItem
+                                                                            highlightRangeMode: ListView.StrictlyEnforceRange
+//                                                                            Component.onCompleted: {
+//                                                                                currentIndex = historyModel.verseIndex >= 1 ? historyModel.verseIndex - 1 : 0
+//                                                                            }
+                                                                            onMovementEnded: historyModel.verseIndex = currentIndex + 1
+                                                                            currentIndex: historyModel.verseIndex >= 1 ? historyModel.verseIndex - 1 : 0
+
+                                                                            delegate: ListItem {
+                                                                                id: listItem
+                                                                                menu: contextMenu
+                                                                                contentHeight: childVerse.height + separator.height + Theme.paddingMedium
+                                                                                y : Theme.paddingLarge
+                                                                                width: parent.width
+                                                                                onClicked: {
+                                                                                    listVerses.currentIndex = index
+                                                                                    historyModel.verseIndex = index + 1
+                                                                                }
+
+                                                                                Label {
+                                                                                    id: verseNumber
+                                                                                    color: Theme.highlightColor
+                                                                                    width: Math.round(3 * Theme.paddingLarge)
+                                                                                    text: verse_number + '. '
+                                                                                    font.italic: true
+                                                                                    font.pixelSize: Theme.fontSizeMedium
+                                                                                    horizontalAlignment: Text.AlignRight
+                                                                                    anchors {
+                                                                                        left: parent.left
+                                                                                    }
+                                                                                }
+                                                                                Item {
+                                                                                    id: childVerse
+                                                                                    height: childrenRect.height
+                                                                                    width: parent.width - Theme.paddingMedium
+                                                                                    anchors {
+                                                                                        left: verseNumber.right
+                                                                                        right: parent.right
+                                                                                        rightMargin: Theme.paddingMedium
+//                                                                                        bottomMargin: listItem.y
+                                                                                    }
+
+                                                                                    Text {
+                                                                                        wrapMode: Text.WordWrap
+                                                                                        color: listVerses.currentIndex == index ? verseNumber.color : Theme.primaryColor
+                                                                                        function removeStrongNumber(verse_text_copy) {
+                                                                                            var regex = /(<S>.*?<\/S>)/g;
+                                                                                            return verse_text_copy.replace(regex, "");
+                                                                                        }
+
+                                                                                        text: {
+                                                                                            var regex = /<f>\[\d+\]<\/f>/g;
+                                                                                            var matches = verse_text.match(regex);
+                                                                                            var verse_text_copy = verse_text;
+
+                                                                                            if (matches) {
+                                                                                                for (var pos = 0, href, content; pos < matches.length; pos++ ) {
+                                                                                                    content = matches[pos].match(/\[\d+\]/)[0];
+                                                                                                    href = "<a href='" + content + "'>  " + content + "  </a>";
+                                                                                                    verse_text_copy = verse_text_copy.replace(matches[pos], href);
+                                                                                                }
+                                                                                            }
+
+                                                                                            return removeStrongNumber(verse_text_copy);
+                                                                                        }
+                                                                                        linkColor: verseNumber.color
+                                                                                        font.pixelSize: Theme.fontSizeSmall
+                                                                                        onLinkActivated: {
+                                                                                            pageStack.push(
+                                                                                                        comments,
+                                                                                                        {
+                                                                                                            "book": expandingSection.model.currentBook,
+                                                                                                            "chapter": expandingSection.model.currentChapter,
+                                                                                                            "verse": index + 1,
+                                                                                                            "marker": link,
+                                                                                                            "historyModel": historyModel
+                                                                                                        })
+                                                                                        }
+                                                                                        textFormat: Text.StyledText
+                                                                                        width: parent.width
+                                                                                    }
+                                                                                }
+
+                                                                                ContextMenu {
+                                                                                    id: contextMenu
+//                                                                                    enabled: expandSectionChapter.enabled
+
+                                                                                    MenuItem {
+                                                                                        text: qsTr("Copy text");
+                                                                                        onClicked: Clipboard.text = model.text
+                                                                                    }
+                                                                                }
+
+                                                                                Separator {
+                                                                                    id: separator
+                                                                                    anchors {
+                                                                                        bottom: parent.bottom
+                                                                                        bottomMargin: -1
+                                                                                    }
+
+                                                                                    width: parent.width
+                                                                                    color: Theme.primaryColor
+                                                                                    horizontalAlignment: Qt.AlignHCenter
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
                                         }
-                                    }
-//                                            property int testamentIndex: historyModel.testamentIndex
-//                                            onTestamentIndexChanged: {
-//                                                currentIndex = historyModel.testamentIndex
+
+//                                        SilicaFlickable {
+//                                            id: detail
+//                                            x: Theme.paddingMedium
+//                                            anchors.top: listBooks.bottom
+//                                            width: parent.width - 2 * Theme.paddingMedium
+
+//                                            SectionHeader {
+//                                                id: detailHeader
+//                                                text: qsTrId("Detailed info")
 //                                            }
 
-                                    ExpandingSectionBooks {
-                                        title: qsTrId("Old testament")
-                                        page: page
-                //                        model: booksOldTestament
-                                    }
-
-                                    ExpandingSectionBooks {
-                                        title: qsTrId("New testament")
-                                        page: page
-                //                        model: booksNewTestament
-                                        depth: 1
-                                    }
-                                }
-
-                                SilicaFlickable {
-                                    id: detail
-                                    x: Theme.paddingMedium
-                                    anchors.top: expandingSectionGroup.bottom
-                                    width: parent.width - 2 * Theme.paddingMedium
-
-                                    SectionHeader {
-                                        id: detailHeader
-                                        text: qsTrId("Detailed info")
-                                    }
-
-                                    Label {
-                                        anchors.top: detailHeader.bottom
-                                        width: parent.width
-                                        text: "<p>Святая Библия, Новый Русский Перевод<br/> © Biblica, Inc.®, 2006, 2010, 2012, 2014<br/> Используется с разрешения. Все права защищены по всему миру.</p>"
-                                        font.pixelSize: Theme.fontSizeSmall
-                                        wrapMode: Text.WordWrap
-                                        truncationMode: TruncationMode.Fade
+//                                            Label {
+//                                                anchors.top: detailHeader.bottom
+//                                                width: parent.width
+//                                                text: "<p>Святая Библия, Новый Русский Перевод<br/> © Biblica, Inc.®, 2006, 2010, 2012, 2014<br/> Используется с разрешения. Все права защищены по всему миру.</p>"
+//                                                font.pixelSize: Theme.fontSizeSmall
+//                                                wrapMode: Text.WordWrap
+//                                                truncationMode: TruncationMode.Fade
+//                                            }
+//                                        }
                                     }
                                 }
                             }
@@ -288,14 +486,16 @@ SilicaFlickable {
 
             SilicaListView {
                 id: sourcePanelHistory
-//                model: historyModel
+                model: historyModel
                 snapMode: ListView.SnapToItem
+                highlightRangeMode: ListView.StrictlyEnforceRange
                 orientation: listHorizontal
                 height: parent.height
                 width: parent.width - iconBack.width
-                currentIndex: 0
-                VerticalScrollDecorator {}
-//                    visible: slideshow.currentIndex != 1
+                spacing:  Theme.paddingLarge
+                HorizontalScrollDecorator {
+                    anchors.bottomMargin: Theme.paddingSmall
+                }
                 clip: true
                 anchors.left: parent.left
                 anchors.right: iconBack.left
@@ -310,25 +510,18 @@ SilicaFlickable {
                 }
 
                 delegate: ListItem {
-                    width: index == 0 ? panelImage.width : 2 * Theme.itemSizeLarge
+                    width: listText.contentWidth
                     height: parent.height
                     focus: true
                     contentHeight: parent.height
                     onClicked: {
-                        var changeTestamentIndex = false;
-                        if (expandingSectionGroup.currentIndex !== testament_index) {
-                            expandingSectionGroup.currentIndex = -1;
-                            expandingSectionGroup.currentIndex = testament_index;
-                            changeTestamentIndex = true;
-                        }
+                        sourcePanelHistory.currentIndex = 0;
+                        console.log(book_index);
 
-                        if (book_index !== historyModel.bookIndex || changeTestamentIndex) {
-                            if (chapter_index === -1) {
-                                expandingSectionGroup.scrollToBook = true;
-                            }
-                            historyModel.copyObject(testament_index, book_index, chapter_index, verse_index);
+                        if (book_index !== historyModel.bookIndex) {
+                            historyModel.copyObject(testament_index, book_index, chapter_index, verse_index, book_short_name);
                         } else if (chapter_index !== historyModel.chapterIndex) {
-                            historyModel.copyObject(testament_index, book_index, chapter_index, verse_index);
+                            historyModel.copyObject(testament_index, book_index, chapter_index, verse_index, book_short_name);
                         } else if (verse_index !== historyModel.verseIndex) {
                             historyModel.verseIndex = verse_index;
                         }
@@ -345,23 +538,21 @@ SilicaFlickable {
                                 default: return Text.AlignLeft;
                             }
                         }
-                        width: parent.width
                         anchors.verticalCenter: parent.verticalCenter
-                        color: index == 0 ? Theme.highlightColor : Theme.primaryColor
-                        text: model.text
-//                            text: {
-//                                var title = book_short_name;
+                        color: sourcePanelHistory.currentIndex == index ? Theme.highlightColor : Theme.primaryColor
+                        text: {
+                            var title = book_short_name + book_index;
 
-//                                if (chapter_index !== -1) {
-//                                    title += ":" + chapter_index;
+                            if (chapter_index !== -1) {
+                                title += ":" + chapter_index;
 
-//                                    if (verse_index !== -1) {
-//                                        title += ":" + verse_index;
-//                                    }
-//                                }
+                                if (verse_index !== -1) {
+                                    title += ":" + verse_index;
+                                }
+                            }
 
-//                                return title;
-//                            }
+                            return title;
+                        }
                         font.pixelSize: Theme.fontSizeLarge
                     }
                 }

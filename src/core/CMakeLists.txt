@@ -12,11 +12,13 @@ set(RESOURCES
 
 add_library(${PROJECT_NAME} STATIC ${RESOURCES})
 
-find_package(Qt5 COMPONENTS Core REQUIRED)
-find_package(Qt5 COMPONENTS Network REQUIRED)
-
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core)
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Network)
+if(Qt6_FOUND)
+    find_package(Qt6 COMPONENTS Core Network REQUIRED)
+    target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Network)
+else()
+    find_package(Qt5 COMPONENTS Core Network REQUIRED)
+    target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Network)
+endif()
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC

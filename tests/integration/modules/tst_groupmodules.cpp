@@ -112,7 +112,15 @@ namespace modules {
             QTest::newRow("Chadian Arabic") << "shu" << "Chadian Arabic" << "";
             QTest::newRow("Samoan") << "sm" << "Samoan" << "Gagana faʻa Sāmoa";
             QTest::newRow("Sukuma") << "suk" << "Sukuma" << "Kɪsukuma";
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
             QTest::newRow("Sundanese") << "sun" << "Sundanese" << "";
+            QTest::newRow("Chechen") << "ce" << "Chechen" << "";
+            QTest::newRow("Indonesian") << "id" << "Indonesian" << "Bahasa Indonesia";
+#else
+            QTest::newRow("Sundanese") << "su" << "Sundanese" << "Basa Sunda";
+            QTest::newRow("Chechen") << "ce" << "Chechen" << "\u043D\u043E\u0445\u0447\u0438\u0439\u043D";
+            QTest::newRow("Indonesian") << "id" << "Indonesian" << "Indonesia";
+#endif
             QTest::newRow("Classical Syriac") << "syc" << "Classical Syriac" << "";
             QTest::newRow("Tiv") << "tiv" << "Tiv" << "";
             QTest::newRow("Tumbuka") << "tum" << "Tumbuka" << "chiTumbuka";
@@ -126,13 +134,11 @@ namespace modules {
             QTest::newRow("Papiamento") << "pap" << "Papiamento" << "Papiamentu";
             QTest::newRow("Fon") << "fon" << "Fon" << "Fon gbè";
 
-            QTest::newRow("Chechen") << "ce" << "Chechen" << "";
             QTest::newRow("Bambara") << "bm" << "Bambara" << "bamanakan";
             QTest::newRow("American English") << "en" << "English" << "American English";
             QTest::newRow("Arabic") << "ar" << "Arabic" << "العربية";
             QTest::newRow("Russian") << "ru" << "Russian" << "русский";
             QTest::newRow("Assamese") << "as" << "Assamese" << "অসমীয়া";
-            QTest::newRow("Indonesian") << "id" << "Indonesian" << "Bahasa Indonesia";
         }
 
         void tst_GroupModules::language()

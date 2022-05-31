@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.19)
 
 project(bible LANGUAGES CXX)
 
@@ -14,10 +14,13 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
-#list(APPEND CMAKE_PREFIX_PATH "/Users/admin/Qt5.6.3/5.6.3/clang_64/lib/cmake/Qt5/")
-#list(APPEND CMAKE_PREFIX_PATH "/Users/admin/Qt5.6.3/5.6.3/clang_64/bin/")
+find_package (Qt6 COMPONENTS Widgets)
+if (NOT Qt6_FOUND)
+    find_package (Qt5 COMPONENTS Widgets Core Network Qml Gui Quick Sql REQUIRED)
+else()
+    find_package (Qt6 COMPONENTS Widgets Core Network Qml Gui Quick QuickControls2 Sql REQUIRED)
+endif()
 
-find_package (Qt5 COMPONENTS Widgets Core Network Qml Gui Quick REQUIRED)
 find_package(ZLIB)
 set(QT_5_12_VERSION 5.12.0)
 
@@ -42,59 +45,76 @@ else()
     else()
         set(ARCH "${CMAKE_HOST_SYSTEM_PROCESSOR}")
     endif()
+    message("CMAKE_HOST_SYSTEM_PROCESSOR : ${CMAKE_HOST_SYSTEM_PROCESSOR}")
+    set(TARGET_CURL "${ARCH}-linux")
+
+    if(SAILFISH)
+        if (${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL "i486")
+            set(ARCH "elf")
+        endif()
+    endif()
 endif()
 
 message("ARCH : ${ARCH}")
+set(TARGET "linux-${ARCH}")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(MACOSX TRUE)
     set(TARGET "darwin64-${ARCH}-cc")
-endif()
-FILE(GLOB_RECURSE QML_FILES "${CMAKE_SOURCE_DIR}/*.qml")
-add_custom_target(qml SOURCES ${QML_FILES})
+    add_definitions(-DMACOSX)
 
-if(SAILFISH)
-    set(TARGET "linux-${ARCH}")
+    if (${ARCH} MATCHES "arm64")
+        set(TARGET_CURL "arm")
+        SET(CMAKE_OSX_ARCHITECTURES "arm64")
+#        set(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE INTERNAL "" FORCE)
+        message("CMAKE_OSX_ARCHITECTURES: ${CMAKE_OSX_ARCHITECTURES}")
+    endif()
 endif()
+#FILE(GLOB_RECURSE QML_FILES "${CMAKE_SOURCE_DIR}/*.qml")
+#add_custom_target(qml SOURCES ${QML_FILES})
 
 message("TARGET : ${TARGET}")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty")
 include(3rdparty)
 
-set(SOURCE src/${PROJECT_NAME}.cpp)
-add_executable(${PROJECT_NAME} ${SOURCE} ${RESOURCES})
-target_link_libraries(${PROJECT_NAME}
-    Qt5::Network
-    Qt5::Quick
-    Qt5::Widgets
-    modules
-    dbmanager
-    core
-    netmanager
-    sqlite_orm
-    ssl
-    crypto
-    curl
-    ZLIB::ZLIB
-    nghttp2
-    dl
-)
+set_property(SOURCE ${RESOURCES} PROPERTY SKIP_AUTOMOC ON)
+set(SOURCE src/${PROJECT_NAME}.cpp ${RESOURCES})
+
+if(Qt6_FOUND)
+    qt_add_executable(${PROJECT_NAME} qml_multi_platform/qml.qrc ${SOURCE})
+    add_definitions(-DQt6_FOUND)
+elseif (Qt5_VERSION VERSION_GREATER_EQUAL QT_5_12_VERSION)
+    qtquick_compiler_add_resources(RESOURCES qml/qml.qrc)
+    add_executable(${PROJECT_NAME} ${SOURCE})
+else()
+    qt5_add_resources(RESOURCES qml/qml.qrc)
+    add_executable(${PROJECT_NAME} ${SOURCE})
+endif()
 
 if ( ${SAILFISH} )
     include(FindPkgConfig)
     pkg_search_module(SAILFISH sailfishapp REQUIRED)
 
-    if(Qt5_VERSION VERSION_GREATER_EQUAL QT_5_12_VERSION)
-        qtquick_compiler_add_resources(RESOURCES qml/qml.qrc)
-    else()
-        qt5_add_resources(RESOURCES qml/qml.qrc)
-    endif()
-
-    set_property(SOURCE qrc_qml.cpp PROPERTY SKIP_AUTOGEN ON)
     add_definitions(-DSAILFISH)
 
     target_link_libraries(${PROJECT_NAME}
+        PRIVATE
+        Qt5::Network
+        Qt5::Quick
+        Qt5::Sql
+        Qt5::Widgets
+        modules
+        dbmanager
+        core
+        netmanager
+        sqlite_orm
+        ssl
+        crypto
+        curl
+        ZLIB::ZLIB
+        nghttp2
+        dl
         ${SAILFISH_LDFLAGS}
     )
     target_include_directories(${PROJECT_NAME} PRIVATE
@@ -142,6 +162,47 @@ if ( ${SAILFISH} )
     # format.
     file(WRITE "${CMAKE_BINARY_DIR}/QtCreatorDeployment.txt"
         "${CMAKE_INSTALL_PREFIX}\n${CMAKE_BINARY_DIR}/${PROJECT_NAME}:bin\n")
+else()
+    if(Qt6_FOUND)
+        target_link_libraries(${PROJECT_NAME}
+            PRIVATE
+            Qt6::Network
+            Qt6::Quick
+            Qt6::QuickControls2
+            Qt6::Sql
+            Qt6::Widgets
+            modules
+            dbmanager
+            core
+            netmanager
+            sqlite_orm
+            ssl
+            crypto
+            curl
+            ZLIB::ZLIB
+            nghttp2
+            dl
+        )
+    else()
+        target_link_libraries(${PROJECT_NAME}
+            PRIVATE
+            Qt5::Network
+            Qt5::Quick
+            Qt5::Sql
+            Qt5::Widgets
+            modules
+            dbmanager
+            core
+            netmanager
+            sqlite_orm
+            ssl
+            crypto
+            curl
+            ZLIB::ZLIB
+            nghttp2
+            dl
+        )
+    endif()
 endif()
 
 if ( BUILD_TESTING )

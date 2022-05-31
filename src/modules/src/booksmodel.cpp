@@ -1,17 +1,26 @@
 #include "booksmodel.h"
 #include <QDebug>
 
-BooksModel::BooksModel(QObject *parent)
-    : QSqlQueryModel(parent)
+BooksModel::BooksModel(QSqlDatabase db, QObject *parent)
+    : QSqlTableModel(parent, db),
+      m_currentVerses (db)
 {
     m_currentVerses.reset();
+    setQuery(QSqlQuery(SQL_SELECT, database()));
+    generateRoleNames();
+}
+
+BooksModel::BooksModel(QObject *parent)
+    : QSqlTableModel(parent)
+{
+
 }
 
 const char* BooksModel::SQL_SELECT =
         "SELECT books.short_name, books.long_name, books.book_number, "
         "(SELECT MAX(verses.chapter) "
         "   FROM verses WHERE verses.book_number == books.book_number) AS chapters "
-        "FROM books ORDER BY books.book_number ASC LIMIT %1, %2";
+        "FROM books ORDER BY books.book_number ASC";
 
 QHash<int, QByteArray> BooksModel::roleNames() const
 {
@@ -23,11 +32,11 @@ QVariant BooksModel::data(const QModelIndex &index, int role) const
     QVariant value;
 
     if(role < Qt::UserRole) {
-        value = QSqlQueryModel::data(index, role);
+        value = QSqlTableModel::data(index, role);
     } else {
         int columnIdx = role - Qt::UserRole - 1;
         QModelIndex modelIndex = this->index(index.row(), columnIdx);
-        value = QSqlQueryModel::data(modelIndex, Qt::DisplayRole);
+        value = QSqlTableModel::data(modelIndex, Qt::DisplayRole);
     }
 
     return value;
@@ -35,19 +44,17 @@ QVariant BooksModel::data(const QModelIndex &index, int role) const
 
 void BooksModel::oldTestament()
 {
-    QString sql;
-    sql = QString(SQL_SELECT).arg(
+    QString sql = QString(SQL_SELECT).arg(
                 QString::number(0), QString::number(COUNT_BOOKS_OLD_TESTAMENT));
-    this->setQuery(sql, DbManager::getInstance()->db);
+    setQuery(QSqlQuery(sql, database()));
     generateRoleNames();
 }
 
 void BooksModel::newTestament()
 {
-    QString sql;
-    sql = QString(SQL_SELECT).arg(
+    QString sql = QString(SQL_SELECT).arg(
                 QString::number(COUNT_BOOKS_OLD_TESTAMENT), QString::number(-1));
-    this->setQuery(sql, DbManager::getInstance()->db);
+    setQuery(QSqlQuery(sql, database()));
     generateRoleNames();
 }
 
@@ -107,12 +114,12 @@ void BooksModel::setCurrentVerses()
 
 int BooksModel::getBookIndex(const int &bookNumber)
 {
-    QSqlQuery query(DbManager::getInstance()->db);
     QString sql = QString("SELECT rowid FROM books WHERE book_number='%1' ").arg(bookNumber);
-    query.exec(sql);
+    setQuery(QSqlQuery(sql, database()));
+    QSqlQuery queryExec = query();
 
-    if (query.next())
-        return query.value(0).toInt();
+    if (queryExec.exec())
+        return queryExec.value(0).toInt();
 
-    qFatal("Cannot read from books: %s", qPrintable(query.lastError().text()));
+    qFatal("Cannot read from books: %s", qPrintable(queryExec.lastError().text()));
 }

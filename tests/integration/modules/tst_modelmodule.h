@@ -23,13 +23,15 @@ namespace modules {
             HostUnique helperGetHostsUniqueNotExists() const;
             HostUnique helperGetHostUnique() const;
             QVariantList helperGetSelected() const;
+
+            int m_idGroupModules = 0;
+            bool m_downloaded = false;
         private slots:
             void initTestCase() override;
             void cleanupTestCase() override;
             void update() override;
             void init_model();
-            void updateObjects_data();
-            void updateObjects();
+            void constructor_params();
             void updateObjectsDownloaded();
             void updateSelected_data();
             void updateSelected();

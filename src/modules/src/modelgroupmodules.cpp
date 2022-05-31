@@ -16,6 +16,7 @@ namespace modules {
           m_modelModule { new ModelModule {} }
     {
         m_newVersionAvailable = m_managerRegistry->hasNewRegistry();
+        m_newVersionAvailable = true;
         connect(m_managerRegistry.get(), &ManagerRegistry::retrieveDataSuccess, m_managerGroup.get(), &ManagerGroup::makeCollections);
         connect(m_managerRegistry.get(), &ManagerRegistry::retrieveDataSuccess, m_modelModule.get(), &ModelModule::getExtraFieldsFromDb);
         connect(m_managerGroup.get(), &ManagerGroup::makeGroupModulesSuccess, this, &ModelGroupModules::update);
@@ -128,9 +129,11 @@ namespace modules {
             switch (m_entitySearch) {
                 case ModuleSearch :
                     doSearchByModules();
+                    qDebug() << "ModuleSearch";
                     break;
                 case GroupSearch :
                     doSearchByGroups();
+                    qDebug() << "doSearchByGroups";
                     break;
             }
         }
@@ -204,7 +207,11 @@ namespace modules {
                                 new ModelModule(groupModules->m_groupId, searchByModules() ? m_needle : "")
                                 );
                 }
+#ifdef Qt6_FOUND
+                data = QVariant::fromValue(groupModules->m_modules.get());
+#else
                 data = qVariantFromValue(groupModules->m_modules.get());
+#endif
                 break;
             case CountModulesRole :
                 data = std::move(groupModules->m_countModules);

@@ -1,12 +1,12 @@
 [submodule "3rdparty/quazip"]
 	path = 3rdparty/quazip
 	url = https://github.com/stachenov/quazip
-	branch = v1.1
+	branch = v1.3
 [submodule "3rdparty/sqlite_orm"]
 	path = 3rdparty/sqlite_orm
 	url = https://github.com/fnc12/sqlite_orm
-	branch = 1.6
+	branch = v1.7.1
 [submodule "3rdparty/openssl"]
 	path = 3rdparty/openssl
 	url = https://github.com/openssl/openssl.git
-	branch = OpenSSL_1_1_1i
+	branch = OpenSSL_1_1_1o

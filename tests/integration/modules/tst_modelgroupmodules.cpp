@@ -180,7 +180,7 @@ namespace modules {
             helperSave();
             std::vector<GroupModulesShared>objects;
             objects.push_back(
-                std::make_unique<GroupModules>("ru", "translate", "")
+                std::make_unique<GroupModules>("ru", "other Translations", "")
             );
             helperSave(std::move(objects));
 
@@ -190,7 +190,7 @@ namespace modules {
             QTest::newRow("language exists English") << "eng" << helperGetObjects();
             QTest::newRow("not started language") << "env" << std::vector<GroupModulesShared>();
             QTest::newRow("language not exists Maithili") << "ma" << std::vector<GroupModulesShared>();
-            QTest::newRow("started name") << "na" << helperGetObjects();
+            QTest::newRow("started name") << "trans" << helperGetObjects();
             QTest::newRow("not started name") << "me" << std::vector<GroupModulesShared>();
             QTest::newRow("started region") << "reg" << helperGetObjects();
         }

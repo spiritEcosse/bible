@@ -2,7 +2,11 @@ project(tst_modules LANGUAGES CXX)
 
 enable_testing()
 
-find_package(Qt5 COMPONENTS Test Network Qml REQUIRED)
+if(Qt6_FOUND)
+    find_package(Qt6 COMPONENTS Test Network Qml Sql REQUIRED)
+else()
+    find_package(Qt5 COMPONENTS Test Network Qml Sql REQUIRED)
+endif()
 
 file( GLOB TEST_FILES *.cpp )
 foreach( TEST_FILE ${TEST_FILES} )
@@ -10,6 +14,11 @@ foreach( TEST_FILE ${TEST_FILES} )
     add_executable( ${TEST_NAME} ${TEST_FILE} )
     add_test(${TEST_NAME} ${TEST_NAME})
 
-    target_link_libraries(${TEST_NAME} PRIVATE
-        Qt5::Test Qt5::Network Qt5::Qml core netmanager modules dbmanager)
+    if(Qt6_FOUND)
+        target_link_libraries(${TEST_NAME} PRIVATE
+            Qt6::Test Qt6::Network Qt6::Qml Qt6::Sql core netmanager modules dbmanager ssl crypto curl ZLIB::ZLIB nghttp2 dl)
+    else()
+        target_link_libraries(${TEST_NAME} PRIVATE
+            Qt5::Test Qt5::Network Qt5::Qml Qt5::Sql core netmanager modules dbmanager ssl crypto curl ZLIB::ZLIB nghttp2 dl)
+    endif()
 endforeach( TEST_FILE ${TEST_FILES} )

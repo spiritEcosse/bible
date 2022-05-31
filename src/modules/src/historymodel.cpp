@@ -207,12 +207,14 @@ void HistoryModel::copyObject(
         const int &testamentIndex,
         const int &bookIndex,
         const int &chapterIndex,
-        const int &verseIndex)
+        const int &verseIndex,
+        const QString& bookShortName)
 {
     setTestamentIndex(testamentIndex);
     setBookIndex(bookIndex);
     setChapterIndex(chapterIndex);
     setVerseIndex(verseIndex);
+    setBookShortName(bookShortName);
 }
 
 void HistoryModel::addFromMask(
@@ -220,16 +222,17 @@ void HistoryModel::addFromMask(
         const int &chapterNumber,
         const int &verseNumber)
 {
-    int bookIndex = BooksModel::getBookIndex(bookNumber);
+//    BooksModel book;
+//    int bookIndex = book.getBookIndex(bookNumber);
     int testamentIndex = 0;
 
-    if (bookIndex > BooksModel::COUNT_BOOKS_OLD_TESTAMENT) {
-        testamentIndex = 1;
-        bookIndex -= BooksModel::COUNT_BOOKS_OLD_TESTAMENT;
-    }
+//    if (bookIndex > BooksModel::COUNT_BOOKS_OLD_TESTAMENT) {
+//        testamentIndex = 1;
+//        bookIndex -= BooksModel::COUNT_BOOKS_OLD_TESTAMENT;
+//    }
 
     setTestamentIndex(testamentIndex);
-    setBookIndex(bookIndex - 1);
+//    setBookIndex(bookIndex - 1);
     setChapterIndex(chapterNumber);
     setVerseIndex(verseNumber);
 }

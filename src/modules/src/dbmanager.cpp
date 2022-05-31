@@ -3,7 +3,7 @@
 
 #include "dbmanager.h"
 
-DbManager::DbManager()
+DbManager::DbManager(QString&& fileName)
 {
     QString langCode(getenv("LANG"));
     if (langCode.isEmpty() || langCode == "C" || !langCode.contains("_"))
@@ -15,21 +15,21 @@ DbManager::DbManager()
     if (langCode == "C")
         langCode = "ru";
 
-    qDebug() << "Current language code is" << langCode;
-    QString db_name = "/usr/share/bible/db/.SQLite3";
+    QString db_name = std::move(fileName);
+    qDebug() << "Current language code is" << langCode << db_name;
 
-//    if ( QSqlDatabase::contains(db_name) ) {
-//        db = QSqlDatabase::database(db_name);
-//    } else {
-//        db = QSqlDatabase::addDatabase("QSQLITE", db_name);
-//    }
-//    db.setDatabaseName(db_name);
+    if ( QSqlDatabase::contains(db_name) ) {
+        db = QSqlDatabase::database(db_name);
+    } else {
+        db = QSqlDatabase::addDatabase("QSQLITE", db_name);
+    }
+    db.setDatabaseName(db_name);
 
-//    if (!db.open()) {
-//        qDebug() << "Error: connection with Bible database failed";
-//    } else {
-//        qDebug() << "Bible database: Connection OK";
-//    }
+    if (!db.open()) {
+        qDebug() << "Error: connection with Bible database failed";
+    } else {
+        qDebug() << "Bible database: Connection OK";
+    }
 
 //    db_name = "/usr/share/bible/db/.commentaries.SQLite3";
 
@@ -47,9 +47,4 @@ DbManager::DbManager()
 //    }
 }
 
-DbManager* DbManager::getInstance()
-{
-    static DbManager instance;
-    return &instance;
-}
 

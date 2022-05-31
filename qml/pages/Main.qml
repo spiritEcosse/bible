@@ -1,9 +1,8 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-//import bible.BooksModel 1.0
 import bible.ModelGroupModules 1.0
 import bible.ModelModule 1.0
-//import bible.HistoryModel 1.0
+import bible.HistoryModel 1.0
 import "../components"
 
 Pages {
@@ -28,6 +27,10 @@ Pages {
         id: modelModuleBooks
     }
 
+    HistoryModel {
+        id: historyModel
+    }
+
     ModelModule {
         id: modelModule
 
@@ -40,22 +43,6 @@ Pages {
             selectedModules = modelModule.selected;
         }
     }
-
-//    BooksModel {
-//        id: booksOldTestament
-
-//        Component.onCompleted: {
-//            booksOldTestament.oldTestament()
-//        }
-//    }
-
-//    BooksModel {
-//        id: booksNewTestament
-
-//        Component.onCompleted: {
-//            booksNewTestament.newTestament()
-//        }
-//    }
 
     ModelGroupModules {
         id: groupModules

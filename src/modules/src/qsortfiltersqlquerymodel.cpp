@@ -37,8 +37,8 @@ void QSortFilterSqlQueryModel::select() {
         } else if (filterFlags == Qt::MatchEndsWith) {
             whereClause = "WHERE %1 LIKE %2";
             esFilterString.prepend("*");
-        } else if (filterFlags == Qt::MatchRegExp) {
-            whereClause = "WHERE %1 REGEXP %2";
+//        } else if (filterFlags == Qt::MatchRegExp) {
+//            whereClause = "WHERE %1 REGEXP %2";
         } else if (filterFlags == Qt::MatchWildcard) {
             whereClause = "WHERE %1 LIKE %2";
         } else if (filterFlags == Qt::MatchContains) {

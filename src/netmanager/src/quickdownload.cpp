@@ -373,8 +373,13 @@ namespace netmanager {
 
     void QuickDownload::makeUrl()
     {
+#ifdef Qt6_FOUND
+        _url = std::move(QString().asprintf(std::move(m_modelHost->getUrl(_index).toLocal8Bit().data()),
+                                           std::move(_moduleName.toLocal8Bit().data())));
+#else
         _url = std::move(QString().sprintf(std::move(m_modelHost->getUrl(_index).toLocal8Bit().data()),
                                            std::move(_moduleName.toLocal8Bit().data())));
+#endif
     }
 
 }

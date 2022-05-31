@@ -33,7 +33,7 @@ public:
     void setBookShortName(const QString &bookShortName);
     void setChapterIndex(const int &chapterIndex);
     void setVerseIndex(const int &verseIndex);
-    Q_INVOKABLE void copyObject(const int &testamentIndex, const int &bookIndex, const int &chapterIndex, const int &verseIndex);
+    Q_INVOKABLE void copyObject(const int &testamentIndex, const int &bookIndex, const int &chapterIndex, const int &verseIndex, const QString& bookShortName);
     Q_INVOKABLE void addFromMask(const int &bookNumber, const int &chapterNumber, const int &verseNumber);
 signals:
     void changeTestamentIndex();

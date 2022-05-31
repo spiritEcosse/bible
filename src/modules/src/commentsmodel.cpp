@@ -4,7 +4,7 @@
 static const char *commentariesTableName = "commentaries";
 
 CommentsModel::CommentsModel(QObject *parent)
-    : QSqlTableModel(parent, DbManager::getInstance()->db_comments)
+    : QSqlTableModel(parent)
 {
     setTable(commentariesTableName);
 }
