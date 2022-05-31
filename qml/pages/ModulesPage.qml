@@ -572,15 +572,18 @@ SilicaFlickable {
                                         for (var i = 0; i < selectedModules.length; i++) {
                                             var selected = selectedModules[i];
                                             try {
-                                                selected.module.download = true
-                                            }
-                                            catch(err) {
+                                                if (selected.module.download === undefined) {
+                                                    downloadModulesLater.push(selected);
+                                                } else {
+                                                    selected.module.download = true;
+                                                }
+                                            } catch(err) {
                                                 console.log(err.message);
-                                                console.log(">>> not exists not exists not exists", selected.id)
-                                                downloadModulesLater.push(selectedModules[i]);
+                                                downloadModulesLater.push(selected);
                                             }
                                         }
                                         modelModule.downloadModules(downloadModulesLater);
+                                        downloadModulesLater = [];
                                     });
                                 }
                             }
