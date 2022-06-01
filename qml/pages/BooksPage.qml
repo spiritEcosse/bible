@@ -625,19 +625,20 @@ SilicaFlickable {
             }
 
             IconButton {
-                id: iconHistory
-                icon.source: "image://theme/icon-m-history"
-                icon.sourceSize: Qt.size(Theme.iconSizeMedium, Theme.iconSizeMedium)
-                onClicked: panelHistory.enabled = true
+                id: expanderIcon
+                icon.source: "image://theme/icon-s-arrow"
+                onClicked: drawer.open = !drawer.open
                 anchors {
-                    right: expanderIcon.left
+                    right: iconHistory.left
                     verticalCenter: parent.verticalCenter
                 }
             }
 
             IconButton {
-                id: expanderIcon
-                icon.source: "image://theme/icon-s-arrow"
+                id: iconHistory
+                icon.source: "image://theme/icon-m-history"
+                icon.sourceSize: Qt.size(Theme.iconSizeMedium, Theme.iconSizeMedium)
+                onClicked: panelHistory.enabled = true
                 anchors {
                     right: parent.right
                     verticalCenter: parent.verticalCenter
@@ -648,13 +649,13 @@ SilicaFlickable {
                 State {
                     name: "drawerOpen"
                     when: drawer.opened
-                    PropertyChanges { target: expanderText; text: "Close list modules" }
+                    PropertyChanges { target: expanderText; text: "Close modules list" }
                     PropertyChanges { target: expanderIcon; rotation: 180 }
                 },
                 State {
                     name: "drawerClose"
                     when: !drawer.opened
-                    PropertyChanges { target: expanderText; text: "Open list modules" }
+                    PropertyChanges { target: expanderText; text: "Open modules list" }
                 }
             ]
 
