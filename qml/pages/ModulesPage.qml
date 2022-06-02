@@ -356,6 +356,8 @@ SilicaFlickable {
                                             onFinished: {
                                                 appendOrRemoveModuleDownloaded({"abbreviation": abbreviation, "downloaded": 1, "moduleId": model.id, "module": myModule, "groupId": group.groupId,})
                                                 console.info(url,'done')
+                                                modelModuleBooks.updateObjectsDownloaded();
+                                                flagUpdateObjectsDownloaded = true;
                                             }
                                         }
 
