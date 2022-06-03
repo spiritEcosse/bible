@@ -487,6 +487,7 @@ SilicaFlickable {
             SilicaListView {
                 id: sourcePanelHistory
                 model: historyModel
+                visible: historyModel.rowExists
                 snapMode: ListView.SnapToItem
                 highlightRangeMode: ListView.StrictlyEnforceRange
                 orientation: listHorizontal
@@ -556,6 +557,15 @@ SilicaFlickable {
                         font.pixelSize: Theme.fontSizeLarge
                     }
                 }
+            }
+
+            Label {
+                anchors.verticalCenter: parent.verticalCenter
+                font.pixelSize: Theme.fontSizeLarge
+                visible: !sourcePanelHistory.visible
+                text: qsTrId("Here will be the history of texts.")
+                width: parent.width - iconBack.width
+                truncationMode: TruncationMode.Fade
             }
 
             IconButton {
