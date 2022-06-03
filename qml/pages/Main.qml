@@ -29,6 +29,8 @@ Pages {
 
     HistoryModel {
         id: historyModel
+        property bool rowExists: historyModel.rowCount()
+        onRowsInserted: rowExists = true
     }
 
     ModelModule {
