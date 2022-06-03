@@ -102,6 +102,7 @@ SilicaFlickable {
             width: parent.width
             height: parent.height - header.height - panel.height
             clip: true
+            visible: groupModules.rowExists
             snapMode: ListView.SnapToItem
             highlightRangeMode: ListView.StrictlyEnforceRange
             anchors.bottom: panel.top
@@ -434,6 +435,16 @@ SilicaFlickable {
                     }
                 }
             }
+        }
+
+        Label {
+            anchors.verticalCenter: parent.verticalCenter
+            horizontalAlignment: Text.Center
+            font.pixelSize: Theme.fontSizeLarge
+            visible: !listViewModules.visible
+            text: qsTrId("Here will be the list of modules.")
+            width: parent.width
+            wrapMode: Text.WordWrap
         }
 
         Image {
