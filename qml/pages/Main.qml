@@ -48,6 +48,8 @@ Pages {
 
     ModelGroupModules {
         id: groupModules
+        property bool rowExists: groupModules.rowCount()
+        onRowsInserted: rowExists = true
     }
 
     VisualItemModel {
