@@ -11,6 +11,6 @@ Name=bible
 Name[ru]=bible
 
 [X-Sailjail]
-Permissions=
+Permissions=UserDirs;Internet
 OrganizationName=spirit
 ApplicationName=bible
