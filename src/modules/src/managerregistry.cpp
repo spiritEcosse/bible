@@ -8,6 +8,7 @@
 #include <QSettings>
 #include <JlCompress.h>
 #include <mutex>
+#include <QtQuick>
 
 #include <invaliddata.h>
 #include "managerregistry.h"
@@ -22,6 +23,11 @@ namespace modules {
           m_modelHost { new ModelHost {} },
           m_manager { new DownloadManager {} }
     {
+    }
+
+    void ManagerRegistry::registerMe()
+    {
+        qmlRegisterType<ManagerRegistry>("bible.ManagerRegistry", 1, 0, "ManagerRegistry");
     }
 
     void ManagerRegistry::download()

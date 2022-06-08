@@ -30,6 +30,7 @@ namespace modules {
     public slots:
         virtual void download() ;
         virtual void checkNewVesion();
+        static void registerMe();
 
     private:
         friend class tests::tst_ManagerRegistry;
