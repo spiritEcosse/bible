@@ -23,11 +23,18 @@ namespace modules {
           m_modelHost { new ModelHost {} },
           m_manager { new DownloadManager {} }
     {
+        m_newVersionAvailable = hasNewRegistry();
+//        emit changeNewVersionAvailable();
     }
 
     void ManagerRegistry::registerMe()
     {
         qmlRegisterType<ManagerRegistry>("bible.ManagerRegistry", 1, 0, "ManagerRegistry");
+    }
+
+    bool ManagerRegistry::newVersionAvailable() const
+    {
+        return m_newVersionAvailable;
     }
 
     void ManagerRegistry::download()
@@ -130,6 +137,7 @@ namespace modules {
         connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::removeInfo);
         connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::retrieveDataInfo);
         connect(this, &ManagerRegistry::newRegistryAvailable, &ManagerRegistry::setVersion);
+        connect(this, &ManagerRegistry::newRegistryAvailable, &ManagerRegistry::setCheckVersionСompleted);
 
         downloadFile(ModelRegistry::RegistryRoles::InfoUrlRole);
     }
@@ -171,11 +179,24 @@ namespace modules {
         return QSettings().value("cacheRegistryVersion").toInt();
     }
 
-    void ManagerRegistry::setVersion(bool available, int version) const
+    void ManagerRegistry::setVersion(bool available, int version)
     {
         if (available) {
             QSettings().setValue("cacheRegistryVersion", version);
+            m_newVersionAvailable = hasNewRegistry();
+            emit changeNewVersionAvailable();
         }
+    }
+
+    void ManagerRegistry::setCheckVersionСompleted()
+    {
+        m_checkVersionСompleted = true;
+        emit changeCheckVersionСompleted();
+    }
+
+    bool ManagerRegistry::checkVersionСompleted() const
+    {
+        return m_checkVersionСompleted;
     }
 
 }

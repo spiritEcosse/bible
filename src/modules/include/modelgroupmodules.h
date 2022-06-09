@@ -16,7 +16,6 @@ namespace modules {
     class ModelGroupModules : public ModelUpdate<GroupModules>
     {
         Q_OBJECT
-        Q_PROPERTY(bool newVersionAvailable READ newVersionAvailable NOTIFY changeNewVersionAvailable)
         Q_PROPERTY(bool updateCompleted READ updateCompleted NOTIFY changeUpdateCompleted)
         Q_PROPERTY(QString needle READ needle NOTIFY changeNeedle)
     public:
@@ -46,9 +45,7 @@ namespace modules {
         const QString getNameJson() override;
     private:
         friend class tests::tst_ModelGroupModules;
-        bool newVersionAvailable() const;
         bool updateCompleted() const;
-        bool m_newVersionAvailable = false;
         QString needle() const;
         QString m_needle = "";
         int m_entitySearch = GroupSearch;
@@ -62,7 +59,6 @@ namespace modules {
         virtual void doSearchByModules();
         virtual void doSearchByGroups();
     signals:
-        void changeNewVersionAvailable();
         void changeUpdateCompleted();
         void changeNeedle();
     private slots:

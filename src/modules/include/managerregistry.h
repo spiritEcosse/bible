@@ -23,13 +23,15 @@ namespace modules {
     class ManagerRegistry : public QObject
     {
         Q_OBJECT
+        Q_PROPERTY(bool newVersionAvailable READ newVersionAvailable NOTIFY changeNewVersionAvailable)
+        Q_PROPERTY(bool checkVersionСompleted READ checkVersionСompleted NOTIFY changeCheckVersionСompleted)
     public:
         ManagerRegistry(QObject *parent = nullptr);
         virtual ~ManagerRegistry() {}
+        Q_INVOKABLE virtual void checkNewVesion();
 
     public slots:
         virtual void download() ;
-        virtual void checkNewVesion();
         static void registerMe();
 
     private:
@@ -46,16 +48,24 @@ namespace modules {
         QFile registryArchive;
         QFile fileRegistryInfo;
         QFile fileRegistry { "download/registry.json" };
+        bool m_newVersionAvailable = false;
+        bool m_checkVersionСompleted = false;
+
         virtual bool hasNewRegistry(int version) const;
         virtual bool hasNewRegistry() const;
         virtual int getVersion(const QJsonDocument& document) const;
         virtual int getVersion() const;
         virtual void getDocument(QFile& file);
         virtual void setRegistriesOnce();
-        virtual void setVersion(bool available, int version) const;
+        virtual void setVersion(bool available, int version);
         void downloadFile(int role);
         virtual void tryOther(int role);
+        bool newVersionAvailable() const;
+        bool checkVersionСompleted() const;
+
     signals:
+        void changeNewVersionAvailable();
+        void changeCheckVersionСompleted();
         void newRegistryAvailable(bool available, int version);
         void retrieveDataSuccess(const QJsonDocument& document);
         void removeRegistrySuccess();
@@ -70,6 +80,7 @@ namespace modules {
         virtual void retrieveVersion(const QString& fileName);
         virtual void tryOtherUrl();
         virtual void tryOtherInfoUrl();
+        void setCheckVersionСompleted();
     };
 
 }
