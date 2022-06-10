@@ -24,6 +24,8 @@ namespace modules {
           m_manager { new DownloadManager {} }
     {
         m_newVersionAvailable = hasNewRegistry();
+        qDebug() << "m_newVersionAvailable: " << m_newVersionAvailable;
+        //m_checkVersionCompleted = false;
 //        emit changeNewVersionAvailable();
     }
 
@@ -45,6 +47,7 @@ namespace modules {
         connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::retrieveData);
         connect(this, &ManagerRegistry::retrieveDataSuccess, m_modelRegistry.get(), &ModelRegistry::transform);
         connect(this, &ManagerRegistry::retrieveDataSuccess, m_modelHost.get(), &ModelHost::transform);
+        connect(this, &ManagerRegistry::retrieveDataSuccess, &ManagerRegistry::setRegistryVersion);
 
         downloadFile(ModelRegistry::RegistryRoles::UrlRole);
     }
@@ -137,7 +140,7 @@ namespace modules {
         connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::removeInfo);
         connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::retrieveDataInfo);
         connect(this, &ManagerRegistry::newRegistryAvailable, &ManagerRegistry::setVersion);
-        connect(this, &ManagerRegistry::newRegistryAvailable, &ManagerRegistry::setCheckVersionСompleted);
+        connect(this, &ManagerRegistry::newRegistryAvailable, &ManagerRegistry::setCheckVersionCompleted);
 
         downloadFile(ModelRegistry::RegistryRoles::InfoUrlRole);
     }
@@ -183,20 +186,31 @@ namespace modules {
     {
         if (available) {
             QSettings().setValue("cacheRegistryVersion", version);
-            m_newVersionAvailable = hasNewRegistry();
-            emit changeNewVersionAvailable();
+            setNewVersionAvailable();
         }
     }
 
-    void ManagerRegistry::setCheckVersionСompleted()
+    void ManagerRegistry::setRegistryVersion()
     {
-        m_checkVersionСompleted = true;
-        emit changeCheckVersionСompleted();
+        QSettings().setValue("registryVersion", getVersion());
+        setNewVersionAvailable();
     }
 
-    bool ManagerRegistry::checkVersionСompleted() const
+    void ManagerRegistry::setCheckVersionCompleted()
     {
-        return m_checkVersionСompleted;
+        m_checkVersionCompleted = true;
+        emit changeCheckVersionCompleted();
     }
 
+    bool ManagerRegistry::checkVersionCompleted() const
+    {
+        qDebug() << "m_checkVersionCompleted: " << m_checkVersionCompleted;
+        return m_checkVersionCompleted;
+    }
+
+    void ManagerRegistry::setNewVersionAvailable()
+    {
+        m_newVersionAvailable = hasNewRegistry();
+        emit changeNewVersionAvailable();
+    }
 }

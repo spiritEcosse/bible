@@ -149,8 +149,8 @@ Pages {
                 text: qsTrId("Check for updates")
                 visible: slideshow.currentIndex == 1 && !managerRegistry.newVersionAvailable
 //                enabled: !managerRegistry.newVersionAvailable
-                property bool checkVersionСompleted: managerRegistry.checkVersionСompleted
-                onCheckVersionСompletedChanged : {
+                property bool checkVersionCompleted: managerRegistry.checkVersionCompleted
+                onCheckVersionCompletedChanged : {
                     pushUpMenu.busy = false
                 }
                 onClicked: {
@@ -162,11 +162,12 @@ Pages {
             MenuItem {
                 id: updateModules
                 text: qsTrId("Update modules")
-                visible: slideshow.currentIndex == 1 && !checkUpdates.enabled
+                visible: slideshow.currentIndex == 1 && !checkUpdates.visible
 //                enabled: !checkUpdates.enabled
                 property bool updateСompleted: groupModules.updateCompleted
                 onUpdateСompletedChanged : {
                     pushUpMenu.busy = false
+                    managerRegistry.newVersionAvailable = false
                 }
                 onClicked: {
                     pushUpMenu.busy = true
