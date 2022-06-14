@@ -192,6 +192,7 @@ namespace modules {
 
     void ManagerRegistry::setRegistryVersion()
     {
+        qDebug() << "m_newVersionAvailable " << m_newVersionAvailable;
         QSettings().setValue("registryVersion", getVersion());
         setNewVersionAvailable();
     }

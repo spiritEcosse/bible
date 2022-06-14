@@ -34,6 +34,9 @@ namespace modules {
         private slots:
             void initTestCase() override;
             void cleanupTestCase() override;
+            void contructor();
+            void contructor_data();
+            void newVersionAvailable();
             void download();
             void downloadManagerFailed();
             void downloadManagerFailedWithoutRecursion();

@@ -26,9 +26,6 @@ namespace modules {
         private slots:
             void initTestCase() override;
             void cleanupTestCase() override;
-            void contructor_data();
-            void contructor();
-            void newVersionAvailable();
             void updateCompleted();
             void update() override;
             void downloadRegistry_data();
