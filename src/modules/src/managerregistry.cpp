@@ -145,10 +145,38 @@ namespace modules {
         downloadFile(ModelRegistry::RegistryRoles::InfoUrlRole);
     }
 
+    // setters
+
     void ManagerRegistry::setNewVersionAvailable(bool newVersionAvailable)
     {
         m_newVersionAvailable = newVersionAvailable;
         emit changeNewVersionAvailable();
+    }
+
+    void ManagerRegistry::setNewVersionAvailable()
+    {
+        m_newVersionAvailable = hasNewRegistry();
+        emit changeNewVersionAvailable();
+    }
+
+    void ManagerRegistry::setVersion(bool available, int version)
+    {
+        if (available) {
+            QSettings().setValue("cacheRegistryVersion", version);
+            setNewVersionAvailable();
+        }
+    }
+
+    void ManagerRegistry::setRegistryVersion()
+    {
+        QSettings().setValue("registryVersion", getVersion());
+        setNewVersionAvailable();
+    }
+
+    void ManagerRegistry::setCheckVersionCompleted()
+    {
+        m_checkVersionCompleted = true;
+        emit changeCheckVersionCompleted();
     }
 
     void ManagerRegistry::tryOtherInfoUrl()
@@ -188,34 +216,8 @@ namespace modules {
         return QSettings().value("cacheRegistryVersion").toInt();
     }
 
-    void ManagerRegistry::setVersion(bool available, int version)
-    {
-        if (available) {
-            QSettings().setValue("cacheRegistryVersion", version);
-            setNewVersionAvailable();
-        }
-    }
-
-    void ManagerRegistry::setRegistryVersion()
-    {
-        QSettings().setValue("registryVersion", getVersion());
-        setNewVersionAvailable();
-    }
-
-    void ManagerRegistry::setCheckVersionCompleted()
-    {
-        m_checkVersionCompleted = true;
-        emit changeCheckVersionCompleted();
-    }
-
     bool ManagerRegistry::checkVersionCompleted() const
     {
         return m_checkVersionCompleted;
-    }
-
-    void ManagerRegistry::setNewVersionAvailable()
-    {
-        m_newVersionAvailable = hasNewRegistry();
-        emit changeNewVersionAvailable();
     }
 }
