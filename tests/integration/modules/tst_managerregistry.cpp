@@ -377,6 +377,7 @@ namespace modules {
             QSignalSpy spyReadyRead(managerRegistry.m_manager.get(), &DownloadManager::readyRead);
             QSignalSpy spyGetDocumentSuccess(&managerRegistry, &ManagerRegistry::getDocumentSuccess);
             QSignalSpy spyRemoveInfo(&managerRegistry, &ManagerRegistry::removeInfoSuccess);
+            QSignalSpy spyChangeCheckVersionCompleted(&managerRegistry, &ManagerRegistry::changeCheckVersionCompleted);
             QSignalSpy spyLast(&managerRegistry, &ManagerRegistry::newRegistryAvailable);
 
             managerRegistry.m_modelRegistry->m_objects.clear();
@@ -387,6 +388,7 @@ namespace modules {
                 )
             );
 
+            QCOMPARE(managerRegistry.m_checkVersionCompleted, false);
             managerRegistry.checkNewVesion();
 
             QVERIFY(spyLast.wait());
@@ -395,6 +397,8 @@ namespace modules {
             QCOMPARE(spyRemoveInfo.count(), 1);
             QCOMPARE(spyGetDocumentSuccess.count(), 1);
             QCOMPARE(spyLast.count(), 1);
+            QCOMPARE(spyChangeCheckVersionCompleted.count(), 2);
+            QCOMPARE(managerRegistry.m_checkVersionCompleted, true);
 
             QList<QVariant> arguments = spyLast.takeFirst();
             QCOMPARE(arguments[0].toBool(), true);

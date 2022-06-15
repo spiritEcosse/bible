@@ -117,12 +117,14 @@ namespace modules {
                         )
             );
 
+            QCOMPARE(modelGroupModules.m_updateCompleted, false);
             modelGroupModules.downloadRegistry();
+
             QVERIFY(spy.wait());
             QCOMPARE(spyModulesUpdateCompleted.count(), 1);
             QCOMPARE(spy.count(), 1);
             QCOMPARE(modelGroupModules.m_updateCompleted, true);
-            QCOMPARE(spyChangeUpdateCompleted.count(), 1);
+            QCOMPARE(spyChangeUpdateCompleted.count(), 2);
             QCOMPARE(modelGroupModules.m_objects.size(), static_cast<size_t>(2));
         }
 
