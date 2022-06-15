@@ -49,7 +49,6 @@ namespace modules {
 
     void ModelGroupModules::update()
     {
-        qDebug() << "update";
         try {
           auto guard = m_db->storage->transaction_guard();
 
@@ -160,6 +159,9 @@ namespace modules {
 
     void ModelGroupModules::downloadRegistry()
     {
+        m_updateCompleted = false;
+        emit changeUpdateCompleted();
+
         QTimer::singleShot(0, m_managerRegistry.get(), &ManagerRegistry::download);
     }
 
