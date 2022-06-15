@@ -23,10 +23,7 @@ namespace modules {
           m_modelHost { new ModelHost {} },
           m_manager { new DownloadManager {} }
     {
-        m_newVersionAvailable = hasNewRegistry();
-        qDebug() << "m_newVersionAvailable: " << m_newVersionAvailable;
-        //m_checkVersionCompleted = false;
-//        emit changeNewVersionAvailable();
+        setNewVersionAvailable();
     }
 
     void ManagerRegistry::registerMe()
@@ -135,6 +132,9 @@ namespace modules {
 
     void ManagerRegistry::checkNewVesion()
     {
+        m_checkVersionCompleted = false;
+        emit changeCheckVersionCompleted();
+
         connect(m_manager.get(), &DownloadManager::failed, this, &ManagerRegistry::tryOtherInfoUrl);
         connect(m_manager.get(), &DownloadManager::readyRead, this, &ManagerRegistry::retrieveVersion);
         connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::removeInfo);
@@ -143,6 +143,12 @@ namespace modules {
         connect(this, &ManagerRegistry::newRegistryAvailable, &ManagerRegistry::setCheckVersionCompleted);
 
         downloadFile(ModelRegistry::RegistryRoles::InfoUrlRole);
+    }
+
+    void ManagerRegistry::setNewVersionAvailable(bool newVersionAvailable)
+    {
+        m_newVersionAvailable = newVersionAvailable;
+        emit changeNewVersionAvailable();
     }
 
     void ManagerRegistry::tryOtherInfoUrl()
@@ -192,7 +198,6 @@ namespace modules {
 
     void ManagerRegistry::setRegistryVersion()
     {
-        qDebug() << "m_newVersionAvailable " << m_newVersionAvailable;
         QSettings().setValue("registryVersion", getVersion());
         setNewVersionAvailable();
     }
@@ -205,7 +210,6 @@ namespace modules {
 
     bool ManagerRegistry::checkVersionCompleted() const
     {
-        qDebug() << "m_checkVersionCompleted: " << m_checkVersionCompleted;
         return m_checkVersionCompleted;
     }
 

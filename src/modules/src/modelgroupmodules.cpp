@@ -49,6 +49,7 @@ namespace modules {
 
     void ModelGroupModules::update()
     {
+        qDebug() << "update";
         try {
           auto guard = m_db->storage->transaction_guard();
 

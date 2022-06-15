@@ -23,12 +23,13 @@ namespace modules {
     class ManagerRegistry : public QObject
     {
         Q_OBJECT
-        Q_PROPERTY(bool newVersionAvailable READ newVersionAvailable NOTIFY changeNewVersionAvailable)
+        Q_PROPERTY(bool newVersionAvailable READ newVersionAvailable WRITE setNewVersionAvailable NOTIFY changeNewVersionAvailable)
         Q_PROPERTY(bool checkVersionCompleted READ checkVersionCompleted NOTIFY changeCheckVersionCompleted)
     public:
         ManagerRegistry(QObject *parent = nullptr);
         virtual ~ManagerRegistry() {}
         Q_INVOKABLE virtual void checkNewVesion();
+        void setNewVersionAvailable(bool newVersionAvailable);
 
     public slots:
         virtual void download() ;
