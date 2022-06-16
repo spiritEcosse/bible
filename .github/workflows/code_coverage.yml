@@ -24,7 +24,7 @@ jobs:
             cd build &&
             cp -fr /share/* . &&
             cp -fr /share/.git* . &&
-            cmake -DBUILD_TESTING=ON -DCODE_COVERAGE=ON -G 'NMake Makefiles' . &&
+            cmake -DBUILD_TESTING=ON -DCODE_COVERAGE=ON -G 'Unix Makefiles' . &&
             cmake --build . --target all &&
             ctest --output-on-failure &&
             sudo cp -r * /share/output
