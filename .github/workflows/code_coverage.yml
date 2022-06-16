@@ -22,7 +22,7 @@ jobs:
             mkdir -p build &&
             cd build &&
             cp -fr /share/* . &&
-            cp -fr /share/.* . &&
+            cp -fr /share/.git* . &&
             cmake -DBUILD_TESTING=ON -DCODE_COVERAGE=ON -G 'NMake Makefiles' . &&
             cmake --build . --target all &&
             ctest --output-on-failure &&
