@@ -17,12 +17,13 @@ jobs:
 
     - name: Tests
       run: docker run --rm --privileged -v $PWD:/share coderus/sailfishos-platform-sdk:$RELEASE /bin/bash -c "
-            cd /home/mersdk ;
-            mkdir -p build ;
-            cd build ;
-            cmake -DBUILD_TESTING=ON -DCODE_COVERAGE=ON /share ;
-            cmake --build . --target all ;
-            ctest --output-on-failure ;
+            pkcon install -y cmake git &&
+            cd /home/mersdk &&
+            mkdir -p build &&
+            cd build &&
+            cmake -DBUILD_TESTING=ON -DCODE_COVERAGE=ON /share &&
+            cmake --build . --target all &&
+            ctest --output-on-failure &&
             sudo cp -r * /share/output
             "
             
