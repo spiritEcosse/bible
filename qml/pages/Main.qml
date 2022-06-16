@@ -3,6 +3,7 @@ import Sailfish.Silica 1.0
 import bible.ModelGroupModules 1.0
 import bible.ModelModule 1.0
 import bible.HistoryModel 1.0
+import bible.ManagerRegistry 1.0
 import "../components"
 
 Pages {
@@ -22,6 +23,10 @@ Pages {
     property bool initPageModules: false
     property bool flagUpdateObjectsDownloaded: false
     property bool flagUpdateObjectsActive: false
+
+    ManagerRegistry {
+        id: managerRegistry
+    }
 
     ModelModule {
         id: modelModuleBooks
@@ -140,13 +145,31 @@ Pages {
             id: pushUpMenu
 
             MenuItem {
+                id: checkUpdates
+                text: qsTrId("Check for updates")
+                visible: slideshow.currentIndex == 1 && !managerRegistry.newVersionAvailable
+//                enabled: !managerRegistry.newVersionAvailable
+//                property bool newVersionAvailable:
+                property bool checkVersionCompleted: managerRegistry.checkVersionCompleted
+                onCheckVersionCompletedChanged : {
+                    pushUpMenu.busy = false
+                    console.log("checkVersionCompleted", checkVersionCompleted)
+                }
+                onClicked: {
+                    pushUpMenu.busy = true
+                    managerRegistry.checkNewVesion()
+                }
+            }
+
+            MenuItem {
                 id: updateModules
                 text: qsTrId("Update modules")
-                visible: slideshow.currentIndex == 1
-                enabled: groupModules.newVersionAvailable
+                visible: slideshow.currentIndex == 1 && !checkUpdates.visible
+                //enabled: !groupModules.updateCompleted
                 property bool updateСompleted: groupModules.updateCompleted
                 onUpdateСompletedChanged : {
                     pushUpMenu.busy = false
+                    managerRegistry.newVersionAvailable = false
                 }
                 onClicked: {
                     pushUpMenu.busy = true

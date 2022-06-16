@@ -3,7 +3,7 @@ db
 *.log
 shared/
 #*build*
-
+.idea/
 *.autosave
 *.user
 ƒ*.sqlite

@@ -15,8 +15,6 @@ namespace modules {
           m_managerRegistry { new ManagerRegistry {} },
           m_modelModule { new ModelModule {} }
     {
-        m_newVersionAvailable = m_managerRegistry->hasNewRegistry();
-        m_newVersionAvailable = true;
         connect(m_managerRegistry.get(), &ManagerRegistry::retrieveDataSuccess, m_managerGroup.get(), &ManagerGroup::makeCollections);
         connect(m_managerRegistry.get(), &ManagerRegistry::retrieveDataSuccess, m_modelModule.get(), &ModelModule::getExtraFieldsFromDb);
         connect(m_managerGroup.get(), &ManagerGroup::makeGroupModulesSuccess, this, &ModelGroupModules::update);
@@ -37,11 +35,6 @@ namespace modules {
     void ModelGroupModules::registerMe()
     {
         qmlRegisterType<ModelGroupModules>("bible.ModelGroupModules", 1, 0, "ModelGroupModules");
-    }
-
-    bool ModelGroupModules::newVersionAvailable() const
-    {
-        return m_newVersionAvailable;
     }
 
     bool ModelGroupModules::updateCompleted() const
@@ -166,8 +159,9 @@ namespace modules {
 
     void ModelGroupModules::downloadRegistry()
     {
-        m_newVersionAvailable = false;
-        emit changeNewVersionAvailable();
+        m_updateCompleted = false;
+        emit changeUpdateCompleted();
+
         QTimer::singleShot(0, m_managerRegistry.get(), &ManagerRegistry::download);
     }
 

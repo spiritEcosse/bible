@@ -19,6 +19,7 @@
 #include "modelgroupmodules.h"
 #include "quickdownload.h"
 #include "dbmanager.h"
+#include "managerregistry.h"
 
 void createAppDir() {
     const QDir writeDirApp = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
@@ -49,6 +50,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 
     connectToDatabase();
     modules::ModelGroupModules::registerMe();
+    modules::ManagerRegistry::registerMe();
     qmlRegisterType<netmanager::QuickDownload>("bible.QuickDownload", 1, 0, "QuickDownload");
     modules::ModelModule::registerMe();
     qmlRegisterType<BooksModel>("bible.BooksModel", 1, 0, "BooksModel");

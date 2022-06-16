@@ -60,31 +60,6 @@ namespace modules {
         }
 
 //      tests
-        void tst_ModelGroupModules::contructor_data()
-        {
-            QTest::addColumn<bool>("available");
-            QTest::addColumn<int>("version");
-
-            QTest::newRow("available new version is true") << true << 11;
-            QTest::newRow("available new version is false") << false << 0;
-        }
-
-        void tst_ModelGroupModules::contructor()
-        {
-            QFETCH(bool, available);
-            QFETCH(int, version);
-            setQSettings(version, "cacheRegistryVersion");
-
-            ModelGroupModules modelGroupModules;
-            QCOMPARE(modelGroupModules.m_newVersionAvailable, available);
-        }
-
-        void tst_ModelGroupModules::newVersionAvailable()
-        {
-            ModelGroupModules model;
-            QCOMPARE(model.newVersionAvailable(), false);
-        }
-
         void tst_ModelGroupModules::updateCompleted()
         {
             ModelGroupModules model;
@@ -131,7 +106,6 @@ namespace modules {
         {
             ModelGroupModules modelGroupModules;
             QSignalSpy spy(&modelGroupModules, &ModelGroupModules::updateDone);
-            QSignalSpy spyChangeNewVersionAvailable(&modelGroupModules, &ModelGroupModules::changeNewVersionAvailable);
             QSignalSpy spyChangeUpdateCompleted(&modelGroupModules, &ModelGroupModules::changeUpdateCompleted);
             QSignalSpy spyModulesUpdateCompleted(modelGroupModules.m_modelModule.get(), &ModelModule::updateDone);
 
@@ -143,14 +117,14 @@ namespace modules {
                         )
             );
 
+            QCOMPARE(modelGroupModules.m_updateCompleted, false);
             modelGroupModules.downloadRegistry();
-            QCOMPARE(modelGroupModules.m_newVersionAvailable, false);
+
             QVERIFY(spy.wait());
             QCOMPARE(spyModulesUpdateCompleted.count(), 1);
             QCOMPARE(spy.count(), 1);
             QCOMPARE(modelGroupModules.m_updateCompleted, true);
-            QCOMPARE(spyChangeUpdateCompleted.count(), 1);
-            QCOMPARE(spyChangeNewVersionAvailable.count(), 1);
+            QCOMPARE(spyChangeUpdateCompleted.count(), 2);
             QCOMPARE(modelGroupModules.m_objects.size(), static_cast<size_t>(2));
         }
 

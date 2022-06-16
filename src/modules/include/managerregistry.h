@@ -23,13 +23,17 @@ namespace modules {
     class ManagerRegistry : public QObject
     {
         Q_OBJECT
+        Q_PROPERTY(bool newVersionAvailable READ newVersionAvailable WRITE setNewVersionAvailable NOTIFY changeNewVersionAvailable)
+        Q_PROPERTY(bool checkVersionCompleted READ checkVersionCompleted NOTIFY changeCheckVersionCompleted)
     public:
         ManagerRegistry(QObject *parent = nullptr);
         virtual ~ManagerRegistry() {}
+        Q_INVOKABLE virtual void checkNewVesion();
+        void setNewVersionAvailable(bool newVersionAvailable);
 
     public slots:
         virtual void download() ;
-        virtual void checkNewVesion();
+        static void registerMe();
 
     private:
         friend class tests::tst_ManagerRegistry;
@@ -45,16 +49,25 @@ namespace modules {
         QFile registryArchive;
         QFile fileRegistryInfo;
         QFile fileRegistry { "download/registry.json" };
+        bool m_newVersionAvailable = false;
+        bool m_checkVersionCompleted = false;
+
         virtual bool hasNewRegistry(int version) const;
         virtual bool hasNewRegistry() const;
         virtual int getVersion(const QJsonDocument& document) const;
         virtual int getVersion() const;
         virtual void getDocument(QFile& file);
         virtual void setRegistriesOnce();
-        virtual void setVersion(bool available, int version) const;
+        virtual void setVersion(bool available, int version);
         void downloadFile(int role);
         virtual void tryOther(int role);
+        bool newVersionAvailable() const;
+        void setNewVersionAvailable();
+        bool checkVersionCompleted() const;
+
     signals:
+        void changeNewVersionAvailable();
+        void changeCheckVersionCompleted();
         void newRegistryAvailable(bool available, int version);
         void retrieveDataSuccess(const QJsonDocument& document);
         void removeRegistrySuccess();
@@ -69,6 +82,9 @@ namespace modules {
         virtual void retrieveVersion(const QString& fileName);
         virtual void tryOtherUrl();
         virtual void tryOtherInfoUrl();
+        virtual void setCheckVersionCompleted();
+        virtual void setRegistryVersion();
+
     };
 
 }

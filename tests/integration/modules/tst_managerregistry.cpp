@@ -88,6 +88,7 @@ namespace modules {
         {
             qRegisterMetaType<std::vector<Registry>>("std::vector<Registry>");
             setQSettings();
+            setQSettings(1, "cacheRegistryVersion");
             createFileRegistryArchive(ModelJsonTest<Registry, ModelRegistry>::helperGetDocument());
 
             ManagerRegistry managerRegistry;
@@ -100,6 +101,7 @@ namespace modules {
             QSignalSpy spyTransformSuccessHost(managerRegistry.m_modelHost.get(), &ModelRegistry::transformSuccess);
             QSignalSpy spyUpdateDone(managerRegistry.m_modelRegistry.get(), &ModelRegistry::updateDone);
             QSignalSpy spyUpdateDoneHost(managerRegistry.m_modelHost.get(), &ModelRegistry::updateDone);
+            QSignalSpy spyChangeNewVersionAvailable(&managerRegistry, &ManagerRegistry::changeNewVersionAvailable);
 
             managerRegistry.m_modelRegistry->m_objects.clear();
             managerRegistry.m_modelRegistry->m_objects.push_back(
@@ -108,6 +110,8 @@ namespace modules {
                     QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
                 )
             );
+
+            QCOMPARE(managerRegistry.m_newVersionAvailable, true);
 
             managerRegistry.download();
 
@@ -120,6 +124,8 @@ namespace modules {
             QCOMPARE(spyTransformSuccessHost.count(), 1);
             QCOMPARE(spyRemoveRegistry.count(), 1);
             QCOMPARE(spyUpdateDone.count(), 1);
+            QCOMPARE(spyChangeNewVersionAvailable.count(), 1);
+            QCOMPARE(managerRegistry.m_newVersionAvailable, false);
         }
 
         void tst_ManagerRegistry::downloadManagerFailed()
@@ -134,6 +140,7 @@ namespace modules {
             }
             helperSave(std::move(objects));
             setQSettings();
+            setQSettings(1, "cacheRegistryVersion");
             createFileRegistryArchive(ModelJsonTest<Registry, ModelRegistry>::helperGetDocument());
 
             ManagerRegistry managerRegistry;
@@ -144,6 +151,7 @@ namespace modules {
             QSignalSpy spyRemoveRegistry(&managerRegistry, &ManagerRegistry::removeRegistrySuccess);
             QSignalSpy spyUpdateDone(managerRegistry.m_modelRegistry.get(), &ModelRegistry::updateDone);
             QSignalSpy spyManagerDownloadFailed(managerRegistry.m_manager.get(), &DownloadManager::failed);
+            QSignalSpy spyChangeNewVersionAvailable(&managerRegistry, &ManagerRegistry::changeNewVersionAvailable);
 
             managerRegistry.m_modelRegistry->m_objects.clear();
             managerRegistry.m_modelRegistry->m_objects.push_back(
@@ -152,6 +160,8 @@ namespace modules {
                     QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
                 )
             );
+
+            QCOMPARE(managerRegistry.m_newVersionAvailable, true);
 
             managerRegistry.download();
 
@@ -162,12 +172,16 @@ namespace modules {
             QCOMPARE(spyRetrieveDataSuccess.count(), 1);
             QCOMPARE(spyRemoveRegistry.count(), 1);
             QCOMPARE(spyUpdateDone.count(), 1);
+            QCOMPARE(spyChangeNewVersionAvailable.count(), 1);
+            QCOMPARE(managerRegistry.m_newVersionAvailable, false);
         }
 
         void tst_ManagerRegistry::downloadManagerFailedWithoutRecursion()
         {
             cleanTable();
             helperSave();
+            setQSettings();
+            setQSettings(1, "cacheRegistryVersion");
 
             ManagerRegistry managerRegistry;
 
@@ -178,6 +192,7 @@ namespace modules {
             QSignalSpy spyUpdateDone(managerRegistry.m_modelRegistry.get(), &ModelRegistry::updateDone);
             QSignalSpy spyManagerDownloadFailed(managerRegistry.m_manager.get(), &DownloadManager::failed);
             QSignalSpy spyModelRegistryError(managerRegistry.m_modelRegistry.get(), &ModelRegistry::error);
+            QSignalSpy spyChangeNewVersionAvailable(&managerRegistry, &ManagerRegistry::changeNewVersionAvailable);
 
             managerRegistry.m_modelRegistry->m_objects.clear();
             for ( size_t in = 0; in < vectorSize; in++) {
@@ -189,6 +204,7 @@ namespace modules {
                 );
             }
 
+            QCOMPARE(managerRegistry.m_newVersionAvailable, true);
             managerRegistry.download();
 
             QVERIFY(spyModelRegistryError.wait());
@@ -199,6 +215,8 @@ namespace modules {
             QCOMPARE(spyRemoveRegistry.count(), 0);
             QCOMPARE(spyUpdateDone.count(), 0);
             QCOMPARE(spyModelRegistryError.count(), 1);
+            QCOMPARE(spyChangeNewVersionAvailable.count(), 0);
+            QCOMPARE(managerRegistry.m_newVersionAvailable, true);
         }
 
         void tst_ManagerRegistry::retrieveData_data()
@@ -319,6 +337,31 @@ namespace modules {
             manager.extractRegistry(fileName);
         }
 
+        void tst_ManagerRegistry::contructor_data()
+        {
+            QTest::addColumn<bool>("available");
+            QTest::addColumn<int>("version");
+
+            QTest::newRow("available new version is true") << true << 11;
+            QTest::newRow("available new version is false") << false << 0;
+        }
+
+        void tst_ManagerRegistry::contructor()
+        {
+            QFETCH(bool, available);
+            QFETCH(int, version);
+            setQSettings(version, "cacheRegistryVersion");
+
+            ManagerRegistry manager;
+            QCOMPARE(manager.m_newVersionAvailable, available);
+        }
+
+        void tst_ManagerRegistry::newVersionAvailable()
+        {
+            ManagerRegistry manager;
+            QCOMPARE(manager.newVersionAvailable(), false);
+        }
+
         // version
 
         void tst_ManagerRegistry::checkNewVersion()
@@ -334,6 +377,7 @@ namespace modules {
             QSignalSpy spyReadyRead(managerRegistry.m_manager.get(), &DownloadManager::readyRead);
             QSignalSpy spyGetDocumentSuccess(&managerRegistry, &ManagerRegistry::getDocumentSuccess);
             QSignalSpy spyRemoveInfo(&managerRegistry, &ManagerRegistry::removeInfoSuccess);
+            QSignalSpy spyChangeCheckVersionCompleted(&managerRegistry, &ManagerRegistry::changeCheckVersionCompleted);
             QSignalSpy spyLast(&managerRegistry, &ManagerRegistry::newRegistryAvailable);
 
             managerRegistry.m_modelRegistry->m_objects.clear();
@@ -344,6 +388,7 @@ namespace modules {
                 )
             );
 
+            QCOMPARE(managerRegistry.m_checkVersionCompleted, false);
             managerRegistry.checkNewVesion();
 
             QVERIFY(spyLast.wait());
@@ -352,6 +397,8 @@ namespace modules {
             QCOMPARE(spyRemoveInfo.count(), 1);
             QCOMPARE(spyGetDocumentSuccess.count(), 1);
             QCOMPARE(spyLast.count(), 1);
+            QCOMPARE(spyChangeCheckVersionCompleted.count(), 2);
+            QCOMPARE(managerRegistry.m_checkVersionCompleted, true);
 
             QList<QVariant> arguments = spyLast.takeFirst();
             QCOMPARE(arguments[0].toBool(), true);

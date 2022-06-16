@@ -8,6 +8,7 @@
 #include <QSettings>
 #include <JlCompress.h>
 #include <mutex>
+#include <QtQuick>
 
 #include <invaliddata.h>
 #include "managerregistry.h"
@@ -22,6 +23,17 @@ namespace modules {
           m_modelHost { new ModelHost {} },
           m_manager { new DownloadManager {} }
     {
+        setNewVersionAvailable();
+    }
+
+    void ManagerRegistry::registerMe()
+    {
+        qmlRegisterType<ManagerRegistry>("bible.ManagerRegistry", 1, 0, "ManagerRegistry");
+    }
+
+    bool ManagerRegistry::newVersionAvailable() const
+    {
+        return m_newVersionAvailable;
     }
 
     void ManagerRegistry::download()
@@ -32,6 +44,7 @@ namespace modules {
         connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::retrieveData);
         connect(this, &ManagerRegistry::retrieveDataSuccess, m_modelRegistry.get(), &ModelRegistry::transform);
         connect(this, &ManagerRegistry::retrieveDataSuccess, m_modelHost.get(), &ModelHost::transform);
+        connect(this, &ManagerRegistry::retrieveDataSuccess, &ManagerRegistry::setRegistryVersion);
 
         downloadFile(ModelRegistry::RegistryRoles::UrlRole);
     }
@@ -119,13 +132,51 @@ namespace modules {
 
     void ManagerRegistry::checkNewVesion()
     {
+        m_checkVersionCompleted = false;
+        emit changeCheckVersionCompleted();
+
         connect(m_manager.get(), &DownloadManager::failed, this, &ManagerRegistry::tryOtherInfoUrl);
         connect(m_manager.get(), &DownloadManager::readyRead, this, &ManagerRegistry::retrieveVersion);
         connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::removeInfo);
         connect(this, &ManagerRegistry::getDocumentSuccess, &ManagerRegistry::retrieveDataInfo);
         connect(this, &ManagerRegistry::newRegistryAvailable, &ManagerRegistry::setVersion);
+        connect(this, &ManagerRegistry::newRegistryAvailable, &ManagerRegistry::setCheckVersionCompleted);
 
         downloadFile(ModelRegistry::RegistryRoles::InfoUrlRole);
+    }
+
+    // setters
+
+    void ManagerRegistry::setNewVersionAvailable(bool newVersionAvailable)
+    {
+        m_newVersionAvailable = newVersionAvailable;
+        emit changeNewVersionAvailable();
+    }
+
+    void ManagerRegistry::setNewVersionAvailable()
+    {
+        m_newVersionAvailable = hasNewRegistry();
+        emit changeNewVersionAvailable();
+    }
+
+    void ManagerRegistry::setVersion(bool available, int version)
+    {
+        if (available) {
+            QSettings().setValue("cacheRegistryVersion", version);
+            setNewVersionAvailable();
+        }
+    }
+
+    void ManagerRegistry::setRegistryVersion()
+    {
+        QSettings().setValue("registryVersion", getVersion());
+        setNewVersionAvailable();
+    }
+
+    void ManagerRegistry::setCheckVersionCompleted()
+    {
+        m_checkVersionCompleted = true;
+        emit changeCheckVersionCompleted();
     }
 
     void ManagerRegistry::tryOtherInfoUrl()
@@ -165,11 +216,8 @@ namespace modules {
         return QSettings().value("cacheRegistryVersion").toInt();
     }
 
-    void ManagerRegistry::setVersion(bool available, int version) const
+    bool ManagerRegistry::checkVersionCompleted() const
     {
-        if (available) {
-            QSettings().setValue("cacheRegistryVersion", version);
-        }
+        return m_checkVersionCompleted;
     }
-
 }
