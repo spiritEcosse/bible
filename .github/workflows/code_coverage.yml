@@ -17,7 +17,7 @@ jobs:
 
     - name: Tests
       run: docker run --rm --privileged -v $PWD:/share coderus/sailfishos-platform-sdk:$RELEASE /bin/bash -c "
-            zypper install -y cmake git &&
+            devel-su zypper install -y cmake git &&
             cd /home/mersdk &&
             mkdir -p build &&
             cd build &&
