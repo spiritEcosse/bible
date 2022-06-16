@@ -17,11 +17,13 @@ jobs:
 
     - name: Tests
       run: docker run --rm --privileged -v $PWD:/share coderus/sailfishos-platform-sdk-armv7hl:$RELEASE /bin/bash -c "
-            sudo zypper install -y cmake git sqlite qt5-qttest perl-CPAN perl-IPC-Cmd &&
+            alias mb2='mb2 --target SailfishOS-$RELEASE-armv7hl' &&
             cd /home/mersdk &&
             mkdir -p build &&
             cd build &&
-            cmake -DBUILD_TESTING=ON -DCODE_COVERAGE=ON /share &&
+            cp -fr /share/* . &&
+            cp -fr /share/.* . &&
+            cmake -DBUILD_TESTING=ON -DCODE_COVERAGE=ON -G 'NMake Makefiles' . &&
             cmake --build . --target all &&
             ctest --output-on-failure &&
             sudo cp -r * /share/output
