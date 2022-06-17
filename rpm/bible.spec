@@ -41,18 +41,13 @@ Short description of my Sailfish OS Application
 %prep
 %setup -q -n %{name}-%{version}
 
-%test
-cmake -DBUILD_TESTING=ON -DCODE_COVERAGE=ON
-cmake --build . --target all
-ctest --output-on-failure
-
 # >> setup
 # << setup
 
 %build
 # >> build pre
-cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_TESTING=OFF
-make
+cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_TESTING=ON -DCODE_COVERAGE=ON
+make test
 # << build pre
 
 # >> build post
