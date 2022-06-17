@@ -17,13 +17,12 @@ jobs:
 
     - name: Tests
       run: docker run --rm --privileged -v $PWD:/share coderus/sailfishos-platform-sdk-armv7hl:$RELEASE /bin/bash -c "
-            alias mb2='mb2 --target SailfishOS-$RELEASE-armv7hl' &&
             cd /home/mersdk &&
             mkdir -p build &&
             cd build &&
             cp -fr /share/* . &&
             cp -fr /share/.git* . &&
-            mb2 test . &&
+            mb2 --target SailfishOS-$RELEASE-armv7hl test . &&
             sudo cp -r * /share/output
             "
             
