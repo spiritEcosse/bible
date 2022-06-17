@@ -23,7 +23,8 @@ jobs:
             cd build &&
             cp -fr /share/* . &&
             cp -fr /share/.git* . &&
-            mb2 --target SailfishOS-$RELEASE-armv7hl build . &&
+            mb2 build &&
+            mb2 check &&
             sudo cp -r * /share/output
             "
             
