@@ -213,7 +213,7 @@ if ( BUILD_TESTING )
     if (CODE_COVERAGE)
 #        list(APPEND CMAKE_PREFIX_PATH "/usr/local/Cellar/llvm/12.0.1/lib/cmake/llvm/")
 #        list(APPEND CMAKE_PREFIX_PATH "/usr/local/Cellar/llvm/12.0.1/bin/")
-        find_package(LLVM REQUIRED CONFIG)
+        find_package(LLVM REQUIRED)
 
         message(${LLVM_INCLUDE_DIRS})
         message(${LLVM_DEFINITIONS})
