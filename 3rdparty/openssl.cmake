@@ -21,7 +21,12 @@ else()
 
         set(CUSTOMCONFIG "enable-ssl3 enable-ssl3-method enable-ssl-trace")
 
+        message(${OPENSSL_BUNDLE_DIR})
+        message(${OPENSSL_SRC_DIR})
+
         if (NOT ${OPENSSL_BUNDLE_DIR} STREQUAL ${OPENSSL_SRC_DIR})
+            message("rm -fr ; cp -fr")
+
             execute_process(COMMAND bash -c "\
                 rm -fr ${OPENSSL_BUNDLE_DIR} && \
                 cp -fr ${OPENSSL_SRC_DIR} ${OPENSSL_BUNDLE_DIR}")
