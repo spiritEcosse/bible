@@ -41,6 +41,11 @@ Short description of my Sailfish OS Application
 %prep
 %setup -q -n %{name}-%{version}
 
+%test
+cmake -DBUILD_TESTING=ON -DCODE_COVERAGE=ON
+cmake --build . --target all
+ctest --output-on-failure
+
 # >> setup
 # << setup
 
