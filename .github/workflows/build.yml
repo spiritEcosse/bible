@@ -26,9 +26,6 @@ jobs:
     - name: ls -la ~/3rdparty
       run: ls -la ~/3rdparty
       
-    - name: ls -la ~/
-      run: ls -la ~/
-
     - name: Prepare create 3rdparty_builds
       run: mkdir -p 3rdparty_builds
 
