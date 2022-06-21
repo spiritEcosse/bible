@@ -11,10 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Prepare Install lcov from tag v1.15
-      run: sudo git clone https://github.com/linux-test-project/lcov.git && cd lcov && sudo git checkout tags/v1.15 && sudo make install
-
+    
     - name: Tests
       run: docker run --rm --privileged -v $PWD:/share coderus/sailfishos-platform-sdk-armv7hl:$RELEASE /bin/bash -c "
             alias mb2='mb2 --target SailfishOS-$RELEASE-armv7hl' &&
