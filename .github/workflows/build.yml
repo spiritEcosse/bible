@@ -32,12 +32,19 @@ jobs:
     - name: Build aarch64
       run: docker run --rm --privileged -v /home/runner/3rdparty:/share/3rdparty_builds -v $PWD:/share coderus/sailfishos-platform-sdk:$RELEASE /bin/bash -c "
             cd /share &&
+            ls -la /share/3rdparty_builds &&
             sudo mkdir test &&
             sudo touch test/.test.txt &&
             sudo touch test/test_.txt &&
             sudo mv test/* 3rdparty_builds
             "
 
+    - name: mv 3rdparty /home/runner/3rdparty
+      run: mv 3rdparty /home/runner/3rdparty
+
+    - name: ls -la /home/runner/3rdparty
+      run: ls -la /home/runner/3rdparty
+      
     - name: Set up a cache for 3rdparty
       uses: actions/cache@v2
       with: 
