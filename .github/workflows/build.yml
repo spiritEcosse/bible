@@ -45,8 +45,8 @@ jobs:
     - name: mv 3rdparty_builds /home/runner/3rdparty
       run: mv 3rdparty_builds /home/runner/3rdparty
 
-    - name: ls -la /home/runner/3rdparty
-      run: ls -la /home/runner/3rdparty
+    - name: ls -la /home/runner/3rdparty/test
+      run: ls -la /home/runner/3rdparty/test
       
     - name: Set up a cache for 3rdparty
       uses: actions/cache@v2
