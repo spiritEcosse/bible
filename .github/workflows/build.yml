@@ -38,7 +38,7 @@ jobs:
             sudo mkdir test &&
             sudo touch test/.test.txt &&
             sudo touch test/test_.txt &&
-            mv test/* 3rdparty_builds
+            sudo mv test/* 3rdparty_builds
             "
 
     - name: Set up a cache for 3rdparty
