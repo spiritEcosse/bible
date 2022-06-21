@@ -4,6 +4,7 @@ project(bible LANGUAGES CXX)
 
 #message("CMAKE_PROJECT_VERSION = ${CMAKE_PROJECT_VERSION}")
 message("CMAKE_CXX_COMPILER_VERSION : ${CMAKE_CXX_COMPILER_VERSION}")
+message("CMAKE_CXX_COMPILER : ${CMAKE_CXX_COMPILER}")
 #- gcc -v && g++ -v && cmake --version
 message("PROJECT_BINARY_DIR : ${PROJECT_BINARY_DIR}")
 
@@ -205,46 +206,25 @@ else()
     endif()
 endif()
 
+set(CMAKE_AUTOUIC ON)
+add_subdirectory(src)
+
+
 if ( BUILD_TESTING )
-    enable_testing()
-    option(QUAZIP_ENABLE_TESTS "Enable quazip tests" OFF)
-    option(CODE_COVERAGE "Enable coverage reporting" OFF)
-
+    set(CODE_COVERAGE true)
     if (CODE_COVERAGE)
-#        list(APPEND CMAKE_PREFIX_PATH "/usr/local/Cellar/llvm/12.0.1/lib/cmake/llvm/")
-#        list(APPEND CMAKE_PREFIX_PATH "/usr/local/Cellar/llvm/12.0.1/bin/")
-        find_package(LLVM REQUIRED)
+        set(ENV{PATH} "/usr/local/bin/:$ENV{PATH}")
+        set(LIB_LLVM llvm)
+        include(${LIB_LLVM})
 
-        message(${LLVM_INCLUDE_DIRS})
-        message(${LLVM_DEFINITIONS})
+        list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-        message(STATUS "Found LLVM version : ${LLVM_PACKAGE_VERSION}")
-        message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
-
-        set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/.travis/cmake)
         include(CodeCoverage)
         add_code_coverage_all_targets(EXCLUDE 3rdparty/* tests/*) # Adds the 'ccov-all' target set and sets it to exclude all files in test/ folders.
 
         SET(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
         SET(CMAKE_C_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
     endif()
-endif()
 
-set(CMAKE_AUTOUIC ON)
-add_subdirectory(src)
-
-#add_library(tag SHARED IMPORTED)
-#set_target_properties(tag PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/build/taglib/lib/libtag.so)
-
-#ExternalProject_Add(quickdownload
-#                    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/quickdownload
-#                    URL https://github.com/Larpon/QuickDownload.git
-#                    DOWNLOAD_DIR ${QGLViewer_DSTDIR}
-#                    BUILD_IN_SOURCE 1
-#                    CONFIGURE_COMMAND qmake quickdownload.pro PREFIX=${CMAKE_CURRENT_BINARY_DIR}/3rdparty/quickdownload
-#                    BUILD_COMMAND make
-#                   )
-
-if ( BUILD_TESTING )
     add_subdirectory(tests)
 endif()
