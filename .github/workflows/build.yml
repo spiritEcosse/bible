@@ -23,8 +23,8 @@ jobs:
     - name: Pwd
       run: pwd
       
-    - name: ls -la ~/3rdparty
-      run: ls -la ~/3rdparty
+    - name: ls -la /home/runner/3rdparty
+      run: ls -la /home/runner/3rdparty
       
     - name: Prepare create 3rdparty_builds
       run: mkdir -p 3rdparty_builds
