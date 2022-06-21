@@ -10,7 +10,7 @@ if(NOT EXISTS "${LLVM_SRC_DIR}")
 endif()
 
 if(NOT EXISTS ${LLVM_INSTALL_DIR})
-    execute_process(COMMAND bash -c "cmake -S llvm -B build -DLLVM_CODE_COVERAGE_TARGETS=llvm-cov -DCMAKE_BUILD_TYPE=Release -G ${CMAKE_GENERATOR} ../${LIB_LLVM}"
+    execute_process(COMMAND bash -c "cmake -S llvm -B build -DLLVM_CODE_COVERAGE_TARGETS=llvm-cov -DCMAKE_BUILD_TYPE=Release -G Ninja ../${LIB_LLVM}"
             WORKING_DIRECTORY ${LLVM_BUNDLE_DIR} RESULT_VARIABLE OUTPUT_BUILD_LLVM)
     execute_process(COMMAND bash -c "cmake --build build --target llvm-cov"
             WORKING_DIRECTORY ${LLVM_BUNDLE_DIR})
