@@ -33,7 +33,7 @@ jobs:
       run: mkdir -p 3rdparty_builds
 
     - name: Build aarch64
-      run: docker run --rm --privileged -v /home/runner/3rdparty:/share/3rdparty_builds $PWD:/share coderus/sailfishos-platform-sdk:$RELEASE /bin/bash -c "
+      run: docker run --rm --privileged -v /home/runner/3rdparty:/share/3rdparty_builds -v $PWD:/share coderus/sailfishos-platform-sdk:$RELEASE /bin/bash -c "
             cd /share &&
             mkdir test &&
             touch test/.test.txt &&
