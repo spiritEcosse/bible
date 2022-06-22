@@ -15,10 +15,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Prepare
       run: mkdir -p ~/3rdparty
+
+    - name: Set up a cache for 3rdparty
+      uses: actions/cache@v3
+      with: 
+        path: 3rdparty
+        key: sailfish-3rdparty
+        restore-keys: sailfish-3rdparty
 
     - name: Pwd
       run: pwd
@@ -53,11 +60,4 @@ jobs:
 
     - name: ls -la /home/runner/3rdparty/test
       run: ls -la /home/runner/3rdparty/test
-      
-    - name: Set up a cache for 3rdparty
-      uses: actions/cache@v2
-      with: 
-        path: ~/3rdparty
-        key: sailfish-3rdparty
-        restore-keys: sailfish-3rdparty
 
