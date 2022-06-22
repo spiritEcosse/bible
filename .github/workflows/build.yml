@@ -39,7 +39,7 @@ jobs:
             sudo mkdir test &&
             sudo touch test/.test.txt &&
             sudo touch test/test_.txt &&
-            sudo mv test/* 3rdparty_builds &&
+            sudo mv test 3rdparty_builds &&
             ls -la /share/3rdparty_builds
             "
 
