@@ -37,6 +37,9 @@ jobs:
     - name: ls -la 3rdparty
       run: ls -la 3rdparty
 
+    - name:  3rdparty /home/runner/3rdparty
+      run: rsync -arvP --delete 3rdparty/ /home/runner/3rdparty
+
     - name: ls -la /home/runner/3rdparty/test
       run: ls -la /home/runner/3rdparty/test
       
