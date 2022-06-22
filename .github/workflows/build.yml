@@ -60,3 +60,4 @@ jobs:
         path: ~/3rdparty
         key: sailfish-3rdparty
         restore-keys: sailfish-3rdparty
+
