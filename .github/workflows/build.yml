@@ -23,7 +23,7 @@ jobs:
     - name: Set up a cache for 3rdparty
       uses: actions/cache@v3
       with: 
-        path: 3rdparty
+        path: /home/runner/3rdparty
         key: sailfish-3rdparty
         restore-keys: sailfish-3rdparty
 
