@@ -25,29 +25,14 @@ jobs:
       
     - name: ls -la /home/runner/3rdparty
       run: ls -la /home/runner/3rdparty
-      
-    - name: Prepare create output
-      run: mkdir -p output
-      
-    - name: ls -la 
-      run: ls -la
 
     - name: Build aarch64
       run: docker run --rm --privileged -v $PWD:/share coderus/sailfishos-platform-sdk:$RELEASE /bin/bash -c "
-            cd /share &&
-            ls -la /share/output &&
+            cd /share/3rdparty &&
             sudo mkdir test &&
             sudo touch test/.test.txt &&
-            sudo touch test/test_.txt &&
-            sudo mv test output &&
-            ls -la /share/output
+            sudo touch test/test_.txt
             "
-
-    - name: ls -la output
-      run: ls -la output
-
-    - name: mv output /home/runner/3rdparty
-      run: mv output /home/runner/3rdparty
 
     - name: ls -la 3rdparty
       run: ls -la 3rdparty
