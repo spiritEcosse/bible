@@ -25,13 +25,24 @@ jobs:
       
     - name: ls -la /home/runner/3rdparty
       run: ls -la /home/runner/3rdparty
+      
+    - name: mv 3rdparty 3rdparty_original
+      run: mv 3rdparty 3rdparty_original
+
+    - name: cp -fr /home/runner/3rdparty .
+      run: cp -fr /home/runner/3rdparty .
+      
+    - name: cp -fr 3rdparty_original/* 3rdparty
+      run: cp -fr 3rdparty_original/* 3rdparty
 
     - name: Build aarch64
       run: docker run --rm --privileged -v $PWD:/share coderus/sailfishos-platform-sdk:$RELEASE /bin/bash -c "
             cd /share/3rdparty &&
             sudo mkdir test &&
             sudo touch test/.test.txt &&
-            sudo touch test/test_.txt
+            sudo touch test/test_.txt &&
+            sudo touch .new_file &&
+            sudo touch new_file
             "
 
     - name: ls -la 3rdparty
