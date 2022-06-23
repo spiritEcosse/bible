@@ -11,6 +11,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+    - name: Prepare
+      run: mkdir -p ~/3rdparty
+
+    - name: Set up a cache for 3rdparty
+      uses: actions/cache@v3
+      with: 
+        path: /home/runner/3rdparty
+        key: sailfish-armv7hl-3rdparty-${{ hashFiles('*') }}
+        restore-keys: sailfish-armv7hl-3rdparty-
+
+    - name: mv 3rdparty 3rdparty_original
+      run: mv 3rdparty 3rdparty_original
+
+    - name: cp -fr /home/runner/3rdparty .
+      run: cp -fr /home/runner/3rdparty .
+      
+    - name: cp -fr 3rdparty_original/* 3rdparty
+      run: cp -fr 3rdparty_original/* 3rdparty
     
     - name: Tests
       run: docker run --rm --privileged -v $PWD:/share coderus/sailfishos-platform-sdk-armv7hl:$RELEASE /bin/bash -c "
@@ -20,10 +39,12 @@ jobs:
             cd build &&
             cp -fr /share/* . &&
             cp -fr /share/.git* . &&
-            mb2 build &&
-            mb2 check &&
-            sudo cp -r * /share/output
+            mb2 build && mb2 check ;
+            sudo rsync -arvP --delete 3rdparty /share/3rdparty
             "
+
+    - name:  3rdparty /home/runner/3rdparty
+      run: rsync -arvP --delete 3rdparty/ /home/runner/3rdparty
             
     - name: Make lcov
       working-directory: /share/output
