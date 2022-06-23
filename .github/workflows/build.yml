@@ -26,9 +26,6 @@ jobs:
         path: /home/runner/3rdparty
         key: sailfish-3rdparty
         restore-keys: sailfish-3rdparty
-
-    - name: Pwd
-      run: pwd
       
     - name: ls -la /home/runner/3rdparty
       run: ls -la /home/runner/3rdparty
@@ -49,7 +46,7 @@ jobs:
             sudo touch test/.test.txt &&
             sudo touch test/test_.txt &&
             sudo touch .new_file &&
-            sudo touch new_file &&
+            sudo touch new_file_today &&
             sudo touch rrr.txt
             "
 
