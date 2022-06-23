@@ -24,7 +24,7 @@ jobs:
       uses: actions/cache@v3
       with: 
         path: /home/runner/3rdparty
-        key: sailfish-3rdparty
+        key: sailfish-3rdparty-${{ hashFiles('*') }}
         restore-keys: sailfish-3rdparty
       
     - name: ls -la /home/runner/3rdparty
