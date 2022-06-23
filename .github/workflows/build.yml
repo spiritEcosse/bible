@@ -58,4 +58,3 @@ jobs:
 
     - name: ls -la /home/runner/3rdparty/test
       run: ls -la /home/runner/3rdparty/test
-
