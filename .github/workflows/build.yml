@@ -26,10 +26,7 @@ jobs:
         path: /home/runner/3rdparty
         key: sailfish-3rdparty-${{ hashFiles('*') }}
         restore-keys: sailfish-3rdparty-
-      
-    - name: ls -la /home/runner/3rdparty
-      run: ls -la /home/runner/3rdparty
-      
+
     - name: mv 3rdparty 3rdparty_original
       run: mv 3rdparty 3rdparty_original
 
@@ -50,11 +47,5 @@ jobs:
             sudo touch rrr.txt
             "
 
-    - name: ls -la 3rdparty
-      run: ls -la 3rdparty
-
     - name:  3rdparty /home/runner/3rdparty
       run: rsync -arvP --delete 3rdparty/ /home/runner/3rdparty
-
-    - name: ls -la /home/runner/3rdparty/test
-      run: ls -la /home/runner/3rdparty/test
