@@ -25,7 +25,7 @@ jobs:
       with: 
         path: /home/runner/3rdparty
         key: sailfish-3rdparty-${{ hashFiles('*') }}
-        restore-keys: sailfish-3rdparty
+        restore-keys: sailfish-3rdparty-
       
     - name: ls -la /home/runner/3rdparty
       run: ls -la /home/runner/3rdparty
