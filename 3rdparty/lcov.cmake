@@ -8,6 +8,6 @@ if(NOT EXISTS "${LCOV_SRC_DIR}")
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty)
 endif()
 
-set(ENV{PATH} "${LCOV_BUNDLE_DIR}/bin:$ENV{PATH}")
+set(ENV{PATH} "${LCOV_SRC_DIR}/bin:$ENV{PATH}")
 
 message(STATUS "========================End configure ${LIB_LCOV}====================")
