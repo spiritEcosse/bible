@@ -18,9 +18,8 @@ jobs:
 
     - name: Get Hash of cmake files
       id: get-hash-cmake-files
-      path: /home/runner/3rdparty
       run: |
-          echo "::set-output name=hash_cmake_files::$(sha1sum *.cmake | sha1sum | awk '{print $1}')"
+          echo "::set-output name=hash_cmake_files::$(sha1sum /home/runner/3rdparty/*.cmake | sha1sum | awk '{print $1}')"
       shell: bash
 
 
