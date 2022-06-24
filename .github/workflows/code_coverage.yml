@@ -37,6 +37,9 @@ jobs:
 
     - name: cp -fr 3rdparty_original/* /home/runner/work/bible/bible/3rdparty/
       run: cp -fr 3rdparty_original/* /home/runner/work/bible/bible/3rdparty/
+
+    - name: ls -la 3rdparty
+      run: ls -la 3rdparty
     
     - name: Tests
       run: docker run --rm --privileged -v $PWD:/share coderus/sailfishos-platform-sdk-armv7hl:$RELEASE /bin/bash -c "
