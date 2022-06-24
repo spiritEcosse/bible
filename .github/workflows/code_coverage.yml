@@ -23,29 +23,11 @@ jobs:
         key: sailfish-armv7hl-3rdparty-${{ hashFiles('*') }}
         restore-keys: sailfish-armv7hl-3rdparty-
 
-    - name: ls -la ~/3rdparty
-      run: ls -la ~/3rdparty
-
-    - name: ls -la ~/3rdparty
-      run: mv ~/3rdparty ~/3rdparty_old && mv ~/3rdparty_old/3rdparty ~/
-
-    - name: ls -la ~/3rdparty
-      run: ls -la ~/3rdparty
-
     - name: mv 3rdparty 3rdparty_original
       run: mv 3rdparty 3rdparty_original
 
-    - name: pwd
-      run: pwd
-
-    - name: ls -la
-      run: ls -la
-
     - name: cp -fr ~/3rdparty .
       run: cp -fr ~/3rdparty .
-
-    - name: ls -la 3rdparty
-      run: ls -la 3rdparty
 
     - name: cp -fr 3rdparty_original/* 3rdparty/
       run: cp -fr 3rdparty_original/* 3rdparty/
@@ -55,7 +37,6 @@ jobs:
 
     - name: Tests
       run: docker run --rm --privileged -v $PWD:/share coderus/sailfishos-platform-sdk-armv7hl:$RELEASE /bin/bash -c "
-            ls -la /share/3rdparty &&
             alias mb2='mb2 --target SailfishOS-$RELEASE-armv7hl' &&
             cd /home/mersdk &&
             mkdir -p build &&
