@@ -26,6 +26,12 @@ jobs:
     - name: ls -la ~/3rdparty
       run: ls -la ~/3rdparty
 
+    - name: ls -la ~/3rdparty
+      run: mv ~/3rdparty ~/3rdparty_old && mv ~/3rdparty_old/3rdparty ~/
+
+    - name: ls -la ~/3rdparty
+      run: ls -la ~/3rdparty
+
     - name: mv 3rdparty 3rdparty_original
       run: mv 3rdparty 3rdparty_original
 
@@ -41,8 +47,8 @@ jobs:
     - name: ls -la 3rdparty
       run: ls -la 3rdparty
 
-    - name: cp -fr 3rdparty_original/* /home/runner/work/bible/bible/3rdparty/
-      run: cp -fr 3rdparty_original/* /home/runner/work/bible/bible/3rdparty/
+    - name: cp -fr 3rdparty_original/* 3rdparty/
+      run: cp -fr 3rdparty_original/* 3rdparty/
 
     - name: ls -la 3rdparty
       run: ls -la 3rdparty
@@ -58,7 +64,7 @@ jobs:
             cp -fr /share/.git* . &&
             ls -la 3rdparty &&
             mb2 build && mb2 check ;
-            sudo rsync -arvP --delete 3rdparty /share/3rdparty
+            sudo rsync -arvP --delete 3rdparty/ /share/3rdparty
             "
 
 
