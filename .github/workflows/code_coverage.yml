@@ -17,10 +17,10 @@ jobs:
       run: mkdir -p ~/3rdparty
 
     - name: Get Hash of cmake files
-        id: get-hash-cmake-files
-        run: |
+      id: get-hash-cmake-files
+      run: |
           echo "::set-output name=hash_cmake_files::$(sha1sum *.cmake | sha1sum | awk '{print $1}')"
-        shell: bash
+      shell: bash
 
     - name: Set up a cache for 3rdparty
       uses: actions/cache@v3
