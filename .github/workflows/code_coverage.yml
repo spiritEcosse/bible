@@ -48,6 +48,12 @@ jobs:
             sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty
             "
 
+    - name: ls -la ~/3rdparty
+      run: ls -la ~/3rdparty
+
+    - name: ls -la 3rdparty
+      run: ls -la 3rdparty
+
     - name:  3rdparty /home/runner/3rdparty
       run: rsync -ar --stats --delete 3rdparty/ /home/runner/3rdparty
 
