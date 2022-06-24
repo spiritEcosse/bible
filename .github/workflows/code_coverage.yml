@@ -19,7 +19,7 @@ jobs:
     - name: Get Hash of cmake files
         id: get-hash-cmake-files
         run: |
-          echo "::set-output hash_cmake_files=$(sha1sum *.cmake | sha1sum | awk '{print $1}')"
+          echo "::set-output name=hash_cmake_files::$(sha1sum *.cmake | sha1sum | awk '{print $1}')"
         shell: bash
 
     - name: Set up a cache for 3rdparty
