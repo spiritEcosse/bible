@@ -26,9 +26,9 @@ jobs:
     - name: mv 3rdparty 3rdparty_original
       run: mv 3rdparty 3rdparty_original
 
-    - name: cp -fr /home/runner/3rdparty .
-      run: cp -fr /home/runner/3rdparty .
-      
+    - name: cp -fr /home/runner/3rdparty /home/runner/work/bible/
+      run: cp -fr /home/runner/3rdparty /home/runner/work/bible/
+
     - name: cp -fr 3rdparty_original/* 3rdparty
       run: cp -fr 3rdparty_original/* 3rdparty
     
