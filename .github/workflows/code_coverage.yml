@@ -16,11 +16,17 @@ jobs:
     - name: Prepare
       run: mkdir -p ~/3rdparty
 
+    - name: Get Hash of cmake files
+        id: get-hash-cmake-files
+        run: |
+          echo "::set-output hash_cmake_files=$(sha1sum *.cmake | sha1sum | awk '{print $1}')"
+        shell: bash
+
     - name: Set up a cache for 3rdparty
       uses: actions/cache@v3
       with: 
         path: /home/runner/3rdparty
-        key: sailfish-armv7hl-3rdparty-${{ hashFiles('*.cmake') }}
+        key: sailfish-armv7hl-3rdparty-${{ steps.get-hash-cmake-files.outputs.hash_cmake_files }}
         restore-keys: sailfish-armv7hl-3rdparty-
 
     - name: mv 3rdparty 3rdparty_original
