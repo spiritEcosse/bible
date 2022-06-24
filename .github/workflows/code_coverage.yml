@@ -23,6 +23,9 @@ jobs:
         key: sailfish-armv7hl-3rdparty-${{ hashFiles('*') }}
         restore-keys: sailfish-armv7hl-3rdparty-
 
+    - name: ls -la ~/3rdparty
+      run: ls -la ~/3rdparty
+
     - name: mv 3rdparty 3rdparty_original
       run: mv 3rdparty 3rdparty_original
 
@@ -32,15 +35,18 @@ jobs:
     - name: ls -la
       run: ls -la
 
-    - name: cp -fr /home/runner/3rdparty /home/runner/work/bible/bible/
-      run: cp -fr /home/runner/3rdparty /home/runner/work/bible/bible/
+    - name: cp -fr ~/3rdparty .
+      run: cp -fr ~/3rdparty .
+
+    - name: ls -la 3rdparty
+      run: ls -la 3rdparty
 
     - name: cp -fr 3rdparty_original/* /home/runner/work/bible/bible/3rdparty/
       run: cp -fr 3rdparty_original/* /home/runner/work/bible/bible/3rdparty/
 
     - name: ls -la 3rdparty
       run: ls -la 3rdparty
-    
+
     - name: Tests
       run: docker run --rm --privileged -v $PWD:/share coderus/sailfishos-platform-sdk-armv7hl:$RELEASE /bin/bash -c "
             ls -la /share/3rdparty &&
