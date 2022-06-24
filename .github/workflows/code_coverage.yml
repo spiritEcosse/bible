@@ -22,6 +22,7 @@ jobs:
           echo "::set-output name=hash_cmake_files::$(sha1sum *.cmake | sha1sum | awk '{print $1}')"
       shell: bash
 
+
     - name: Set up a cache for 3rdparty
       uses: actions/cache@v3
       with: 
