@@ -26,6 +26,12 @@ jobs:
     - name: mv 3rdparty 3rdparty_original
       run: mv 3rdparty 3rdparty_original
 
+    - name: pwd
+      run: pwd
+
+    - name: ls -la
+      run: ls -la
+
     - name: cp -fr /home/runner/3rdparty /home/runner/work/bible/
       run: cp -fr /home/runner/3rdparty /home/runner/work/bible/
 
