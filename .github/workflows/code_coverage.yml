@@ -44,7 +44,7 @@ jobs:
             cp -fr /share/* . &&
             cp -fr /share/.git* . &&
             ls -la 3rdparty &&
-            mb2 build && ctest --output-on-failure ;
+            mb2 build && /usr/bin/ctest --output-on-failure ;
             sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty
             "
 
