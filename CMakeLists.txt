@@ -9,6 +9,7 @@ option(CMAKE_GENERATOR "Ninja")
 message("CMAKE_GENERATOR : ${CMAKE_GENERATOR}")
 #- gcc -v && g++ -v && cmake --version
 message("PROJECT_BINARY_DIR : ${PROJECT_BINARY_DIR}")
+message("CMAKE_MAKE_PROGRAM : ${CMAKE_MAKE_PROGRAM}")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
