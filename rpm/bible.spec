@@ -22,7 +22,6 @@ Requires:   perl-IPC-Cmd
 Requires:   sqlite
 Requires:   qt5-qttest
 Requires:   sdk-deploy-rpm
-Requires:   cmake
 BuildRequires:  pkgconfig(sailfishapp) >= 1.0.2
 BuildRequires:  pkgconfig(Qt5Core)
 BuildRequires:  pkgconfig(Qt5Qml)
