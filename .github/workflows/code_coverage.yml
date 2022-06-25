@@ -43,9 +43,10 @@ jobs:
             cd build &&
             cp -fr /share/* . &&
             cp -fr /share/.git* . &&
-            ls -la 3rdparty &&
+            ls -la . &&
             sudo zypper install -y cmake &&
-            mb2 build && ctest --output-on-failure ;
+            mb2 build && ls -la && cd tests && ctest --output-on-failure ;
+            cd ../ &&
             sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty
             "
 
