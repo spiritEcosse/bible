@@ -51,7 +51,7 @@ make
 # << build pre
 
 %check
-make test CTEST_OUTPUT_ON_FAILURE=TRUE
+make tests CTEST_OUTPUT_ON_FAILURE=TRUE
 
 # >> build post
 # << build post
