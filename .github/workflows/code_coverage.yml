@@ -37,11 +37,15 @@ jobs:
 
     - name: Tests
       run: docker run --rm --privileged -v $PWD:/share coderus/sailfishos-platform-sdk-armv7hl:$RELEASE /bin/bash -c "
-            which cmake ;
-            which ctest ;
-            sudo zypper install -y cmake &&
-            which cmake ;
-            which ctest
+            alias mb2='mb2 --target SailfishOS-$RELEASE-armv7hl' &&
+            cd /home/mersdk &&
+            mkdir -p build &&
+            cd build &&
+            cp -fr /share/* . &&
+            cp -fr /share/.git* . &&
+            ls -la 3rdparty &&
+            mb2 build && /usr/bin/ctest --output-on-failure ;
+            sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty
             "
 
     - name: ls -la ~/3rdparty
