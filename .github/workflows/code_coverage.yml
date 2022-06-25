@@ -44,9 +44,10 @@ jobs:
             cp -fr /share/* . &&
             cp -fr /share/.git* . &&
             ls -la . &&
-            sudo zypper install -y cmake &&
-            mb2 build && ls -la && cd tests && ctest --output-on-failure ;
-            cd ../ &&
+            sudo zypper install -y cmake git sqlite qt5-qttest perl-CPAN perl-IPC-Cmd  &&
+            cmake -DBUILD_TESTING=ON -DCODE_COVERAGE=ON -G 'Unix Makefiles' . &&
+            cmake --build . --target all &&
+            ctest --output-on-failure &&
             sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty
             "
 
