@@ -45,7 +45,7 @@ jobs:
             cp -fr /share/.git* . &&
             ls -la . &&
             sudo zypper install -y cmake git sqlite qt5-qttest perl-CPAN perl-IPC-Cmd make clang &&
-            cmake -DBUILD_TESTING=ON -DCODE_COVERAGE=ON -G 'Unix Makefiles' . &&
+            cmake -DBUILD_TESTING=ON -DCODE_COVERAGE=ON -G 'Unix Makefiles' -DQt5DIR=/usr/lib/cmake/Qt5 . &&
             cmake --build . --target all &&
             ctest --output-on-failure &&
             sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty
