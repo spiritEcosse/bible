@@ -97,6 +97,9 @@ else()
 endif()
 
 if ( ${SAILFISH} )
+    list(APPEND CMAKE_PREFIX_PATH "/srv/mer/targets/SailfishOS-4.4.0.64-armv7hl/usr/lib/cmake/Qt5/")
+    list(APPEND CMAKE_PREFIX_PATH "/Users/ihor/Qt5.6.3/5.6.3/clang_64/bin/")
+
     include(FindPkgConfig)
     pkg_search_module(SAILFISH sailfishapp REQUIRED)
 

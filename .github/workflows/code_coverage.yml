@@ -39,14 +39,14 @@ jobs:
       run: docker run --rm --privileged -v $PWD:/share coderus/sailfishos-platform-sdk-armv7hl:$RELEASE /bin/bash -c "
             alias mb2='mb2 --target SailfishOS-$RELEASE-armv7hl' &&
             cd /home/mersdk &&
-            sudo find / -type f -name 'Qt5Config.cmake' &&
+            sudo find / -type d -name 'Qt5' &&
             mkdir -p build &&
             cd build &&
             cp -fr /share/* . &&
             cp -fr /share/.git* . &&
             ls -la . &&
             sudo zypper install -y cmake git sqlite qt5-qttest perl-CPAN perl-IPC-Cmd make clang &&
-            cmake -DBUILD_TESTING=ON -DCODE_COVERAGE=ON -G 'Unix Makefiles' -DCMAKE_PREFIX_PATH='/srv/mer/targets/SailfishOS-4.4.0.64-armv7hl/usr/lib/cmake/Qt5/Qt5Config.cmake' . &&
+            cmake -DBUILD_TESTING=ON -DCODE_COVERAGE=ON -G 'Unix Makefiles' . &&
             cmake --build . --target all &&
             ctest --output-on-failure &&
             sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty
