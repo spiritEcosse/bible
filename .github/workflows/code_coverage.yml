@@ -46,7 +46,7 @@ jobs:
             cp -fr /share/.git* . &&
             ls -la . &&
             sudo zypper install -y cmake git sqlite qt5-qttest perl-CPAN perl-IPC-Cmd make clang &&
-            cmake -DBUILD_TESTING=ON -DCODE_COVERAGE=ON -G 'Unix Makefiles' -DQt5_DIR=/usr/lib/cmake/Qt5 . &&
+            cmake -DBUILD_TESTING=ON -DCODE_COVERAGE=ON -G 'Unix Makefiles' -DQt5_DIR=/srv/mer/targets/SailfishOS-4.4.0.64-armv7hl/usr/lib/cmake/Qt5/Qt5Config.cmake . &&
             cmake --build . --target all &&
             ctest --output-on-failure &&
             sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty
