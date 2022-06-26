@@ -19,6 +19,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
 list(APPEND CMAKE_PREFIX_PATH "/srv/mer/targets/SailfishOS-4.4.0.64-armv7hl/usr/lib/cmake/Qt5/")
+list(APPEND CMAKE_PREFIX_PATH "/srv/mer/targets/SailfishOS-4.4.0.64-armv7hl/usr/include/qt5/")
 
 find_package (Qt6 COMPONENTS Widgets)
 if (NOT Qt6_FOUND)
