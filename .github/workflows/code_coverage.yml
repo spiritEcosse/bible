@@ -39,13 +39,14 @@ jobs:
       run: docker run --rm --privileged -v $PWD:/share coderus/sailfishos-platform-sdk-armv7hl:$RELEASE /bin/bash -c "
             alias mb2='mb2 --target SailfishOS-$RELEASE-armv7hl' &&
             cd /home/mersdk &&
-            sudo find / -type d -name 'QtTest' &&
             mkdir -p build &&
             cd build &&
             cp -fr /share/* . &&
             cp -fr /share/.git* . &&
             ls -la . &&
             sudo zypper install -y cmake git sqlite qt5-qttest perl-CPAN perl-IPC-Cmd make clang qt5-qttest &&
+            ls -la /srv/mer/targets/SailfishOS-4.4.0.64-armv7hl/usr/include/qt5/QtTest &&
+            sudo find / -type d -name 'QtTest' &&
             cmake -DBUILD_TESTING=ON -DCODE_COVERAGE=ON -G 'Unix Makefiles' . &&
             cmake --build . --target all &&
             ctest --output-on-failure &&
