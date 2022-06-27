@@ -45,7 +45,7 @@ jobs:
             cp -fr /share/* . &&
             cp -fr /share/.git* . &&
             ls -la . &&
-            mb2 build ;
+            mb2 build --no-check ;
             mb2 check ;
             echo 'run sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty' &&
             sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty
