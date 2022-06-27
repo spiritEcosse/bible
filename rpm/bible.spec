@@ -51,7 +51,7 @@ make
 # << build pre
 
 %check
-ctest --output-on-failure tests
+ctest --output-on-failure /home/mersdk/build/tests
 
 # >> build post
 # << build post
