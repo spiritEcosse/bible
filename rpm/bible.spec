@@ -47,12 +47,13 @@ Short description of my Sailfish OS Application
 %build
 # >> build pre
 cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_TESTING=ON -DCODE_COVERAGE=ON
-make
+cmake --build . --target all
+ctest --output-on-failure
 # << build pre
 
-%check
-ls -la .
-ctest --output-on-failure .
+#%check
+#ls -la .
+#ctest --output-on-failure .
 
 # >> build post
 # << build post
