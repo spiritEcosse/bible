@@ -51,7 +51,7 @@ make
 # << build pre
 
 %check
-ctest --output-on-failure
+ctest --output-on-failure tests
 
 # >> build post
 # << build post
