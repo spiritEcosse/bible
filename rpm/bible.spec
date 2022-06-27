@@ -51,7 +51,6 @@ make
 # << build pre
 
 %check
-cmake --build . --target all
 ctest --output-on-failure
 
 # >> build post
