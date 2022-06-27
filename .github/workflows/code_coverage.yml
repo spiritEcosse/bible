@@ -41,7 +41,7 @@ jobs:
             cd /home/mersdk &&
             mkdir -p build &&
             cd build &&
-            echo 'run cp -fr /share/* .'' &&
+            echo 'run cp -fr /share/* .' &&
             cp -fr /share/* . &&
             cp -fr /share/.git* . &&
             ls -la . &&
