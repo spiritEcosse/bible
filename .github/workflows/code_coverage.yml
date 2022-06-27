@@ -41,13 +41,13 @@ jobs:
             cd /home/mersdk &&
             mkdir -p build &&
             cd build &&
-            echo 'run : cp -fr /share/* .' &&
+            echo \"run : cp -fr /share/* .\" &&
             cp -fr /share/* . &&
             cp -fr /share/.git* . &&
             ls -la . &&
             mb2 build ;
             mb2 check ;
-            echo 'run : sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty' &&
+            echo \"run : sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty\" &&
             sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty
             "
 
