@@ -214,6 +214,8 @@ add_subdirectory(src)
 
 
 if ( BUILD_TESTING )
+    enable_testing()
+
     set(CODE_COVERAGE true)
     if (CODE_COVERAGE)
         set(ENV{PATH} "/usr/local/bin/:$ENV{PATH}")
