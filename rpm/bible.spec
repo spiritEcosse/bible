@@ -50,13 +50,6 @@ cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_TESTING=ON -D
 make
 # << build pre
 
-%check
-ls -la .
-#cmake --build . --target all
-ctest --output-on-failure
-
-#ctest --output-on-failure .
-
 # >> build post
 # << build post
 
