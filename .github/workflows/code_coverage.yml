@@ -46,7 +46,7 @@ jobs:
             cp -fr /share/.git* . &&
             ls -la . &&
             mb2 build ;
-            mb2 cmake --build . --target all ;
+            mb2 build-shell cmake --build . --target all ;
             mb2 build-shell ctest --output-on-failure ;
             echo 'run sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty' &&
             sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty
