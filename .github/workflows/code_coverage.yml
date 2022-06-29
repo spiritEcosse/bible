@@ -6,7 +6,6 @@ env:
   RELEASE: 4.4.0.64
   SAILFISH_IMAGE: coderus/sailfishos-platform-sdk:$RELEASE
 
-
 jobs:
   build:
     runs-on: ubuntu-latest
