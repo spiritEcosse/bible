@@ -46,31 +46,19 @@ jobs:
             cp -fr /share/.git* . &&
             ls -la . &&
             mb2 build ;
-            mb2 build-shell ctest ;
             echo 'run sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty' &&
-            sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty
+            sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty ;
+            mb2 build-shell ctest --output-on-failure ;
+            echo 'Create lcov report, capture coverage info' &&
+            lcov --directory . --capture --output-file coverage.info &&
+            echo 'Filter out system and extra files. To also not include test code in coverage add them with full path to the patterns: */tests/*' &&
+            lcov --remove coverage.info '*/usr/*' '/.cache/*' '*/3rdparty/*' '*/tests/*' '*/lib/*' '*_autogen/*' --output-file coverage.info &&
+            echo 'Output coverage data for debugging (optional)' &&
+            lcov --list coverage.info &&
+            curl -Os https://uploader.codecov.io/latest/linux/codecov &&
+            chmod +x codecov &&
+            ./codecov -t ${CODECOV_TOKEN} -X gcov
             "
 
     - name:  3rdparty /home/runner/3rdparty
       run: rsync -ar --stats --delete 3rdparty/ /home/runner/3rdparty
-
-    # - name: Make lcov
-      # working-directory: /share/output
-      # run: |
-        # # Create lcov report
-        # # capture coverage info
-        # - lcov --directory . --capture --output-file coverage.info
-        # # filter out system and extra files.
-        # # To also not include test code in coverage add them with full path to the patterns: '*/tests/*'
-        # - lcov --remove coverage.info '*/usr/*' "${HOME}" '/.cache/*' '*/3rdparty/*' '*/tests/*' '*/lib/*' "*_autogen/*" --output-file coverage.info
-        # # output coverage data for debugging (optional)
-        # - lcov --list coverage.info
-
-    # - name: Upload coverage reports to Codecov
-      # working-directory: /share/output
-      # run: |
-        # # Replace `linux` below with the appropriate OS
-        # # Options are `alpine`, `linux`, `macos`, `windows`
-        # curl -Os https://uploader.codecov.io/latest/linux/codecov
-        # chmod +x codecov
-        # ./codecov -t ${CODECOV_TOKEN} -X gcov
