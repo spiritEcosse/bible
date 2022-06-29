@@ -35,6 +35,7 @@ jobs:
     - name: ls -la 3rdparty
       run: ls -la 3rdparty
 
+
     - name: Tests
       run: docker run --rm --privileged -v $PWD:/share coderus/sailfishos-platform-sdk-armv7hl:$RELEASE /bin/bash -c "
             alias mb2='mb2 --target SailfishOS-$RELEASE-armv7hl' &&
