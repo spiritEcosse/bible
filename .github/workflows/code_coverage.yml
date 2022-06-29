@@ -50,6 +50,7 @@ jobs:
             sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty ;
             mb2 build-shell ctest --output-on-failure ;
             echo 'Create lcov report, capture coverage info' &&
+            export PATH=/home/mersdk/build/3rdparty/lcov/bin:$PATH &&
             lcov --directory . --capture --output-file coverage.info &&
             echo 'Filter out system and extra files. To also not include test code in coverage add them with full path to the patterns */tests/*' &&
             lcov --remove coverage.info '*/usr/*' '/.cache/*' '*/3rdparty/*' '*/tests/*' '*/lib/*' '*_autogen/*' --output-file coverage.info &&
