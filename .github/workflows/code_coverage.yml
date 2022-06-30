@@ -48,7 +48,6 @@ jobs:
             mb2 build ;
             echo 'run sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty' &&
             sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty ;
-            sudo zypper install -y perl-CPAN perl-IPC-Cmd perl-IO-Compress &&
             mb2 build-shell ctest --output-on-failure ;
             echo 'Create lcov report, capture coverage info' &&
             mb2 build-shell /home/mersdk/build/3rdparty/lcov/bin/lcov --directory . --capture --output-file coverage.info &&
