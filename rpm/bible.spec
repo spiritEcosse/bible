@@ -20,6 +20,7 @@ Requires:   sailfishsilica-qt5 >= 0.10.9
 Requires:   perl-CPAN
 Requires:   perl-IPC-Cmd
 Requires:   perl-IO-Compress
+Requires:   perl-IO-Compress-Zlib
 Requires:   sqlite
 Requires:   qt5-qttest
 Requires:   sdk-deploy-rpm
