@@ -36,7 +36,7 @@ jobs:
       run: ls -la 3rdparty
 
     - name: Tests
-      run: docker run --rm --privileged -v $PWD:/share coderus/sailfishos-platform-sdk-armv7hl:$RELEASE /bin/bash -c "
+      run: docker run --rm --privileged -e CODECOV_TOKEN=${CODECOV_TOKEN} -v $PWD:/share coderus/sailfishos-platform-sdk-armv7hl:$RELEASE /bin/bash -c "
             alias mb2='mb2 --target SailfishOS-$RELEASE-armv7hl' &&
             cd /home/mersdk &&
             mkdir -p build &&
@@ -53,7 +53,7 @@ jobs:
             echo '================================ Create lcov report, capture coverage info ================================' &&
             /home/mersdk/build/3rdparty/lcov/bin/lcov --directory . --capture --output-file coverage.info &&
             echo '================================ Filter out system and extra files. To also not include test code in coverage add them with full path to the patterns */tests/* ================================' &&
-            /home/mersdk/build/3rdparty/lcov/bin/lcov --remove coverage.info '*/usr/*' '/.cache/*' '*/3rdparty/*' '*/tests/*' '*/lib/*' '*_autogen/*' --output-file coverage.info &&
+            /home/mersdk/build/3rdparty/lcov/bin/lcov --remove coverage.info '*/usr/*' '/.cache/*' '/srv/mer/*' '*/3rdparty/*' '/home/mersdk/build/3rdparty/*' '*/tests/*' '*/lib/*' '*_autogen/*' --output-file coverage.info &&
             echo '================================ Output coverage data for debugging (optional) ================================' &&
             /home/mersdk/build/3rdparty/lcov/bin/lcov --list coverage.info &&
             echo '================================ Push results to codecov.io  ================================' &&
