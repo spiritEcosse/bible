@@ -36,10 +36,10 @@ jobs:
       run: ls -la 3rdparty
 
     - name: echo CODECOV_TOKEN
-      run: echo "CODECOV_TOKEN ${CODECOV_TOKEN}"
+      run: echo "CODECOV_TOKEN ${{ secrets.CODECOV_TOKEN }}"
     
     - name: Tests
-      run: docker run --rm --privileged -e CODECOV_TOKEN=${CODECOV_TOKEN} -v $PWD:/share coderus/sailfishos-platform-sdk-armv7hl:$RELEASE /bin/bash -c "
+      run: docker run --rm --privileged -e CODECOV_TOKEN=${{ secrets.CODECOV_TOKEN }} -v $PWD:/share coderus/sailfishos-platform-sdk-armv7hl:$RELEASE /bin/bash -c "
             alias mb2='mb2 --target SailfishOS-$RELEASE-armv7hl' &&
             cd /home/mersdk &&
             mkdir -p build &&
