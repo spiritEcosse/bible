@@ -36,7 +36,7 @@ jobs:
       run: ls -la 3rdparty
 
     - name: echo CODECOV_TOKEN
-      run: echo "CODECOV_TOKEN: ${CODECOV_TOKEN}"
+      run: echo "CODECOV_TOKEN ${CODECOV_TOKEN}"
     
     - name: Tests
       run: docker run --rm --privileged -e CODECOV_TOKEN=${CODECOV_TOKEN} -v $PWD:/share coderus/sailfishos-platform-sdk-armv7hl:$RELEASE /bin/bash -c "
