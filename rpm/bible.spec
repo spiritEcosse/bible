@@ -35,6 +35,7 @@ BuildRequires:  qt5-qttest
 BuildRequires:  sqlite-devel
 BuildRequires:  desktop-file-utils
 BuildRequires:  perl-IO-Compress
+BuildRequires:  perl-Module-Load-Conditional
 
 %description
 Short description of my Sailfish OS Application
