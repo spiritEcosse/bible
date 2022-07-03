@@ -54,7 +54,8 @@ jobs:
             echo '================================ Run tests  =========================================' &&
             mb2 build-shell ctest --output-on-failure ;
             sudo zypper install -y perl-CPAN perl-IPC-Cmd perl-IO-Compress &&
-            echo '================================ mb2 build-shell make ccov-all-capture =================================' &&
+            mb2 build-shell zypper install -y perl-IO-Compress &&
+            echo '================================ mb2 build-shell make ccov-all =================================' &&
             mb2 build-shell make ccov-all &&
             echo '================================ Push results to codecov.io  ================================' &&
             curl -Os https://uploader.codecov.io/latest/linux/codecov &&
