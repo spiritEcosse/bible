@@ -36,7 +36,7 @@ jobs:
       run: ls -la 3rdparty
 
     - name: echo CODECOV_TOKEN
-      run: echo ${CODECOV_TOKEN}
+      run: echo "CODECOV_TOKEN: ${CODECOV_TOKEN}"
     
     - name: Tests
       run: docker run --rm --privileged -e CODECOV_TOKEN=${CODECOV_TOKEN} -v $PWD:/share coderus/sailfishos-platform-sdk-armv7hl:$RELEASE /bin/bash -c "
@@ -51,19 +51,10 @@ jobs:
             mb2 build ;
             echo '================================ run sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty ================================' &&
             sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty ;
-            sudo zypper install -y perl-CPAN perl-IPC-Cmd perl-IO-Compress &&
-            export PATH=/home/mersdk/build/3rdparty/lcov/bin:$PATH &&
-            echo '============== Run initial/baseline lcov; lcov --no-external --capture --initial --directory src --output-file coverage_base.info ==============' &&
-            lcov --no-external --capture --initial --directory src --output-file coverage_base.info &&
+            echo '================================ Run tests  =========================================' &&
             mb2 build-shell ctest --output-on-failure ;
-            echo '================================ Run lcov again after tests/checks complete; Create lcov report, capture coverage info ================================' &&
-            lcov --no-external --capture --directory src --output-file coverage_test.info &&
-            echo '================================ Combine lcov tracefiles ================================ ' &&
-            lcov --add-tracefile coverage_base.info --add-tracefile coverage_test.info --output-file coverage_total.info &&
-            echo '================================ Filter out system and extra files. To also not include test code in coverage add them with full path to the patterns */tests/* ================================' &&
-            lcov --remove coverage_total.info '*/usr/*' '/.cache/*' '/srv/mer/*' '*/3rdparty/*' '/home/mersdk/build/3rdparty/*' '*/tests/*' '*/lib/*' '*_autogen/*' --output-file coverage_filtered.info &&
-            echo '================================ Output coverage data for debugging (optional) ================================' &&
-            lcov --list coverage_filtered.info &&
+            echo '================================ mb2 build-shell make ccov-all-capture =================================' &&
+            mb2 build-shell make ccov-all-capture &&
             echo '================================ Push results to codecov.io  ================================' &&
             curl -Os https://uploader.codecov.io/latest/linux/codecov &&
             chmod +x codecov &&
