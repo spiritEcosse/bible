@@ -53,7 +53,6 @@ jobs:
             sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty ;
             echo '================================ Run tests  =========================================' &&
             mb2 build-shell ctest --output-on-failure ;
-            sudo zypper install -y perl-CPAN perl-IPC-Cmd perl-IO-Compress &&
             echo '================================ mb2 build-shell make ccov-all-capture =================================' &&
             mb2 build-shell make ccov-all &&
             echo '================================ Push results to codecov.io  ================================' &&
