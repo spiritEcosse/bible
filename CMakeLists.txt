@@ -226,7 +226,6 @@ if ( BUILD_TESTING )
 
         include(CodeCoverage)
         add_code_coverage()
-        target_code_coverage(${PROJECT_NAME})
         add_code_coverage_all_targets(EXCLUDE 3rdparty/* tests/*) # Adds the 'ccov-all' target set and sets it to exclude all files in test/ folders.
 
         SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
