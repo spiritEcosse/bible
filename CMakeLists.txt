@@ -11,16 +11,14 @@ message("CMAKE_GENERATOR : ${CMAKE_GENERATOR}")
 message("PROJECT_BINARY_DIR : ${PROJECT_BINARY_DIR}")
 message("CMAKE_MAKE_PROGRAM : ${CMAKE_MAKE_PROGRAM}")
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-include(CodeCoverage)
-add_code_coverage_all_targets(EXCLUDE 3rdparty/* tests/*)
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
 
 find_package (Qt6 COMPONENTS Widgets)
 if (NOT Qt6_FOUND)
@@ -85,6 +83,14 @@ message("TARGET : ${TARGET}")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty")
 include(3rdparty)
+
+set(ENV{PATH} "/usr/local/bin/:$ENV{PATH}")
+set(LIB_LLVM llvm)
+include(${LIB_LLVM})
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(CodeCoverage)
+add_code_coverage_all_targets(EXCLUDE 3rdparty/* tests/*)
 
 set_property(SOURCE ${RESOURCES} PROPERTY SKIP_AUTOMOC ON)
 set(SOURCE src/${PROJECT_NAME}.cpp ${RESOURCES})
@@ -222,17 +228,7 @@ if ( BUILD_TESTING )
 
     set(CODE_COVERAGE true)
     if (CODE_COVERAGE)
-        set(ENV{PATH} "/usr/local/bin/:$ENV{PATH}")
-        set(LIB_LLVM llvm)
-        include(${LIB_LLVM})
-
-        list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-
-        include(CodeCoverage)
         target_code_coverage(${PRPROJECT_NAME} AUTO ALL EXCLUDE 3rdparty/* tests/*)
-
-        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
-        SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
     endif()
 
     add_subdirectory(tests)
