@@ -11,6 +11,10 @@ message("CMAKE_GENERATOR : ${CMAKE_GENERATOR}")
 message("PROJECT_BINARY_DIR : ${PROJECT_BINARY_DIR}")
 message("CMAKE_MAKE_PROGRAM : ${CMAKE_MAKE_PROGRAM}")
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(CodeCoverage)
+add_code_coverage_all_targets(EXCLUDE 3rdparty/* tests/*)
+
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -225,8 +229,7 @@ if ( BUILD_TESTING )
         list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
         include(CodeCoverage)
-        add_code_coverage()
-        add_code_coverage_all_targets(EXCLUDE 3rdparty/* tests/*) # Adds the 'ccov-all' target set and sets it to exclude all files in test/ folders.
+        target_code_coverage(${PRPROJECT_NAME} AUTO ALL EXCLUDE 3rdparty/* tests/*)
 
         SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
         SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
