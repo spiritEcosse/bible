@@ -17,8 +17,6 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
-SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
 
 find_package (Qt6 COMPONENTS Widgets)
 if (NOT Qt6_FOUND)
@@ -84,13 +82,21 @@ message("TARGET : ${TARGET}")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty")
 include(3rdparty)
 
-set(ENV{PATH} "/usr/local/bin/:$ENV{PATH}")
-set(LIB_LLVM llvm)
-include(${LIB_LLVM})
+if ( BUILD_TESTING )
+    enable_testing()
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-include(CodeCoverage)
-add_code_coverage_all_targets(EXCLUDE 3rdparty/* tests/*)
+    if (CODE_COVERAGE)
+        set(ENV{PATH} "/usr/local/bin/:$ENV{PATH}")
+        set(LIB_LLVM llvm)
+        include(${LIB_LLVM})
+
+        list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
+        include(CodeCoverage)
+
+        add_code_coverage_all_targets(EXCLUDE 3rdparty/* tests/*)
+    endif()
+endif()
 
 set_property(SOURCE ${RESOURCES} PROPERTY SKIP_AUTOMOC ON)
 set(SOURCE src/${PROJECT_NAME}.cpp ${RESOURCES})
@@ -226,9 +232,11 @@ add_subdirectory(src)
 if ( BUILD_TESTING )
     enable_testing()
 
-    set(CODE_COVERAGE true)
     if (CODE_COVERAGE)
-        target_code_coverage(${PRPROJECT_NAME} AUTO ALL EXCLUDE 3rdparty/* tests/*)
+        target_code_coverage(${PROJECT_NAME} AUTO ALL EXCLUDE 3rdparty/* tests/*)
+
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
+        SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
     endif()
 
     add_subdirectory(tests)
