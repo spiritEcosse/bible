@@ -57,9 +57,11 @@ jobs:
             echo '================================ make ccov-all-capture =================================' &&
             mb2 build-shell make ccov-all-capture &&
             echo '================================ Push results to codecov.io  ================================' &&
+            cd ccov && 
             curl -Os https://uploader.codecov.io/latest/linux/codecov &&
             chmod +x codecov &&
-            ./codecov -t ${CODECOV_TOKEN} -X gcov
+            ./codecov -t ${CODECOV_TOKEN} -X gcov &&
+            cd ../
             "
 
     - name:  3rdparty /home/runner/3rdparty
