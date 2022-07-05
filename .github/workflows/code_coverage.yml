@@ -56,6 +56,8 @@ jobs:
             mkdir ccov &&
             echo '================================ make ccov-all =================================' &&
             mb2 build-shell make ccov-all &&
+            cat /home/mersdk/build/ccov/all-merged/index.html &&
+            mb2 build-shell make ccov-all-capture &&
             echo '================================ Push results to codecov.io  ================================' &&
             curl -Os https://uploader.codecov.io/latest/linux/codecov &&
             chmod +x codecov &&
