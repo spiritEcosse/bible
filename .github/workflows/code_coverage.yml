@@ -59,7 +59,7 @@ jobs:
             echo '================================ Push results to codecov.io  ================================' &&
             curl -Os https://uploader.codecov.io/latest/linux/codecov &&
             chmod +x codecov &&
-            ./codecov -t ${CODECOV_TOKEN} -X gcov -f ccov/all-merged.info
+            ./codecov -t ${CODECOV_TOKEN} -f ccov/all-merged.info
             "
 
     - name:  3rdparty /home/runner/3rdparty
