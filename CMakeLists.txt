@@ -233,7 +233,11 @@ if ( BUILD_TESTING )
     enable_testing()
 
     if (CODE_COVERAGE)
-        target_code_coverage(${PROJECT_NAME} AUTO ALL EXCLUDE 3rdparty/* tests/*)
+        target_code_coverage(core AUTO ALL)
+        target_code_coverage(modules AUTO ALL)
+        target_code_coverage(dbmanager AUTO ALL)
+        target_code_coverage(netmanager AUTO ALL)
+
         SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
         SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
     endif()

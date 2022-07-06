@@ -29,8 +29,3 @@ target_include_directories(${PROJECT_NAME}
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE CORE_LIBRARY)
 
-if ( BUILD_TESTING )
-    if (CODE_COVERAGE)
-        target_code_coverage(${PROJECT_NAME} AUTO ALL)
-    endif()
-endif()
