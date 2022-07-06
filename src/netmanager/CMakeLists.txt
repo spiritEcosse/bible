@@ -44,6 +44,6 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE NETMANAGER_LIBRARY)
 
 if ( BUILD_TESTING )
     if (CODE_COVERAGE)
-        target_code_coverage(${PROJECT_NAME} AUTO ALL EXCLUDE 3rdparty/* tests/*)
+        target_code_coverage(${PROJECT_NAME} AUTO ALL)
     endif()
 endif()
