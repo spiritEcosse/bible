@@ -209,6 +209,11 @@ namespace modules {
             GroupModules.setLanguageName(in);
             QCOMPARE(GroupModules.m_languageName, out);
         }
+
+        void tst_GroupModules::testFunction()
+        {
+
+        }
     }
 
 }

@@ -26,6 +26,7 @@ namespace modules {
             void getLanguageName();
             void setLanguageName_data();
             void setLanguageName();
+            void testFunction();
         };
 
     }

@@ -31,6 +31,7 @@ public:
     void setCurrentBook(const int &currentBook);
     void setCurrentChapter(const int &currentChapter);
     void setCurrentVerses();
+    void testFunction();
 signals:
     void changeCurrentBook();
     void changeCurrentChapter();
