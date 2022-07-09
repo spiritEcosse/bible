@@ -94,7 +94,6 @@ if ( BUILD_TESTING )
 
         include(CodeCoverage)
 
-#        add_code_coverage_all_targets(EXCLUDE 3rdparty/* tests/*)
     endif()
 endif()
 
@@ -233,6 +232,8 @@ if ( BUILD_TESTING )
     enable_testing()
 
     if (CODE_COVERAGE)
+        add_code_coverage_all_targets(EXCLUDE 3rdparty/* tests/*)
+
         target_code_coverage(core AUTO ALL EXCLUDE tests/*)
         target_code_coverage(modules AUTO ALL EXCLUDE tests/*)
         target_code_coverage(dbmanager AUTO ALL EXCLUDE tests/*)
