@@ -212,7 +212,7 @@ namespace modules {
 
         void tst_GroupModules::testFunction()
         {
-
+            QCOMPARE(true, true);
         }
     }
 
