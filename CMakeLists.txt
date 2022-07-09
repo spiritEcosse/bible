@@ -94,7 +94,7 @@ if ( BUILD_TESTING )
 
         include(CodeCoverage)
 
-        add_code_coverage_all_targets(EXCLUDE 3rdparty/* */tests/*)
+        add_code_coverage_all_targets(EXCLUDE "3rdparty/*" "tests/*")
 
         SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
         SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
