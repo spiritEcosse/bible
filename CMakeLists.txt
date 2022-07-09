@@ -82,21 +82,6 @@ message("TARGET : ${TARGET}")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty")
 include(3rdparty)
 
-if ( BUILD_TESTING )
-    enable_testing()
-
-    if (CODE_COVERAGE)
-        set(ENV{PATH} "/usr/local/bin/:$ENV{PATH}")
-        set(LIB_LLVM llvm)
-        include(${LIB_LLVM})
-
-        list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-
-        include(CodeCoverage)
-
-    endif()
-endif()
-
 set_property(SOURCE ${RESOURCES} PROPERTY SKIP_AUTOMOC ON)
 set(SOURCE src/${PROJECT_NAME}.cpp ${RESOURCES})
 
@@ -232,12 +217,20 @@ if ( BUILD_TESTING )
     enable_testing()
 
     if (CODE_COVERAGE)
-        add_code_coverage_all_targets(EXCLUDE 3rdparty/* tests/*)
+        set(ENV{PATH} "/usr/local/bin/:$ENV{PATH}")
+        set(LIB_LLVM llvm)
+        include(${LIB_LLVM})
 
-        target_code_coverage(core AUTO ALL EXCLUDE tests/*)
-        target_code_coverage(modules AUTO ALL EXCLUDE tests/*)
-        target_code_coverage(dbmanager AUTO ALL EXCLUDE tests/*)
-        target_code_coverage(netmanager AUTO ALL EXCLUDE tests/*)
+        list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
+        include(CodeCoverage)
+
+        add_code_coverage_all_targets(EXCLUDE 3rdparty/* tests/* tst_*)
+
+        target_code_coverage(core AUTO ALL)
+        target_code_coverage(modules AUTO ALL)
+        target_code_coverage(dbmanager AUTO ALL)
+        target_code_coverage(netmanager AUTO ALL)
 
         SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
         SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
