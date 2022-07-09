@@ -31,12 +31,6 @@ jobs:
 
     - name: cp -fr 3rdparty_original/* 3rdparty/
       run: cp -fr 3rdparty_original/* 3rdparty/
-
-    - name: ls -la 3rdparty
-      run: ls -la 3rdparty
-
-    - name: echo CODECOV_TOKEN
-      run: echo "CODECOV_TOKEN ${{ secrets.CODECOV_TOKEN }}"
     
     - name: Tests
       run: docker run --rm --privileged -e CODECOV_TOKEN=${{ secrets.CODECOV_TOKEN }} -v $PWD:/share coderus/sailfishos-platform-sdk-armv7hl:$RELEASE /bin/bash -c "

@@ -94,7 +94,7 @@ if ( BUILD_TESTING )
 
         include(CodeCoverage)
 
-        add_code_coverage_all_targets(EXCLUDE 3rdparty/* tests/*)
+#        add_code_coverage_all_targets(EXCLUDE 3rdparty/* tests/*)
     endif()
 endif()
 
