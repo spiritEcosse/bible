@@ -2,12 +2,14 @@ name: Github CI build
 
 on:
   push:
-    branches: [  ]
+    branches:
+        - master
   pull_request:
-    branches: [  ]
+    branches:
+        - master
 
 env:
-  RELEASE: 4.3.0.12
+  RELEASE: 4.4.0.64
   SAILFISH_IMAGE: coderus/sailfishos-platform-sdk:$RELEASE
 
 jobs:
@@ -18,34 +20,32 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Prepare
-      run: mkdir -p ~/3rdparty
+      run: mkdir output
 
-    - name: Set up a cache for 3rdparty
-      uses: actions/cache@v3
-      with: 
-        path: /home/runner/3rdparty
-        key: sailfish-3rdparty-${{ hashFiles('*') }}
-        restore-keys: sailfish-3rdparty-
+    - name: Build armv7hl
+      run: docker run --rm --privileged -v $PWD:/share coderus/sailfishos-platform-sdk-armv7hl:$RELEASE /bin/bash -c "
+            cd /home/mersdk ;
+            mkdir -p build ;
+            cd build ;
+            cp -r /share/* . ;
+            mb2 -t SailfishOS-$RELEASE-armv7hl build ;
+            sudo cp -r RPMS/*.rpm /share/output"
 
-    - name: mv 3rdparty 3rdparty_original
-      run: mv 3rdparty 3rdparty_original
+    - name: Upload build result
+      uses: actions/upload-artifact@v2
+      with:
+        name: output-rpms
+        path: output
 
-    - name: cp -fr /home/runner/3rdparty .
-      run: cp -fr /home/runner/3rdparty .
-      
-    - name: cp -fr 3rdparty_original/* 3rdparty
-      run: cp -fr 3rdparty_original/* 3rdparty
-
-    - name: Build aarch64
-      run: docker run --rm --privileged -v $PWD:/share coderus/sailfishos-platform-sdk:$RELEASE /bin/bash -c "
-            cd /share/3rdparty &&
-            sudo mkdir -p test &&
-            sudo touch test/.test.txt &&
-            sudo touch test/test_.txt &&
-            sudo touch .new_file &&
-            sudo touch new_file_today &&
-            sudo touch rrr.txt
-            "
-
-    - name:  3rdparty /home/runner/3rdparty
-      run: rsync -arvP --delete 3rdparty/ /home/runner/3rdparty
+    - name: Create release
+      if: contains(github.ref, 'release')
+      run: |
+        set -x
+        assets=()
+        for asset in output/*.rpm; do
+          assets+=("-a" "$asset")
+        done
+        tag_name="${GITHUB_REF##*/}"
+        hub release create "${assets[@]}" -m "$tag_name" "$tag_name"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

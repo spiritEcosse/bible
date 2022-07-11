@@ -4,8 +4,12 @@ project(bible LANGUAGES CXX)
 
 #message("CMAKE_PROJECT_VERSION = ${CMAKE_PROJECT_VERSION}")
 message("CMAKE_CXX_COMPILER_VERSION : ${CMAKE_CXX_COMPILER_VERSION}")
+message("CMAKE_CXX_COMPILER : ${CMAKE_CXX_COMPILER}")
+option(CMAKE_GENERATOR "Ninja")
+message("CMAKE_GENERATOR : ${CMAKE_GENERATOR}")
 #- gcc -v && g++ -v && cmake --version
 message("PROJECT_BINARY_DIR : ${PROJECT_BINARY_DIR}")
+message("CMAKE_MAKE_PROGRAM : ${CMAKE_MAKE_PROGRAM}")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
@@ -77,6 +81,25 @@ message("TARGET : ${TARGET}")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty")
 include(3rdparty)
+
+if ( BUILD_TESTING )
+    enable_testing()
+
+    if (CODE_COVERAGE)
+        set(ENV{PATH} "/usr/local/bin/:$ENV{PATH}")
+        set(LIB_LLVM llvm)
+        include(${LIB_LLVM})
+
+        list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
+        include(CodeCoverage)
+
+        add_code_coverage_all_targets(EXCLUDE "3rdparty/*" "tests/*")
+
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
+        SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
+    endif()
+endif()
 
 set_property(SOURCE ${RESOURCES} PROPERTY SKIP_AUTOMOC ON)
 set(SOURCE src/${PROJECT_NAME}.cpp ${RESOURCES})
@@ -205,46 +228,17 @@ else()
     endif()
 endif()
 
-if ( BUILD_TESTING )
-    enable_testing()
-    option(QUAZIP_ENABLE_TESTS "Enable quazip tests" OFF)
-    option(CODE_COVERAGE "Enable coverage reporting" OFF)
-
-    if (CODE_COVERAGE)
-#        list(APPEND CMAKE_PREFIX_PATH "/usr/local/Cellar/llvm/12.0.1/lib/cmake/llvm/")
-#        list(APPEND CMAKE_PREFIX_PATH "/usr/local/Cellar/llvm/12.0.1/bin/")
-        find_package(LLVM REQUIRED CONFIG)
-
-        message(${LLVM_INCLUDE_DIRS})
-        message(${LLVM_DEFINITIONS})
-
-        message(STATUS "Found LLVM version : ${LLVM_PACKAGE_VERSION}")
-        message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
-
-        set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/.travis/cmake)
-        include(CodeCoverage)
-        add_code_coverage_all_targets(EXCLUDE 3rdparty/* tests/*) # Adds the 'ccov-all' target set and sets it to exclude all files in test/ folders.
-
-        SET(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
-        SET(CMAKE_C_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
-    endif()
-endif()
-
 set(CMAKE_AUTOUIC ON)
 add_subdirectory(src)
 
-#add_library(tag SHARED IMPORTED)
-#set_target_properties(tag PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/build/taglib/lib/libtag.so)
-
-#ExternalProject_Add(quickdownload
-#                    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/quickdownload
-#                    URL https://github.com/Larpon/QuickDownload.git
-#                    DOWNLOAD_DIR ${QGLViewer_DSTDIR}
-#                    BUILD_IN_SOURCE 1
-#                    CONFIGURE_COMMAND qmake quickdownload.pro PREFIX=${CMAKE_CURRENT_BINARY_DIR}/3rdparty/quickdownload
-#                    BUILD_COMMAND make
-#                   )
 
 if ( BUILD_TESTING )
+    if (CODE_COVERAGE)
+        target_code_coverage(core AUTO ALL)
+        target_code_coverage(modules AUTO ALL)
+        target_code_coverage(dbmanager AUTO ALL)
+        target_code_coverage(netmanager AUTO ALL)
+    endif()
+
     add_subdirectory(tests)
 endif()

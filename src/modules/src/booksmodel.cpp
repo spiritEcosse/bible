@@ -112,6 +112,11 @@ void BooksModel::setCurrentVerses()
     emit changeCurrentVerses();
 }
 
+void BooksModel::testFunction()
+{
+
+}
+
 int BooksModel::getBookIndex(const int &bookNumber)
 {
     QString sql = QString("SELECT rowid FROM books WHERE book_number='%1' ").arg(bookNumber);

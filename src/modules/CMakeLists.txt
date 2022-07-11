@@ -34,3 +34,4 @@ target_include_directories(${PROJECT_NAME}
 
 #target_link_libraries(${PROJECT_NAME} PRIVATE core dbmanager netmanager)
 target_compile_definitions(${PROJECT_NAME} PRIVATE MODULES_LIBRARY)
+

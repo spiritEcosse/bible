@@ -1,0 +1,60 @@
+name: Code coverage Sailfish OS
+
+on: [push, pull_request]
+
+env:
+  RELEASE: 4.4.0.64
+  SAILFISH_IMAGE: coderus/sailfishos-platform-sdk:$RELEASE
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Prepare
+      run: mkdir -p ~/3rdparty
+
+    - name: Set up a cache for 3rdparty
+      uses: actions/cache@v3
+      with: 
+        path: /home/runner/3rdparty
+        key: sailfish-armv7hl-3rdparty-${{ hashFiles('*.cmake') }}
+        restore-keys: sailfish-armv7hl-3rdparty-
+
+    - name: mv 3rdparty 3rdparty_original
+      run: mv 3rdparty 3rdparty_original
+
+    - name: cp -fr ~/3rdparty .
+      run: cp -fr ~/3rdparty .
+
+    - name: cp -fr 3rdparty_original/* 3rdparty/
+      run: cp -fr 3rdparty_original/* 3rdparty/
+    
+    - name: Tests
+      run: docker run --rm --privileged -e CODECOV_TOKEN=${{ secrets.CODECOV_TOKEN }} -v $PWD:/share coderus/sailfishos-platform-sdk-armv7hl:$RELEASE /bin/bash -c "
+            alias mb2='mb2 --target SailfishOS-$RELEASE-armv7hl' &&
+            cd /home/mersdk &&
+            mkdir -p build &&
+            cd build &&
+            echo 'run cp -fr /share/* .' &&
+            cp -fr /share/* . &&
+            cp -fr /share/.git* . &&
+            ls -la . &&
+            mb2 build ;
+            echo '================================ run sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty ================================' &&
+            sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty ;
+            echo '================================ Run tests  =========================================' &&
+            mb2 build-shell ctest --output-on-failure ;
+            mkdir ccov &&
+            echo '================================ make ccov-all-capture =================================' &&
+            mb2 build-shell make ccov-all-capture &&
+            echo '================================ Push results to codecov.io  ================================' &&
+            curl -Os https://uploader.codecov.io/latest/linux/codecov &&
+            chmod +x codecov &&
+            ./codecov -t ${CODECOV_TOKEN} -f ccov/all-merged.info
+            "
+
+    - name:  3rdparty /home/runner/3rdparty
+      run: rsync -ar --stats --delete 3rdparty/ /home/runner/3rdparty

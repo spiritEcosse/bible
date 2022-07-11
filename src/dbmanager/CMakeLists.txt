@@ -34,3 +34,4 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} PRIVATE modules core)
 target_compile_definitions(${PROJECT_NAME} PRIVATE DBMANAGER_LIBRARY)
+

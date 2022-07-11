@@ -19,6 +19,7 @@ Source100:  bible.yaml
 Requires:   sailfishsilica-qt5 >= 0.10.9
 Requires:   perl-CPAN
 Requires:   perl-IPC-Cmd
+Requires:   perl-IO-Compress
 Requires:   sqlite
 Requires:   qt5-qttest
 Requires:   sdk-deploy-rpm
@@ -33,6 +34,8 @@ BuildRequires:  git
 BuildRequires:  qt5-qttest
 BuildRequires:  sqlite-devel
 BuildRequires:  desktop-file-utils
+BuildRequires:  perl-IO-Compress
+BuildRequires:  perl-Module-Load-Conditional
 
 %description
 Short description of my Sailfish OS Application
@@ -46,7 +49,7 @@ Short description of my Sailfish OS Application
 
 %build
 # >> build pre
-cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_TESTING=OFF
+cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_TESTING=ON -DCODE_COVERAGE=ON
 make
 # << build pre
 
