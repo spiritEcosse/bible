@@ -20,8 +20,7 @@ jobs:
       uses: actions/cache@v3
       with: 
         path: /home/runner/3rdparty
-        key: sailfish-armv7hl-3rdparty-${{ hashFiles('*.cmake') }}
-        restore-keys: sailfish-armv7hl-3rdparty-
+        key: sailfish-armv7hl-3rdparty-v0
 
     - name: mv 3rdparty 3rdparty_original
       run: mv 3rdparty 3rdparty_original
