@@ -18,7 +18,8 @@ jobs:
         docker run --rm --privileged
         -e CODECOV_TOKEN="${{ secrets.CODECOV_TOKEN }}"
         -e IDENTITY_FILE="${{ secrets.IDENTITY_FILE }}"
-        -e BACKUP_SERVER="${{ secrets.BACKUP_SERVER }}"
+        -e BACKUP_HOST="${{ secrets.BACKUP_HOST }}"
+        -e BACKUP_USER="${{ secrets.BACKUP_USER }}"
         -v $PWD:/share coderus/sailfishos-platform-sdk-armv7hl:$RELEASE /bin/bash -c "
             alias mb2='mb2 --target SailfishOS-$RELEASE-armv7hl' &&
             export FILE=armv7hl.tar.gz &&
