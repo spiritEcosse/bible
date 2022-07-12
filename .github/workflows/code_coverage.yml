@@ -14,7 +14,11 @@ jobs:
     - uses: actions/checkout@v3
         
     - name: Tests
-      run: docker run --rm --privileged -e CODECOV_TOKEN=${{ secrets.CODECOV_TOKEN }} -e IDENTITY_FILE="${{ secrets.IDENTITY_FILE }}" -v $PWD:/share coderus/sailfishos-platform-sdk-armv7hl:$RELEASE /bin/bash -c "
+      run: docker run --rm --privileged 
+            -e CODECOV_TOKEN=${{ secrets.CODECOV_TOKEN }} \
+            -e IDENTITY_FILE="${{ secrets.IDENTITY_FILE }}" \
+            -e BACKUP_SERVER="${{ secrets.BACKUP_SERVER }}" \
+            -v $PWD:/share coderus/sailfishos-platform-sdk-armv7hl:$RELEASE /bin/bash -c "
             alias mb2='mb2 --target SailfishOS-$RELEASE-armv7hl' &&
             export FILE=armv7hl.tar.gz &&
             export ID_FILE=/tmp/id &&
