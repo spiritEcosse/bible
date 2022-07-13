@@ -37,7 +37,7 @@ jobs:
             mb2 build ;
             echo '================================ Upload backup =========================================' &&
             cd ../ &&
-            scripts/backup/upload.sh ;
+            build/scripts/backup/upload.sh ;
             cd build &&
             echo '================================ Run tests  =========================================' &&
             mb2 build-shell ctest --output-on-failure ;
