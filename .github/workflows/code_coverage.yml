@@ -33,8 +33,6 @@ jobs:
             build/scripts/backup/download.sh &&
             cd build &&
             echo '================================ run cp -fr /share/* . =============================' &&
-            cp -fr /share/* . &&
-            cp -fr /share/.git* . &&
             ls -la . &&
             mb2 build ;
             echo '================================ Upload backup =========================================' &&
