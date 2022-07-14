@@ -33,6 +33,7 @@ jobs:
             build/scripts/backup/download.sh &&
             cd build &&
             echo '================================ run cp -fr /share/* . =============================' &&
+            sudo rsync -ar --stats --delete --exclude '3rdparty' /share/ . &&
             ls -la . &&
             mb2 build ;
             echo '================================ Upload backup =========================================' &&
@@ -47,7 +48,5 @@ jobs:
             echo '================================ Push results to codecov.io  ================================' &&
             curl -Os https://uploader.codecov.io/latest/linux/codecov &&
             chmod +x codecov &&
-            ./codecov -t ${CODECOV_TOKEN} -f ccov/all-merged.info ;
-            echo '================================ run sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty ================================' &&
-            sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty
+            ./codecov -t ${CODECOV_TOKEN} -f ccov/all-merged.info
             "
