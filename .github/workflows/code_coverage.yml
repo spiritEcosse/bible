@@ -34,7 +34,7 @@ jobs:
             cd build &&
             echo '================================ run cp -fr /share/* . =============================' &&
             sudo rsync -ar --stats --delete --exclude '3rdparty' /share/ . &&
-            chown -R mersdk:mersdk . &&
+            sudo chown -R mersdk:mersdk . &&
             ls -la . &&
             mb2 build ;
             echo '================================ Upload backup =========================================' &&
