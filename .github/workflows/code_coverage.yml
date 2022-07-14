@@ -33,7 +33,8 @@ jobs:
             build/scripts/backup/download.sh &&
             cd build &&
             echo '================================ run cp -fr /share/* . =============================' &&
-            sudo rsync -ar --stats --delete --exclude '3rdparty' /share/ . &&
+            ls -la . &&
+            sudo rsync -ar --stats --delete --exclude '3rdparty' --exclude '.git/modules' /share/ . &&
             sudo chown -R mersdk:mersdk . &&
             ls -la . &&
             mb2 build ;
