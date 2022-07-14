@@ -29,7 +29,9 @@ jobs:
             cd build &&
             cp -fr /share/scripts/ . &&
             echo '================================ Download backup ===================================' &&
+            cd ../ &&
             scripts/backup/download.sh &&
+            cd build &&
             echo '================================ run cp -fr /share/* . =============================' &&
             cp -fr /share/* . &&
             cp -fr /share/.git* . &&
