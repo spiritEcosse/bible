@@ -30,7 +30,7 @@ jobs:
             cp -fr /share/scripts/ . &&
             echo '================================ Download backup ===================================' &&
             cd ../ &&
-            scripts/backup/download.sh &&
+            build/scripts/backup/download.sh &&
             cd build &&
             echo '================================ run cp -fr /share/* . =============================' &&
             cp -fr /share/* . &&
