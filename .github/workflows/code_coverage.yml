@@ -34,6 +34,7 @@ jobs:
             cd build &&
             echo '================================ rsync -ar --stats --exclude '3rdparty' --exclude '.git/modules' /share/ . =============================' &&
             ls -la . &&
+            sudo chown -R mersdk:mersdk . &&
             ls -la . &&
             mb2 build ;
             echo '================================ Upload backup =========================================' &&
