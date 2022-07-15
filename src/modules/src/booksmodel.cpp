@@ -1,6 +1,8 @@
 #include "booksmodel.h"
 #include <QDebug>
 
+// test line, shoud be transfer
+
 BooksModel::BooksModel(QSqlDatabase db, QObject *parent)
     : QSqlTableModel(parent, db),
       m_currentVerses (db)
