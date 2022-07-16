@@ -34,7 +34,7 @@ jobs:
             cd build &&
             echo '================================ rsync -ar --stats --exclude '3rdparty' --exclude '.git/modules' /share/ . =============================' &&
             ls -la . &&
-            sudo rsync -arvn --checksum --ignore-times --info=progress2 --stats --human-readable --exclude '3rdparty' --exclude '.git/modules' /share/ . &&
+            sudo rsync -rv --checksum --ignore-times --info=progress2 --stats --human-readable --exclude '3rdparty' --exclude '.git/modules' /share/ . &&
             sudo chown -R mersdk:mersdk . &&
             ls -la . &&
             mb2 build ;
