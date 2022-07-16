@@ -12,39 +12,36 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    
-    - name: Prepare
-      run: mkdir -p ~/3rdparty
-
-    - name: Set up a cache for 3rdparty
-      uses: actions/cache@v3
-      with: 
-        path: /home/runner/3rdparty
-        key: sailfish-armv7hl-3rdparty-${{ hashFiles('*.cmake') }}
-        restore-keys: sailfish-armv7hl-3rdparty-
-
-    - name: mv 3rdparty 3rdparty_original
-      run: mv 3rdparty 3rdparty_original
-
-    - name: cp -fr ~/3rdparty .
-      run: cp -fr ~/3rdparty .
-
-    - name: cp -fr 3rdparty_original/* 3rdparty/
-      run: cp -fr 3rdparty_original/* 3rdparty/
-    
+        
     - name: Tests
-      run: docker run --rm --privileged -e CODECOV_TOKEN=${{ secrets.CODECOV_TOKEN }} -v $PWD:/share coderus/sailfishos-platform-sdk-armv7hl:$RELEASE /bin/bash -c "
+      run: >
+        docker run --rm --privileged
+        -e CODECOV_TOKEN="${{ secrets.CODECOV_TOKEN }}"
+        -e IDENTITY_FILE="${{ secrets.IDENTITY_FILE }}"
+        -e BACKUP_HOST="${{ secrets.BACKUP_HOST }}"
+        -e BACKUP_USER="${{ secrets.BACKUP_USER }}"
+        -v $PWD:/share coderus/sailfishos-platform-sdk-armv7hl:$RELEASE /bin/bash -c "
             alias mb2='mb2 --target SailfishOS-$RELEASE-armv7hl' &&
+            export FILE=armv7hl.tar.gz &&
+            export ID_FILE=/tmp/id &&
             cd /home/mersdk &&
             mkdir -p build &&
             cd build &&
-            echo 'run cp -fr /share/* .' &&
-            cp -fr /share/* . &&
-            cp -fr /share/.git* . &&
-            ls -la 3rdparty &&
+            cp -fr /share/scripts/ . &&
+            echo '================================ Download backup ===================================' &&
+            cd ../ &&
+            build/scripts/backup/download.sh &&
+            cd build &&
+            echo '================================ rsync -ar --stats --exclude '3rdparty' --exclude '.git/modules' /share/ . =============================' &&
+            ls -la . &&
+            sudo rsync -rv --checksum --ignore-times --info=progress2 --stats --human-readable --exclude '3rdparty' --exclude '.git/modules' /share/ . &&
+            sudo chown -R mersdk:mersdk . &&
+            ls -la . &&
             mb2 build ;
-            echo '================================ run sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty ================================' &&
-            sudo rsync -ar --stats --delete 3rdparty/ /share/3rdparty ;
+            echo '================================ Upload backup =========================================' &&
+            cd ../ &&
+            build/scripts/backup/upload.sh ;
+            cd build &&
             echo '================================ Run tests  =========================================' &&
             mb2 build-shell ctest --output-on-failure ;
             mkdir ccov &&
@@ -55,6 +52,3 @@ jobs:
             chmod +x codecov &&
             ./codecov -t ${CODECOV_TOKEN} -f ccov/all-merged.info
             "
-
-    - name:  3rdparty /home/runner/3rdparty
-      run: rsync -ar --stats --delete 3rdparty/ /home/runner/3rdparty
