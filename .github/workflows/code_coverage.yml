@@ -30,7 +30,36 @@ jobs:
         -e BACKUP_HOST="${{ secrets.BACKUP_HOST }}"
         -e BACKUP_USER="${{ secrets.BACKUP_USER }}"
         -v $PWD:/share coderus/sailfishos-platform-sdk-armv7hl:$RELEASE /bin/bash -c "
-            exit 1
+            alias mb2='mb2 --target SailfishOS-$RELEASE-armv7hl' &&
+            export FILE=armv7hl.tar.gz &&
+            export ID_FILE=/tmp/id &&
+            cd /home/mersdk &&
+            mkdir -p build &&
+            cd build &&
+            cp -fr /share/scripts/ . &&
+            echo '================================ Download backup ===================================' &&
+            cd ../ &&
+            build/scripts/backup/download.sh &&
+            cd build &&
+            echo '================================ rsync -ar --stats --exclude '3rdparty' --exclude '.git/modules' /share/ . =============================' &&
+            ls -la . &&
+            sudo rsync -rv --checksum --ignore-times --info=progress2 --stats --human-readable --exclude '3rdparty' --exclude '.git/modules' /share/ . &&
+            sudo chown -R mersdk:mersdk . &&
+            ls -la . &&
+            mb2 build ;
+            echo '================================ Upload backup =========================================' &&
+            cd ../ &&
+            build/scripts/backup/upload.sh ;
+            cd build &&
+            echo '================================ Run tests  =========================================' &&
+            mb2 build-shell ctest --output-on-failure ;
+            mkdir ccov &&
+            echo '================================ make ccov-all-capture =================================' &&
+            mb2 build-shell make ccov-all-capture &&
+            echo '================================ Push results to codecov.io  ================================' &&
+            curl -Os https://uploader.codecov.io/latest/linux/codecov &&
+            chmod +x codecov &&
+            ./codecov -t ${CODECOV_TOKEN} -f ccov/all-merged.info
             "
 
     - name: Slack Notification
