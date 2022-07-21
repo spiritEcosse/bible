@@ -90,7 +90,7 @@ namespace modules {
         return m_name;
     }
 
-    std::string GroupModules::nameToStdString()
+    std::string GroupModules::nameToStdString() const
     {
         return m_name.toStdString();
     }
