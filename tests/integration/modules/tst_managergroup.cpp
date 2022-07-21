@@ -156,10 +156,17 @@ namespace modules {
                 QCOMPARE(modules_actual, modules);
 
                 QCOMPARE(managerGroup.m_objects.size(), groupModules.size());
-                QCOMPARE(std::equal(dereference_iterator(groupModules.begin()),
-                           dereference_iterator(groupModules.end()),
-                           MapValueIterator(managerGroup.m_objects.begin())
-                           ), true);
+                std::for_each(dereference_iterator(groupModules.begin()),
+                              dereference_iterator(groupModules.end()),
+                              [&managerGroup]
+                              (const auto& groupModules) {
+                    const MGKey mgKey {
+                        groupModules.nameToStdString(),
+                        groupModules.languageCodeToStdString(),
+                        groupModules.regionToStdString()
+                    };
+                    QCOMPARE(*managerGroup.m_objects[mgKey], groupModules);
+                });
             } else {
                 QCOMPARE(spyError.count(), 1);
                 QList<QVariant> arguments = spyError.takeFirst();

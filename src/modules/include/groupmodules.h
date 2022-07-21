@@ -33,7 +33,7 @@ namespace modules {
         QString titleGroup() const;
         std::string languageCodeToStdString() const;
         QString name() const;
-        std::string nameToStdString();
+        std::string nameToStdString() const;
         static QString parseName(const QString& name);
 
         bool operator==(const GroupModules& other) const;
