@@ -244,6 +244,7 @@ SilicaFlickable {
                                                 width: parent.width
 
                                                 ExpandingSectionPatch {
+                                                    id: expandingSectionBook
                                                     title: long_name.trim() + index
                                                     width: parent.width
                                                     Timer {
@@ -392,11 +393,12 @@ SilicaFlickable {
                                                                                         linkColor: verseNumber.color
                                                                                         font.pixelSize: Theme.fontSizeSmall
                                                                                         onLinkActivated: {
+                                                                                            console.log(listBooks.model.currentBook, listBooks.model.currentChapter);
                                                                                             pageStack.push(
                                                                                                         comments,
                                                                                                         {
-                                                                                                            "book": expandingSection.model.currentBook,
-                                                                                                            "chapter": expandingSection.model.currentChapter,
+                                                                                                            "book": listBooks.model.currentBook,
+                                                                                                            "chapter": listBooks.model.currentChapter,
                                                                                                             "verse": index + 1,
                                                                                                             "marker": link,
                                                                                                             "historyModel": historyModel
