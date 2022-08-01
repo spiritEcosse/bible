@@ -14,10 +14,10 @@ class CommentsModel : public QSqlTableModel
     Q_PROPERTY(int currentBook READ currentBook WRITE setCurrentBook)
     Q_PROPERTY(int currentChapter READ currentChapter WRITE setCurrentChapter)
     Q_PROPERTY(int currentVerse READ currentVerse WRITE setCurrentVerse)
-    Q_PROPERTY(QString currentMarker READ currentMarker WRITE setCurrentMarker)
     Q_PROPERTY(QString currentText READ currentText NOTIFY changeCurrentText)
 public:
-    CommentsModel(QObject *parent = 0);
+    CommentsModel(QSqlDatabase db, QObject *parent = Q_NULLPTR);
+    CommentsModel(QObject *parent = Q_NULLPTR);
     ~CommentsModel();
 
     QVariant data(const QModelIndex &index, int role) const override;
@@ -30,7 +30,7 @@ public:
     void setCurrentBook(const int &currentBook);
     void setCurrentChapter(const int &currentChapter);
     void setCurrentVerse(const int &currentVerse);
-    void setCurrentMarker(const QString &currentMarker);
+    void updateObjects();
 signals:
     void changeCurrentText();
 private:

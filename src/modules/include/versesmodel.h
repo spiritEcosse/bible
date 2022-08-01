@@ -3,6 +3,8 @@
 
 #include <QSqlTableModel>
 #include <QSqlRecord>
+#include <memory>
+#include "commentsmodel.h"
 
 class VersesModel : public QSqlTableModel
 {
@@ -20,6 +22,7 @@ private:
     const static char* SQL_SELECT;
     void generateRoleNames();
     QHash<int, QByteArray> m_roleNames;
+    std::shared_ptr<CommentsModel> m_comments;
 };
 
 #endif // VERSESMODEL_H

@@ -3,10 +3,15 @@
 
 static const char *commentariesTableName = "commentaries";
 
+CommentsModel::CommentsModel(QSqlDatabase db, QObject *parent)
+    : QSqlTableModel(parent, db)
+{
+    updateObjects();
+}
+
 CommentsModel::CommentsModel(QObject *parent)
     : QSqlTableModel(parent)
 {
-    setTable(commentariesTableName);
 }
 
 CommentsModel::~CommentsModel()
@@ -82,15 +87,9 @@ void CommentsModel::setCurrentVerse(const int &currentVerse)
     m_currentVerse = currentVerse;
 }
 
-void CommentsModel::setCurrentMarker(const QString &currentMarker)
+void CommentsModel::updateObjects()
 {
-    if (m_currentMarker == currentMarker) {
-        return;
-    }
-
-    m_currentMarker = currentMarker;
-
-    setFilter(QString("book_number='%1' AND chapter_number_from='%2' AND marker='%3'").arg(QString::number(currentBook()), QString::number(currentChapter()), m_currentMarker));
+    setFilter(QString("book_number='%1' AND chapter_number_from='%2' AND verse_number_from='%3'").arg(QString::number(currentBook()),QString::number(currentChapter()),QString::number(1)));
 
     if (select()) {
         QSqlRecord recordFilter = record(0);

@@ -2,10 +2,14 @@
 #include "dbmanager.h"
 #include <QDebug>
 #include <QSqlQuery>
+#include <QtQuick>
 
 VersesModel::VersesModel(QSqlDatabase db, QObject *parent)
     : QSqlTableModel(parent, db)
-{
+{    
+    const QStringList& absPath = database().connectionNames().first().split('/');
+    DbManagerComments db_comments (absPath.at(absPath.size() - 2));
+    m_comments.reset(new CommentsModel(db_comments.db));
 }
 
 VersesModel::VersesModel(QObject *parent)
@@ -36,18 +40,28 @@ void VersesModel::getByBookAndChapter(const quint16 &book_number, const quint16 
     generateRoleNames();
 }
 
-QVariant VersesModel::data(const QModelIndex &index, int role) const
+QVariant VersesModel
+::data(const QModelIndex &index, int role) const
 {
     QVariant value;
 
-    if(role < Qt::UserRole) {
-        value = QSqlQueryModel::data(index, role);
-    } else {
-        int columnIdx = role - Qt::UserRole - 1;
-        QModelIndex modelIndex = this->index(index.row(), columnIdx);
-        value = QSqlQueryModel::data(modelIndex, Qt::DisplayRole);
+    switch(role) {
+        case 1:
+#ifdef Qt6_FOUND
+            value = QVariant::fromValue(m_comments.get());
+#else
+            value = qVariantFromValue(m_comments.get());
+#endif
+        break;
+    default:
+        if(role < Qt::UserRole) {
+            value = QSqlQueryModel::data(index, role);
+        } else {
+            int columnIdx = role - Qt::UserRole - 1;
+            QModelIndex modelIndex = this->index(index.row(), columnIdx);
+            value = QSqlQueryModel::data(modelIndex, Qt::DisplayRole);
+        }
     }
-
     return value;
 }
 
