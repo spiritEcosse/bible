@@ -89,7 +89,7 @@ void CommentsModel::setCurrentVerse(const int &currentVerse)
 
 void CommentsModel::updateObjects()
 {
-    setFilter(QString("book_number='%1' AND chapter_number_from='%2' AND verse_number_from='%3'").arg(QString::number(currentBook()),QString::number(currentChapter()),QString::number(1)));
+    setFilter(QString("book_number='%1' AND chapter_number_from='%2'").arg(QString::number(currentBook()),QString::number(currentChapter()));
 
     if (select()) {
         QSqlRecord recordFilter = record(0);

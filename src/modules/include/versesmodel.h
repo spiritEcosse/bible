@@ -10,6 +10,11 @@ class VersesModel : public QSqlTableModel
 {
     Q_OBJECT
 public:
+    enum VerseRoles {
+        Text = 0,
+        Verse = 1,
+        Comments = 2
+    };
     VersesModel(QSqlDatabase db, QObject *parent = 0);
     VersesModel(QObject *parent = 0);
     ~VersesModel();
@@ -20,7 +25,6 @@ public:
     void reset();
 private:
     const static char* SQL_SELECT;
-    void generateRoleNames();
     QHash<int, QByteArray> m_roleNames;
     std::shared_ptr<CommentsModel> m_comments;
 };
