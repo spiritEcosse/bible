@@ -23,7 +23,11 @@ VersesModel::~VersesModel()
 
 QHash<int, QByteArray> VersesModel::roleNames() const
 {
-    return m_roleNames;
+    return {
+        { Text, "verse_text" },
+        { Verse, "verse_number" },
+        { Comments, "comments" },
+    };
 }
 
 const char* VersesModel::SQL_SELECT =
@@ -37,7 +41,6 @@ void VersesModel::getByBookAndChapter(const quint16 &book_number, const quint16 
     qDebug() << "Sdsd";
     this->setQuery(QSqlQuery(sql, database()));
     qDebug() << "Sdsd";
-    generateRoleNames();
 }
 
 QVariant VersesModel
@@ -46,7 +49,7 @@ QVariant VersesModel
     QVariant value;
 
     switch(role) {
-        case 1:
+        case Comments:
 #ifdef Qt6_FOUND
             value = QVariant::fromValue(m_comments.get());
 #else
@@ -63,15 +66,6 @@ QVariant VersesModel
         }
     }
     return value;
-}
-
-void VersesModel::generateRoleNames()
-{
-    m_roleNames.clear();
-
-    for( int i = 0; i < record().count(); i ++) {
-        m_roleNames.insert(Qt::UserRole + i + 1, record().fieldName(i).toUtf8());
-    }
 }
 
 void VersesModel::reset()
