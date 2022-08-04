@@ -6,8 +6,8 @@
 
 VersesModel::VersesModel(QSqlDatabase db, QObject *parent)
     : QSqlTableModel(parent, db)
-{    
-    const QStringList& absPath = database().connectionNames().first().split('/');
+{
+    const QStringList& absPath = database().connectionNames().last().split('/');
     DbManagerComments db_comments (absPath.at(absPath.size() - 2));
     m_comments.reset(new CommentsModel(db_comments.db));
 }

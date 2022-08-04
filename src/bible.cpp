@@ -47,6 +47,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 
     createAppDir();
 
+    connectToDatabase();
     modules::ModelGroupModules::registerMe();
     modules::ManagerRegistry::registerMe();
     qmlRegisterType<netmanager::QuickDownload>("bible.QuickDownload", 1, 0, "QuickDownload");

@@ -51,5 +51,3 @@ DbManagerComments::DbManagerComments(const QString& moduleName)
         qDebug() << "Bible database: Connection OK";
     }
 }
-
-

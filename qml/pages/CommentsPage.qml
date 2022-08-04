@@ -15,7 +15,6 @@ Pages {
         currentBook: book
         currentChapter: chapter
         currentVerse: verse
-        currentMarker: marker
     }
 
     SilicaFlickable {
