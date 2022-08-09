@@ -15,7 +15,7 @@ class BooksModel : public QSqlTableModel
     Q_PROPERTY(int currentChapter READ currentChapter WRITE setCurrentChapter NOTIFY changeCurrentChapter)
     Q_PROPERTY(VersesModel* currentVerses READ currentVerses NOTIFY changeCurrentVerses)
 public:
-    BooksModel(QSqlDatabase db, QObject *parent = Q_NULLPTR);
+    BooksModel(QSqlDatabase db, const QString& abbrModule, QObject *parent = Q_NULLPTR);
     BooksModel(QObject *parent = Q_NULLPTR);
     static const int COUNT_BOOKS_OLD_TESTAMENT = 39;
 
@@ -40,6 +40,7 @@ private:
     int m_currentBook = 0;
     int m_currentChapter = 0;
     VersesModel m_currentVerses;
+    QString m_abbrModule;
     const static char* SQL_SELECT;
     void generateRoleNames();
     QHash<int, QByteArray> m_roleNames;

@@ -7,9 +7,6 @@
 VersesModel::VersesModel(QSqlDatabase db, QObject *parent)
     : QSqlTableModel(parent, db)
 {
-    const QStringList& absPath = database().connectionNames().last().split('/');
-    DbManagerComments db_comments (absPath.at(absPath.size() - 2));
-    m_comments.reset(new CommentsModel(db_comments.db));
 }
 
 VersesModel::VersesModel(QObject *parent)
@@ -34,13 +31,14 @@ const char* VersesModel::SQL_SELECT =
         "SELECT verses.text as verse_text, verses.verse as verse_number FROM verses WHERE "
         "verses.book_number = %1 AND verses.chapter = %2";
 
-void VersesModel::getByBookAndChapter(const quint16 &book_number, const quint16 &chapter)
+void VersesModel::getByBookAndChapter(const quint16 &book_number, const quint16 &chapter, const QString& abbrModule)
 {
     QString sql;
     sql = QString(SQL_SELECT).arg(QString::number(book_number), QString::number(chapter));
-    qDebug() << "Sdsd";
     this->setQuery(QSqlQuery(sql, database()));
-    qDebug() << "Sdsd";
+
+    DbManagerComments db_comments (abbrModule);
+    m_comments.reset(new CommentsModel(db_comments.db, book_number, chapter));
 }
 
 QVariant VersesModel
@@ -49,7 +47,7 @@ QVariant VersesModel
     QVariant value;
 
     switch(role) {
-        case Comments:
+        case Comments:         
 #ifdef Qt6_FOUND
             value = QVariant::fromValue(m_comments.get());
 #else
@@ -68,9 +66,9 @@ QVariant VersesModel
     return value;
 }
 
-void VersesModel::reset()
+void VersesModel::reset(const QString& abbrModule)
 {
     beginResetModel();
-    getByBookAndChapter(0, 0);
+    getByBookAndChapter(0, 0, abbrModule);
     endResetModel();
 }

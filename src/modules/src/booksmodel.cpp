@@ -1,11 +1,12 @@
 #include "booksmodel.h"
 #include <QDebug>
 
-BooksModel::BooksModel(QSqlDatabase db, QObject *parent)
+BooksModel::BooksModel(QSqlDatabase db, const QString& abbrModule, QObject *parent)
     : QSqlTableModel(parent, db),
-      m_currentVerses (db)
+      m_currentVerses (db),
+      m_abbrModule(abbrModule)
 {
-    m_currentVerses.reset();
+    m_currentVerses.reset(m_abbrModule);
     setQuery(QSqlQuery(SQL_SELECT, database()));
     generateRoleNames();
 }
@@ -108,7 +109,7 @@ void BooksModel::setCurrentChapter(const int &currentChapter)
 void BooksModel::setCurrentVerses()
 {
     m_currentVerses.clear();
-    m_currentVerses.getByBookAndChapter(currentBook(), currentChapter());
+    m_currentVerses.getByBookAndChapter(currentBook(), currentChapter(), m_abbrModule);
     emit changeCurrentVerses();
 }
 

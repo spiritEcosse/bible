@@ -393,16 +393,25 @@ SilicaFlickable {
                                                                                         linkColor: verseNumber.color
                                                                                         font.pixelSize: Theme.fontSizeSmall
                                                                                         onLinkActivated: {
-                                                                                            console.log(listBooks.model.currentBook, listBooks.model.currentChapter);
-                                                                                            pageStack.push(
-                                                                                                        comments,
-                                                                                                        {
-                                                                                                            "book": listBooks.model.currentBook,
-                                                                                                            "chapter": listBooks.model.currentChapter,
-                                                                                                            "verse": index + 1,
-                                                                                                            "marker": link,
-                                                                                                            "historyModel": historyModel
-                                                                                                        })
+                                                                                            var textComment = "";
+
+                                                                                            console.log("comments: ", comments.rowCount());
+                                                                                            for (var pos = 0; pos < comments.rowCount(); pos++) {
+                                                                                                var marker_db = comments.data(comments.index(pos, 0), 262);
+                                                                                                var verse_from_number = comments.data(comments.index(pos, 0), 261);
+                                                                                                if (link === marker_db && verse_from_number === index + 1) {
+                                                                                                    textComment = comments.data(comments.index(pos, 0), 263);
+                                                                                                }
+                                                                                            }
+
+                                                                                            if (textComment) {
+                                                                                                pageStack.push(
+                                                                                                            commentsPage,
+                                                                                                            {
+                                                                                                                "textComment": textComment,
+                                                                                                                "historyModel": historyModel
+                                                                                                            })
+                                                                                            }
                                                                                         }
                                                                                         textFormat: Text.StyledText
                                                                                         width: parent.width

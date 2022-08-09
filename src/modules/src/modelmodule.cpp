@@ -396,7 +396,7 @@ namespace modules {
                 qDebug() << "books";
                 if (modules->m_books == nullptr) {
                     DbManager db (modules->m_name);
-                    modules->m_books.reset(new BooksModel(db.db));
+                    modules->m_books.reset(new BooksModel(db.db, modules->m_abbreviation));
                 }
 #ifdef Qt6_FOUND
                 data = QVariant::fromValue(modules->m_books.get());
