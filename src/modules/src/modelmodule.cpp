@@ -395,9 +395,8 @@ namespace modules {
             case Book :
                 qDebug() << "books";
                 if (modules->m_books == nullptr) {
-                    QString fileName (QDir::currentPath() + "/modules/" + modules->m_name + "/.SQLite3");
-                    DbManager db (std::move(fileName));
-                    modules->m_books.reset(new BooksModel(db.db));
+                    DbManager db (modules->m_name);
+                    modules->m_books.reset(new BooksModel(db.db, modules->m_abbreviation));
                 }
 #ifdef Qt6_FOUND
                 data = QVariant::fromValue(modules->m_books.get());

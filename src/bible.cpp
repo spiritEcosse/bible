@@ -13,7 +13,6 @@
 #include <QIcon>
 #endif
 
-#include "booksmodel.h"
 #include "historymodel.h"
 #include "commentsmodel.h"
 #include "modelgroupmodules.h"
@@ -53,7 +52,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     modules::ManagerRegistry::registerMe();
     qmlRegisterType<netmanager::QuickDownload>("bible.QuickDownload", 1, 0, "QuickDownload");
     modules::ModelModule::registerMe();
-    qmlRegisterType<BooksModel>("bible.BooksModel", 1, 0, "BooksModel");
+//    qmlRegisterType<BooksModel>("bible.BooksModel", 1, 0, "BooksModel");
     qmlRegisterType<CommentsModel>("bible.CommentsModel", 1, 0, "CommentsModel");
 //    qmlRegisterType<ModulesModel>("bible.ModulesModel", 1, 0, "ModulesModel");
     qmlRegisterType<HistoryModel>("bible.HistoryModel", 1, 0, "HistoryModel");

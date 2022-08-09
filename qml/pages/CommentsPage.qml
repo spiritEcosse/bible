@@ -1,22 +1,10 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import bible.CommentsModel 1.0
 import bible.HistoryModel 1.0
 
 Pages {
-    property int book
-    property int chapter
-    property int verse
-    property string marker
     property HistoryModel historyModel
-
-    CommentsModel {
-        id: commentsModel
-        currentBook: book
-        currentChapter: chapter
-        currentVerse: verse
-        currentMarker: marker
-    }
+    property string textComment
 
     SilicaFlickable {
         anchors.fill: parent
@@ -38,7 +26,7 @@ Pages {
                 width: parent.width
 
                 Label {
-                    text: commentsModel.currentText
+                    text: textComment
                     linkColor: Theme.highlightColor
                     width: parent.width
                     font.pixelSize: Theme.fontSizeSmall
