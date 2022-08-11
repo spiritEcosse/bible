@@ -1,6 +1,6 @@
 name: Code coverage Sailfish OS
 
-on: [push, pull_request]
+on: [push]
 
 env:
   RELEASE: 4.4.0.64
