@@ -45,6 +45,7 @@ if(NOT EXISTS "${AWS_INSTALL_DIR}")
     endif()
 endif()
 
+
 set(ENV{PATH} "${AWS_INSTALL_DIR}:$ENV{PATH}")
 execute_process(COMMAND bash -c "which aws" RESULT_VARIABLE AWS_OUT)
 message("AWS_OUT ${AWS_OUT}")
