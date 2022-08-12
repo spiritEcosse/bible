@@ -37,6 +37,8 @@ jobs:
             mkdir -p build &&
             cd build &&
             cp -fr /share/scripts/ . &&
+            echo '================================ Wake up server ===================================' &&
+            scripts/aws.sh &&
             echo '================================ Download backup ===================================' &&
             cd ../ &&
             build/scripts/backup/download.sh &&
