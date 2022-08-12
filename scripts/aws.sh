@@ -1,4 +1,4 @@
 #!/bin/bash
 
 sudo zypper -n install python3-pip
-pip install awscli
+sudo pip install awscli
