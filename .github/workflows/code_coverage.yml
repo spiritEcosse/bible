@@ -37,9 +37,6 @@ jobs:
             mkdir -p build &&
             cd build &&
             cp -fr /share/scripts/ . &&
-            cp -fr /share/rpm/ . &&
-            mb2 build-init &&
-            mb2 build-requires &&
             echo '================================ Wake up server ===================================' &&
             scripts/aws.sh &&
             echo '================================ Download backup ===================================' &&
