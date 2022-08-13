@@ -27,7 +27,6 @@ jobs:
         docker run --rm --privileged
         -e CODECOV_TOKEN="${{ secrets.CODECOV_TOKEN }}"
         -e IDENTITY_FILE="${{ secrets.IDENTITY_FILE }}"
-        -e BACKUP_HOST="${{ secrets.BACKUP_HOST }}"
         -e BACKUP_USER="${{ secrets.BACKUP_USER }}"
         -e EC2_INSTANCE="${{ secrets.EC2_INSTANCE }}"
         -e AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}"
