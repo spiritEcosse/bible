@@ -42,6 +42,7 @@ jobs:
             cp -fr /share/scripts/ . &&
             echo '================================ Start server ===================================' &&
             scripts/aws_start.sh &&
+            echo '================================ End Start server ===================================' &&
             echo '================================ Download backup ===================================' &&
             cd ../ &&
             build/scripts/backup/download.sh &&
