@@ -6,8 +6,8 @@ mkdir -p ~/.ssh/ &&
 touch ~/.ssh/known_hosts &&
 aws ec2 describe-instances --instance-ids "${EC2_INSTANCE}" --query "Reservations[*].Instances[*].[PublicIpAddress]" --output text &&
 export BACKUP_HOST=$? &&
-echo "BACKUP_HOST: ${BACKUP_HOST}"
-echo "EC2_INSTANCE: ${EC2_INSTANCE}"
+echo "BACKUP_HOST: ${BACKUP_HOST}" &&
+echo "EC2_INSTANCE: ${EC2_INSTANCE}" &&
 ssh-keyscan -H "${BACKUP_HOST}" >> ~/.ssh/known_hosts &&
 scp -i "${ID_FILE}" "${BACKUP_USER}"@"${BACKUP_HOST}":~/backups/"${FILE}" .
 
