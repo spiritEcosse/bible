@@ -9,7 +9,7 @@ ApplicationWindow
     allowedOrientations: Orientation.All
     _defaultPageOrientations: Orientation.All
 //    property Component history: Component { History {} }
-//    property Component comments: Component { CommentsPage {} }
+    property Component commentsPage: Component { CommentsPage {} }
     property Component main: Component { Main {} }
     property Component moduleInformation: Component { ModuleInformation {} }
     property int operationType: PageStackAction.Animated

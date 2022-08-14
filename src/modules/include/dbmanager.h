@@ -11,9 +11,16 @@
 class DbManager
 {
 public:
-    DbManager(QString&& fileName);
+    DbManager(const QString& moduleName);
     QSqlDatabase db;
-    QSqlDatabase db_comments;
+};
+
+
+class DbManagerComments
+{
+public:
+    DbManagerComments(const QString& moduleName);
+    QSqlDatabase db;
 };
 
 static void connectToDatabase()
