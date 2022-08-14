@@ -31,7 +31,6 @@ BuildRequires:  pkgconfig(Qt5Test)
 BuildRequires:  pkgconfig(sqlite3)
 BuildRequires:  cmake >= 3.5
 BuildRequires:  git
-BuildRequires:  python3-pip
 BuildRequires:  qt5-qttest
 BuildRequires:  sqlite-devel
 BuildRequires:  desktop-file-utils
