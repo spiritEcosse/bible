@@ -8,4 +8,4 @@ mkdir ~/.aws/ &&
 echo "[default]
 region = ${AWS_REGION}" > ~/.aws/config &&
 aws ec2 start-instances --instance-ids "${EC2_INSTANCE}" &&
-sleep 20
+sleep 50
