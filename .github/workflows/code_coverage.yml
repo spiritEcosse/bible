@@ -1,6 +1,6 @@
 name: Code coverage Sailfish OS
 
-on: [push, pull_request]
+on: [push]
 
 env:
   RELEASE: 4.4.0.64
@@ -27,8 +27,11 @@ jobs:
         docker run --rm --privileged
         -e CODECOV_TOKEN="${{ secrets.CODECOV_TOKEN }}"
         -e IDENTITY_FILE="${{ secrets.IDENTITY_FILE }}"
-        -e BACKUP_HOST="${{ secrets.BACKUP_HOST }}"
         -e BACKUP_USER="${{ secrets.BACKUP_USER }}"
+        -e EC2_INSTANCE="${{ secrets.EC2_INSTANCE }}"
+        -e AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}"
+        -e AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+        -e AWS_REGION=${{ secrets.AWS_REGION }}
         -v $PWD:/share coderus/sailfishos-platform-sdk-armv7hl:$RELEASE /bin/bash -c "
             alias mb2='mb2 --target SailfishOS-$RELEASE-armv7hl' &&
             export FILE=armv7hl.tar.gz &&
@@ -37,13 +40,16 @@ jobs:
             mkdir -p build &&
             cd build &&
             cp -fr /share/scripts/ . &&
+            echo '================================ Start server ===================================' &&
+            scripts/aws_start.sh &&
+            echo '================================ End Start server ===================================' &&
             echo '================================ Download backup ===================================' &&
             cd ../ &&
             build/scripts/backup/download.sh &&
             cd build &&
             echo '================================ rsync -ar --stats --exclude '3rdparty' --exclude '.git/modules' /share/ . =============================' &&
             ls -la . &&
-            sudo rsync -rv --checksum --ignore-times --info=progress2 --stats --human-readable --exclude '3rdparty' --exclude '.git/modules' /share/ . &&
+            sudo rsync -rv --checksum --ignore-times --info=progress2 --stats --human-readable --exclude '.git/modules' /share/ . &&
             sudo chown -R mersdk:mersdk . &&
             ls -la . &&
             mb2 build ;
@@ -51,6 +57,8 @@ jobs:
             cd ../ &&
             build/scripts/backup/upload.sh ;
             cd build &&
+            echo '================================ Stop server ===================================' &&
+            scripts/aws_stop.sh &&
             echo '================================ Run tests  =========================================' &&
             mb2 build-shell ctest --output-on-failure &&
             mkdir ccov &&
