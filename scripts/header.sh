@@ -37,7 +37,7 @@ set_up_instance_aws_host_to_known_hosts () {
       echo "#start $1" >> ~/.ssh/known_hosts &&
       ssh-keyscan -H "$1" >> ~/.ssh/known_hosts &&
       echo "#end $1" >> ~/.ssh/known_hosts &&
-      ssh -i "${DEPLOY_SSH_KEY}" "${DEPLOY_USER}"@"$1" "sudo shutdown +60" &&
+      ssh -i "${ID_FILE}" "${DEPLOY_USER}"@"$1" "sudo shutdown +60" &&
       [ -d ".idea" ] &&
       sed -i '' -e "s/[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}/$1/g" .idea/webServers.xml .idea/sshConfigs.xml
   fi
