@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source scripts/header.sh
+source build/scripts/header.sh
 
 
 echo "${IDENTITY_FILE}" > "${ID_FILE}" &&
