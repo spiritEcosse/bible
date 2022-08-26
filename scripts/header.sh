@@ -29,7 +29,7 @@ linux_install_aws() {
 }
 
 set_up_instance_aws_host_to_known_hosts () {
-  echo "-------------------------------- Set up deploy host to known hosts --------------------------------- " &&
+  echo "================================== Start Set up deploy host to known hosts ==================================" &&
   grep "$1" ~/.ssh/known_hosts
   STATUS_PREV_COMMAND=$?
 
@@ -41,6 +41,7 @@ set_up_instance_aws_host_to_known_hosts () {
       [ -d ".idea" ] &&
       sed -i '' -e "s/[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}/$1/g" .idea/webServers.xml .idea/sshConfigs.xml
   fi
+  echo "================================== End Set up deploy host to known hosts =================================="
 }
 
 aws_start() {
@@ -91,8 +92,9 @@ sfdk_run_app_on_device() {
 }
 
 prepare_aws_instance() {
+  echo "================================= Start prepare instance =================================" &&
   aws_start &&
-  echo "-------------------------------- Ssh Session --------------------------------- " &&
   EC2_INSTANCE_HOST=$(aws_get_host) &&
-  set_up_instance_aws_host_to_known_hosts "${EC2_INSTANCE_HOST}"
+  set_up_instance_aws_host_to_known_hosts "${EC2_INSTANCE_HOST}" &&
+  echo "================================= End prepare instance ================================="
 }
