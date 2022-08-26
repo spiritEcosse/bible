@@ -92,9 +92,9 @@ sfdk_run_app_on_device() {
 }
 
 prepare_aws_instance() {
-  echo "================================= Start prepare instance =================================" &&
+  echo "================================ Start prepare instance =================================" &&
   aws_start &&
   EC2_INSTANCE_HOST=$(aws_get_host) &&
   set_up_instance_aws_host_to_known_hosts "${EC2_INSTANCE_HOST}" &&
-  echo "================================= End prepare instance ================================="
+  echo "================================ End prepare instance ================================="
 }
