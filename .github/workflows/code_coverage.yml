@@ -40,9 +40,9 @@ jobs:
             mkdir -p build &&
             cd build &&
             cp -fr /share/scripts/ . &&
-            echo '================================ Download backup ===================================' &&
             cd ../ &&
             build/scripts/backup/download.sh &&
+            ls -la . &&
             cd build &&
             echo '================================ rsync -ar --stats --exclude '3rdparty' --exclude '.git/modules' /share/ . =============================' &&
             ls -la . &&
