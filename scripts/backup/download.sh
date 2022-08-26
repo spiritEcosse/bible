@@ -16,4 +16,5 @@ if [ $RESULT_SCP -eq 0 ]; then
 	tar -xf "${FILE}" ;
 else
 	echo "Doesn't exist: ${FILE}";
+	exit 1;
 fi
