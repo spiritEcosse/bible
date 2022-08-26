@@ -8,7 +8,7 @@ chmod 600 "${ID_FILE}" &&
 mkdir -p ~/.ssh/ &&
 touch ~/.ssh/known_hosts &&
 prepare_aws_instance &&
-scp -i "${ID_FILE}" "${BACKUP_USER}"@"${EC2_INSTANCE_HOST}":~/backups/"${FILE}" .
+scp -i "${ID_FILE}" "${EC2_INSTANCE_USER}"@"${EC2_INSTANCE_HOST}":~/backups/"${FILE}" .
 
 RESULT_SCP=$?
 
