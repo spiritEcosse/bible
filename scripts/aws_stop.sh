@@ -1,3 +1,5 @@
 #!/bin/bash
 
-aws ec2 stop-instances --instance-ids "${EC2_INSTANCE}"
+source scripts/header.sh
+
+aws_stop
