@@ -50,7 +50,7 @@ linux_install_aws() {
 
 set_up_instance_aws_host_to_known_hosts () {
   if ! grep "$1" ~/.ssh/known_hosts; then
-      SSH_KEYSCAN=$(ssh-keyscan -H "$1")
+      SSH_KEYSCAN=$(ssh-keyscan -T 180 -H "$1")
       printf "#start %s\n%s\n#end %s" "$1" "$SSH_KEYSCAN" "$1" >> ~/.ssh/known_hosts
       ssh -o ConnectTimeout=360 -i "${ID_FILE}" "${EC2_INSTANCE_USER}"@"$1" "sudo shutdown +60"
 
@@ -68,7 +68,6 @@ aws_start() {
   if [[ $(aws_get_instance_status) != "running" ]]; then
     aws ec2 start-instances --instance-ids "${EC2_INSTANCE}"
     aws_wait_status_running
-    sleep 60
   fi
 }
 
