@@ -43,6 +43,7 @@ jobs:
             mkdir -p build
             cd build
             cp -fr /share/scripts/ .
+            source scripts/header.sh
             code_coverage
             "
 
