@@ -34,6 +34,7 @@ jobs:
         -e AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}"
         -e AWS_REGION=${{ secrets.AWS_REGION }}
         -e AWS_REGION=${{ secrets.AWS_REGION }}
+        -e ARCH=${{ ARCH }}
         -v $PWD:/share coderus/sailfishos-platform-sdk-$ARCH:$RELEASE /bin/bash -c "
             alias mb2='mb2 --target SailfishOS-$RELEASE-$ARCH' &&
             export ID_FILE=/tmp/id &&
