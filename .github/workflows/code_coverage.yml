@@ -38,7 +38,8 @@ jobs:
             set -euox pipefail
             alias mb2='mb2 --target SailfishOS-$RELEASE-$ARCH'
             export ID_FILE=/tmp/id
-            echo $ARCH
+            echo ${ARCH}
+            export ARCH=${ARCH}
             echo "SailfishOS-$RELEASE-$ARCH"
             cd /home/mersdk
             mkdir -p build
