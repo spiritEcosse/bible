@@ -4,6 +4,7 @@ on: [push]
 
 env:
   RELEASE: 4.4.0.64
+  ARCH: armv7hl
   SAILFISH_IMAGE: coderus/sailfishos-platform-sdk:$RELEASE
 
 jobs:
@@ -32,45 +33,23 @@ jobs:
         -e AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}"
         -e AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}"
         -e AWS_REGION=${{ secrets.AWS_REGION }}
-        -v $PWD:/share coderus/sailfishos-platform-sdk-armv7hl:$RELEASE /bin/bash -c "
-            alias mb2='mb2 --target SailfishOS-$RELEASE-armv7hl' &&
-            export FILE=armv7hl.tar.gz &&
+        -e AWS_REGION=${{ secrets.AWS_REGION }}
+        -v $PWD:/share coderus/sailfishos-platform-sdk-$ARCH:$RELEASE /bin/bash -c "
+            alias mb2='mb2 --target SailfishOS-$RELEASE-$ARCH' &&
             export ID_FILE=/tmp/id &&
             cd /home/mersdk &&
             mkdir -p build &&
             cd build &&
             cp -fr /share/scripts/ . &&
             cd ../ &&
-            build/scripts/backup/download.sh &&
-            ls -la . &&
-            cd build &&
-            echo '================================ rsync -ar --stats --exclude '3rdparty' --exclude '.git/modules' /share/ . =============================' &&
-            ls -la . &&
-            sudo rsync -rv --checksum --ignore-times --info=progress2 --stats --human-readable --exclude '.git/modules' /share/ . &&
-            sudo chown -R mersdk:mersdk . &&
-            ls -la . &&
-            echo '================================ Start mb2 build-init =============================' &&
-            mb2 build-init &&
-            echo '================================ End mb2 build-init =============================' &&
-            echo '================================ Start mb2 build-requires =============================' &&
-            mb2 build-requires &&
-            echo '================================ End mb2 build-requires =============================' &&
-            mb2 cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_TESTING=ON -DCODE_COVERAGE=ON &&
-            echo '================================ Upload backup =========================================' &&
-            cd ../ &&
-            build/scripts/backup/upload.sh ;
-            cd build &&
-            echo '================================ Stop server ===================================' &&
-            scripts/aws_stop.sh &&
-            echo '================================ Run tests  =========================================' &&
-            mb2 build-shell ctest --output-on-failure &&
-            mkdir ccov &&
-            echo '================================ make ccov-all-capture =================================' &&
-            mb2 build-shell make ccov-all-capture &&
-            echo '================================ Push results to codecov.io  ================================' &&
-            curl -Os https://uploader.codecov.io/latest/linux/codecov &&
-            chmod +x codecov &&
-            ./codecov -t ${CODECOV_TOKEN} -f ccov/all-merged.info
+            source build/scripts/header.sh &&
+            download_backup &&
+            rsync_share_to_build &&
+            mb2_cmake_build &&
+            upload_backup &&
+            mb2_run_tests &&
+            mb2_run_ccov_all_capture &&
+            codecov_push_results
             "
 
     - name: Slack Notification

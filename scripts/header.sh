@@ -6,32 +6,41 @@
 # x - output each line (debug)
 set -euox pipefail
 
+ARCH=$(uname -m)
+FILE=$ARCH.tar.gz
+
 start_func() {
-    echo "================================ Start ${FUNCNAME[0]} ================================="
+    echo "================================ Start ${FUNCNAME[1]} ================================="
 }
 
 end_func() {
-    echo "================================ End ${FUNCNAME[0]} ================================="
+    echo "================================ End ${FUNCNAME[1]} ================================="
 }
 
 aws_get_host() {
+  start_func
   aws ec2 describe-instances --instance-ids "${EC2_INSTANCE}" --query "Reservations[*].Instances[*].[PublicIpAddress]" --output text
+  end_func
 }
 
 aws_stop() {
+  start_func
   aws ec2 stop-instances --instance-ids "${EC2_INSTANCE}"
+  end_func
 }
 
 aws_get_instance_status() {
+  start_func
   aws ec2 describe-instance-status --instance-ids "${EC2_INSTANCE}" --query "InstanceStatuses[*].InstanceState.Name" --output text
+  end_func
 }
 
 linux_install_aws() {
   start_func
-  sudo zypper -n install python3-pip &&
-  sudo pip install awscli &&
-  aws --version &&
-  mkdir ~/.aws/ &&
+  sudo zypper -n install python3-pip
+  sudo pip install awscli
+  aws --version
+  mkdir ~/.aws/
   echo "[default]
   region = ${AWS_REGION}" > ~/.aws/config
   end_func
@@ -41,10 +50,10 @@ set_up_instance_aws_host_to_known_hosts () {
   start_func
 
   if ! grep "$1" ~/.ssh/known_hosts; then
-      echo "#start $1" >> ~/.ssh/known_hosts &&
-      ssh-keyscan -H "$1" >> ~/.ssh/known_hosts &&
-      echo "#end $1" >> ~/.ssh/known_hosts &&
-      ssh -i "${ID_FILE}" "${EC2_INSTANCE_USER}"@"$1" "sudo shutdown +60" &&
+      echo "#start $1" >> ~/.ssh/known_hosts
+      ssh-keyscan -H "$1" >> ~/.ssh/known_hosts
+      echo "#end $1" >> ~/.ssh/known_hosts
+      ssh -i "${ID_FILE}" "${EC2_INSTANCE_USER}"@"$1" "sudo shutdown +60"
       [ -d ".idea" ] &&
       sed -i '' -e "s/[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}/$1/g" .idea/webServers.xml .idea/sshConfigs.xml
   fi
@@ -60,7 +69,7 @@ aws_start() {
 
   if [[ $(aws_get_instance_status) != "running" ]]; then
     echo "-------------------------------- Aws instance start --------------------------------- "
-    aws ec2 start-instances --instance-ids "${EC2_INSTANCE}" &&
+    aws ec2 start-instances --instance-ids "${EC2_INSTANCE}"
     sleep 50
   fi
 
@@ -93,8 +102,82 @@ sfdk_run_app_on_device() {
 
 prepare_aws_instance() {
   start_func
-  aws_start &&
-  EC2_INSTANCE_HOST=$(aws_get_host) &&
+  aws_start
+  EC2_INSTANCE_HOST=$(aws_get_host)
   set_up_instance_aws_host_to_known_hosts "${EC2_INSTANCE_HOST}"
+  end_func
+}
+
+download_backup() {
+  start_func
+  cd /home/mersdk/
+  echo "${IDENTITY_FILE}" > "${ID_FILE}"
+  chmod 600 "${ID_FILE}"
+  mkdir -p ~/.ssh/
+  touch ~/.ssh/known_hosts
+  prepare_aws_instance
+  scp -i "${ID_FILE}" "${EC2_INSTANCE_USER}"@"${EC2_INSTANCE_HOST}":~/backups/"${FILE}" .
+  tar -xf "${FILE}"
+  ls -la .
+  end_func
+}
+
+upload_backup() {
+  start_func
+  cd /home/mersdk/
+  tar -zcf "${FILE}" build &&
+  scp -i "${ID_FILE}" "${FILE}" "${EC2_INSTANCE_USER}"@"${EC2_INSTANCE_HOST}":~/backups/
+  aws_stop
+  end_func
+}
+
+mb2_cmake_build() {
+  start_func
+  cd /home/mersdk/build/
+  mb2 build-init
+  mb2 build-requires
+  mb2 cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_TESTING=ON -DCODE_COVERAGE=ON
+  mb2 cmake --build .
+  end_func
+}
+
+mb2_run_tests() {
+  start_func
+  cd /home/mersdk/build/
+  mb2 build-shell ctest --output-on-failure
+  end_func
+}
+
+mb2_run_tests() {
+  start_func
+  cd /home/mersdk/build/
+  mb2 build-shell ctest --output-on-failure
+  end_func
+}
+
+mb2_run_ccov_all_capture() {
+  start_func
+  cd /home/mersdk/build/
+  mkdir ccov
+  mb2 build-shell make ccov-all-capture
+  end_func
+}
+
+codecov_push_results() {
+  start_func
+  cd /home/mersdk/build/
+  curl -Os https://uploader.codecov.io/latest/linux/codecov &&
+  chmod +x codecov &&
+  ./codecov -t ${CODECOV_TOKEN} -f ccov/all-merged.info
+  end_func
+}
+
+rsync_share_to_build() {
+  start_func
+  cd /home/mersdk/build/
+  ls -la .
+  sudo rsync -rv --checksum --ignore-times --info=progress2 --stats --human-readable --exclude '.git/modules' /share/ .
+  sudo chown -R mersdk:mersdk .
+  ls -la .
   end_func
 }
