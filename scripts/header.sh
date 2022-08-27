@@ -6,7 +6,6 @@
 # x - output each line (debug)
 set -euox pipefail
 
-ARCH=$(uname -m)
 FILE=$ARCH.tar.gz
 
 start_func() {
