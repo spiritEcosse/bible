@@ -6,7 +6,7 @@
 # x - output each line (debug)
 set -euox pipefail
 
-FILE=$ARCH.tar.gz
+FILE=${ARCH}.tar.gz
 
 start_func() {
     echo "================================ Start ${FUNCNAME[1]} ================================="
