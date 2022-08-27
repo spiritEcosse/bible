@@ -6,10 +6,20 @@
 # x - output each line (debug)
 set -euox pipefail
 
+
+if [[ -z ${ARCH+x} ]]; then
+  ARCH=$(uname -m)
+fi
+
 FILE=${ARCH}.tar.gz
 
 aws_get_host() {
-  aws ec2 describe-instances --instance-ids "${EC2_INSTANCE}" --query "Reservations[*].Instances[*].[PublicIpAddress]" --output text
+  EC2_INSTANCE_HOST=$(aws ec2 describe-instances --instance-ids "${EC2_INSTANCE}" --query "Reservations[*].Instances[*].[PublicIpAddress]" --output text)
+  while [[ "$EC2_INSTANCE_HOST" == "None" ]]
+  do
+    sleep 5
+    aws_get_host
+  done
 }
 
 aws_stop() {
@@ -31,10 +41,9 @@ linux_install_aws() {
 
 set_up_instance_aws_host_to_known_hosts () {
   if ! grep "$1" ~/.ssh/known_hosts; then
-      echo "#start $1" >> ~/.ssh/known_hosts
-      ssh-keyscan -H "$1" >> ~/.ssh/known_hosts
-      echo "#end $1" >> ~/.ssh/known_hosts
-      ssh -i "${ID_FILE}" "${EC2_INSTANCE_USER}"@"$1" "sudo shutdown +60"
+      SSH_KEYSCAN=$(ssh-keyscan -H "$1")
+      printf "#start %s\n%s\n#end %s" "$1" "$SSH_KEYSCAN" "$1" >> ~/.ssh/known_hosts
+      ssh -o ConnectTimeout=360 -i "${ID_FILE}" "${EC2_INSTANCE_USER}"@"$1" "sudo shutdown +60"
 
       if [[ -d ".idea" ]]; then
         sed -i '' -e "s/[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}/$1/g" .idea/webServers.xml .idea/sshConfigs.xml
@@ -50,10 +59,7 @@ aws_start() {
   if [[ $(aws_get_instance_status) != "running" ]]; then
     echo "-------------------------------- Aws instance start --------------------------------- "
     aws ec2 start-instances --instance-ids "${EC2_INSTANCE}"
-    sleep 50
   fi
-
-  aws_get_instance_status
 }
 
 sfdk_deploy_to_device() {
@@ -62,8 +68,8 @@ sfdk_deploy_to_device() {
   eval sfdk tools list &&
   eval sfdk device list &&
   eval sfdk config device=\'Xperia 10 - Dual SIM \(ARM\)\' &&
-  eval sfdk config target=SailfishOS-4.4.0.58-armv7hl &&
-  cd build-bible-SailfishOS_4_4_0_58_armv7hl_in_sailfish_sdk_build_engine_ubuntu-Debug &&
+  eval sfdk config target=SailfishOS-4.4.0.58-"$ARCH" &&
+  cd build-bible-SailfishOS_4_4_0_58_"$ARCH"_in_sailfish_sdk_build_engine_ubuntu-Debug &&
   eval sfdk build ../bible &&
   eval sfdk deploy --sdk &&
   eval sfdk device exec /usr/bin/bible
@@ -80,7 +86,7 @@ sfdk_run_app_on_device() {
 
 prepare_aws_instance() {
   aws_start
-  EC2_INSTANCE_HOST=$(aws_get_host)
+  aws_get_host
   set_up_instance_aws_host_to_known_hosts "${EC2_INSTANCE_HOST}"
 }
 
