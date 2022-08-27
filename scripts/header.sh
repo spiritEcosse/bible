@@ -22,6 +22,15 @@ aws_get_host() {
   done
 }
 
+aws_wait_status_running() {
+  EC2_INSTANCE_STATUS=$(aws_get_instance_status)
+  while [[ "$EC2_INSTANCE_STATUS" != "running" ]]
+  do
+    sleep 5
+    aws_wait_status_running
+  done
+}
+
 aws_stop() {
   aws ec2 stop-instances --instance-ids "${EC2_INSTANCE}"
 }
@@ -57,8 +66,9 @@ aws_start() {
   fi
 
   if [[ $(aws_get_instance_status) != "running" ]]; then
-    echo "-------------------------------- Aws instance start --------------------------------- "
     aws ec2 start-instances --instance-ids "${EC2_INSTANCE}"
+    aws_wait_status_running
+    sleep 60
   fi
 }
 
