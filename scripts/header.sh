@@ -4,7 +4,15 @@
 # u - error if undefined variable
 # o pipefail - script fails if one of piped command fails
 # x - output each line (debug)
-set -euo pipefail
+set -euox pipefail
+
+start_func() {
+    echo "================================ Start ${FUNCNAME[0]} ================================="
+}
+
+end_func() {
+    echo "================================ End ${FUNCNAME[0]} ================================="
+}
 
 aws_get_host() {
   aws ec2 describe-instances --instance-ids "${EC2_INSTANCE}" --query "Reservations[*].Instances[*].[PublicIpAddress]" --output text
@@ -19,21 +27,20 @@ aws_get_instance_status() {
 }
 
 linux_install_aws() {
+  start_func
   sudo zypper -n install python3-pip &&
   sudo pip install awscli &&
   aws --version &&
-  echo "-------------------------------- Start instance --------------------------------- " &&
   mkdir ~/.aws/ &&
   echo "[default]
   region = ${AWS_REGION}" > ~/.aws/config
+  end_func
 }
 
 set_up_instance_aws_host_to_known_hosts () {
-  echo "================================== Start Set up deploy host to known hosts ==================================" &&
-  grep "$1" ~/.ssh/known_hosts
-  STATUS_PREV_COMMAND=$?
+  start_func
 
-  if [[ ! $STATUS_PREV_COMMAND -eq 0 ]]; then
+  if ! grep "$1" ~/.ssh/known_hosts; then
       echo "#start $1" >> ~/.ssh/known_hosts &&
       ssh-keyscan -H "$1" >> ~/.ssh/known_hosts &&
       echo "#end $1" >> ~/.ssh/known_hosts &&
@@ -41,36 +48,28 @@ set_up_instance_aws_host_to_known_hosts () {
       [ -d ".idea" ] &&
       sed -i '' -e "s/[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}/$1/g" .idea/webServers.xml .idea/sshConfigs.xml
   fi
-  echo "================================== End Set up deploy host to known hosts =================================="
+  end_func
 }
 
 aws_start() {
-  echo '================================ Aws Start server ==================================='
+  start_func
 
-  which aws
-  RESULT_CODE=$?
-
-  if [ ! $RESULT_CODE -eq 0 ]; then
+  if ! which aws; then
     linux_install_aws
-    RESULT_CODE=$?
   fi
 
-  if [[ $RESULT_CODE -eq 0 ]]; then
-    if [[ $(aws_get_instance_status) != "running" ]]; then
-      echo "-------------------------------- Aws instance start --------------------------------- " &&
-      aws ec2 start-instances --instance-ids "${EC2_INSTANCE}" &&
-      sleep 50
-    else
-      echo "-------------------------------- Aws instance already started --------------------------------- "
-    fi
-    echo '================================ End Aws start server ==================================='
-  else
-  	echo "Its not possible to run ec2 instance.";
-  	exit 1;
+  if [[ $(aws_get_instance_status) != "running" ]]; then
+    echo "-------------------------------- Aws instance start --------------------------------- "
+    aws ec2 start-instances --instance-ids "${EC2_INSTANCE}" &&
+    sleep 50
   fi
+
+  aws_get_instance_status
+  end_func
 }
 
 sfdk_deploy_to_device() {
+  start_func
   source ~/.zshrc &&
   eval sfdk tools list &&
   eval sfdk device list &&
@@ -83,6 +82,7 @@ sfdk_deploy_to_device() {
 }
 
 sfdk_run_app_on_device() {
+  start_func
   # devel-su usermod -a -G systemd-journal nemo
   source ~/.zshrc &&
   eval sfdk device list &&
@@ -92,9 +92,9 @@ sfdk_run_app_on_device() {
 }
 
 prepare_aws_instance() {
-  echo "================================ Start prepare instance =================================" &&
+  start_func
   aws_start &&
   EC2_INSTANCE_HOST=$(aws_get_host) &&
-  set_up_instance_aws_host_to_known_hosts "${EC2_INSTANCE_HOST}" &&
-  echo "================================ End prepare instance ================================="
+  set_up_instance_aws_host_to_known_hosts "${EC2_INSTANCE_HOST}"
+  end_func
 }
