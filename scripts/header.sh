@@ -73,7 +73,6 @@ aws_start() {
 }
 
 sfdk_deploy_to_device() {
-  start_func
   source ~/.zshrc &&
   eval sfdk tools list &&
   eval sfdk device list &&
@@ -83,6 +82,15 @@ sfdk_deploy_to_device() {
   eval sfdk build ../bible &&
   eval sfdk deploy --sdk &&
   eval sfdk device exec /usr/bin/bible
+}
+
+sailfish_run_tests_on_aws() {
+  source ~/.zshrc
+  eval sfdk tools list
+  eval sfdk config target=SailfishOS-4.4.0.58-"$ARCH"
+  cd build-bible-SailfishOS_4_4_0_58_"$ARCH"_in_sailfish_sdk_build_engine_ubuntu-Debug
+  eval sfdk build ../bible -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_TESTING=ON -DCODE_COVERAGE=ON
+  eval sfdk build-shell ctest --output-on-failure
 }
 
 sfdk_run_app_on_device() {
@@ -125,11 +133,6 @@ mb2_cmake_build() {
   mb2 build-requires
   mb2 cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_TESTING=ON -DCODE_COVERAGE=ON
   mb2 cmake --build .
-}
-
-mb2_run_tests() {
-  cd /home/mersdk/build/
-  mb2 build-shell ctest --output-on-failure
 }
 
 mb2_run_tests() {
