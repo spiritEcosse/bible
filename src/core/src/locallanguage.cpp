@@ -164,7 +164,7 @@ namespace core {
     {
         return language() == QLocale::C ? m_language : bcp47Name();
     }
-
+    
     QString LocalLanguage::languageInString() const
     {
         return languagesNames.value(
