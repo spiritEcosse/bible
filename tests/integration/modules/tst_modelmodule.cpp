@@ -97,6 +97,27 @@ namespace modules {
             return objects;
         }
 
+        void tst_ModelModule::helperSaveStaticAndSetExtraFieldsTrue()
+        {
+            tst_ModelModule tst_model;
+            tst_model.initDb();
+            tst_model.helperSave();
+            tst_model.m_db->storage->update_all(set(assign(&Module::m_downloaded, true)));
+            tst_model.m_db->storage->update_all(set(assign(&Module::m_selected, true)));
+        }
+
+        void tst_ModelModule::helperCheckAllData(const std::vector<ModelShared>& modules)
+        {
+            tst_ModelModule tst_model;
+            const auto &objects = tst_model.m_db->storage->get_all_pointer<Module>();
+            QCOMPARE(objects.size(), modules.size());
+
+            QCOMPARE(std::equal(dereference_iterator(modules.begin()),
+                       dereference_iterator(modules.end()),
+                       dereference_iterator(objects.begin())
+                       ), true);
+        }
+
         // tests
         void tst_ModelModule::update()
         {

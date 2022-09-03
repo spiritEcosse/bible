@@ -16,6 +16,9 @@ namespace modules {
             tst_ModelModule();
             ~tst_ModelModule();
 
+            static void helperSaveStaticAndSetExtraFieldsTrue();
+            static void helperCheckAllData(const std::vector<ModelShared>& modules);
+
         private:
             std::vector<ModuleShared> helperGetObjects() const override;
             std::vector<ModuleUnique> helperGetObjectsUnique() const override;

@@ -92,7 +92,6 @@ namespace modules {
         : m_idGroupModules (idGroupModules),
           m_needle (std::move(needle))
     {
-        connect(this, &ModelModule::updateDone, this, &ModelModule::saveExtraFieldsToDb);
         updateObjects();
     }
 
@@ -100,6 +99,7 @@ namespace modules {
         : ModelUpdate(parent),
           m_worker { new Worker() }
     {
+        connect(this, &ModelModule::updateDone, this, &ModelModule::saveExtraFieldsToDb);
         qRegisterMetaType<Downloaded>("Downloaded");
         m_worker->moveToThread(&workerThread);
 //        connect(&workerThread, &QThread::finished, m_worker.get(), &QObject::deleteLater);
@@ -334,6 +334,7 @@ namespace modules {
     {
         setDownloadCompleted(true);
         retrieveDownloaded();
+        getDataByFieldTrue(&Module::m_downloaded, &Module::m_name).size();
     }
 
     // delete

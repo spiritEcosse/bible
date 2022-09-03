@@ -15,7 +15,9 @@ namespace modules {
     namespace tests
     {
        class tst_ModelModule;
+       class tst_ModelGroupModules;
     }
+
     using Selected = decltype(std::vector<std::tuple<QString>>());
     using Downloaded = decltype(std::vector<std::tuple<QString>>());
 
@@ -56,6 +58,8 @@ namespace modules {
         Q_PROPERTY(bool downloadCompleted READ getDownloadCompleted NOTIFY changeDownloadCompleted)
     private:
         friend class tests::tst_ModelModule;
+        friend class tests::tst_ModelGroupModules;
+
         int m_idGroupModules = 0;
         QString m_needle = "";
         Selected m_selectedBackup;
