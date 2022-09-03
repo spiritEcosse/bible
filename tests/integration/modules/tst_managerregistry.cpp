@@ -432,13 +432,15 @@ namespace modules {
 
         void tst_ManagerRegistry::setVersion()
         {
-            ManagerRegistry managerRegistry;
             QFETCH(bool, available);
             QFETCH(int, version);
 
+            ManagerRegistry managerRegistry;
+            QSignalSpy spyChangeNewVersionAvailable(&managerRegistry, &ManagerRegistry::changeNewVersionAvailable);
             managerRegistry.setVersion(available, version);
 
             QCOMPARE(QSettings().value("cacheRegistryVersion").toInt(), version);
+            QCOMPARE(spyChangeNewVersionAvailable.count(), int(available));
         }
 
         void tst_ManagerRegistry::getVersionFromCache_data()
