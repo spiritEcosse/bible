@@ -153,7 +153,6 @@ Pages {
                 property bool checkVersionCompleted: managerRegistry.checkVersionCompleted
                 onCheckVersionCompletedChanged : {
                     pushUpMenu.busy = false
-                    console.log("checkVersionCompleted", checkVersionCompleted)
                 }
                 onClicked: {
                     pushUpMenu.busy = true

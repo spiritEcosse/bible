@@ -242,3 +242,9 @@ if ( BUILD_TESTING )
 
     add_subdirectory(tests)
 endif()
+
+get_cmake_property(_variableNames VARIABLES)
+list (SORT _variableNames)
+foreach (_variableName ${_variableNames})
+    message(STATUS "${_variableName}=${${_variableName}}")
+endforeach()

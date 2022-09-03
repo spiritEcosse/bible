@@ -15,8 +15,8 @@ namespace modules {
           m_managerRegistry { new ManagerRegistry {} },
           m_modelModule { new ModelModule {} }
     {
-        connect(m_managerRegistry.get(), &ManagerRegistry::retrieveDataSuccess, m_managerGroup.get(), &ManagerGroup::makeCollections);
         connect(m_managerRegistry.get(), &ManagerRegistry::retrieveDataSuccess, m_modelModule.get(), &ModelModule::getExtraFieldsFromDb);
+        connect(m_managerRegistry.get(), &ManagerRegistry::retrieveDataSuccess, m_managerGroup.get(), &ManagerGroup::makeCollections);
         connect(m_managerGroup.get(), &ManagerGroup::makeGroupModulesSuccess, this, &ModelGroupModules::update);
         connect(m_managerGroup.get(), &ManagerGroup::makeModulesSuccess, m_modelModule.get(), &ModelModule::update);
         connect(this, &ModelGroupModules::updateDone, this, &ModelGroupModules::setUpdateCompleted);

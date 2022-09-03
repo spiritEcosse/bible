@@ -81,7 +81,8 @@ sfdk_deploy_to_device() {
   cd build-bible-SailfishOS_4_4_0_58_"$ARCH"_in_sailfish_sdk_build_engine_ubuntu-Debug &&
   eval sfdk build ../bible &&
   eval sfdk deploy --sdk &&
-  eval sfdk device exec /usr/bin/bible
+  eval sfdk device exec /usr/bin/bible &
+  eval sfdk device exec journalctl -f /usr/bin/bible
 }
 
 sailfish_run_tests_on_aws() {

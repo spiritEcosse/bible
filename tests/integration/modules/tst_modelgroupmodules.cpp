@@ -1,7 +1,9 @@
 #include <JlCompress.h>
+#include "tst_modelmodule.h"
 #include "dereferenceiterator.h"
 #include "tst_modelgroupmodules.h"
 
+Q_DECLARE_METATYPE(std::vector<modules::ModuleShared>)
 Q_DECLARE_METATYPE(std::vector<modules::GroupModulesShared>)
 
 namespace modules {
@@ -72,6 +74,16 @@ namespace modules {
         }
 
         void tst_ModelGroupModules::downloadRegistry_data() {
+            tst_ModelModule::helperSaveStaticAndSetExtraFieldsTrue();
+            QTest::addColumn<std::vector<ModuleShared>>("modules");
+            std::vector<ModuleShared> modules = {
+                std::make_shared<Module>("100EJ-p.plan", "", "", 1, 0, "", "", "", "", QDate(), false, false, false, false, false, 1),
+                std::make_shared<Module>("10CD-p.plan", "", "", 1, 0, "", "", "", "", QDate(), false, false, false, false, false, 2),
+                std::make_shared<Module>("2000.dictionary", "", "", 2, 0, "", "", "", "", QDate(), false, false, false, false, false, 3),
+                std::make_shared<Module>("name.0", "", "", 3, 0, "", "", "", "", QDate(), false, false, true, true, false, 4),
+            };
+            QTest::newRow("check modules") << modules;
+
             QSettings settings;
             settings.setValue("registryVersion", 0);
 
@@ -91,6 +103,9 @@ namespace modules {
                                         QJsonObject {
                                             {"fil", "2000.dictionary"},
                                             {"lng", "en"},
+                                        },
+                                        QJsonObject {
+                                            {"fil", "name.0"},
                                         }
                                     },
                                 },
@@ -104,6 +119,9 @@ namespace modules {
 
         void tst_ModelGroupModules::downloadRegistry()
         {
+            qRegisterMetaType<std::vector<ModuleShared>>("std::vector<ModuleShared>");
+            QFETCH(std::vector<ModuleShared>, modules);
+
             ModelGroupModules modelGroupModules;
             QSignalSpy spy(&modelGroupModules, &ModelGroupModules::updateDone);
             QSignalSpy spyChangeUpdateCompleted(&modelGroupModules, &ModelGroupModules::changeUpdateCompleted);
@@ -117,6 +135,9 @@ namespace modules {
                         )
             );
 
+            QCOMPARE(modelGroupModules.m_modelModule->m_objects.size(), static_cast<size_t>(0));
+            QCOMPARE(modelGroupModules.m_objects.size(), static_cast<size_t>(0));
+
             QCOMPARE(modelGroupModules.m_updateCompleted, false);
             modelGroupModules.downloadRegistry();
 
@@ -125,7 +146,11 @@ namespace modules {
             QCOMPARE(spy.count(), 1);
             QCOMPARE(modelGroupModules.m_updateCompleted, true);
             QCOMPARE(spyChangeUpdateCompleted.count(), 2);
-            QCOMPARE(modelGroupModules.m_objects.size(), static_cast<size_t>(2));
+            QCOMPARE(modelGroupModules.m_objects.size(), static_cast<size_t>(3));
+            QCOMPARE(modelGroupModules.m_modelModule->m_objects.size(), static_cast<size_t>(0));
+
+            // Check Modules data from Module db
+            tst_ModelModule::helperCheckAllData(modules);
         }
 
         void tst_ModelGroupModules::updateObjects_data()

@@ -161,10 +161,11 @@ namespace modules {
 
     void ManagerRegistry::setVersion(bool available, int version)
     {
-        if (available) {
-            QSettings().setValue("cacheRegistryVersion", version);
-            setNewVersionAvailable();
-        }
+//        if (available) {
+        QSettings().setValue("cacheRegistryVersion", version);
+        QSettings().setValue("registryVersion", 1);
+        setNewVersionAvailable();
+//        }
     }
 
     void ManagerRegistry::setRegistryVersion()
