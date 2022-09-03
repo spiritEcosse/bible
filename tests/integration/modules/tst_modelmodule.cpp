@@ -2,6 +2,7 @@
 #include "dereferenceiterator.h"
 #include "quickdownload.h"
 #include <chrono>
+#include <memory>
 #include "tst_modelmodule.h"
 
 namespace modules {
@@ -109,6 +110,7 @@ namespace modules {
         void tst_ModelModule::helperCheckAllData(const std::vector<ModelShared>& modules)
         {
             tst_ModelModule tst_model;
+            tst_model.m_db = std::make_unique<db::Db<Module>>();
             const auto &objects = tst_model.m_db->storage->get_all_pointer<Module>();
             QCOMPARE(objects.size(), modules.size());
 

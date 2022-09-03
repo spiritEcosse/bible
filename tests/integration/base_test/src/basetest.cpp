@@ -10,9 +10,7 @@
 namespace tests {
 
     template <class T, class O>
-    BaseTest<T, O>::BaseTest() {
-        m_db.reset(new db::Db<T>());
-    }
+    BaseTest<T, O>::BaseTest() {}
 
     template <class T, class O>
     BaseTest<T, O>::~BaseTest() {}
@@ -52,6 +50,7 @@ namespace tests {
     template<class T, class O>
     void BaseTest<T, O>::initDb()
     {
+        m_db.reset(new db::Db<T>());
         cleanTable();
     }
 
