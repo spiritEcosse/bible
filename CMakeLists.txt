@@ -44,11 +44,8 @@ endif()
 if (CMAKE_VS_WINCE_VERSION)
     set(ARCH "${MSVC_C_ARCHITECTURE_ID}")
 else()
-    if (${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL "armv7l")
-        set(ARCH "aarch64")
-    else()
-        set(ARCH "${CMAKE_HOST_SYSTEM_PROCESSOR}")
-    endif()
+    set(ARCH "${CMAKE_HOST_SYSTEM_PROCESSOR}")
+    
     message("CMAKE_HOST_SYSTEM_PROCESSOR : ${CMAKE_HOST_SYSTEM_PROCESSOR}")
     set(TARGET_CURL "${ARCH}-linux")
 
