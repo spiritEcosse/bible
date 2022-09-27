@@ -141,7 +141,7 @@ upload_backup() {
 }
 
 mb2_cmake_build() {
-  cd /home/mersdk/"${BUILD_FOLDER}"/
+  cd ${BUILD_FOLDER}
   mb2 build-init
   mb2 build-requires
   mb2 cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_TESTING=ON -DCODE_COVERAGE=ON
@@ -149,25 +149,25 @@ mb2_cmake_build() {
 }
 
 mb2_run_tests() {
-  cd /home/mersdk/"${BUILD_FOLDER}"/
+  cd ${BUILD_FOLDER}
   mb2 build-shell ctest --output-on-failure
 }
 
 mb2_run_ccov_all_capture() {
-  cd /home/mersdk/"${BUILD_FOLDER}"/
+  cd ${BUILD_FOLDER}
   mkdir ccov
   mb2 build-shell make ccov-all-capture
 }
 
 codecov_push_results() {
-  cd /home/mersdk/"${BUILD_FOLDER}"/
+  cd ${BUILD_FOLDER}
   curl -Os https://uploader.codecov.io/latest/linux/codecov &&
   chmod +x codecov &&
   ./codecov -t ${CODECOV_TOKEN} -f ccov/all-merged.info
 }
 
 rsync_share_to_build() {
-  cd /home/mersdk/"${BUILD_FOLDER}"/
+  cd "${BUILD_FOLDER}"
   ls -la .
   sudo rsync -rv --checksum --ignore-times --info=progress2 --stats --human-readable --exclude '.git/modules' /share/ .
   sudo chown -R mersdk:mersdk .
