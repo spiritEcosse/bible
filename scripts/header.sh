@@ -21,7 +21,7 @@ fi
 
 FILE=${PLATFORM}_${ARCH}.tar.gz
 BUILD_FOLDER="${HOME}/${PLATFORM}_${ARCH}"
-DESTINATION_PATH="/usr/share/nginx/html/backups/"
+DESTINATION_PATH="/home/ec2-user/"
 
 aws_get_host() {
   EC2_INSTANCE_HOST=$(aws ec2 describe-instances --instance-ids "${EC2_INSTANCE}" --query "Reservations[*].Instances[*].[PublicIpAddress]" --output text)
