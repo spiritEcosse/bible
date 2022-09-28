@@ -129,7 +129,9 @@ download_backup() {
   SEC=$SECONDS
   scp -i "${ID_FILE}" "${EC2_INSTANCE_USER}@${EC2_INSTANCE_HOST}:${DESTINATION_PATH}${FILE}" .
   echo "after scp : $(( SECONDS - SEC ))"
+  SEC=$SECONDS
   tar -xf "${FILE}"
+  echo "after tar : $(( SECONDS - SEC ))"
   ls -la .
 }
 
