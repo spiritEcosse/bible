@@ -35,16 +35,7 @@ jobs:
         -e AWS_REGION=${{ secrets.AWS_REGION }}
         -e ARCH="${ARCH}"
         -v $PWD:/share coderus/sailfishos-platform-sdk-$ARCH:$RELEASE /bin/bash -c "
-          set -euox pipefail
-          export ID_FILE=/tmp/id
-          export ARCH=${ARCH}
-          alias mb2='mb2 --target SailfishOS-$RELEASE-$ARCH'
-          cd /home/mersdk
-          mkdir -p build
-          cd build
-          cp -fr /share/scripts/ .
-          source scripts/header.sh
-          code_coverage
+          curl https://raw.githubusercontent.com/spiritEcosse/aws-sailfish-sdk/master/install.sh | bash -s -- --func=code_coverage
         "
 
     - name: Slack Notification
