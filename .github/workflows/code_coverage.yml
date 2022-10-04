@@ -5,7 +5,6 @@ on: [push]
 env:
   RELEASE: 4.4.0.64
   ARCH: aarch64
-  SAILFISH_IMAGE: coderus/sailfishos-platform-sdk:$RELEASE
 
 jobs:
   build:
@@ -34,7 +33,7 @@ jobs:
         -e AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}"
         -e AWS_REGION=${{ secrets.AWS_REGION }}
         -e ARCH="${ARCH}"
-        -v $PWD:/share coderus/sailfishos-platform-sdk-$ARCH:$RELEASE /bin/bash -c "
+        -v $PWD:/share ghcr.io/spiritecosse/bible-sailfishos-$ARCH:$RELEASE /bin/bash -c "
           curl https://raw.githubusercontent.com/spiritEcosse/aws-sailfish-sdk/master/install.sh | bash -s -- --func=code_coverage
         "
 
