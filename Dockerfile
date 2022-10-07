@@ -1,6 +1,11 @@
-FROM coderus/sailfishos-platform-sdk-aarch64:4.4.0.64
+ARG ARCH
+ARG RELEASE
+FROM coderus/sailfishos-platform-sdk-${ARCH}:${RELEASE}
 
-RUN sudo zypper -n install python3-pip openssl curl pigz openssh \
-    git sqlite-devel qt5-qttest perl-IO-Compress perl-Module-Load-Conditional
+RUN sudo zypper -n install python3-pip openssl curl pigz openssh
 
 RUN sudo pip install awscli
+RUN mkdir -p ~/rpm/
+COPY rpm/bible.spec /home/mersdk/rpm/bible.spec
+RUN mb2 build-init
+RUN mb2 build-requires
