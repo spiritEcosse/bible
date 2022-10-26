@@ -15,14 +15,14 @@ execute_process(COMMAND bash -c "ls -la ${LLVM_INSTALL_DIR}"
 message("LS_LA_LLVM_INSTALL_DIR: ${LS_LA_LLVM_INSTALL_DIR}")
 
 if(NOT EXISTS ${LLVM_INSTALL_DIR})
-    execute_process(COMMAND bash -c "cmake -S llvm -B build -DLLVM_CODE_COVERAGE_TARGETS=llvm-cov -DCMAKE_BUILD_TYPE=Release -G '${CMAKE_GENERATOR}'"
+    execute_process(COMMAND bash -c "mkdir build && cd build && cmake -S llvm -DLLVM_CODE_COVERAGE_TARGETS=llvm-cov -DCMAKE_BUILD_TYPE=Release -G '${CMAKE_GENERATOR}' ../"
             WORKING_DIRECTORY ${LLVM_BUNDLE_DIR}
             RESULT_VARIABLE OUTPUT_CONF_LLVM)
     if(NOT OUTPUT_CONF_LLVM EQUAL "0")
-        message(FATAL_ERROR "cmake -S llvm -B build: ${OUTPUT_CONF_LLVM}")
+        message(FATAL_ERROR "cmake -S llvm : ${OUTPUT_CONF_LLVM}")
     endif()
-    execute_process(COMMAND bash -c "cmake --build build --target llvm-cov"
-            WORKING_DIRECTORY ${LLVM_BUNDLE_DIR} RESULT_VARIABLE OUTPUT_BUILD_LLVM)
+    execute_process(COMMAND bash -c "cmake --build . --target llvm-cov"
+            WORKING_DIRECTORY ${LLVM_INSTALL_DIR} RESULT_VARIABLE OUTPUT_BUILD_LLVM)
     if(NOT OUTPUT_BUILD_LLVM EQUAL "0")
         message(FATAL_ERROR "cmake --build build: ${OUTPUT_BUILD_LLVM}")
     endif()
