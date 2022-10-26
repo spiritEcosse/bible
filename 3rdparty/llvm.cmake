@@ -8,10 +8,6 @@ if(NOT EXISTS "${LLVM_BUNDLE_DIR}")
 		WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/3rdparty)
 endif()
 
-execute_process(COMMAND bash -c "ls -la ${LLVM_BUNDLE_DIR}"
-        RESULT_VARIABLE LS_LA_LLVM_INSTALL_DIR)
-message("LS_LA_LLVM_INSTALL_DIR: ${LS_LA_LLVM_INSTALL_DIR}")
-
 if(NOT EXISTS ${LLVM_INSTALL_DIR})
     execute_process(COMMAND bash -c "cmake -S llvm -B build -DLLVM_CODE_COVERAGE_TARGETS=llvm-cov -DCMAKE_BUILD_TYPE=Release -G '${CMAKE_GENERATOR}'"
             WORKING_DIRECTORY ${LLVM_BUNDLE_DIR}
