@@ -15,7 +15,7 @@ execute_process(COMMAND bash -c "ls -la ${LLVM_INSTALL_DIR}"
 message("LS_LA_LLVM_INSTALL_DIR: ${LS_LA_LLVM_INSTALL_DIR}")
 
 if(NOT EXISTS ${LLVM_INSTALL_DIR})
-    execute_process(COMMAND bash -c "mkdir build && cd build && cmake -S llvm -DLLVM_CODE_COVERAGE_TARGETS=llvm-cov -DCMAKE_BUILD_TYPE=Release -G '${CMAKE_GENERATOR}' ../"
+    execute_process(COMMAND bash -c "cmake -S llvm -DCMAKE_BUILD_TYPE=Release -G '${CMAKE_GENERATOR}'"
             WORKING_DIRECTORY ${LLVM_BUNDLE_DIR}
             RESULT_VARIABLE OUTPUT_CONF_LLVM)
     if(NOT OUTPUT_CONF_LLVM EQUAL "0")
