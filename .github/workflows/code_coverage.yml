@@ -24,7 +24,7 @@ jobs:
       with:
         status: starting
         channel: '#sailfish-os-code-coverage'
-        message: Starting Build and Tests and Push code coverage
+        message: Starting Build and Tests and Push code coverage for arch "${{ matrix.arch }}"
       if: always()
 
     - name: Log in to the Container registry
@@ -34,7 +34,7 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GIT_HUB_TOKEN }}
 
-    - name: Build and Tests and Push code coverage
+    - name: Build and Tests and Push code coverage for arch "${{ matrix.arch }}"
       run: >
         docker run --rm --privileged
         -e CODECOV_TOKEN="${{ secrets.CODECOV_TOKEN }}"

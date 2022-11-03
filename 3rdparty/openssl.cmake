@@ -14,7 +14,7 @@ elseif(EXISTS ${OPENSSL_INCLUDE_DIR} AND EXISTS ${OPENSSL_LIB_DIR} AND NOT ${REB
     message("we already have ${LIB_OPENSSL}")
     option(STATUS_BUILD_OPENSSL "0")
 else()
-    if(NOT TARGET_OPENSSL ${LIB_OPENSSL})
+    if(NOT TARGET ${LIB_OPENSSL})
         message(STATUS "Using bundled ${LIB_OPENSSL} in '${OPENSSL_BUNDLE_DIR}'")
 
         SET(REBUILD_CURL ON)
