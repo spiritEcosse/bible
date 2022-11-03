@@ -14,7 +14,7 @@ elseif(EXISTS ${OPENSSL_INCLUDE_DIR} AND EXISTS ${OPENSSL_LIB_DIR} AND NOT ${REB
     message("we already have ${LIB_OPENSSL}")
     option(STATUS_BUILD_OPENSSL "0")
 else()
-    if(NOT TARGET ${LIB_OPENSSL})
+    if(NOT TARGET_OPENSSL ${LIB_OPENSSL})
         message(STATUS "Using bundled ${LIB_OPENSSL} in '${OPENSSL_BUNDLE_DIR}'")
 
         SET(REBUILD_CURL ON)
@@ -30,14 +30,14 @@ else()
                 cp -fr ${OPENSSL_SRC_DIR} ${OPENSSL_BUNDLE_DIR}")
         endif()
 
-        if (${TARGET} MATCHES "darwin64-arm64-cc")
+        if (${TARGET_OPENSSL} MATCHES "darwin64-arm64-cc")
             # as it explains in this link https://stackoverflow.com/questions/9952612/mac-os-usr-bin-env-bad-interpreter-operation-not-permitted
             execute_process(COMMAND bash -c "\
                 xattr -d com.apple.quarantine Configure"
                 WORKING_DIRECTORY ${OPENSSL_BUNDLE_DIR})
         endif()
         execute_process(COMMAND bash -c "\
-            ./Configure no-asm ${TARGET} no-shared no-tests --prefix=${OPENSSL_INSTALL_DIR} ${CUSTOMCONFIG} && \
+            ./Configure no-asm ${TARGET_OPENSSL} no-shared no-tests --prefix=${OPENSSL_INSTALL_DIR} ${CUSTOMCONFIG} && \
             make -j${CORES} && \
             make install_sw"
             WORKING_DIRECTORY ${OPENSSL_BUNDLE_DIR}
