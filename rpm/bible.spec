@@ -71,6 +71,7 @@ desktop-file-install --delete-original       \
 
 %files
 %defattr(-,root,root,-)
+%ifarch aarch64
 /usr/lib64/cmake/QuaZip-Qt5-1.3/QuaZip-Qt5Config.cmake
 /usr/lib64/cmake/QuaZip-Qt5-1.3/QuaZip-Qt5ConfigVersion.cmake
 /usr/lib64/cmake/QuaZip-Qt5-1.3/QuaZip-Qt5_SharedTargets-debug.cmake
@@ -82,6 +83,20 @@ desktop-file-install --delete-original       \
 /usr/lib64/libquazip1-qt5d.so.1.3.0
 /usr/lib64/libquazip1-qt5d.so.1.3
 /usr/lib64/pkgconfig/quazip1-qt5.pc
+%endif
+%ifarch armv7hl
+/usr/lib/cmake/QuaZip-Qt5-1.3/QuaZip-Qt5Config.cmake
+/usr/lib/cmake/QuaZip-Qt5-1.3/QuaZip-Qt5ConfigVersion.cmake
+/usr/lib/cmake/QuaZip-Qt5-1.3/QuaZip-Qt5_SharedTargets-debug.cmake
+/usr/lib/cmake/QuaZip-Qt5-1.3/QuaZip-Qt5_SharedTargets.cmake
+/usr/lib/cmake/SqliteOrm/SqliteOrmConfig.cmake
+/usr/lib/cmake/SqliteOrm/SqliteOrmConfigVersion.cmake
+/usr/lib/cmake/SqliteOrm/SqliteOrmTargets.cmake
+/usr/lib/libquazip1-qt5d.so
+/usr/lib/libquazip1-qt5d.so.1.3.0
+/usr/lib/libquazip1-qt5d.so.1.3
+/usr/lib/pkgconfig/quazip1-qt5.pc
+%endif
 /usr/include/sqlite_orm/sqlite_orm.h
 /usr/include/QuaZip-Qt5-1.3/quazip/JlCompress.h
 /usr/include/QuaZip-Qt5-1.3/quazip/ioapi.h

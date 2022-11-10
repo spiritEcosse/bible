@@ -52,5 +52,6 @@ jobs:
       with: 
            status: ${{ job.status }}
            steps: ${{ toJson(steps) }}
+           message: Finished for arch "${{ matrix.arch }}"
            channel: '#sailfish-os-code-coverage'
       if: always()
