@@ -9,3 +9,4 @@ RUN mkdir -p ~/rpm/
 COPY rpm/bible.spec /home/mersdk/rpm/bible.spec
 RUN mb2 build-init
 RUN mb2 build-requires
+RUN curl https://raw.githubusercontent.com/spiritEcosse/aws-sailfish-sdk/master/install.sh | bash -s -- --func=install_sshpass
