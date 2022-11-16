@@ -45,7 +45,7 @@ if (CMAKE_VS_WINCE_VERSION)
     set(ARCH "${MSVC_C_ARCHITECTURE_ID}")
 else()
     set(ARCH "${CMAKE_HOST_SYSTEM_PROCESSOR}")
-    
+
     message("CMAKE_HOST_SYSTEM_PROCESSOR : ${CMAKE_HOST_SYSTEM_PROCESSOR}")
     set(TARGET_CURL "${ARCH}-linux")
 
@@ -53,6 +53,12 @@ else()
         if (${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL "i486")
             set(ARCH "elf")
         endif()
+    endif()
+
+    if (${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL "armv7l")
+        set(TARGET_OPENSSL "linux-armv4")
+    else()
+        set(TARGET_OPENSSL "linux-${ARCH}")
     endif()
 endif()
 
@@ -66,6 +72,7 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
     if (${ARCH} MATCHES "arm64")
         set(TARGET_CURL "arm")
+        set(TARGET_OPENSSL "${TARGET}")
         SET(CMAKE_OSX_ARCHITECTURES "arm64")
 #        set(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE INTERNAL "" FORCE)
         message("CMAKE_OSX_ARCHITECTURES: ${CMAKE_OSX_ARCHITECTURES}")
