@@ -18,6 +18,9 @@ set(OPENSSL_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/${LIB_OPENSSL}")
 set(QUAZIP_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/${LIB_QUAZIP}")
 set(SQLITE_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/${LIB_SQLITE_ORM}")
 
+if (NOT EXISTS ${PROJECT_BINARY_DIR}/3rdparty)
+    execute_process(COMMAND bash -c "mkdir ${PROJECT_BINARY_DIR}/3rdparty")
+endif()
 
 if(EXISTS "${PROJECT_SOURCE_DIR}/.git")
     message(STATUS "========================Submodule update========================")

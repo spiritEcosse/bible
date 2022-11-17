@@ -148,6 +148,7 @@ namespace modules {
             QCOMPARE(spyChangeUpdateCompleted.count(), 2);
             QCOMPARE(modelGroupModules.m_objects.size(), static_cast<size_t>(3));
             QCOMPARE(modelGroupModules.m_modelModule->m_objects.size(), static_cast<size_t>(0));
+            QCOMPARE(modelGroupModules.m_managerGroup->m_objects.size(), static_cast<size_t>(0));
 
             // Check Modules data from Module db
             tst_ModelModule::helperCheckAllData(modules);
