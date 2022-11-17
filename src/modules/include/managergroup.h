@@ -35,6 +35,7 @@ namespace modules {
         virtual const QJsonArray getDownloads(const QJsonDocument& document) const;
     private slots:
         void makeCollections(const QJsonDocument& document);
+        void clearObjects();
     };
 
 }

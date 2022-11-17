@@ -52,4 +52,10 @@ namespace modules {
             emit error("An error occured, please try in time.");
         }
     }
+
+    void ManagerGroup::clearObjects()
+    {
+        m_objects.clear();
+    }
+
 }
