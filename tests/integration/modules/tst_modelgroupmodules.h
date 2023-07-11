@@ -1,29 +1,27 @@
 #ifndef TST_MODELGROUPMODULES_H
 #define TST_MODELGROUPMODULES_H
 
-#include <QtTest>
 #include "modelgroupmodules.h"
 #include "modeljsontest.h"
+#include <QtTest>
 
 namespace modules {
-
     namespace tests {
 
-        class tst_ModelGroupModules : public ::tests::ModelJsonTest<GroupModules, ModelGroupModules>
-        {
+        class tst_ModelGroupModules : public ::tests::ModelJsonTest<GroupModules, ModelGroupModules> {
             Q_OBJECT
-        public:
+          public:
             tst_ModelGroupModules();
             ~tst_ModelGroupModules();
 
             static void helperSaveStatic();
 
-        private:
+          private:
             std::vector<GroupModulesShared> helperGetObjects() const override;
             void setQSettings(int value = 0, QString key = "registryVersion");
             std::vector<GroupModulesUnique> helperGetObjectsUnique() const override;
 
-        private slots:
+          private slots:
             void initTestCase() override;
             void cleanupTestCase() override;
             void updateCompleted();
@@ -40,6 +38,6 @@ namespace modules {
             void setFieldSearch_data();
         };
     }
-}
+}  // namespace modules
 
-#endif // TST_MODELGROUPMODULES_H
+#endif  // TST_MODELGROUPMODULES_H

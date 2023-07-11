@@ -8,35 +8,33 @@
 
 namespace modules {
 
-    namespace tests
-    {
-       class tst_ManagerGroup;
-       class tst_ModelGroupModules;
-    }
+    namespace tests {
+        class tst_ManagerGroup;
+        class tst_ModelGroupModules;
+    }  // namespace tests
 
-    class ManagerGroup : public QObject
-    {
+    class ManagerGroup : public QObject {
         Q_OBJECT
-    public:
+      public:
         ManagerGroup(QObject *parent = nullptr);
         virtual ~ManagerGroup() {}
-    signals:
-        void makeModulesSuccess(const std::vector<Module>& modules);
-        void error(const QString& error);
+      signals:
+        void makeModulesSuccess(const std::vector<Module> &modules);
+        void error(const QString &error);
         void makeGroupModulesSuccess();
 
-    private:
+      private:
         friend class tests::tst_ManagerGroup;
         friend class tests::tst_ModelGroupModules;
         friend class ModelGroupModules;
         GroupModulesMap m_objects;
 
-        void addToCollection(const QJsonArray& object);
-        virtual const QJsonArray getDownloads(const QJsonDocument& document) const;
-    private slots:
-        void makeCollections(const QJsonDocument& document);
+        void addToCollection(const QJsonArray &object);
+        virtual const QJsonArray getDownloads(const QJsonDocument &document) const;
+      private slots:
+        void makeCollections(const QJsonDocument &document);
     };
 
-}
+}  // namespace modules
 
-#endif // MANAGERGROUP_H
+#endif  // MANAGERGROUP_H

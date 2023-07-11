@@ -1,32 +1,30 @@
 #ifndef TST_REGISTRY_H
 #define TST_REGISTRY_H
 
-#include <QtTest>
-#include "registry.h"
 #include "entitybase.h"
+#include "registry.h"
+#include <QtTest>
 
 namespace modules {
-
     namespace tests {
 
         class tst_Registry : public ::tests::EntityBase<Registry> {
             Q_OBJECT
 
-        public:
+          public:
             tst_Registry();
             ~tst_Registry();
 
-        private:
+          private:
             Registry helperGetObject();
 
-        private slots:
+          private slots:
             void constructor_data();
             void constructor() override;
             void urlToQUrl();
             void infoUrlToQUrl();
         };
     }
-}
+}  // namespace modules
 
-
-#endif // TST_REGISTRY_H
+#endif  // TST_REGISTRY_H

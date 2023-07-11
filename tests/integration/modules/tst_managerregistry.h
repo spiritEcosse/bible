@@ -1,37 +1,33 @@
 #ifndef TST_MANAGERREGISTRY_H
 #define TST_MANAGERREGISTRY_H
 
-#include <QtTest>
-#include "modeljsontest.h"
 #include "managerregistry.h"
+#include "modeljsontest.h"
+#include <QtTest>
 
 namespace modules {
-
     namespace tests {
 
-        class tst_ManagerRegistry : public ::tests::ModelJsonTest<Registry, ModelRegistry>
-        {
+        class tst_ManagerRegistry : public ::tests::ModelJsonTest<Registry, ModelRegistry> {
             Q_OBJECT
 
-        public:
+          public:
             tst_ManagerRegistry();
             ~tst_ManagerRegistry();
 
-        private:
+          private:
             void createFileRegistryInfo();
-            void createFileRegistry(
-                    const QJsonDocument& document = QJsonDocument {},
-                    const QString& fileNameRegistry = "registry.json");
-            void createFileRegistryArchive(
-                    const QJsonDocument& document = QJsonDocument {},
-                    const QString& fileNameArchive = "registry.zip",
-                    const QString& fileNameRegistry = "registry.json");
+            void createFileRegistry(const QJsonDocument &document = QJsonDocument{},
+                                    const QString &fileNameRegistry = "registry.json");
+            void createFileRegistryArchive(const QJsonDocument &document = QJsonDocument{},
+                                           const QString &fileNameArchive = "registry.zip",
+                                           const QString &fileNameRegistry = "registry.json");
             void setQSettings(int value = 0, QString key = "registryVersion");
             QJsonDocument helperGetInvalidDocument() const override;
             std::vector<RegistryShared> helperGetObjects() const override;
             std::vector<RegistryUnique> helperGetObjectsUnique() const override;
 
-        private slots:
+          private slots:
             void initTestCase() override;
             void cleanupTestCase() override;
             void contructor();
@@ -64,6 +60,6 @@ namespace modules {
             void tryOther();
         };
     }
-}
+}  // namespace modules
 
-#endif // TST_MANAGERREGISTRY_H
+#endif  // TST_MANAGERREGISTRY_H

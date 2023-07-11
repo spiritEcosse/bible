@@ -4,18 +4,15 @@
 #include <QtTest>
 
 namespace modules {
-
     namespace tests {
-
-        class tst_GroupModules : public QObject
-        {
+        class tst_GroupModules : public QObject {
             Q_OBJECT
 
-        public:
+          public:
             tst_GroupModules();
             ~tst_GroupModules();
 
-        private slots:
+          private slots:
             void m_name();
             void m_name_data();
             void language();
@@ -28,10 +25,7 @@ namespace modules {
             void setLanguageName();
             void testFunction();
         };
-
     }
+}  // namespace modules
 
-}
-
-
-#endif // TST_GROUPMODULES_H
+#endif  // TST_GROUPMODULES_H

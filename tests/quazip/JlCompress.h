@@ -2,14 +2,13 @@
 #define JLCOMPRESSFOLDER_H_
 
 #include "quazip.h"
-#include <QString>
 #include <QDir>
-#include <QFileInfo>
 #include <QFile>
-
+#include <QFileInfo>
+#include <QString>
 
 class JlCompress {
-private:
+  private:
     static QStringList extractDir(QuaZip &zip, const QString &dir);
     static QStringList getFileList(QuaZip *zip);
     static QString extractFile(QuaZip &zip, QString fileName, QString fileDest);
@@ -21,7 +20,7 @@ private:
       \param fileDest The full name of the file inside the archive.
       \return true if success, false otherwise.
       */
-    static bool compressFile(QuaZip* zip, QString fileName, QString fileDest);
+    static bool compressFile(QuaZip *zip, QString fileName, QString fileDest);
     /// Compress a subdirectory.
     /**
       \param parentZip Opened zip containing the parent directory.
@@ -32,8 +31,8 @@ private:
       files.
       \return true if success, false otherwise.
       */
-    static bool compressSubDir(QuaZip* parentZip, QString dir, QString parentDir, bool recursive,
-                               QDir::Filters filters);
+    static bool
+    compressSubDir(QuaZip *parentZip, QString dir, QString parentDir, bool recursive, QDir::Filters filters);
     /// Extract a single file.
     /**
       \param zip The opened zip archive to extract from.
@@ -41,7 +40,7 @@ private:
       \param fileDest The full path to the destination file.
       \return true if success, false otherwise.
       */
-    static bool extractFile(QuaZip* zip, QString fileName, QString fileDest);
+    static bool extractFile(QuaZip *zip, QString fileName, QString fileDest);
     /// Remove some files.
     /**
       \param listFile The list of files to remove.
@@ -49,7 +48,7 @@ private:
       */
     static bool removeFile(QStringList listFile);
 
-public:
+  public:
     /// Compress a single file.
     /**
       \param fileCompressed The name of the archive.
@@ -66,7 +65,8 @@ public:
     static bool compressFiles(QString fileCompressed, QStringList files);
     /// Compress a whole directory.
     /**
-      Does not compress hidden files. See compressDir(QString, QString, bool, QDir::Filters).
+      Does not compress hidden files. See compressDir(QString, QString, bool,
+      QDir::Filters).
 
       \param fileCompressed The name of the archive.
       \param dir The directory to compress.
@@ -91,10 +91,9 @@ public:
      * for subdirs (if packing recursively) and when looking for files to pack
      * @return true on success, false otherwise
      */
-    static bool compressDir(QString fileCompressed, QString dir,
-                            bool recursive, QDir::Filters filters);
+    static bool compressDir(QString fileCompressed, QString dir, bool recursive, QDir::Filters filters);
 
-public:
+  public:
     static QString extractFile(QString fileCompressed, QString fileName, QString fileDest = QString());
     static QStringList extractFiles(QString fileCompressed, QStringList files, QString dir = QString());
     static QStringList extractDir(QString fileCompressed, QString dir = QString());

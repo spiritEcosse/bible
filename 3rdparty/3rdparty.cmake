@@ -26,7 +26,7 @@ if(EXISTS "${PROJECT_SOURCE_DIR}/.git")
             RESULT_VARIABLE GIT_SUBMOD_RESULT)
 
     if(NOT GIT_SUBMOD_RESULT EQUAL "0")
-        message(FATAL_ERROR "git submodule update --init failed with : ${GIT_SUBMOD_RESULT}, please checkout submodules")
+        message(FATAL_ERROR "git_submodule_checkout failed with : ${GIT_SUBMOD_RESULT}, please checkout submodules")
     endif()
 
     include(${LIB_QUAZIP})
@@ -38,4 +38,8 @@ endif()
 if(CMAKE_C_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     include(${LIB_LCOV})
 endif()
+
+set(ENV{PATH} "/usr/local/bin/:$ENV{PATH}")
+set(LIB_LLVM llvm)
+include(${LIB_LLVM})
 

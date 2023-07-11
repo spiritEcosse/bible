@@ -1,12 +1,11 @@
-#include "tst_modelgroupmodules.h"
+#include "tst_modelmodule.h"
 #include "dereferenceiterator.h"
 #include "quickdownload.h"
+#include "tst_modelgroupmodules.h"
 #include <chrono>
 #include <memory>
-#include "tst_modelmodule.h"
 
 namespace modules {
-
     namespace tests {
 
         using namespace sqlite_orm;
@@ -15,91 +14,76 @@ namespace modules {
 
         tst_ModelModule::~tst_ModelModule() {}
 
-        void tst_ModelModule::initTestCase()
-        {
+        void tst_ModelModule::initTestCase() {
             ModelJsonTest<Module, ModelModule>::initTestCase();
         }
 
-        void tst_ModelModule::cleanupTestCase()
-        {
+        void tst_ModelModule::cleanupTestCase() {
             ModelJsonTest<Module, ModelModule>::cleanupTestCase();
         }
 
-        //helpers
-        std::vector<ModuleShared> tst_ModelModule::helperGetObjects() const
-        {
+        // helpers
+        std::vector<ModuleShared> tst_ModelModule::helperGetObjects() const {
             std::vector<ModuleShared> objects;
-            for ( size_t in = 0; in < vectorSize; in++) {
-                objects.push_back(
-                            std::make_shared<Module>(
-                                QString("name.%1").arg(in),
-                                "description",
-                                QString("abbreviation.%1").arg(in),
-                                m_idGroupModules ? m_idGroupModules : in + 1,
-                                102400,
-                                "en",
-                                "information",
-                                "comment",
-                                "copyright",
-                                QDate(2017, 03, 31),
-                                false,
-                                false,
-                                m_downloaded)
-                );
+            for(size_t in = 0; in < vectorSize; in++) {
+                objects.push_back(std::make_shared<Module>(QString("name.%1").arg(in),
+                                                           "description",
+                                                           QString("abbreviation.%1").arg(in),
+                                                           m_idGroupModules ? m_idGroupModules : in + 1,
+                                                           102400,
+                                                           "en",
+                                                           "information",
+                                                           "comment",
+                                                           "copyright",
+                                                           QDate(2017, 03, 31),
+                                                           false,
+                                                           false,
+                                                           m_downloaded));
             }
             return objects;
         }
 
-        std::vector<ModuleUnique> tst_ModelModule::helperGetObjectsUnique() const
-        {
+        std::vector<ModuleUnique> tst_ModelModule::helperGetObjectsUnique() const {
             std::vector<ModuleUnique> objects;
-            for ( size_t in = 0; in < vectorSize; in++) {
-                objects.push_back(
-                            std::make_unique<Module>(
-                                QString("name.%1").arg(in),
-                                "description",
-                                QString("abbreviation.%1").arg(in),
-                                m_idGroupModules ? m_idGroupModules : in + 1,
-                                102400,
-                                "en",
-                                "information",
-                                "comment",
-                                "copyright",
-                                QDate(2017, 03, 31),
-                                false,
-                                false,
-                                m_downloaded)
-                );
+            for(size_t in = 0; in < vectorSize; in++) {
+                objects.push_back(std::make_unique<Module>(QString("name.%1").arg(in),
+                                                           "description",
+                                                           QString("abbreviation.%1").arg(in),
+                                                           m_idGroupModules ? m_idGroupModules : in + 1,
+                                                           102400,
+                                                           "en",
+                                                           "information",
+                                                           "comment",
+                                                           "copyright",
+                                                           QDate(2017, 03, 31),
+                                                           false,
+                                                           false,
+                                                           m_downloaded));
             }
             return objects;
         }
 
-        HostUnique tst_ModelModule::helperGetHostUnique() const
-        {
+        HostUnique tst_ModelModule::helperGetHostUnique() const {
             return std::make_unique<modules::Host>("alias", urlModuleToBase64(), 1, 2);
         }
 
-        QVariantList tst_ModelModule::helperGetSelected() const
-        {
+        QVariantList tst_ModelModule::helperGetSelected() const {
             QMap<QString, QVariant> objects;
             objects.insert("moduleId", 1);
             return QVariantList({objects});
         }
 
-        HostUnique tst_ModelModule::helperGetHostsUniqueNotExists() const
-        {
+        HostUnique tst_ModelModule::helperGetHostsUniqueNotExists() const {
             return std::make_unique<modules::Host>("alias", QString(strUrl + urlMask).toUtf8().toBase64(), 1, 2);
         }
 
-        std::vector<modules::HostUnique> tst_ModelModule::helperGetHostsUnique()
-        {
+        std::vector<modules::HostUnique> tst_ModelModule::helperGetHostsUnique() {
             std::vector<modules::HostUnique> objects;
             objects.push_back(helperGetHostUnique());
             return objects;
         }
 
-        void tst_ModelModule::helperSaveStaticAndSetExtraFieldsTrue()
-        {
+        void tst_ModelModule::helperSaveStaticAndSetExtraFieldsTrue() {
             tst_ModelModule tst_model;
             tst_model.initDb();
             tst_model.helperSave();
@@ -107,27 +91,24 @@ namespace modules {
             tst_model.m_db->storage->update_all(set(assign(&Module::m_selected, true)));
         }
 
-        void tst_ModelModule::helperCheckAllData(const std::vector<ModelShared>& modules)
-        {
+        void tst_ModelModule::helperCheckAllData(const std::vector<ModelShared> &modules) {
             tst_ModelModule tst_model;
             tst_model.m_db = std::make_unique<db::Db<Module>>();
             const auto &objects = tst_model.m_db->storage->get_all_pointer<Module>();
             QCOMPARE(objects.size(), modules.size());
 
             QCOMPARE(std::equal(dereference_iterator(modules.begin()),
-                       dereference_iterator(modules.end()),
-                       dereference_iterator(objects.begin())
-                       ), true);
+                                dereference_iterator(modules.end()),
+                                dereference_iterator(objects.begin())),
+                     true);
         }
 
         // tests
-        void tst_ModelModule::update()
-        {
+        void tst_ModelModule::update() {
             ModelJsonTest<Module, ModelModule>::update();
         }
 
-        void tst_ModelModule::init_model()
-        {
+        void tst_ModelModule::init_model() {
             ModelModule model;
             QSignalSpy spySelected(&model, &ModelModule::changeSelected);
             QSignalSpy spyDownloaded(&model, &ModelModule::changeDownloaded);
@@ -137,8 +118,7 @@ namespace modules {
             QCOMPARE(spyDownloaded.count(), 1);
         }
 
-        void tst_ModelModule::constructor_params()
-        {
+        void tst_ModelModule::constructor_params() {
             m_idGroupModules = 1;
 
             cleanTable();
@@ -151,14 +131,13 @@ namespace modules {
             ModelModule modelModule(m_idGroupModules);
             QCOMPARE(modelModule.m_objects.size(), objects.size());
             QCOMPARE(std::equal(dereference_iterator(modelModule.m_objects.begin()),
-                       dereference_iterator(modelModule.m_objects.end()),
-                       dereference_iterator(objects.begin())
-                       ), true);
+                                dereference_iterator(modelModule.m_objects.end()),
+                                dereference_iterator(objects.begin())),
+                     true);
             QCOMPARE(modelModule.objectsCount, 0);
         }
 
-        void tst_ModelModule::updateObjectsDownloaded()
-        {
+        void tst_ModelModule::updateObjectsDownloaded() {
             m_downloaded = true;
             cleanTable();
             helperSave();
@@ -171,22 +150,20 @@ namespace modules {
             modelModule.updateObjectsDownloaded();
             QCOMPARE(modelModule.m_objects.size(), objects.size());
             QCOMPARE(std::equal(dereference_iterator(modelModule.m_objects.begin()),
-                       dereference_iterator(modelModule.m_objects.end()),
-                       dereference_iterator(objects.begin())
-                       ), true);
+                                dereference_iterator(modelModule.m_objects.end()),
+                                dereference_iterator(objects.begin())),
+                     true);
             QCOMPARE(modelModule.objectsCount, 0);
         }
 
-        void tst_ModelModule::updateSelected_data()
-        {
+        void tst_ModelModule::updateSelected_data() {
             QTest::addColumn<bool>("value");
 
             QTest::newRow("m_selecting is true") << true;
             QTest::newRow("m_selecting is false") << false;
         }
 
-        void tst_ModelModule::updateSelected()
-        {
+        void tst_ModelModule::updateSelected() {
             QFETCH(bool, value);
 
             cleanTable();
@@ -199,16 +176,14 @@ namespace modules {
             QCOMPARE(object->m_selected, value);
         }
 
-        void tst_ModelModule::updateDownloaded_data()
-        {
+        void tst_ModelModule::updateDownloaded_data() {
             QTest::addColumn<bool>("value");
 
             QTest::newRow("m_downloaded is true") << true;
             QTest::newRow("m_downloaded is false") << false;
         }
 
-        void tst_ModelModule::updateDownloaded()
-        {
+        void tst_ModelModule::updateDownloaded() {
             QFETCH(bool, value);
 
             cleanTable();
@@ -221,8 +196,7 @@ namespace modules {
             QCOMPARE(object->m_downloaded, value);
         }
 
-        void tst_ModelModule::getExtraFieldsFromDb()
-        {
+        void tst_ModelModule::getExtraFieldsFromDb() {
             cleanTable();
             helperSave();
 
@@ -236,8 +210,7 @@ namespace modules {
             QCOMPARE(model.m_downloadedBackup.size(), vectorSize);
         }
 
-        void tst_ModelModule::saveExtraFieldsToDb_data()
-        {
+        void tst_ModelModule::saveExtraFieldsToDb_data() {
             m_downloaded = false;
 
             cleanTable();
@@ -263,8 +236,7 @@ namespace modules {
             QCOMPARE(int(model.m_downloadedBackup.size()), 0);
         }
 
-        void tst_ModelModule::saveExtraFieldsToDb()
-        {
+        void tst_ModelModule::saveExtraFieldsToDb() {
             QFETCH(int, id);
             QFETCH(bool, selected);
             QFETCH(bool, downloaded);
@@ -274,8 +246,7 @@ namespace modules {
             QCOMPARE(object->m_selected, selected);
         }
 
-        void tst_ModelModule::downloadModules_data()
-        {
+        void tst_ModelModule::downloadModules_data() {
             cleanTable();
             helperSave();
             createFileModule();
@@ -291,12 +262,11 @@ namespace modules {
             QTest::newRow("retryFailedDownloaded") << 2;
         }
 
-        void tst_ModelModule::downloadModules()
-        {
+        void tst_ModelModule::downloadModules() {
             QFETCH(int, spyDownloadedCount);
 
             ModelModule model;
-            if (spyDownloadedCount == 2) {
+            if(spyDownloadedCount == 2) {
                 model.m_worker->m_modelHost->m_objects.clear();
                 model.m_worker->m_modelHost->m_objects.push_back(helperGetHostsUniqueNotExists());
             } else {
@@ -317,13 +287,12 @@ namespace modules {
             helperSave();
         }
 
-        void tst_ModelModule::downloadModules_withoutRecursion()
-        {
+        void tst_ModelModule::downloadModules_withoutRecursion() {
             std::unique_ptr<db::Db<modules::Host>> m_dbHost;
             m_dbHost.reset(new db::Db<modules::Host>());
             m_dbHost->removeAll();
 
-//            auto start = std::chrono::system_clock::now();
+            //            auto start = std::chrono::system_clock::now();
             ModelModule model;
             SingletonModelHost::getInstance().m_objects.clear();
             model.m_worker->m_modelHost->m_objects.clear();
@@ -337,16 +306,16 @@ namespace modules {
             QCOMPARE(spy.count(), 1);
             QCOMPARE(spyChangeDownloadCompleted.count(), 2);
             QCOMPARE(model.m_downloadCompleted, true);
-//            auto end = std::chrono::system_clock::now();
-//            std::chrono::duration<double> elapsed_seconds = end-start;
-//            std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+            //            auto end = std::chrono::system_clock::now();
+            //            std::chrono::duration<double> elapsed_seconds = end-start;
+            //            std::time_t end_time =
+            //            std::chrono::system_clock::to_time_t(end);
 
-//            qDebug() << "elapsed time: " << elapsed_seconds.count();
-//            QCOMPARE(spyCurlDownloaded.count(), 1);
+            //            qDebug() << "elapsed time: " << elapsed_seconds.count();
+            //            QCOMPARE(spyCurlDownloaded.count(), 1);
         }
 
-        void tst_ModelModule::deleteModules()
-        {
+        void tst_ModelModule::deleteModules() {
             cleanTable();
             helperSave();
             createFolderModuleInModules();
@@ -368,8 +337,7 @@ namespace modules {
             QVERIFY(!folderModuleInModules.exists());
         }
 
-        void tst_ModelModule::retrieveDownloaded()
-        {
+        void tst_ModelModule::retrieveDownloaded() {
             cleanTable();
             helperSave();
             m_db->storage->update_all(set(assign(&Module::m_downloaded, true)));
@@ -378,8 +346,7 @@ namespace modules {
             model.retrieveDownloaded();
         }
 
-        void tst_ModelModule::retrieveSelected()
-        {
+        void tst_ModelModule::retrieveSelected() {
             cleanTable();
             helperSave();
             m_db->storage->update_all(set(assign(&Module::m_selected, true)));
@@ -388,6 +355,6 @@ namespace modules {
             model.retrieveSelecteded();
         }
     }
-}
+}  // namespace modules
 
 #include "tst_modelmodule.moc"

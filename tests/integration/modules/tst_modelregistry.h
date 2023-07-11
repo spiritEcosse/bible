@@ -1,27 +1,26 @@
 #ifndef TST_MODELREGISTRY_H
 #define TST_MODELREGISTRY_H
 
-#include <QtTest>
-#include "modelregistry.h"
 #include "modeljsontest.h"
+#include "modelregistry.h"
+#include <QtTest>
 
 namespace modules {
-
     namespace tests {
 
-        class tst_ModelRegistry : public ::tests::ModelJsonTest<Registry, ModelRegistry>  {
+        class tst_ModelRegistry : public ::tests::ModelJsonTest<Registry, ModelRegistry> {
             Q_OBJECT
 
-        private:
+          private:
             std::vector<RegistryShared> helperGetObjects() const override;
             std::vector<RegistryShared> helperGetBaseRegistries() const;
             std::vector<RegistryUnique> helperGetObjectsUnique() const override;
 
-        public:
+          public:
             tst_ModelRegistry();
             ~tst_ModelRegistry();
 
-        private slots:
+          private slots:
             void initTestCase() override;
             void cleanupTestCase() override;
             void update() override;
@@ -32,6 +31,6 @@ namespace modules {
             void constructor();
         };
     }
-}
+}  // namespace modules
 
-#endif // TST_MODELREGISTRY_H
+#endif  // TST_MODELREGISTRY_H

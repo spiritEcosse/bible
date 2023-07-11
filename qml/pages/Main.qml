@@ -2,7 +2,7 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import bible.ModelGroupModules 1.0
 import bible.ModelModule 1.0
-import bible.HistoryModel 1.0
+import bible.ModelRecord 1.0
 import bible.ManagerRegistry 1.0
 import "../components"
 
@@ -23,6 +23,7 @@ Pages {
     property bool initPageModules: false
     property bool flagUpdateObjectsDownloaded: false
     property bool flagUpdateObjectsActive: false
+    property int maxFetchMoreCount: 10
 
     ManagerRegistry {
         id: managerRegistry
@@ -32,9 +33,12 @@ Pages {
         id: modelModuleBooks
     }
 
-    HistoryModel {
-        id: historyModel
-        property bool rowExists: historyModel.rowCount()
+    ModelRecord {
+        id: modelRecord
+        property bool rowExists: modelRecord.rowCount()
+        property int firstBookIndex: rowExists ? modelRecord.data(modelRecord.index(0, 0), 2) : -1
+        property int firstChapterIndex: rowExists ? modelRecord.data(modelRecord.index(0, 0), 3) : -1
+        property int firstVerseIndex: rowExists ? modelRecord.data(modelRecord.index(0, 0), 4) : -1
         onRowsInserted: rowExists = true
     }
 

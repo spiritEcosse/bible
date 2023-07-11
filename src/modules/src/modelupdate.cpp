@@ -1,48 +1,44 @@
 #include "modelupdate.h"
-#include <QtDebug>
+#include "invaliddata.h"
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QJsonArray>
-#include "invaliddata.h"
+#include <QDir>
 
 namespace modules {
 
-    template <class T>
-    BaseModel<T>::BaseModel()
-        : m_db { new db::Db<T>() } {}
+    QJsonListModel::QJsonListModel(QObject *parent) : QAbstractListModel(parent) {}
 
-    template<class T>
-    BaseModel<T>::~BaseModel() {}
+    template<class T, typename S>
+    BaseModel<T, S>::BaseModel() : m_db{new db::Db<T, S>()} {}
 
-    Base::Base(QObject *parent) : QAbstractListModel(parent) {}
+    template<class T, typename S>
+    BaseModel<T, S>::BaseModel(QString &&fileName) : m_db{new db::Db<T, S>(std::move(fileName))} {}
 
-    template <class T>
-    ModelUpdate<T>::ModelUpdate(QObject *parent)
-        : Base(parent), BaseModel<T>() {}
+    template<class T, typename S>
+    ListModel<T, S>::ListModel(QString &&fileName, QObject *parent) :
+        QJsonListModel(parent), BaseModel<T, S>(std::move(fileName)) {}
 
-    template <class T>
-    int ModelUpdate<T>::rowCount(const QModelIndex& /* parent */) const
-    {
+    template<class T, typename S>
+    ModelUpdate<T, S>::ModelUpdate(QString &&fileName, QObject *parent) :
+        ListModel<T, S>(std::move(fileName), parent) {}
+
+    template<class T, typename S>
+    int ListModel<T, S>::rowCount(const QModelIndex & /* parent */) const {
         return objectsCount;
     }
 
-    template <class T>
-    bool ModelUpdate<T>::canFetchMore(const QModelIndex &parent) const
-    {
-        if (parent.isValid())
-            return false;
+    template<class T, typename S>
+    bool ListModel<T, S>::canFetchMore([[maybe_unused]] const QModelIndex &parent) const {
         return (objectsCount < static_cast<int>(m_objects.size()));
     }
 
-    template <class T>
-    void ModelUpdate<T>::fetchMore(const QModelIndex &parent)
-    {
-        if (parent.isValid())
-            return;
+    template<class T, typename S>
+    void ListModel<T, S>::fetchMore([[maybe_unused]] const QModelIndex &parent) {
         int remainder = static_cast<int>(m_objects.size()) - objectsCount;
         int itemsToFetch = qMin(40, remainder);
 
-        if (itemsToFetch <= 0)
+        if(itemsToFetch <= 0)
             return;
 
         beginInsertRows(QModelIndex(), objectsCount, objectsCount + itemsToFetch - 1);
@@ -50,82 +46,76 @@ namespace modules {
         endInsertRows();
     }
 
-    template<class T>
-    void ModelUpdate<T>::updateWrapper()
-    {
+    template<class T, typename S>
+    void ModelUpdate<T, S>::updateWrapper() {
         update(m_objectsFromJson);
     }
 
-    template <class T>
-    void ModelUpdate<T>::update(const std::vector<T>& container)
-    {
+    template<class T, typename S>
+    void ModelUpdate<T, S>::update(const std::vector<T> &container) {
         try {
-          auto guard = m_db->storage->transaction_guard();
+            auto guard = m_db->storage->transaction_guard();
 
-          m_db->removeAll();
-          int chunkSize = 1000;
+            m_db->removeAll();
+            int chunkSize = 1000;
 
-          auto start = container.begin();
-          auto end = container.end();
+            auto start = container.begin();
+            auto end = container.end();
 
-          while (start != end) {
-              auto next = std::distance(start, end) >= chunkSize
-                          ? start + chunkSize
-                          : end;
+            while(start != end) {
+                auto next = std::distance(start, end) >= chunkSize ? start + chunkSize : end;
 
-              m_db->save(start, next);
-              start = next;
-          }
-          guard.commit();
-          emit updateDone();
-        } catch(const std::system_error& e) {
+                m_db->save(start, next);
+                start = next;
+            }
+            guard.commit();
+            emit updateDone();
+        } catch(const std::system_error &e) {
             qInfo() << e.what();
             emit error("An error occured.");
         }
     }
 
-    template <class T>
-    void ModelUpdate<T>::updateUnique(const std::vector<std::unique_ptr<T>>& container)
-    {
+    template<class T, typename S>
+    void ModelUpdate<T, S>::updateUnique(const std::vector<std::unique_ptr<T>> &container) {
         try {
-          auto guard = m_db->storage->transaction_guard();
+            auto guard = m_db->storage->transaction_guard();
 
-          m_db->removeAll();
-          int chunkSize = 1000;
+            m_db->removeAll();
+            int chunkSize = 1000;
 
-          auto start = container.begin();
-          auto end = container.end();
+            auto start = container.begin();
+            auto end = container.end();
 
-          while (start != end) {
-              auto next = std::distance(start, end) >= chunkSize
-                          ? start + chunkSize
-                          : end;
+            while(start != end) {
+                auto next = std::distance(start, end) >= chunkSize ? start + chunkSize : end;
 
-              m_db->save(start, next);
-              start = next;
-          }
-          guard.commit();
-          emit updateDone();
-        } catch(const std::system_error& e) {
+                m_db->save(start, next);
+                start = next;
+            }
+            guard.commit();
+            emit updateDone();
+        } catch(const std::system_error &e) {
             qInfo() << e.what();
             emit error("An error occured.");
         }
     }
 
-    template <class T>
-    void ModelUpdate<T>::transform(const QJsonDocument &document)
-    {
+    template<class T, typename S>
+    void ModelUpdate<T, S>::transform(const QJsonDocument &document) {
         m_objectsFromJson.clear();
         try {
-            const QJsonArray& source = document.object().value(getNameJson()).toArray();
+            const QJsonArray &source = document.object().value(getNameJson()).toArray();
 
-            std::transform(source.begin(), source.end(), std::back_inserter(m_objectsFromJson),
-                           [](const QJsonValue& entry)
-            {
-                return std::move(T(entry.toObject()));
-            });
+            std::transform(source.begin(),
+                           source.end(),
+                           std::back_inserter(m_objectsFromJson),
+                           [](const QJsonValue &entry) {
+                               return std::move(T(entry.toObject()));
+                           });
             emit transformSuccess();
-        } catch(const core::InvalidData& e) {}
+        } catch(const core::InvalidData &e) {
+        }
     }
 
     template class ModelUpdate<GroupModules>;
@@ -136,4 +126,12 @@ namespace modules {
     template class BaseModel<GroupModules>;
     template class BaseModel<Registry>;
     template class BaseModel<Host>;
-}
+    template class BaseModel<Book, db::TranslationStorage>;
+    template class ListModel<Book, db::TranslationStorage>;
+    template class BaseModel<Verse, db::TranslationStorage>;
+    template class ListModel<Verse, db::TranslationStorage>;
+    template class BaseModel<Comment, db::TranslationCommentStorage>;
+    template class ListModel<Comment, db::TranslationCommentStorage>;
+    template class ListModel<Record>;
+    template class BaseModel<Record>;
+}  // namespace modules

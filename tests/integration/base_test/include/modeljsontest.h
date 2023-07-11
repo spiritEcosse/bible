@@ -1,27 +1,26 @@
 #ifndef MODELJSONTEST_H
 #define MODELJSONTEST_H
 
-#include <QtTest>
 #include "basetest.h"
+#include <QtTest>
 
 namespace tests {
 
-    template <class T, class O>
-    class ModelJsonTest : public BaseTest<T, O>
-    {
-    public:
+    template<class T, class O>
+    class ModelJsonTest : public BaseTest<T, O> {
+      public:
         ModelJsonTest();
         ~ModelJsonTest();
 
-    protected:
+      protected:
         void initTestCase() override;
         void cleanupTestCase() override;
         virtual std::vector<std::shared_ptr<T>> helperGetObjects() const override = 0;
         virtual std::vector<std::unique_ptr<T>> helperGetObjectsUnique() const override = 0;
 
-        QFile fileRegistry { "registry.json" };
-        const QFile fileRegistryArchive { "registry.zip" };
-        QFile fileRegistryInfo { "registry_info.json" };
+        QFile fileRegistry{"registry.json"};
+        const QFile fileRegistryArchive{"registry.zip"};
+        QFile fileRegistryInfo{"registry_info.json"};
 
         virtual void update();
         virtual void transform_data();
@@ -33,6 +32,6 @@ namespace tests {
         using ModelUnique = decltype(std::unique_ptr<T>());
     };
 
-}
+}  // namespace tests
 
-#endif // MODELJSONTEST_H
+#endif  // MODELJSONTEST_H

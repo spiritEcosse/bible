@@ -1,38 +1,33 @@
 #ifndef TST_MANAGERGROUP_H
 #define TST_MANAGERGROUP_H
 
-#include <QtTest>
 #include "groupmodules.h"
 #include "modeljsontest.h"
 #include "modelregistry.h"
-
+#include <QtTest>
 
 namespace modules {
-
     namespace tests {
 
-        class tst_ManagerGroup : public ::tests::ModelJsonTest<Registry, ModelRegistry>
-        {
+        class tst_ManagerGroup : public ::tests::ModelJsonTest<Registry, ModelRegistry> {
             Q_OBJECT
 
-        public:
+          public:
             tst_ManagerGroup();
             ~tst_ManagerGroup();
 
-        private:
+          private:
             QJsonDocument helperGetInvalidDocument() const;
             std::vector<RegistryUnique> helperGetObjectsUnique() const;
             std::vector<RegistryShared> helperGetObjects() const;
 
-        private slots:
+          private slots:
             void initTestCase();
             void cleanupTestCase();
             void makeCollections_data();
             void makeCollections();
         };
     }
-}
+}  // namespace modules
 
-
-
-#endif // TST_MANAGERGROUP_H
+#endif  // TST_MANAGERGROUP_H

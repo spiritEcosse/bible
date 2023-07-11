@@ -4,27 +4,21 @@
 
 namespace tests {
 
-        class tst_DownloadManager : public QObject
-        {
-            Q_OBJECT
+    class tst_DownloadManager : public QObject {
+        Q_OBJECT
 
-        public:
-            tst_DownloadManager();
-            ~tst_DownloadManager();
+      public:
+        tst_DownloadManager();
+        ~tst_DownloadManager();
 
-        private slots:
-        };
+      private slots:
+    };
 
-        tst_DownloadManager::tst_DownloadManager()
-        {
-        }
+    tst_DownloadManager::tst_DownloadManager() {}
 
-        tst_DownloadManager::~tst_DownloadManager()
-        {
+    tst_DownloadManager::~tst_DownloadManager() {}
 
-        }
-
-}
+}  // namespace tests
 
 QTEST_MAIN(tests::tst_DownloadManager)
 

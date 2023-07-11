@@ -1,70 +1,82 @@
 #ifndef MODELUPDATE_H
 #define MODELUPDATE_H
 
-#include <QAbstractListModel>
 #include "db.h"
+#include <QAbstractListModel>
 #include <QObject>
 
 namespace modules {
 
     using namespace sqlite_orm;
 
-    template <class T>
-    class BaseModel
-    {
-    public:
-        BaseModel();
-        ~BaseModel();
-        std::unique_ptr<db::Db<T>> m_db;
+    template<class T, typename S = db::Storage>
+    class BaseModel {
+      public:
+        explicit BaseModel();
+        explicit BaseModel(QString &&fileName);
+        ~BaseModel() = default;
+        std::unique_ptr<db::Db<T, S>> m_db;
 
         template<class ColumnAssign, class ValueAssign, class ColumnIn, class Array>
-        inline void updateAllIn(const ColumnAssign& columnAssign, const ValueAssign &valueAssign,
-                              const ColumnIn& columnIn, const Array& array) const
-        {
-            m_db->storage->update_all(
-                        set(assign(columnAssign, valueAssign)),
-                        where(in(columnIn, array)));
+        inline void updateAllIn(const ColumnAssign &columnAssign,
+                                const ValueAssign &valueAssign,
+                                const ColumnIn &columnIn,
+                                const Array &array) const {
+            m_db->storage->update_all(set(assign(columnAssign, valueAssign)), where(in(columnIn, array)));
         }
     };
 
-    class Base : public QAbstractListModel
-    {
+    class QJsonListModel : public QAbstractListModel {
         Q_OBJECT
-    public:
-        Base(QObject *parent = nullptr);
-    private:
-        virtual void updateWrapper() = 0;
-    signals:
-        void error(const QString& error);
+      public:
+        explicit QJsonListModel(QObject *parent = nullptr);
+      protected slots:
+        virtual inline void updateObjectsFromJson() {
+            updateWrapper();
+        }
+
+      protected:
+        virtual void updateWrapper(){};
+      signals:
+        void error(const QString &error);
         void updateDone();
         void transformSuccess();
-    protected slots:
-        virtual inline void updateObjectsFromJson() { updateWrapper(); }
     };
 
-    template <class T>
-    class ModelUpdate: public Base, public BaseModel<T>
-    {
-    public:
-        using BaseModel<T>::m_db;
-
-        ModelUpdate(QObject *parent = nullptr);
-        virtual void update(const std::vector<T>& container);
-        virtual void updateUnique(const std::vector<std::unique_ptr<T>>& container);
-        virtual int rowCount(const QModelIndex& parent = {}) const override;
-        virtual void transform(const QJsonDocument& document);
-
+    template<class T, typename S = db::Storage>
+    class ListModel : public QJsonListModel, public BaseModel<T, S> {
+      public:
+        explicit ListModel(QString &&fileName = "", QObject *parent = nullptr);
         std::vector<std::unique_ptr<T>> m_objects;
-        std::vector<T> m_objectsFromJson;
+        virtual int rowCount(const QModelIndex &parent) const override;
         int objectsCount = 0;
-    protected:
-        Q_INVOKABLE bool canFetchMore(const QModelIndex &parent) const override;
-        Q_INVOKABLE void fetchMore(const QModelIndex &parent) override;
-        const QString nameJson;
-        virtual const QString getNameJson() { return QString(); };
-    private:
-        virtual void updateWrapper() override;
-    };
-}
 
-#endif // MODELUPDATE_H
+      protected:
+        Q_INVOKABLE bool canFetchMore([[maybe_unused]] const QModelIndex &parent) const override;
+        Q_INVOKABLE void fetchMore([[maybe_unused]] const QModelIndex &parent) override;
+    };
+
+    template<class T, typename S = db::Storage>
+    class ModelUpdate : public ListModel<T, S> {
+      public:
+        explicit ModelUpdate(QString &&fileName = "", QObject *parent = nullptr);
+        virtual void update(const std::vector<T> &container);
+        virtual void updateUnique(const std::vector<std::unique_ptr<T>> &container);
+        virtual void transform(const QJsonDocument &document);
+
+        using BaseModel<T, S>::m_db;
+        std::vector<T> m_objectsFromJson;
+        using QJsonListModel::error;
+        using QJsonListModel::transformSuccess;
+        using QJsonListModel::updateDone;
+
+      protected:
+        void updateWrapper() override;
+        const QString nameJson;
+        virtual QString getNameJson() {
+            return {};
+        };
+    };
+}  // namespace modules
+
+#endif  // MODELUPDATE_H

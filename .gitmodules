@@ -10,3 +10,7 @@
 	path = 3rdparty/openssl
 	url = https://github.com/openssl/openssl.git
 	tag = OpenSSL_1_1_1o
+[submodule "3rdparty/cmake-scripts"]
+	path = 3rdparty/cmake-scripts
+	url = https://github.com/StableCoder/cmake-scripts.git
+	tag = 22.01
