@@ -119,6 +119,11 @@ if(BUILD_TESTING)
   enable_testing()
 
   if(CODE_COVERAGE)
+    message(STATUS "========================CODE_COVERAGE========================")
+    execute_process(COMMAND bash -c "ls -la 3rdparty/cmake-scripts"
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+            RESULT_VARIABLE LS_RESULT)
+
     include(code-coverage)
     add_code_coverage_all_targets(EXCLUDE "3rdparty/*" "tests/*")
 
