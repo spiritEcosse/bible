@@ -111,9 +111,9 @@ endif()
 message("TARGET : ${TARGET}")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty")
-include(3rdparty)
 list(APPEND CMAKE_MODULE_PATH
-        "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/cmake-scripts")
+     "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/cmake-scripts")
+include(3rdparty)
 
 if(BUILD_TESTING)
   enable_testing()
