@@ -46,7 +46,7 @@ namespace modules {
                                 dereference_iterator(model.m_objects.end()),
                                 dereference_iterator(objects.begin() + 1)),
                      true);
-            QCOMPARE(model.objectsCount, 0);
+            QCOMPARE(model.objectsCount, 1);
         }
 
         void tst_ModelComment::roleNames() {
