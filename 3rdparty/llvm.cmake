@@ -14,7 +14,7 @@ if(NOT EXISTS ${LLVM_INSTALL_DIR})
 	execute_process(COMMAND bash -c "\
 		cmake -S llvm \
 		-B build \
-		-DLLVM_ENABLE_PROJECTS='llvm-cov' \
+		-DLLVM_CODE_COVERAGE_TARGETS=llvm-cov \
 		-DLLVM_TARGETS_TO_BUILD='ARM;X86;AArch64' \
 		-DLLVM_ENABLE_ASSERTIONS=ON \
 		-DCMAKE_BUILD_TYPE=Release"
