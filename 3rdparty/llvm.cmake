@@ -14,7 +14,7 @@ if(NOT EXISTS ${LLVM_INSTALL_DIR})
 	execute_process(COMMAND bash -c "\
 		cmake -S llvm \
 		-B build \
-		-DLLVM_ENABLE_PROJECTS='clang;clang-tools-extra;compiler-rt;llvm' \
+		-DLLVM_ENABLE_PROJECTS='llvm-cov' \
 		-DLLVM_TARGETS_TO_BUILD='ARM;X86;AArch64' \
 		-DLLVM_ENABLE_ASSERTIONS=ON \
 		-DCMAKE_BUILD_TYPE=Release"
@@ -23,7 +23,7 @@ if(NOT EXISTS ${LLVM_INSTALL_DIR})
 		message(FATAL_ERROR "cmake -S llvm ... OUTPUT_CONFIGURE_LLVM: ${OUTPUT_CONFIGURE_LLVM}")
 	endif()
 
-	execute_process(COMMAND bash -c "cmake --build ."
+	execute_process(COMMAND bash -c "cmake --build build --target llvm-cov -j $(echo "2 * $(getconf _NPROCESSORS_ONLN)" | bc -l)"
 			WORKING_DIRECTORY ${LLVM_BUNDLE_DIR}
 			RESULT_VARIABLE LLVM_BUILD_RESULT)
 
