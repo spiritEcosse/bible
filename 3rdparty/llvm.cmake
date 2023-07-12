@@ -5,10 +5,11 @@ set(LLVM_INSTALL_DIR "${LLVM_BUNDLE_DIR}/build")
 set(LLVM_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/${LIB_LLVM}")
 
 if(NOT EXISTS ${LLVM_INSTALL_DIR})
-	# TODO: add : checkout to some version, not just last
-	execute_process(COMMAND bash -c "git clone --depth 1 https://github.com/llvm/llvm-project.git ${LIB_LLVM}"
-		WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/3rdparty)
-#endif()
+	if (NOT ${LLVM_BUNDLE_DIR} STREQUAL ${LLVM_SRC_DIR})
+		execute_process(COMMAND bash -c "\
+			rm -fr ${LLVM_BUNDLE_DIR} && \
+            cp -fr ${LLVM_SRC_DIR} ${LLVM_BUNDLE_DIR}")
+	endif()
 
 	execute_process(COMMAND bash -c "\
 		cmake -S llvm \
@@ -22,8 +23,9 @@ if(NOT EXISTS ${LLVM_INSTALL_DIR})
 			WORKING_DIRECTORY ${LLVM_BUNDLE_DIR}
 			RESULT_VARIABLE LLVM_BUILD_RESULT)
 	message("OUTPUT_BUILD_LLVM: ${OUTPUT_BUILD_LLVM}")
+
 	if(NOT LLVM_BUILD_RESULT EQUAL "0")
-		message(FATAL_ERROR "cmake build llvm is failed")
+		message(FATAL_ERROR "cmake build llvm is failed. LLVM_BUILD_RESULT: ${LLVM_BUILD_RESULT}")
 	endif()
 endif()
 

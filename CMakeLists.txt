@@ -1,5 +1,5 @@
 #execute_process(COMMAND bash -c "xcrun --show-sdk-path" RESULT_VARIABLE CMAKE_OSX_SYSROOT)
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.19)
 
 project(bible LANGUAGES CXX)
 
