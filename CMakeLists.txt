@@ -34,7 +34,6 @@ if(NOT Qt6_FOUND)
                Qml
                Gui
                Quick
-               Sql
     REQUIRED)
 else()
   find_package(
@@ -46,7 +45,6 @@ else()
                Gui
                Quick
                QuickControls2
-               Sql
     REQUIRED)
 endif()
 
@@ -217,7 +215,6 @@ else()
       PRIVATE Qt6::Network
               Qt6::Quick
               Qt6::QuickControls2
-              Qt6::Sql
               Qt6::Widgets
               modules
               dbmanager

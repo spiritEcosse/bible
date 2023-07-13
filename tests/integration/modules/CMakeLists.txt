@@ -4,12 +4,12 @@ enable_testing()
 if(Qt6_FOUND)
   find_package(
     Qt6
-    COMPONENTS Test Network Qml Sql
+    COMPONENTS Test Network Qml
     REQUIRED)
 else()
   find_package(
     Qt5
-    COMPONENTS Test Network Qml Sql
+    COMPONENTS Test Network Qml
     REQUIRED)
 endif()
 
@@ -23,7 +23,6 @@ if(Qt6_FOUND)
     PRIVATE Qt6::Test
             Qt6::Network
             Qt6::Qml
-            Qt6::Sql
             Qt6::Core
             core
             dbmanager
@@ -60,7 +59,6 @@ foreach(TEST_FILE ${TEST_FILES})
               Qt6::Network
               Qt6::Qml
               Qt6::Core
-              Qt6::Sql
               core
               dbmanager
               netmanager

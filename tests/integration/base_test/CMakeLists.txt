@@ -8,14 +8,13 @@ add_library(${PROJECT_NAME} STATIC ${RESOURCES})
 if(Qt6_FOUND)
   find_package(
     Qt6
-    COMPONENTS Core Test Network Sql
+    COMPONENTS Core Test Network
     REQUIRED)
   target_link_libraries(
     ${PROJECT_NAME}
     PRIVATE Qt6::Core
             Qt6::Test
             Qt6::Network
-            Qt6::Sql
             QuaZip
             sqlite_orm
             dbmanager
@@ -25,7 +24,7 @@ if(Qt6_FOUND)
 else()
   find_package(
     Qt5
-    COMPONENTS Core Test Network Sql
+    COMPONENTS Core Test Network
     REQUIRED)
   target_link_libraries(
     ${PROJECT_NAME}

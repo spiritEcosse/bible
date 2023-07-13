@@ -7,13 +7,13 @@ add_library(${PROJECT_NAME} STATIC ${RESOURCES})
 if(Qt6_FOUND)
   find_package(
     Qt6
-    COMPONENTS Core Sql
+    COMPONENTS Core
     REQUIRED)
-  target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Sql sqlite_orm)
+  target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core sqlite_orm)
 else()
   find_package(
     Qt5
-    COMPONENTS Core Sql
+    COMPONENTS Core
     REQUIRED)
   target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core sqlite_orm)
 endif()

@@ -6,14 +6,13 @@ add_library(${PROJECT_NAME} STATIC ${SOURCES})
 if(Qt6_FOUND)
   find_package(
     Qt6
-    COMPONENTS Core Network Sql
+    COMPONENTS Core Network
     REQUIRED)
   target_link_libraries(
     ${PROJECT_NAME}
     PRIVATE Qt6::Core
             Qt6::Quick
             Qt6::Network
-            Qt6::Sql
             core
             dbmanager
             netmanager
@@ -22,7 +21,7 @@ if(Qt6_FOUND)
 else()
   find_package(
     Qt5
-    COMPONENTS Core Network Sql
+    COMPONENTS Core Network
     REQUIRED)
   target_link_libraries(
     ${PROJECT_NAME}

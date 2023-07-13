@@ -5,12 +5,12 @@ enable_testing()
 if(Qt6_FOUND)
   find_package(
     Qt6
-    COMPONENTS Test Network Qml Sql
+    COMPONENTS Test Network Qml
     REQUIRED)
 else()
   find_package(
     Qt5
-    COMPONENTS Test Network Qml Sql
+    COMPONENTS Test Network Qml
     REQUIRED)
 endif()
 
@@ -26,7 +26,6 @@ foreach(TEST_FILE ${TEST_FILES})
       PRIVATE Qt6::Test
               Qt6::Network
               Qt6::Qml
-              Qt6::Sql
               core
               netmanager
               modules
