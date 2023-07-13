@@ -7,7 +7,6 @@ shared/
 *.autosave
 *.user
 ƒ*.sqlite
-3rdparty/lcov
 
 *autogen/*
 CMakeLists.txt.user*
