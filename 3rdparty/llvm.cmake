@@ -2,7 +2,6 @@ message(STATUS "========================Start configure ${LIB_LLVM}=============
 
 set(LLVM_BUNDLE_DIR "${PROJECT_BINARY_DIR}/3rdparty/${LIB_LLVM}")
 set(LLVM_INSTALL_DIR "${LLVM_BUNDLE_DIR}/build")
-set(LLVM_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/${LIB_LLVM}")
 
 if(NOT EXISTS ${LLVM_INSTALL_DIR})
 	if (NOT ${LLVM_BUNDLE_DIR} STREQUAL ${LLVM_SRC_DIR})

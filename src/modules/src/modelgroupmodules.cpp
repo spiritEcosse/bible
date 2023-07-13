@@ -24,6 +24,7 @@ namespace modules {
         connect(m_managerGroup.get(), &ManagerGroup::makeGroupModulesSuccess, this, &ModelGroupModules::update);
         connect(m_managerGroup.get(), &ManagerGroup::makeModulesSuccess, m_modelModule.get(), &ModelModule::update);
         connect(this, &ModelGroupModules::updateDone, this, &ModelGroupModules::setUpdateCompleted);
+        connect(this, &ModelGroupModules::updateDone, m_managerGroup.get(), &ManagerGroup::clearObjects);
         connect(this, &ModelGroupModules::updateDone, this, &ModelGroupModules::updateObjects);
     }
 
