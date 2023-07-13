@@ -117,7 +117,8 @@ if(BUILD_TESTING)
   enable_testing()
 
   if(CODE_COVERAGE)
-    include(code-coverage)
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+    include(CodeCoverage)
     add_code_coverage_all_targets(EXCLUDE "3rdparty/*" "tests/*")
 
     set(CMAKE_CXX_FLAGS
