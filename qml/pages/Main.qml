@@ -33,6 +33,15 @@ Pages {
         id: modelModuleBooks
     }
 
+    ModelModule {
+        id: modelModulesActive
+
+        Component.onCompleted: {
+            modelModulesActive.updateObjectsActive();
+            flagUpdateObjectsActive = true;
+        }
+    }
+
     ModelRecord {
         id: modelRecord
         property bool rowExists: modelRecord.rowCount()
@@ -68,56 +77,7 @@ Pages {
 
         ModulesPage {}
 
-        SilicaFlickable {
-            id: silicaFlickableSearch
-            width: parent.width
-            height: parent.height
-            contentHeight: columnA.height + Theme.paddingLarge
-
-            VerticalScrollDecorator {}
-
-            Column {
-                id: columnA
-                spacing: Theme.paddingLarge
-                width: parent.width
-
-                PageHeader { title: "Panels and sections" }
-
-                SectionHeader {
-                    text: "Expanding sections"
-                }
-
-                ExpandingSectionGroup {
-                    currentIndex: 0
-
-                    Repeater {
-                        model: 50
-
-                        ExpandingSection {
-                            id: section
-
-                            property int sectionIndex: model.index
-                            title: "Section wewe" + (model.index + 1)
-
-                            content.sourceComponent: Column {
-                                width: section.width
-
-                                Repeater {
-                                    model: (section.sectionIndex + 1) * 2
-
-                                    TextSwitch {
-                                        text: "Option " + (model.index + 1)
-                                        onClicked: {
-                                            console.log(index)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        SearchPage {}
     }
 
     SilicaFlickable {

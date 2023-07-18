@@ -11,6 +11,7 @@
         <file>pages/ModulesPage.qml</file>
         <file>pages/Pages.qml</file>
         <file>pages/VersesListView.qml</file>
+        <file>pages/SearchPage.qml</file>
         <file>components/ExpandingSectionBooks.qml</file>
         <file>components/ExpandingSectionGroupPatch.qml</file>
         <file>components/ExpandingSectionPatch.qml</file>
