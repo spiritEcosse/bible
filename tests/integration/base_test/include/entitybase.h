@@ -5,17 +5,16 @@
 
 namespace tests {
 
-    template <class T>
-    class EntityBase : public QObject
-    {
-    public:
+    template<class T>
+    class EntityBase : public QObject {
+      public:
         EntityBase();
         ~EntityBase();
 
-    protected:
+      protected:
         virtual void constructor();
     };
 
-}
+}  // namespace tests
 
-#endif // ENTITYBASE_H
+#endif  // ENTITYBASE_H

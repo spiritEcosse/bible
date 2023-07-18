@@ -1,33 +1,32 @@
 #ifndef DOWNLOADMANAGER_H
 #define DOWNLOADMANAGER_H
 
-#include <QtNetwork>
 #include <QtCore>
+#include <QtNetwork>
 
 #include "textprogressbar.h"
 
-class DownloadManager: public QObject
-{
+class DownloadManager : public QObject {
     Q_OBJECT
-public:
+  public:
     explicit DownloadManager(QObject *parent = nullptr);
 
     void append(const QUrl &url);
     void append(const QStringList &urls);
     static QString saveFileName(const QUrl &url);
 
-signals:
+  signals:
     void finished();
-    void readyRead(const QString& fileName);
+    void readyRead(const QString &fileName);
     void failed();
 
-private slots:
+  private slots:
     void startNextDownload();
     void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
     void downloadFinished();
     void downloadReadyRead();
 
-private:
+  private:
     bool isHttpRedirect() const;
     void reportRedirect();
 

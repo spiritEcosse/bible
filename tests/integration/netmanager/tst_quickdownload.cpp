@@ -1,21 +1,22 @@
-#include <QtTest>
 #include "quickdownload.h"
+#include <QtTest>
 
 namespace netmanager {
 
     namespace tests {
 
-        class tst_QuickDownload : public QObject  {
+        class tst_QuickDownload : public QObject {
             Q_OBJECT
 
-        public:
+          public:
             tst_QuickDownload();
             ~tst_QuickDownload();
-        private:
+
+          private:
             const size_t vectorSize = 3;
             virtual std::vector<modules::HostUnique> helperGetHostsUnique() const;
 
-        private slots:
+          private slots:
             void initTestCase();
             void cleanupTestCase();
             void makeUrl();
@@ -30,21 +31,20 @@ namespace netmanager {
 
         void tst_QuickDownload::cleanupTestCase() {}
 
-        //helpers
+        // helpers
 
-        std::vector<modules::HostUnique> tst_QuickDownload::helperGetHostsUnique() const
-        {
+        std::vector<modules::HostUnique> tst_QuickDownload::helperGetHostsUnique() const {
             std::vector<modules::HostUnique> objects;
-            for ( size_t in = 0; in < vectorSize; in++) {
-                objects.push_back(std::make_unique<modules::Host>("alias", "aHR0cDovL2RvbWFpbi5jb20vdGVzdC8lcy56aXA=", 1, 2));
+            for(size_t in = 0; in < vectorSize; in++) {
+                objects.push_back(
+                    std::make_unique<modules::Host>("alias", "aHR0cDovL2RvbWFpbi5jb20vdGVzdC8lcy56aXA=", 1, 2));
             }
             return objects;
         }
 
         // tests
 
-        void tst_QuickDownload::makeUrl()
-        {
+        void tst_QuickDownload::makeUrl() {
             QuickDownload download;
             download._moduleName = "abbr";
             download.m_modelHost->m_objects = helperGetHostsUnique();
@@ -53,8 +53,7 @@ namespace netmanager {
             QCOMPARE(download._url, QUrl("http://domain.com/test/abbr.zip"));
         }
 
-        void tst_QuickDownload::setDestination()
-        {
+        void tst_QuickDownload::setDestination() {
             QString moduleName = "name";
             QuickDownload download;
             download._moduleName = moduleName;
@@ -62,9 +61,9 @@ namespace netmanager {
             QCOMPARE(download._destination, QDir::currentPath() + "/modules/" + moduleName + ".zip");
         }
 
-    }
+    }  // namespace tests
 
-}
+}  // namespace netmanager
 
 QTEST_MAIN(netmanager::tests::tst_QuickDownload)
 

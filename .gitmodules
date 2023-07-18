@@ -10,3 +10,15 @@
 	path = 3rdparty/openssl
 	url = https://github.com/openssl/openssl.git
 	tag = OpenSSL_1_1_1o
+[submodule "3rdparty/cmake-scripts"]
+	path = 3rdparty/cmake-scripts
+	url = https://github.com/StableCoder/cmake-scripts.git
+	tag = 22.01
+[submodule "3rdparty/llvm"]
+	path = 3rdparty/llvm
+	url = https://github.com/llvm/llvm-project.git
+    tag = llvmorg-16.0.6
+[submodule "3rdparty/lcov"]
+	path = 3rdparty/lcov
+	url = https://github.com/linux-test-project/lcov.git
+    tag = v1.16

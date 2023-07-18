@@ -5,32 +5,28 @@
 
 namespace modules {
 
-    namespace tests
-    {
-       class tst_ManagerRegistry;
-       class tst_ManagerGroup;
-       class tst_ModelRegistry;
-    }
+    namespace tests {
+        class tst_ManagerRegistry;
+        class tst_ManagerGroup;
+        class tst_ModelRegistry;
+    }  // namespace tests
 
-    class ModelRegistry : public ModelUpdate<Registry>
-    {
+    class ModelRegistry : public ModelUpdate<Registry> {
         Q_OBJECT
-    public:
-        enum RegistryRoles
-        {
-            UrlRole = 0,
-            PriorityRole = 1,
-            InfoUrlRole = 2
-        };
+      public:
+        enum RegistryRoles { UrlRole = 0, PriorityRole = 1, InfoUrlRole = 2 };
 
         ModelRegistry();
         ~ModelRegistry();
-        virtual QVariant data(const QModelIndex& index = {}, int role = Qt::DisplayRole) const override;
+        virtual QVariant data(const QModelIndex &index = {}, int role = Qt::DisplayRole) const override;
         virtual QHash<int, QByteArray> roleNames() const override;
         virtual QUrl data(int index, int role) const;
         bool setRegistries();
-        inline const QString getNameJson() override { return QString("registries"); };
-    private:
+        inline QString getNameJson() override {
+            return QString("registries");
+        };
+
+      private:
         friend class tests::tst_ManagerRegistry;
         friend class tests::tst_ManagerGroup;
         friend class tests::tst_ModelRegistry;
@@ -38,6 +34,6 @@ namespace modules {
         RegistryUnique baseRegistry() const;
     };
 
-}
+}  // namespace modules
 
-#endif // MODELREGISTRY_H
+#endif  // MODELREGISTRY_H

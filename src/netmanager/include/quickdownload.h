@@ -1,17 +1,17 @@
 #ifndef QUICKDOWNLOAD_H
 #define QUICKDOWNLOAD_H
 
-#include <QObject>
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QUrl>
-#include <QSaveFile>
-#include <QFileInfo>
 #include <QDir>
+#include <QFileInfo>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QObject>
+#include <QSaveFile>
+#include <QUrl>
 
-#include "qqml.h"
 #include "modelhost.h"
+#include "qqml.h"
 
 #if defined(qQuickDownloadMaster)
 #undef qQuickDownloadMaster
@@ -24,14 +24,13 @@ namespace netmanager {
         class tst_QuickDownload;
     }
 
-    class QuickDownloadMaster : public QObject
-    {
+    class QuickDownloadMaster : public QObject {
         Q_OBJECT
 
         Q_PROPERTY(bool ready READ ready NOTIFY readyChanged)
 
-    public:
-        explicit QuickDownloadMaster(QObject* parent = 0);
+      public:
+        explicit QuickDownloadMaster(QObject *parent = 0);
         ~QuickDownloadMaster();
 
         static QuickDownloadMaster *instance();
@@ -43,10 +42,10 @@ namespace netmanager {
         QNetworkAccessManager *networkAccessManager();
         void setNetworkAccessManager(QNetworkAccessManager *networkAccessManager);
 
-    signals:
+      signals:
         void readyChanged();
 
-    private:
+      private:
         static QuickDownloadMaster *self;
         Q_DISABLE_COPY(QuickDownloadMaster)
 
@@ -54,12 +53,9 @@ namespace netmanager {
 
         bool _ownNetworkAccessManager;
         QNetworkAccessManager *_networkAccessManager;
-
     };
 
-
-    class QuickDownload : public QObject, public QQmlParserStatus
-    {
+    class QuickDownload : public QObject, public QQmlParserStatus {
         Q_OBJECT
         Q_INTERFACES(QQmlParserStatus)
         Q_DISABLE_COPY(QuickDownload)
@@ -67,19 +63,14 @@ namespace netmanager {
         Q_PROPERTY(QUrl url READ url WRITE setUrl NOTIFY urlChanged)
         Q_PROPERTY(bool running READ running WRITE setRunning NOTIFY runningChanged)
         Q_PROPERTY(qreal progress READ progress NOTIFY progressChanged)
-//        Q_PROPERTY(QUrl destination READ destination WRITE setDestination NOTIFY destinationChanged)
+        //        Q_PROPERTY(QUrl destination READ destination WRITE setDestination
+        //        NOTIFY destinationChanged)
         Q_PROPERTY(bool followRedirects READ followRedirects WRITE setFollowRedirects NOTIFY followRedirectsChanged)
         Q_PROPERTY(bool overwrite READ overwrite WRITE setOverwrite NOTIFY overwriteChanged)
         Q_PROPERTY(QString moduleName READ moduleName WRITE setModuleName NOTIFY moduleNameChanged)
 
-    public:
-        enum Error
-        {
-            ErrorUnknown,
-            ErrorUrl,
-            ErrorDestination,
-            ErrorNetwork
-        };
+      public:
+        enum Error { ErrorUnknown, ErrorUrl, ErrorDestination, ErrorNetwork };
         Q_ENUM(Error)
 
         QuickDownload(QObject *parent = 0);
@@ -96,7 +87,7 @@ namespace netmanager {
 
         qreal progress() const;
 
-//        QUrl destination() const;
+        //        QUrl destination() const;
         void setDestination();
 
         bool followRedirects() const;
@@ -108,13 +99,13 @@ namespace netmanager {
         void classBegin() {}
         void componentComplete();
 
-    signals:
+      signals:
         void urlChanged();
         void moduleNameChanged();
         void cancelChanged();
         void runningChanged();
         void progressChanged();
-//        void destinationChanged();
+        //        void destinationChanged();
         void followRedirectsChanged();
         void overwriteChanged();
 
@@ -125,17 +116,17 @@ namespace netmanager {
         void error(int errorCode, QString errorString);
         void networkAccessManagerChanged();
 
-    public slots:
+      public slots:
         void start(QUrl url);
         void start();
         void stop();
 
-    private slots:
+      private slots:
         void onReadyRead();
         void onFinished();
         void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
 
-    private:
+      private:
         friend class tests::tst_QuickDownload;
 
         void setProgress(qreal progress);
@@ -160,6 +151,6 @@ namespace netmanager {
         void makeUrl();
     };
 
-}
+}  // namespace netmanager
 
-#endif // QUICKDOWNLOAD_H
+#endif  // QUICKDOWNLOAD_H

@@ -1,8 +1,8 @@
-#include "modelregistry.h"
-#include "modelhost.h"
-#include "modelgroupmodules.h"
-#include "modelmodule.h"
 #include "dereferenceiterator.h"
+#include "modelgroupmodules.h"
+#include "modelhost.h"
+#include "modelmodule.h"
+#include "modelregistry.h"
 
 #include "modeljsontest.h"
 
@@ -15,68 +15,59 @@ Q_DECLARE_METATYPE(std::vector<modules::HostShared>)
 
 namespace tests {
 
-    template <class T, class O>
+    template<class T, class O>
     ModelJsonTest<T, O>::ModelJsonTest() {}
 
-    template <class T, class O>
+    template<class T, class O>
     ModelJsonTest<T, O>::~ModelJsonTest() {}
 
     template<class T, class O>
-    void ModelJsonTest<T, O>::initTestCase()
-    {
+    void ModelJsonTest<T, O>::initTestCase() {
         BaseTest<T, O>::initTestCase();
     }
 
     template<class T, class O>
-    void ModelJsonTest<T, O>::cleanupTestCase()
-    {
+    void ModelJsonTest<T, O>::cleanupTestCase() {
         BaseTest<T, O>::cleanupTestCase();
     }
 
-    template <class T, class O>
-    QJsonDocument ModelJsonTest<T, O>::helperGetDocument()
-    {
+    template<class T, class O>
+    QJsonDocument ModelJsonTest<T, O>::helperGetDocument() {
         QJsonArray array;
-        array << QJsonObject {{"url", "link1"}, {"priority", 1}, {"info_url", "link11"}};
-        array << QJsonObject {{"url", "link1"}, {"priority", 1}, {"info_url", "link11"}};
-        array << QJsonObject {{"url", "link1"}, {"priority", 1}, {"info_url", "link11"}};
+        array << QJsonObject{{"url", "link1"}, {"priority", 1}, {"info_url", "link11"}};
+        array << QJsonObject{{"url", "link1"}, {"priority", 1}, {"info_url", "link11"}};
+        array << QJsonObject{{"url", "link1"}, {"priority", 1}, {"info_url", "link11"}};
 
         QJsonArray arrayHosts;
-        arrayHosts << QJsonObject {{"alias", "alias"}, {"priority", 1}, {"weight", 2}, {"path", "link11"}};
-        arrayHosts << QJsonObject {{"alias", "alias"}, {"priority", 1}, {"weight", 2}, {"path", "link11"}};
-        arrayHosts << QJsonObject {{"alias", "alias"}, {"priority", 1}, {"weight", 2}, {"path", "link11"}};
+        arrayHosts << QJsonObject{{"alias", "alias"}, {"priority", 1}, {"weight", 2}, {"path", "link11"}};
+        arrayHosts << QJsonObject{{"alias", "alias"}, {"priority", 1}, {"weight", 2}, {"path", "link11"}};
+        arrayHosts << QJsonObject{{"alias", "alias"}, {"priority", 1}, {"weight", 2}, {"path", "link11"}};
 
-        return QJsonDocument {
-            QJsonObject {
-                { "registries",  array },
-                { "downloads", {{"key", "val"}} },
-                { "version", 1 },
-                { "hosts", arrayHosts },
-            }
-        };
+        return QJsonDocument{QJsonObject{
+            {"registries", array},
+            {"downloads", {{"key", "val"}}},
+            {"version", 1},
+            {"hosts", arrayHosts},
+        }};
     }
 
-    template <class T, class O>
-    QJsonDocument ModelJsonTest<T, O>::helperGetInvalidDocument() const
-    {
+    template<class T, class O>
+    QJsonDocument ModelJsonTest<T, O>::helperGetInvalidDocument() const {
         QJsonArray array;
 
-        array << QJsonObject {{"url", "link1"}, {"priority", 1}};
-        array << QJsonObject {{"priority", 2}, {"info_ufrl", "link22"}};
-        array << QJsonObject {{"url", "link3"}, {"priority", 3}, {"info_url", "link33"}};
+        array << QJsonObject{{"url", "link1"}, {"priority", 1}};
+        array << QJsonObject{{"priority", 2}, {"info_ufrl", "link22"}};
+        array << QJsonObject{{"url", "link3"}, {"priority", 3}, {"info_url", "link33"}};
 
-        return QJsonDocument {
-            QJsonObject {
-                { "registries",  array },
-                { "hosts",  QJsonArray { QJsonObject {{"alias", "alias"}, {"priority", 1}}} },
-            }
-        };
+        return QJsonDocument{QJsonObject{
+            {"registries", array},
+            {"hosts", QJsonArray{QJsonObject{{"alias", "alias"}, {"priority", 1}}}},
+        }};
     }
 
     // tests
-    template <class T, class O>
-    void ModelJsonTest<T, O>::update()
-    {
+    template<class T, class O>
+    void ModelJsonTest<T, O>::update() {
         O model;
         QSignalSpy spyLast(&model, &O::updateDone);
 
@@ -87,15 +78,19 @@ namespace tests {
         int count = BaseTest<T, O>::m_db->count();
         QCOMPARE(count, static_cast<int>(objects.size()));
         const auto &m_objects = BaseTest<T, O>::m_db->storage->template get_all<T>();
-        QCOMPARE(std::equal(m_objects.begin(),
-                    m_objects.end(),
-                   dereference_iterator(objects.begin())
-                   ), true);
+        bool equal = std::equal(m_objects.begin(), m_objects.end(), dereference_iterator(objects.begin()));
+
+        if(not equal) {
+            for(size_t in = 0; in < m_objects.size(); in++) {
+                qDebug() << *objects[in].get();
+                qDebug() << m_objects[in];
+            }
+        }
+        QVERIFY(equal);
     }
 
-    template <class T, class O>
-    void ModelJsonTest<T, O>::transform_data()
-    {
+    template<class T, class O>
+    void ModelJsonTest<T, O>::transform_data() {
         QTest::addColumn<QJsonDocument>("document");
         QTest::addColumn<std::vector<ModelShared>>("objects");
         QTest::addColumn<bool>("hit");
@@ -104,9 +99,8 @@ namespace tests {
         QTest::newRow("not valid data") << helperGetInvalidDocument() << std::vector<ModelShared>() << false;
     }
 
-    template <class T, class O>
-    void ModelJsonTest<T, O>::transform()
-    {
+    template<class T, class O>
+    void ModelJsonTest<T, O>::transform() {
         qRegisterMetaType<std::vector<T>>("std::vector<T>");
 
         QFETCH(QJsonDocument, document);
@@ -119,12 +113,12 @@ namespace tests {
 
         QCOMPARE(spy.count(), int(hit));
 
-        if (hit) {
+        if(hit) {
             QCOMPARE(model.m_objectsFromJson.size(), objects.size());
             QCOMPARE(std::equal(model.m_objectsFromJson.begin(),
-                       model.m_objectsFromJson.end(),
-                       dereference_iterator(objects.begin())
-                       ), true);
+                                model.m_objectsFromJson.end(),
+                                dereference_iterator(objects.begin())),
+                     true);
         }
     }
 
@@ -133,4 +127,4 @@ namespace tests {
     template class ModelJsonTest<modules::Registry, modules::ModelRegistry>;
     template class ModelJsonTest<modules::Host, modules::ModelHost>;
 
-}
+}  // namespace tests

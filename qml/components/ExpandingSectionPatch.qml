@@ -21,7 +21,7 @@ Item {
 
     property bool highlighted
 
-//    property Item _group
+    property Item _group
 //    readonly property int _animationDuration: _group ? _group.animationDuration : 200
     readonly property int _animationDuration: 200
 //    property int __silica_expandingsection
@@ -99,7 +99,9 @@ Item {
         highlighted: down || root.highlighted
 
         onClicked: {
-            expanded = !expanded
+            expanded = !expanded;
+            console.log(expanded, index);
+//            console.log("onClicked: " + index);
 //            if (_group) {
 //                var sectionIndex = _group.indexOfSection(root)
 //                _group.currentIndex = (_group.currentIndex == sectionIndex ? -1 : sectionIndex)

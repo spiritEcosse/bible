@@ -3,32 +3,27 @@
 
 namespace modules {
 
-    ModelRegistry::ModelRegistry()
-    {
+    ModelRegistry::ModelRegistry() {
         connect(this, &ModelRegistry::transformSuccess, this, &ModelRegistry::updateObjectsFromJson);
         m_objects.push_back(baseRegistry());
     }
 
     ModelRegistry::~ModelRegistry() {}
 
-    std::unique_ptr<Registry> ModelRegistry::baseRegistry() const
-    {
-        return std::make_unique<Registry>(
-            "aHR0cDovL21waDQucnUvcmVnaXN0cnkuemlw",
-            "aHR0cDovL21waDQucnUvcmVnaXN0cnlfaW5mby5qc29u"
-        );
+    std::unique_ptr<Registry> ModelRegistry::baseRegistry() const {
+        return std::make_unique<Registry>("aHR0cDovL21waDQucnUvcmVnaXN0cnkuemlw",
+                                          "aHR0cDovL21waDQucnUvcmVnaXN0cnlfaW5mby5qc29u");
     }
 
-    QUrl ModelRegistry::data(int index, int role) const
-    {
+    QUrl ModelRegistry::data(int index, int role) const {
         QUrl url;
-        if (index > static_cast<int>(m_objects.size())) {
+        if(index > static_cast<int>(m_objects.size())) {
             return url;
         }
 
         const auto &registry = m_objects.at(index);
 
-        switch (role) {
+        switch(role) {
             case RegistryRoles::UrlRole:
                 url = registry->urlToQUrl();
                 break;
@@ -42,26 +37,23 @@ namespace modules {
 
     // db queries
 
-    bool ModelRegistry::setRegistries()
-    {
-        m_objects = m_db->storage->get_all_pointer<Registry>(
-                    sqlite_orm::order_by(&Registry::m_priority));
+    bool ModelRegistry::setRegistries() {
+        m_objects = m_db->storage->get_all_pointer<Registry>(sqlite_orm::order_by(&Registry::m_priority));
         return !m_objects.empty();
     }
 
     // overridden from qt
 
-    QVariant ModelRegistry::data(const QModelIndex& index, int role) const
-    {
-        QVariant data {};
+    QVariant ModelRegistry::data(const QModelIndex &index, int role) const {
+        QVariant data{};
 
-        if (!index.isValid() || index.row() > rowCount(index)) {
+        if(!index.isValid() || index.row() > rowCount(index)) {
             return data;
         }
 
         const auto &registry = m_objects.at(index.row());
 
-        switch (role) {
+        switch(role) {
             case RegistryRoles::UrlRole:
                 data = std::move(registry->m_url);
                 break;
@@ -76,13 +68,12 @@ namespace modules {
         return data;
     }
 
-    QHash<int, QByteArray> ModelRegistry::roleNames() const
-    {
+    QHash<int, QByteArray> ModelRegistry::roleNames() const {
         return {
-            { UrlRole, "url" },
-            { PriorityRole, "priority" },
-            { InfoUrlRole, "info_url" },
+            {UrlRole, "url"},
+            {PriorityRole, "priority"},
+            {InfoUrlRole, "info_url"},
         };
     }
 
-}
+}  // namespace modules

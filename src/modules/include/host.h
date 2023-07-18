@@ -1,24 +1,19 @@
 #ifndef HOST_H
 #define HOST_H
 
-#include <QString>
 #include <QJsonValue>
+#include <QString>
 #include <QUrl>
 
 class QJsonObject;
 
 namespace modules {
 
-    class Host
-    {
-    public:
+    class Host {
+      public:
         Host();
-        Host(const QJsonObject& json);
-        Host(
-                const QString& alias,
-                const QByteArray& path,
-                int priority = 0,
-                int weight = 0);
+        Host(const QJsonObject &json);
+        Host(const QString &alias, const QByteArray &path, int priority = 0, int weight = 0);
         ~Host();
 
         QString m_alias;
@@ -29,13 +24,13 @@ namespace modules {
         QUrl pathToQUrl() const;
         QString pathToQString() const;
         QByteArray path() const;
-        bool operator==(const Host& other) const;
+        bool operator==(const Host &other) const;
 
-    #ifndef QT_NO_DEBUG_STREAM
-        friend QDebug operator<<(QDebug debug, const Host& host);
-    #endif
+#ifndef QT_NO_DEBUG_STREAM
+        friend QDebug operator<<(QDebug debug, const Host &host);
+#endif
     };
 
-}
+}  // namespace modules
 
-#endif // HOST_H
+#endif  // HOST_H

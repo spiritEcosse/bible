@@ -1,57 +1,58 @@
 #include "modelhost.h"
-#include <mutex>
 #include <QDebug>
+#include <mutex>
 
 namespace modules {
 
     using namespace sqlite_orm;
 
-    SingletonModelHost::SingletonModelHost()
-    {
+    SingletonModelHost::SingletonModelHost() {
         populateObjects();
         qDebug() << "SingletonModelHost";
     }
 
     void SingletonModelHost::populateObjects() {
         m_objects = m_db->storage->get_all_pointer<Host>(
-                    multi_order_by(
-                        order_by(&Host::m_weight).desc(),
-                        order_by(&Host::m_priority)
-                    ));
+            multi_order_by(order_by(&Host::m_weight).desc(), order_by(&Host::m_priority)));
         m_objects.insert(m_objects.begin(), ModelHost::baseHost());
     }
 
-    ModelHost::ModelHost()
-    {
+    ModelHost::ModelHost() {
         connect(this, &ModelHost::transformSuccess, this, &ModelHost::updateObjectsFromJson);
         m_objects.push_back(baseHost());
     }
 
     ModelHost::~ModelHost() {}
 
-    std::unique_ptr<Host> ModelHost::baseHost()
-    {
-        return std::make_unique<Host>(
-            "p4",
-            "aHR0cDovL21waDQucnUvbS8lcy56aXA="
-        );
+    std::unique_ptr<Host> ModelHost::baseHost() {
+        return std::make_unique<Host>("p4", "aHR0cDovL21waDQucnUvbS8lcy56aXA=");
     }
 
-    QString ModelHost::getUrl(int index) const
-    {
-        return index > 0 ? SingletonModelHost::getInstance().m_objects[index]->pathToQString() :
-                           m_objects[0]->pathToQString();
+    QString ModelHost::getUrl(int index) const {
+        return index > 0 ? SingletonModelHost::getInstance().m_objects[index]->pathToQString()
+                         : m_objects[0]->pathToQString();
     }
 
-    bool ModelHost::existsIndex(int index) const
-    {
+    bool ModelHost::existsIndex(int index) const {
         return index < static_cast<int>(SingletonModelHost::getInstance().m_objects.size());
     }
 
     // overridden from qt
 
-    QVariant ModelHost::data(const QModelIndex &index, int role) const {}
+    QVariant SingletonModelHost::data(const QModelIndex &index, int role) const {
+        return {};
+    }
 
-    QHash<int, QByteArray> ModelHost::roleNames() const {}
+    QHash<int, QByteArray> SingletonModelHost::roleNames() const {
+        return {};
+    }
 
-}
+    QVariant ModelHost::data(const QModelIndex &index, int role) const {
+        return {};
+    }
+
+    QHash<int, QByteArray> ModelHost::roleNames() const {
+        return {};
+    }
+
+}  // namespace modules

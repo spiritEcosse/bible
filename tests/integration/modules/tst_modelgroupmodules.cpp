@@ -1,75 +1,62 @@
-#include <JlCompress.h>
-#include "tst_modelmodule.h"
-#include "dereferenceiterator.h"
 #include "tst_modelgroupmodules.h"
+#include "dereferenceiterator.h"
+#include "tst_modelmodule.h"
+#include <JlCompress.h>
 
 Q_DECLARE_METATYPE(std::vector<modules::ModuleShared>)
 Q_DECLARE_METATYPE(std::vector<modules::GroupModulesShared>)
 
 namespace modules {
-
     namespace tests {
 
         tst_ModelGroupModules::tst_ModelGroupModules() {}
 
         tst_ModelGroupModules::~tst_ModelGroupModules() {}
 
-        void tst_ModelGroupModules::initTestCase()
-        {
+        void tst_ModelGroupModules::initTestCase() {
             ModelJsonTest<GroupModules, ModelGroupModules>::initTestCase();
         }
 
-        void tst_ModelGroupModules::cleanupTestCase()
-        {
+        void tst_ModelGroupModules::cleanupTestCase() {
             ModelJsonTest<GroupModules, ModelGroupModules>::cleanupTestCase();
         }
 
-        //helpers
+        // helpers
 
-        void tst_ModelGroupModules::setQSettings(int value, QString key)
-        {
+        void tst_ModelGroupModules::setQSettings(int value, QString key) {
             QSettings settings;
             settings.setValue(key, value);
         }
 
-        std::vector<GroupModulesShared> tst_ModelGroupModules::helperGetObjects() const
-        {
+        std::vector<GroupModulesShared> tst_ModelGroupModules::helperGetObjects() const {
             std::vector<GroupModulesShared> objects;
-            for ( size_t in = 0; in < vectorSize; in++) {
+            for(size_t in = 0; in < vectorSize; in++) {
                 objects.push_back(std::make_shared<GroupModules>("en", "Translations", "region", in + 1));
             }
             return objects;
         }
 
-        std::vector<GroupModulesUnique> tst_ModelGroupModules::helperGetObjectsUnique() const
-        {
+        std::vector<GroupModulesUnique> tst_ModelGroupModules::helperGetObjectsUnique() const {
             std::vector<GroupModulesUnique> objects;
-            for ( size_t in = 0; in < vectorSize; in++) {
-                objects.push_back(std::make_unique<GroupModules>(
-                                      "en",
-                                      "Translations",
-                                      "region",
-                                      in + 1));
+            for(size_t in = 0; in < vectorSize; in++) {
+                objects.push_back(std::make_unique<GroupModules>("en", "Translations", "region", in + 1));
             }
             return objects;
         }
 
-        void tst_ModelGroupModules::helperSaveStatic()
-        {
+        void tst_ModelGroupModules::helperSaveStatic() {
             tst_ModelGroupModules tst_modelGroup;
             tst_modelGroup.initDb();
             tst_modelGroup.helperSave();
         }
 
-//      tests
-        void tst_ModelGroupModules::updateCompleted()
-        {
+        //      tests
+        void tst_ModelGroupModules::updateCompleted() {
             ModelGroupModules model;
             QCOMPARE(model.updateCompleted(), false);
         }
 
-        void tst_ModelGroupModules::update()
-        {
+        void tst_ModelGroupModules::update() {
             ModelJsonTest<GroupModules, ModelGroupModules>::update();
         }
 
@@ -77,10 +64,42 @@ namespace modules {
             tst_ModelModule::helperSaveStaticAndSetExtraFieldsTrue();
             QTest::addColumn<std::vector<ModuleShared>>("modules");
             std::vector<ModuleShared> modules = {
-                std::make_shared<Module>("100EJ-p.plan", "", "", 1, 0, "", "", "", "", QDate(), false, false, false, false, false, 1),
-                std::make_shared<Module>("10CD-p.plan", "", "", 1, 0, "", "", "", "", QDate(), false, false, false, false, false, 2),
-                std::make_shared<Module>("2000.dictionary", "", "", 2, 0, "", "", "", "", QDate(), false, false, false, false, false, 3),
-                std::make_shared<Module>("name.0", "", "", 3, 0, "", "", "", "", QDate(), false, false, true, true, false, 4),
+                std::make_shared<Module>("100EJ-p.plan",
+                                         "",
+                                         "",
+                                         1,
+                                         0,
+                                         "",
+                                         "",
+                                         "",
+                                         "",
+                                         QDate(),
+                                         false,
+                                         false,
+                                         false,
+                                         false,
+                                         false,
+                                         1),
+                std::make_shared<
+                    Module>("10CD-p.plan", "", "", 1, 0, "", "", "", "", QDate(), false, false, false, false, false, 2),
+                std::make_shared<Module>("2000.dictionary",
+                                         "",
+                                         "",
+                                         2,
+                                         0,
+                                         "",
+                                         "",
+                                         "",
+                                         "",
+                                         QDate(),
+                                         false,
+                                         false,
+                                         false,
+                                         false,
+                                         false,
+                                         3),
+                std::make_shared<
+                    Module>("name.0", "", "", 3, 0, "", "", "", "", QDate(), false, false, true, true, false, 4),
             };
             QTest::newRow("check modules") << modules;
 
@@ -88,37 +107,30 @@ namespace modules {
             settings.setValue("registryVersion", 0);
 
             fileRegistry.open(QFile::WriteOnly);
-            fileRegistry.write(
-                        QJsonDocument {
-                            QJsonObject {
-                                {
-                                    "downloads",
-                                    QJsonArray {
-                                        QJsonObject {
-                                            {"fil", "100EJ-p.plan"},
-                                        },
-                                        QJsonObject {
-                                            {"fil", "10CD-p.plan"},
-                                        },
-                                        QJsonObject {
-                                            {"fil", "2000.dictionary"},
-                                            {"lng", "en"},
-                                        },
-                                        QJsonObject {
-                                            {"fil", "name.0"},
-                                        }
-                                    },
-                                },
-                                {"version", 1}
-                            }
-                        }.toJson());
+            fileRegistry.write(QJsonDocument{QJsonObject{{
+                                                             "downloads",
+                                                             QJsonArray{QJsonObject{
+                                                                            {"fil", "100EJ-p.plan"},
+                                                                        },
+                                                                        QJsonObject{
+                                                                            {"fil", "10CD-p.plan"},
+                                                                        },
+                                                                        QJsonObject{
+                                                                            {"fil", "2000.dictionary"},
+                                                                            {"lng", "en"},
+                                                                        },
+                                                                        QJsonObject{
+                                                                            {"fil", "name.0"},
+                                                                        }},
+                                                         },
+                                                         {"version", 1}}}
+                                   .toJson());
             fileRegistry.close();
 
             QVERIFY(JlCompress::compressFile(fileRegistryArchive.fileName(), fileRegistry.fileName()));
         }
 
-        void tst_ModelGroupModules::downloadRegistry()
-        {
+        void tst_ModelGroupModules::downloadRegistry() {
             qRegisterMetaType<std::vector<ModuleShared>>("std::vector<ModuleShared>");
             QFETCH(std::vector<ModuleShared>, modules);
 
@@ -128,12 +140,9 @@ namespace modules {
             QSignalSpy spyModulesUpdateCompleted(modelGroupModules.m_modelModule.get(), &ModelModule::updateDone);
 
             modelGroupModules.m_managerRegistry->m_modelRegistry->m_objects.clear();
-            modelGroupModules.m_managerRegistry->m_modelRegistry->m_objects.push_back(
-                        std::make_unique<Registry>(
-                            QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
-                            QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()
-                        )
-            );
+            modelGroupModules.m_managerRegistry->m_modelRegistry->m_objects.push_back(std::make_unique<Registry>(
+                QString(strUrl + QFileInfo(fileRegistryArchive).absoluteFilePath()).toUtf8().toBase64(),
+                QString(strUrl + QFileInfo(fileRegistryInfo).absoluteFilePath()).toUtf8().toBase64()));
 
             QCOMPARE(modelGroupModules.m_modelModule->m_objects.size(), static_cast<size_t>(0));
             QCOMPARE(modelGroupModules.m_objects.size(), static_cast<size_t>(0));
@@ -154,34 +163,29 @@ namespace modules {
             tst_ModelModule::helperCheckAllData(modules);
         }
 
-        void tst_ModelGroupModules::updateObjects_data()
-        {
+        void tst_ModelGroupModules::updateObjects_data() {
             cleanTable();
             helperSave();
         }
 
-        void tst_ModelGroupModules::updateObjects()
-        {
+        void tst_ModelGroupModules::updateObjects() {
             const auto &objects = helperGetObjectsUnique();
 
             ModelGroupModules modelGroupModules;
             modelGroupModules.updateObjects();
             QCOMPARE(modelGroupModules.m_objects.size(), objects.size());
             QCOMPARE(std::equal(dereference_iterator(modelGroupModules.m_objects.begin()),
-                       dereference_iterator(modelGroupModules.m_objects.end()),
-                       dereference_iterator(objects.begin())
-                       ), true);
+                                dereference_iterator(modelGroupModules.m_objects.end()),
+                                dereference_iterator(objects.begin())),
+                     true);
             QCOMPARE(modelGroupModules.objectsCount, 0);
         }
 
-        void tst_ModelGroupModules::search_data()
-        {
+        void tst_ModelGroupModules::search_data() {
             cleanTable();
             helperSave();
-            std::vector<GroupModulesShared>objects;
-            objects.push_back(
-                std::make_unique<GroupModules>("ru", "other Translations", "")
-            );
+            std::vector<GroupModulesShared> objects;
+            objects.push_back(std::make_unique<GroupModules>("ru", "other Translations", ""));
             helperSave(std::move(objects));
 
             QTest::addColumn<QString>("needle");
@@ -195,8 +199,7 @@ namespace modules {
             QTest::newRow("started region") << "reg" << helperGetObjects();
         }
 
-        void tst_ModelGroupModules::search()
-        {
+        void tst_ModelGroupModules::search() {
             qRegisterMetaType<std::vector<GroupModulesShared>>("std::vector<GroupModulesShared>");
 
             QFETCH(QString, needle);
@@ -206,24 +209,21 @@ namespace modules {
             modelGroupModules.search(needle);
             QCOMPARE(modelGroupModules.m_objects.size(), objects.size());
             QCOMPARE(std::equal(dereference_iterator(modelGroupModules.m_objects.begin()),
-                       dereference_iterator(modelGroupModules.m_objects.end()),
-                       dereference_iterator(objects.begin())
-                       ), true);
+                                dereference_iterator(modelGroupModules.m_objects.end()),
+                                dereference_iterator(objects.begin())),
+                     true);
             QCOMPARE(modelGroupModules.objectsCount, 0);
         }
 
-        void tst_ModelGroupModules::getAll_data()
-        {
+        void tst_ModelGroupModules::getAll_data() {
             updateObjects_data();
         }
 
-        void tst_ModelGroupModules::getAll()
-        {
+        void tst_ModelGroupModules::getAll() {
             updateObjects();
         }
 
-        void tst_ModelGroupModules::setFieldSearch_data()
-        {
+        void tst_ModelGroupModules::setFieldSearch_data() {
             QTest::addColumn<QString>("needle");
             QTest::addColumn<int>("entitySearch");
             QTest::addColumn<QString>("m_needle");
@@ -234,8 +234,7 @@ namespace modules {
             QTest::newRow("needle: M eng") << "M eng" << 1 << "eng";
         }
 
-        void tst_ModelGroupModules::setFieldSearch()
-        {
+        void tst_ModelGroupModules::setFieldSearch() {
             QFETCH(QString, needle);
             QFETCH(int, entitySearch);
             QFETCH(QString, m_needle);
@@ -247,6 +246,6 @@ namespace modules {
             QCOMPARE(modelGroupModules.m_needle, m_needle);
         }
     }
-}
+}  // namespace modules
 
 #include "tst_modelgroupmodules.moc"

@@ -5,18 +5,18 @@
 
 namespace core {
 
-    class LocalLanguage : public QLocale
-    {
-    public:
+    class LocalLanguage : public QLocale {
+      public:
         LocalLanguage();
-        LocalLanguage(const QString& language);
+        LocalLanguage(const QString &language);
         QString code() const;
         QString languageInString() const;
         QString nativeLanguageName() const;
-    private:
+
+      private:
         QString m_language;
     };
 
-}
+}  // namespace core
 
-#endif // LOCALLANGUAGE_H
+#endif  // LOCALLANGUAGE_H

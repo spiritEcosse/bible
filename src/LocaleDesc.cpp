@@ -2,11 +2,11 @@
 
 static const char *tableName = "locale_desc";
 
-//static void createTable()
+// static void createTable()
 //{
-//    if (!QSqlDatabase::database().tables().contains(tableName)) {
-//        QSqlQuery query;
-//        QString sql;
+//     if (!QSqlDatabase::database().tables().contains(tableName)) {
+//         QSqlQuery query;
+//         QString sql;
 
 //        sql = QString(
 //                    "CREATE TABLE IF NOT EXISTS '%1' ("
@@ -19,12 +19,13 @@ static const char *tableName = "locale_desc";
 //                    ).arg(tableName, 'modules');
 
 //        if (!query.exec(sql)) {
-//            qFatal("Failed to query database: %s", qPrintable(query.lastError().text()));
+//            qFatal("Failed to query database: %s",
+//            qPrintable(query.lastError().text()));
 //        }
 //    }
 //}
 
-//LocaleDesc::LocaleDesc()
+// LocaleDesc::LocaleDesc()
 //{
 
 //}

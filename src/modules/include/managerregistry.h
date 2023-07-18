@@ -1,8 +1,8 @@
 #ifndef MANAGERREGISTRY_H
 #define MANAGERREGISTRY_H
 
-#include <QObject>
 #include <QFile>
+#include <QObject>
 #include <memory>
 
 #include "downloadmanager.h"
@@ -13,29 +13,28 @@ class QJsonParseError;
 
 namespace modules {
 
-    namespace tests
-    {
-       class tst_ManagerRegistry;
-       class tst_ManagerGroup;
-       class tst_ModelGroupModules;
-    }
+    namespace tests {
+        class tst_ManagerRegistry;
+        class tst_ManagerGroup;
+        class tst_ModelGroupModules;
+    }  // namespace tests
 
-    class ManagerRegistry : public QObject
-    {
+    class ManagerRegistry : public QObject {
         Q_OBJECT
-        Q_PROPERTY(bool newVersionAvailable READ newVersionAvailable WRITE setNewVersionAvailable NOTIFY changeNewVersionAvailable)
+        Q_PROPERTY(bool newVersionAvailable READ newVersionAvailable WRITE setNewVersionAvailable NOTIFY
+                       changeNewVersionAvailable)
         Q_PROPERTY(bool checkVersionCompleted READ checkVersionCompleted NOTIFY changeCheckVersionCompleted)
-    public:
+      public:
         ManagerRegistry(QObject *parent = nullptr);
         virtual ~ManagerRegistry() {}
         Q_INVOKABLE virtual void checkNewVesion();
         void setNewVersionAvailable(bool newVersionAvailable);
 
-    public slots:
-        virtual void download() ;
+      public slots:
+        virtual void download();
         static void registerMe();
 
-    private:
+      private:
         friend class tests::tst_ManagerRegistry;
         friend class tests::tst_ManagerGroup;
         friend class tests::tst_ModelGroupModules;
@@ -48,15 +47,15 @@ namespace modules {
         int index = 0;
         QFile registryArchive;
         QFile fileRegistryInfo;
-        QFile fileRegistry { "download/registry.json" };
+        QFile fileRegistry{"download/registry.json"};
         bool m_newVersionAvailable = false;
         bool m_checkVersionCompleted = false;
 
         virtual bool hasNewRegistry(int version) const;
         virtual bool hasNewRegistry() const;
-        virtual int getVersion(const QJsonDocument& document) const;
+        virtual int getVersion(const QJsonDocument &document) const;
         virtual int getVersion() const;
-        virtual void getDocument(QFile& file);
+        virtual void getDocument(QFile &file);
         virtual void setRegistriesOnce();
         virtual void setVersion(bool available, int version);
         void downloadFile(int role);
@@ -65,28 +64,27 @@ namespace modules {
         void setNewVersionAvailable();
         bool checkVersionCompleted() const;
 
-    signals:
+      signals:
         void changeNewVersionAvailable();
         void changeCheckVersionCompleted();
         void newRegistryAvailable(bool available, int version);
-        void retrieveDataSuccess(const QJsonDocument& document);
+        void retrieveDataSuccess(const QJsonDocument &document);
         void removeRegistrySuccess();
         void removeInfoSuccess();
-        void getDocumentSuccess(const QJsonDocument& document);
-    private slots:
-        virtual void retrieveData(const QJsonDocument& document);
-        virtual void retrieveDataInfo(const QJsonDocument& document);
-        virtual void extractRegistry(const QString& fileName);
+        void getDocumentSuccess(const QJsonDocument &document);
+      private slots:
+        virtual void retrieveData(const QJsonDocument &document);
+        virtual void retrieveDataInfo(const QJsonDocument &document);
+        virtual void extractRegistry(const QString &fileName);
         virtual void removeRegistry();
         virtual void removeInfo();
-        virtual void retrieveVersion(const QString& fileName);
+        virtual void retrieveVersion(const QString &fileName);
         virtual void tryOtherUrl();
         virtual void tryOtherInfoUrl();
         virtual void setCheckVersionCompleted();
         virtual void setRegistryVersion();
-
     };
 
-}
+}  // namespace modules
 
-#endif // MANAGERREGISTRY_H
+#endif  // MANAGERREGISTRY_H

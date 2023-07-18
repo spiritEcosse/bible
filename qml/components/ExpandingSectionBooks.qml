@@ -14,19 +14,19 @@ ExpandingSectionPatch {
         ExpandingSectionGroupPatch {
             id: expandGroupBooks
             depth: 1
-            property int bookIndex: historyModel.bookIndex
-            onBookIndexChanged: {
-                if (load && expandingSection.expanded && parentGroup.currentIndex === expandingSection.depth) {
-                    currentIndex = historyModel.bookIndex;
+<!--            property int bookIndex: modelRecord[0].bookIndex-->
+<!--            onBookIndexChanged: {-->
+<!--                if (load && expandingSection.expanded && parentGroup.currentIndex === expandingSection.depth) {-->
+<!--                    currentIndex = historyModel.bookIndex;-->
 
-                    if (historyModel.chapterIndex != -1) {
-                        model.currentChapter = historyModel.chapterIndex
-                    } else if (parentGroup.scrollToBook) {
-//                      Need fix. It is not clear why the scroll works only through timerInterval.
-                        timerAutoScroll.restart()
-                    }
-                }
-            }
+<!--                    if (historyModel.chapterIndex != -1) {-->
+<!--                        model.currentChapter = historyModel.chapterIndex-->
+<!--                    } else if (parentGroup.scrollToBook) {-->
+<!--//                      Need fix. It is not clear why the scroll works only through timerInterval.-->
+<!--                        timerAutoScroll.restart()-->
+<!--                    }-->
+<!--                }-->
+<!--            }-->
             parentGroup: expandingSection._group
             onCurrentSectionChanged: {
                 if (expandingSection.expanded && currentSection) {
@@ -34,27 +34,27 @@ ExpandingSectionPatch {
                     timerOnCurrentSectionChangedBooks.restart()
                 }
             }
-            Component.onCompleted: {
-                if (expandingSection.expanded && parentGroup.currentIndex === expandingSection.depth) {
-                    currentIndex = historyModel.bookIndex;
+<!--            Component.onCompleted: {-->
+<!--                if (expandingSection.expanded && parentGroup.currentIndex === expandingSection.depth) {-->
+<!--                    currentIndex = historyModel.bookIndex;-->
 
-                    if (historyModel.chapterIndex != -1) {
-                        model.currentChapter = historyModel.chapterIndex
-                    } else {
-                        _updateFlickableContentY(null, null);
-                    }
-                }
-                load = true;
-            }
+<!--                    if (historyModel.chapterIndex != -1) {-->
+<!--                        model.currentChapter = historyModel.chapterIndex-->
+<!--                    } else {-->
+<!--                        _updateFlickableContentY(null, null);-->
+<!--                    }-->
+<!--                }-->
+<!--                load = true;-->
+<!--            }-->
             Timer {
                 id: timerOnCurrentSectionChangedBooks
                 interval: timerInterval
                 repeat: false
                 onTriggered: {
                     if (expandGroupBooks.currentSection) {
-                        historyModel.testamentIndex = expandGroupBooks.parentGroup.currentIndex
-                        historyModel.bookIndex = expandGroupBooks.currentIndex
-                        historyModel.bookShortName = expandGroupBooks.currentSection.obj.short_name
+<!--                        historyModel.testamentIndex = expandGroupBooks.parentGroup.currentIndex-->
+<!--                        historyModel.bookIndex = expandGroupBooks.currentIndex-->
+<!--                        historyModel.bookShortName = expandGroupBooks.currentSection.obj.short_name-->
                     }
                 }
             }
@@ -84,25 +84,25 @@ ExpandingSectionPatch {
                             parentGroup: expandGroupBooks
                             depth: expandingSection.depth + 2
                             toTop: true
-                            property int chapterIndex: historyModel.chapterIndex
-                            onChapterIndexChanged: {
-                                if (load) {
-                                    auto();
-                                }
-                            }
+<!--                            property int chapterIndex: historyModel.chapterIndex-->
+<!--                            onChapterIndexChanged: {-->
+<!--                                if (load) {-->
+<!--                                    auto();-->
+<!--                                }-->
+<!--                            }-->
                             onCurrentSectionChanged: {
                                 if (expandingSectionBooks.expanded && currentSection) {
                                     expandingSection.model.currentChapter = currentIndex + 1
                                     timerOnCurrentSectionChangedChapter.restart();
                                 }
                             }
-                            function auto() {
-                                if (expandingSectionBooks.expanded &&
-                                        parentGroup.parentGroup.currentIndex === expandingSection.depth &&
-                                        parentGroup.currentIndex === historyModel.bookIndex) {
-                                    currentIndex = historyModel.chapterIndex >= 1 ? historyModel.chapterIndex - 1 : -1;
-                                }
-                            }
+<!--                            function auto() {-->
+<!--                                if (expandingSectionBooks.expanded &&-->
+<!--                                        parentGroup.parentGroup.currentIndex === expandingSection.depth &&-->
+<!--                                        parentGroup.currentIndex === historyModel.bookIndex) {-->
+<!--                                    currentIndex = historyModel.chapterIndex >= 1 ? historyModel.chapterIndex - 1 : -1;-->
+<!--                                }-->
+<!--                            }-->
                             Component.onCompleted: {
                                 auto();
                                 load = true;
@@ -113,7 +113,7 @@ ExpandingSectionPatch {
                                 repeat: false
                                 onTriggered: {
                                     expandGroupChapter._updateFlickableContentY(null, null);
-                                    historyModel.chapterIndex = expandGroupChapter.currentIndex >= 0 ? expandGroupChapter.currentIndex + 1 : -1
+<!--                                    historyModel.chapterIndex = expandGroupChapter.currentIndex >= 0 ? expandGroupChapter.currentIndex + 1 : -1-->
                                 }
                             }
 
@@ -140,15 +140,15 @@ ExpandingSectionPatch {
                                         onMovementEnded: {
                                             timerOnVerseIndexChanged.restart()
                                         }
-                                        property int verseIndex: historyModel.verseIndex
-                                        onVerseIndexChanged: {
-                                            if (expandSectionChapter.expanded) {
-                                                currentIndex = historyModel.verseIndex >= 1 ? historyModel.verseIndex - 1 : 0
-                                            }
-                                        }
-                                        currentIndex: historyModel.verseIndex
+<!--                                        property int verseIndex: historyModel.verseIndex-->
+<!--                                        onVerseIndexChanged: {-->
+<!--                                            if (expandSectionChapter.expanded) {-->
+<!--                                                currentIndex = historyModel.verseIndex >= 1 ? historyModel.verseIndex - 1 : 0-->
+<!--                                            }-->
+<!--                                        }-->
+<!--                                        currentIndex: historyModel.verseIndex-->
                                         Component.onCompleted: {
-                                            currentIndex = historyModel.verseIndex >= 1 ? historyModel.verseIndex - 1 : 0
+<!--                                            currentIndex = historyModel.verseIndex >= 1 ? historyModel.verseIndex - 1 : 0-->
                                         }
 
                                         Timer {
@@ -156,7 +156,7 @@ ExpandingSectionPatch {
                                             interval: timerInterval
                                             repeat: false
                                             onTriggered: {
-                                                historyModel.verseIndex = listVerse.currentIndex + 1
+<!--                                                historyModel.verseIndex = listVerse.currentIndex + 1-->
                                             }
                                         }
 
@@ -218,7 +218,7 @@ ExpandingSectionPatch {
                                                                         "chapter": expandingSection.model.currentChapter,
                                                                         "verse": index + 1,
                                                                         "marker": link,
-                                                                        "historyModel": historyModel
+                                                                        "historyModel": modelRecord
                                                                     })
                                                     }
                                                     textFormat: Text.StyledText
