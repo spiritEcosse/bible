@@ -77,16 +77,13 @@ SilicaFlickable {
                             clip: true
                             property bool expanded : modulesActive.expanded
                             property string search: searchField.text
-                            onSearchChanged: {
+                            function searchVersesByText() {
                                 if (expanded && search) {
                                     model.searchVersesByText(search);
                                 }
                             }
-                            onExpandedChanged: {
-                                if (expanded && search) {
-                                    model.searchVersesByText(search);
-                                }
-                            }
+                            onSearchChanged: searchVersesByText()
+                            onExpandedChanged: searchVersesByText()
                             visible: count
                             VerticalScrollDecorator {}
                             snapMode: ListView.SnapToItem
