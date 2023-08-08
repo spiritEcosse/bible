@@ -23,8 +23,7 @@ namespace modules {
 
     bool Book::operator==(const Book &other) const {
         return m_bookNumber == other.m_bookNumber && m_shortName == other.m_shortName &&
-               m_longName == other.m_longName && m_bookColor == other.m_bookColor && m_isPresent == other.m_isPresent &&
-               m_numberChapters == other.m_numberChapters;
+               m_longName == other.m_longName && m_bookColor == other.m_bookColor && m_isPresent == other.m_isPresent;
     }
 
 #ifndef QT_NO_DEBUG_STREAM

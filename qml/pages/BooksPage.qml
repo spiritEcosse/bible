@@ -263,7 +263,6 @@ SilicaFlickable {
                                                 width: parent.width
                                                 contentHeight: expandingSectionBook.height + Theme.paddingMedium
 
-
                                                 ExpandingSectionPatch {
                                                     _group: listBooks
                                                     id: expandingSectionBook

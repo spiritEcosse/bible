@@ -10,6 +10,7 @@
 namespace modules {
 
     class ModelChapter;
+    class ModelVerse;
 
     class Book {
       public:
@@ -28,6 +29,7 @@ namespace modules {
         bool m_isPresent{};
         int m_numberChapters{};
         std::shared_ptr<ModelChapter> m_chapters;
+        std::shared_ptr<ModelVerse> m_foundVerses;
 
         bool operator==(const Book &other) const;
 

@@ -44,14 +44,18 @@ namespace modules {
             auto &&objects = helperSaveUnique();
 
             ModelBook model;
-            qDebug() << model.m_db->count();
-            qDebug() << m_db->count();
 
             QCOMPARE(model.m_objects.size(), objects.size());
             QCOMPARE(std::equal(dereference_iterator(model.m_objects.begin()),
                                 dereference_iterator(model.m_objects.end()),
                                 dereference_iterator(objects.begin())),
                      true);
+            int pos = 0;
+            for (BookUnique &book: model.m_objects) {
+                QCOMPARE(*book, *objects[pos]);
+                QCOMPARE(book->m_numberChapters, objects[pos]->m_numberChapters);
+                pos++;
+            }
             QCOMPARE(model.objectsCount, 0);
         }
 
@@ -63,9 +67,35 @@ namespace modules {
                                         {ModelBook::BookColor, "book_color"},
                                         {ModelBook::IsPresent, "is_present"},
                                         {ModelBook::Chapters, "chapters"},
-                                        {ModelBook::NumberChapters, "number_chapters"}};
+                                        {ModelBook::NumberChapters, "number_chapters"},
+                                        {ModelBook::FoundVerses, "foundVerses"}};
 
             QCOMPARE(model.roleNames(), data);
+        }
+
+        void tst_ModelBook::testSearchVersesByText_data() {
+            QTest::addColumn<QString>("searchQueryInVerseText");
+            QTest::addColumn<int>("count");
+            QTest::newRow("empty searchQueryInVerseText") << "" << 0;
+            QTest::newRow("not empty searchQueryInVerseText") << "text.1" << 1;
+        }
+
+        void tst_ModelBook::testSearchVersesByText()
+        {
+            QFETCH(QString, searchQueryInVerseText);
+            QFETCH(int, count);
+
+            tst_ModelVerse::helperSaveStatic();
+            auto &&objects = helperSaveUnique();
+
+            ModelBook model("", true);
+            model.searchVersesByText(searchQueryInVerseText);
+            QCOMPARE(int(model.m_objects.size()), count);
+            QCOMPARE(std::equal(dereference_iterator(model.m_objects.begin()),
+                                dereference_iterator(model.m_objects.end()),
+                                dereference_iterator(objects.begin() + 1)),
+                     true);
+            QCOMPARE(model.objectsCount, 0);
         }
     }
 }

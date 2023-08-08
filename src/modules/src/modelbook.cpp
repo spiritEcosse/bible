@@ -4,13 +4,19 @@
 
 #include "modelbook.h"
 #include "modelchapter.h"
+#include "modelverse.h"
 #include <memory>
+#include <iostream>
+
+int MIN_LENGTH_SEARCH_QUERY = 2;
 
 namespace modules {
 
-    ModelBook::ModelBook(QString &&fileName, QObject *parent) :
+    ModelBook::ModelBook(QString &&fileName, bool lazy, QObject *parent) :
         ListModel<Book, db::TranslationStorage>(std::move(fileName), parent) {
-        updateObjects();
+        if (! lazy) {
+            updateObjects();
+        }
     }
 
     void ModelBook::updateObjects() {
@@ -37,6 +43,34 @@ namespace modules {
         endResetModel();
     }
 
+    void ModelBook::searchVersesByText(const QString& searchVerseText) {
+        if(*m_searchQueryInVerseText == searchVerseText || searchVerseText.length() < MIN_LENGTH_SEARCH_QUERY) {
+            return;
+        }
+
+        m_searchQueryInVerseText = std::make_shared<QString>(searchVerseText);
+
+        try {
+            // Reset the model
+            beginResetModel();
+            objectsCount = 0;
+            // Query the database to get all books with matching verses
+            m_objects = m_db->storage->get_all_pointer<Book>(
+                inner_join<Verse>(on(c(&Book::m_bookNumber) == &Verse::m_bookNumber)),
+                where(like(&Verse::m_text, *m_searchQueryInVerseText + "%")),
+                group_by(&Book::m_bookNumber),
+                order_by(&Book::m_bookNumber));
+            // End resetting the model
+            endResetModel();
+        } catch(const std::system_error &e) {
+            // Log the error and emit an error signal
+            qCritical() << "Error searching verses in ModelBook: " << e.what();
+            emit error("An error occurred.");
+        } catch(...) {
+            throw;
+        }
+    }
+
     // Override
     QHash<int, QByteArray> ModelBook::roleNames() const {
         return {
@@ -47,6 +81,7 @@ namespace modules {
             {IsPresent, "is_present"},
             {Chapters, "chapters"},
             {NumberChapters, "number_chapters"},
+            {FoundVerses, "foundVerses"},
         };
     }
 
@@ -85,6 +120,19 @@ namespace modules {
                 data = QVariant::fromValue(object->m_chapters.get());
 #else
                 data = qVariantFromValue(object->m_chapters.get());
+#endif
+                break;
+            case FoundVerses:
+                if(object->m_foundVerses == nullptr) {
+                    std::shared_ptr<QString> searchQueryInVerseText = m_searchQueryInVerseText;
+                    object->m_foundVerses = std::make_shared<ModelVerse>(searchQueryInVerseText,
+                                                                         object->m_bookNumber,
+                                                                         std::move(m_db->getFileName()));
+                }
+#ifdef Qt6_FOUND
+                data = QVariant::fromValue(object->m_foundVerses.get());
+#else
+                data = qVariantFromValue(object->m_foundVerses.get());
 #endif
                 break;
             default:

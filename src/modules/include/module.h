@@ -15,6 +15,7 @@ namespace modules {
     }
 
     class ModelBook;
+    class ModelVerse;
 
     class Module {
       public:
@@ -59,6 +60,7 @@ namespace modules {
         bool m_active = false;
         int m_id = 0;
         std::shared_ptr<ModelBook> m_books;
+        std::shared_ptr<ModelBook> m_foundBooks;
         [[nodiscard]] QString getFullPathDb() const;
 
         bool operator==(const Module &other) const;

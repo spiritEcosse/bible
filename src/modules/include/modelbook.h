@@ -25,16 +25,19 @@ namespace modules {
             BookColor = 3,
             IsPresent = 4,
             Chapters = 5,
-            NumberChapters = 6
+            NumberChapters = 6,
+            FoundVerses = 7
         };
 
-        explicit ModelBook(QString &&fileName = "", QObject *parent = nullptr);
+        explicit ModelBook(QString &&fileName = "", bool lazy = false, QObject *parent = nullptr);
         virtual QHash<int, QByteArray> roleNames() const override;
         virtual QVariant data(const QModelIndex &index, int role) const override;
+        Q_INVOKABLE virtual void searchVersesByText(const QString& searchVerseText);
 
       private:
         friend tests::tst_ModelBook;
 
+        std::shared_ptr<QString> m_searchQueryInVerseText = std::make_shared<QString>("");
         void updateObjects();
     };
 

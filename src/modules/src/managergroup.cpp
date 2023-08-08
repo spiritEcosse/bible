@@ -45,8 +45,7 @@ namespace modules {
         }
     }
 
-    void ManagerGroup::clearObjects()
-    {
+    void ManagerGroup::clearObjects() {
         m_objects.clear();
     }
 

@@ -25,6 +25,8 @@ namespace modules {
             void cleanupTestCase() override;
             void constructor();
             void roleNames();
+            void testSearchVersesByText_data();
+            void testSearchVersesByText();
         };
     }
 }

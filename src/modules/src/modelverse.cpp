@@ -10,6 +10,15 @@ namespace modules {
     ModelVerse::ModelVerse(QString &&fileName, QObject *parent) :
         ListModel<Verse, db::TranslationStorage>(std::move(fileName), parent) {}
 
+    ModelVerse::ModelVerse(std::shared_ptr<QString> searchText,
+                           int bookNumber,
+                           QString &&fileName,
+                           QObject *parent) :
+        ListModel<Verse, db::TranslationStorage>(std::move(fileName), parent),
+        m_searchText(std::move(searchText)), m_bookNumber(bookNumber) {
+        searchVersesByText();
+    }
+
     ModelVerse::ModelVerse(int bookNumber, int chapterNumber, QString &&fileName, QObject *parent) :
         ListModel<Verse, db::TranslationStorage>(std::move(fileName), parent), m_bookNumber(bookNumber),
         m_chapterNumber(chapterNumber) {
@@ -23,6 +32,27 @@ namespace modules {
             where(c(&Verse::m_bookNumber) == m_bookNumber and c(&Verse::m_chapter) == m_chapterNumber),
             order_by(&Verse::m_verse));
         endResetModel();
+    }
+
+    void ModelVerse::searchVersesByText() {
+        try {
+            // Reset the model before searching
+            beginResetModel();
+            // Reset the count of objects
+            objectsCount = 0;
+            // Get all Verse objects from storage that match the specified conditions
+            m_objects = m_db->storage->get_all_pointer<Verse>(
+                where(c(&Verse::m_bookNumber) == m_bookNumber and like(&Verse::m_text, *m_searchText + "%")),
+                order_by(&Verse::m_verse));
+            // Notify the model that the reset is complete
+            endResetModel();
+        } catch(const std::system_error &e) {
+            // Log the error and emit an error signal
+            qCritical() << "Error searching verses in ModelVerse: " << e.what();
+            emit error("An error occurred while searching verses.");
+        } catch(...) {
+            throw;
+        }
     }
 
     // Override

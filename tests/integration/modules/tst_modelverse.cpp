@@ -3,6 +3,7 @@
 //
 
 #include "tst_modelverse.h"
+#include "tst_modelbook.h"
 
 #include "dereferenceiterator.h"
 
@@ -34,6 +35,7 @@ namespace modules {
         // tests
 
         void tst_ModelVerse::updateObjects() {
+            cleanTable();
             auto &&objects = helperSaveUnique();
 
             ModelVerse model(1, 1);
@@ -56,6 +58,21 @@ namespace modules {
             };
 
             QCOMPARE(model.roleNames(), data);
+        }
+
+        void tst_ModelVerse::searchVersesByText()
+        {
+            cleanTable();
+            tst_ModelBook::helperSaveStatic();
+            auto &&objects = helperSaveUnique();
+
+            ModelVerse model(std::make_shared<QString>("text.1"), 1);
+            QCOMPARE(model.m_objects.size(), static_cast<size_t>(1));
+            QCOMPARE(std::equal(dereference_iterator(model.m_objects.begin()),
+                                dereference_iterator(model.m_objects.end()),
+                                dereference_iterator(objects.begin() + 1)),
+                     true);
+            QCOMPARE(model.objectsCount, 0);
         }
     }
 }  // namespace modules

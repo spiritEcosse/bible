@@ -14,7 +14,7 @@ namespace modules {
         Q_PROPERTY(int bookIndex READ bookIndex WRITE setBookIndex NOTIFY changeBookIndex)
         Q_PROPERTY(int chapterIndex READ chapterIndex WRITE setChapterIndex NOTIFY changeChapterIndex)
         Q_PROPERTY(int verseIndex READ verseIndex WRITE setVerseIndex NOTIFY changeVerseIndex)
-    public:
+      public:
         enum RecordRoles { Timestamp = 0, BookShortName = 1, BookIndex = 2, ChapterIndex = 3, VerseIndex = 4 };
 
         explicit ModelRecord();
@@ -36,12 +36,12 @@ namespace modules {
         void setBookIndex(int bookIndex);
         void setChapterIndex(int chapterIndex);
         void setVerseIndex(int verseIndex);
-    signals:
+      signals:
         void changeBookIndex();
         void changeChapterIndex();
         void changeVerseIndex();
 
-    private:
+      private:
         void updateObjects();
     };
 }

@@ -116,6 +116,7 @@ namespace modules {
             Id = 9,
             Downloading = 10,
             Book = 11,
+            FoundBooks = 12,
         };
 
         ModelModule(QObject *parent = nullptr);

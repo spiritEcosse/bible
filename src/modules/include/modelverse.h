@@ -15,6 +15,10 @@ namespace modules {
       public:
         enum VerseNamesRoles { BookNumber = 0, Chapter = 1, NumberVerse = 2, Text = 3, Comments = 4 };
 
+        explicit ModelVerse(std::shared_ptr<QString> searchText,
+                            int bookNumber,
+                            QString &&fileName = "",
+                            QObject *parent = nullptr);
         explicit ModelVerse(QString &&fileName = "", QObject *parent = nullptr);
         explicit ModelVerse(int bookNumber, int chapterNumber, QString &&fileName = "", QObject *parent = nullptr);
         virtual QHash<int, QByteArray> roleNames() const override;
@@ -24,6 +28,9 @@ namespace modules {
         int m_chapterNumber{};
         int m_bookNumber{};
         void updateObjects();
+        void searchVersesByText();
+
+        std::shared_ptr<QString> m_searchText;
     };
 
 }  // namespace modules

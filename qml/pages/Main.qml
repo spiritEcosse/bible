@@ -25,6 +25,17 @@ Pages {
     property bool flagUpdateObjectsActive: false
     property int maxFetchMoreCount: 10
 
+    function foundObjectInArray(obj, array) {
+        if(array.length > 0) {
+            for(var i = 0; i < array.length; i += 1) {
+                if(array[i] === obj) {
+                    return 1;
+                }
+            }
+        }
+        return 1;
+    }
+
     ManagerRegistry {
         id: managerRegistry
     }
@@ -94,7 +105,7 @@ Pages {
             height: page.height
             model: visualModel
             onCurrentIndexChanged: {
-                if (slideshow.currentIndex === 1 && !initPageModules) {
+                if (foundObjectInArray(slideshow.currentIndex, [1, 2]) && !initPageModules) {
                     modelModule.init();
                     groupModules.init();
                     initPageModules = true;

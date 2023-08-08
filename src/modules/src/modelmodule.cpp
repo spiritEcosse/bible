@@ -5,6 +5,7 @@
 #include <QJsonDocument>
 #include <QtQuick>
 #include <memory>
+#include "modelverse.h"
 
 namespace modules {
 
@@ -339,6 +340,16 @@ namespace modules {
                 data = qVariantFromValue(modules->m_books.get());
 #endif
                 break;
+            case FoundBooks:
+                if(modules->m_foundBooks == nullptr) {
+                    modules->m_foundBooks = std::make_shared<ModelBook>(modules->getFullPathDb(), true);
+                }
+#ifdef Qt6_FOUND
+                data = QVariant::fromValue(modules->m_foundBooks.get());
+#else
+                data = qVariantFromValue(modules->m_foundBooks.get());
+#endif
+                break;
             default:
                 data = QVariant();
         }
@@ -360,6 +371,7 @@ namespace modules {
             {Id, "id"},
             {Downloading, "downloading"},
             {Book, "books"},
+            {FoundBooks, "foundBooks"},
         };
     }
 
