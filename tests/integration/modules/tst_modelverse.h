@@ -25,6 +25,7 @@ namespace modules {
             void cleanupTestCase() override;
             void updateObjects();
             void roleNames();
+            void searchVersesByText();
         };
     }
 }  // namespace modules

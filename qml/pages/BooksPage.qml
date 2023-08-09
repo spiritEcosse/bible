@@ -9,15 +9,6 @@ SilicaFlickable {
     height: parent.height
     clip: true
 
-    ModelModule {
-        id: modelModulesActive
-
-        Component.onCompleted: {
-            modelModulesActive.updateObjectsActive();
-            flagUpdateObjectsActive = true;
-        }
-    }
-
     Drawer {
         id: drawer
         width: parent.width
@@ -271,7 +262,6 @@ SilicaFlickable {
                                                 id: columnBook
                                                 width: parent.width
                                                 contentHeight: expandingSectionBook.height + Theme.paddingMedium
-
 
                                                 ExpandingSectionPatch {
                                                     _group: listBooks

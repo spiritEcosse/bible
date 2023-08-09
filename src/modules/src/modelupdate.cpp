@@ -29,7 +29,17 @@ namespace modules {
     }
 
     template<class T, typename S>
+    int ListModel<T, S>::rowCount() const {
+        return objectsCount;
+    }
+
+    template<class T, typename S>
     bool ListModel<T, S>::canFetchMore([[maybe_unused]] const QModelIndex &parent) const {
+        return (objectsCount < static_cast<int>(m_objects.size()));
+    }
+
+    template<class T, typename S>
+    bool ListModel<T, S>::canFetchMore() const {
         return (objectsCount < static_cast<int>(m_objects.size()));
     }
 

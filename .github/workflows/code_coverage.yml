@@ -15,6 +15,7 @@ jobs:
         arch: [aarch64, armv7hl]
     env: 
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
 
     steps:
     - run: echo ARCH ${{ matrix.arch }}

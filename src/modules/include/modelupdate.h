@@ -49,10 +49,12 @@ namespace modules {
         explicit ListModel(QString &&fileName = "", QObject *parent = nullptr);
         std::vector<std::unique_ptr<T>> m_objects;
         virtual int rowCount(const QModelIndex &parent) const override;
+        virtual int rowCount() const;
         int objectsCount = 0;
 
       protected:
         Q_INVOKABLE bool canFetchMore([[maybe_unused]] const QModelIndex &parent) const override;
+        Q_INVOKABLE bool canFetchMore() const;
         Q_INVOKABLE void fetchMore([[maybe_unused]] const QModelIndex &parent) override;
     };
 

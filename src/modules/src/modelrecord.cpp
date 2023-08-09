@@ -36,8 +36,8 @@ namespace modules {
         if(!m_objects.empty()) {
             const auto &object = m_objects[0];
 
-            if ( bookIndex == object->m_bookIndex && chapterIndex == object->m_chapterIndex &&
-               verseIndex == object->m_verseIndex ) {
+            if(bookIndex == object->m_bookIndex && chapterIndex == object->m_chapterIndex &&
+               verseIndex == object->m_verseIndex) {
                 return;
             }
         }
@@ -46,24 +46,20 @@ namespace modules {
         updateObjects();
     }
 
-    int ModelRecord::bookIndex() const
-    {
+    int ModelRecord::bookIndex() const {
         return m_bookIndex;
     }
 
-    int ModelRecord::chapterIndex() const
-    {
+    int ModelRecord::chapterIndex() const {
         return m_chapterIndex;
     }
 
-    int ModelRecord::verseIndex() const
-    {
+    int ModelRecord::verseIndex() const {
         return m_verseIndex;
     }
 
-    void ModelRecord::setBookIndex(int bookIndex)
-    {
-        if (bookIndex == m_bookIndex) {
+    void ModelRecord::setBookIndex(int bookIndex) {
+        if(bookIndex == m_bookIndex) {
             return;
         }
 
@@ -75,10 +71,8 @@ namespace modules {
         emit changeVerseIndex();
     }
 
-    void ModelRecord::setChapterIndex(int chapterIndex)
-    {
-        if (chapterIndex == m_chapterIndex)
-        {
+    void ModelRecord::setChapterIndex(int chapterIndex) {
+        if(chapterIndex == m_chapterIndex) {
             return;
         }
 
@@ -88,10 +82,8 @@ namespace modules {
         emit changeVerseIndex();
     }
 
-    void ModelRecord::setVerseIndex(int verseIndex)
-    {
-        if (verseIndex == m_verseIndex)
-        {
+    void ModelRecord::setVerseIndex(int verseIndex) {
+        if(verseIndex == m_verseIndex) {
             return;
         }
 
