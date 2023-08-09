@@ -76,13 +76,16 @@ namespace modules {
         void tst_ModelBook::testSearchVersesByText_data() {
             QTest::addColumn<QString>("searchQueryInVerseText");
             QTest::addColumn<int>("count");
-            QTest::newRow("empty searchQueryInVerseText") << "" << 0;
-            QTest::newRow("not empty searchQueryInVerseText") << "text.1" << 1;
+            QTest::addColumn<int>("startPosition");
+            QTest::newRow("empty searchQueryInVerseText") << "" << 0 << 0;
+            QTest::newRow("not empty searchQueryInVerseText") << "text.1" << 1 << 1;
+            QTest::newRow("several results") << "text" << static_cast<int>(vectorSize) << 0;
         }
 
         void tst_ModelBook::testSearchVersesByText() {
             QFETCH(QString, searchQueryInVerseText);
             QFETCH(int, count);
+            QFETCH(int, startPosition);
 
             tst_ModelVerse::helperSaveStatic();
             auto &&objects = helperSaveUnique();
@@ -92,7 +95,7 @@ namespace modules {
             QCOMPARE(int(model.m_objects.size()), count);
             QCOMPARE(std::equal(dereference_iterator(model.m_objects.begin()),
                                 dereference_iterator(model.m_objects.end()),
-                                dereference_iterator(objects.begin() + 1)),
+                                dereference_iterator(objects.begin() + startPosition)),
                      true);
             QCOMPARE(model.objectsCount, 0);
         }

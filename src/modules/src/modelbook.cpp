@@ -57,7 +57,7 @@ namespace modules {
             // Query the database to get all books with matching verses
             m_objects = m_db->storage->get_all_pointer<Book>(
                 inner_join<Verse>(on(c(&Book::m_bookNumber) == &Verse::m_bookNumber)),
-                where(like(&Verse::m_text, *m_searchQueryInVerseText + "%")),
+                where(like(&Verse::m_text, "%" + *m_searchQueryInVerseText + "%")),
                 group_by(&Book::m_bookNumber),
                 order_by(&Book::m_bookNumber));
             // End resetting the model
