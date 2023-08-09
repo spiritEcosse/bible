@@ -51,7 +51,7 @@ namespace modules {
                                 dereference_iterator(objects.begin())),
                      true);
             int pos = 0;
-            for (BookUnique &book: model.m_objects) {
+            for(BookUnique &book: model.m_objects) {
                 QCOMPARE(*book, *objects[pos]);
                 QCOMPARE(book->m_numberChapters, objects[pos]->m_numberChapters);
                 pos++;
@@ -80,8 +80,7 @@ namespace modules {
             QTest::newRow("not empty searchQueryInVerseText") << "text.1" << 1;
         }
 
-        void tst_ModelBook::testSearchVersesByText()
-        {
+        void tst_ModelBook::testSearchVersesByText() {
             QFETCH(QString, searchQueryInVerseText);
             QFETCH(int, count);
 

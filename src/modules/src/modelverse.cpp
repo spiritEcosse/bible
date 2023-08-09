@@ -10,12 +10,9 @@ namespace modules {
     ModelVerse::ModelVerse(QString &&fileName, QObject *parent) :
         ListModel<Verse, db::TranslationStorage>(std::move(fileName), parent) {}
 
-    ModelVerse::ModelVerse(std::shared_ptr<QString> searchText,
-                           int bookNumber,
-                           QString &&fileName,
-                           QObject *parent) :
-        ListModel<Verse, db::TranslationStorage>(std::move(fileName), parent),
-        m_searchText(std::move(searchText)), m_bookNumber(bookNumber) {
+    ModelVerse::ModelVerse(std::shared_ptr<QString> searchText, int bookNumber, QString &&fileName, QObject *parent) :
+        ListModel<Verse, db::TranslationStorage>(std::move(fileName), parent), m_searchText(std::move(searchText)),
+        m_bookNumber(bookNumber) {
         searchVersesByText();
     }
 

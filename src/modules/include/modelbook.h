@@ -32,7 +32,7 @@ namespace modules {
         explicit ModelBook(QString &&fileName = "", bool lazy = false, QObject *parent = nullptr);
         virtual QHash<int, QByteArray> roleNames() const override;
         virtual QVariant data(const QModelIndex &index, int role) const override;
-        Q_INVOKABLE virtual void searchVersesByText(const QString& searchVerseText);
+        Q_INVOKABLE virtual void searchVersesByText(const QString &searchVerseText);
 
       private:
         friend tests::tst_ModelBook;

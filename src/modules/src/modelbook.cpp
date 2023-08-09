@@ -14,7 +14,7 @@ namespace modules {
 
     ModelBook::ModelBook(QString &&fileName, bool lazy, QObject *parent) :
         ListModel<Book, db::TranslationStorage>(std::move(fileName), parent) {
-        if (! lazy) {
+        if(!lazy) {
             updateObjects();
         }
     }
@@ -43,7 +43,7 @@ namespace modules {
         endResetModel();
     }
 
-    void ModelBook::searchVersesByText(const QString& searchVerseText) {
+    void ModelBook::searchVersesByText(const QString &searchVerseText) {
         if(*m_searchQueryInVerseText == searchVerseText || searchVerseText.length() < MIN_LENGTH_SEARCH_QUERY) {
             return;
         }

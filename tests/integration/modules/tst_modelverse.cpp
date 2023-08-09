@@ -60,8 +60,7 @@ namespace modules {
             QCOMPARE(model.roleNames(), data);
         }
 
-        void tst_ModelVerse::searchVersesByText()
-        {
+        void tst_ModelVerse::searchVersesByText() {
             cleanTable();
             tst_ModelBook::helperSaveStatic();
             auto &&objects = helperSaveUnique();
