@@ -40,7 +40,7 @@ namespace modules {
             // Get all Verse objects from storage that match the specified conditions
             m_objects = m_db->storage->get_all_pointer<Verse>(
                 where(c(&Verse::m_bookNumber) == m_bookNumber and like(&Verse::m_text, "%" + *m_searchText + "%")),
-                order_by(&Verse::m_verse));
+                multi_order_by(order_by(&Verse::m_chapter), order_by(&Verse::m_verse)));
             // Notify the model that the reset is complete
             endResetModel();
         } catch(const std::system_error &e) {
