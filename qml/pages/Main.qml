@@ -25,6 +25,18 @@ Pages {
     property bool flagUpdateObjectsActive: false
     property int maxFetchMoreCount: 10
 
+    function removeAllTags(text) {
+        var result = removeStrongNumber(text);
+        result = result.replace(/<i>/g, "");
+        result = result.replace(/<\/i>/g, "");
+        result = result.replace(/<t>/g, "");
+        result = result.replace(/<\/t>/g, "");
+        result = result.replace(/<pb\/>/g, "");
+        return result;
+    }
+    function removeStrongNumber(verse_text_copy) {
+        return verse_text_copy.replace(/(<S>.*?<\/S>)/g, "");
+    }
     function foundObjectInArray(obj, array) {
         if(array.length > 0) {
             for(var i = 0; i < array.length; i += 1) {
