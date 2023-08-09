@@ -154,10 +154,13 @@ SilicaFlickable {
                                                     Text {
                                                         wrapMode: Text.WordWrap
                                                         color: Theme.primaryColor
-                                                        text: Theme.highlightText(
-                                                                  content_text.substr(0, content_text.length),
+                                                        text: {
+                                                            var result = removeAllTags(content_text);
+                                                            return Theme.highlightText(
+                                                                  result.substr(0, result.length),
                                                                   searchField.text,
                                                                   Theme.highlightColor);
+                                                        }
                                                         linkColor: verseNumber.color
                                                         font.pixelSize: Theme.fontSizeSmall
                                                         textFormat: Text.StyledText

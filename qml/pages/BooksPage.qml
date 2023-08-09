@@ -535,10 +535,6 @@ SilicaFlickable {
                                                                                     Text {
                                                                                         wrapMode: Text.WordWrap
                                                                                         color: listVerses.currentIndex === index ? verseNumber.color : Theme.primaryColor
-                                                                                        function removeStrongNumber(verse_text_copy) {
-                                                                                            var regex = /(<S>.*?<\/S>)/g;
-                                                                                            return verse_text_copy.replace(regex, "");
-                                                                                        }
 
                                                                                         text: {
                                                                                             var regex = /<f>\[\d+\]<\/f>/g;
