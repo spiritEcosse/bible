@@ -12,11 +12,16 @@ int MIN_LENGTH_SEARCH_QUERY = 2;
 
 namespace modules {
 
-    ModelBook::ModelBook(QString &&fileName, bool lazy, QObject *parent) :
+    ModelBook::ModelBook(QString &&fileName, QObject *parent) :
         ListModel<Book, db::TranslationStorage>(std::move(fileName), parent) {
-        if(!lazy) {
-            updateObjects();
-        }
+        updateObjects();
+    }
+
+    ModelBook::ModelBook([[maybe_unused]] bool search, QString &&fileName, QObject *parent) :
+        ListModel<Book, db::TranslationStorage>(std::move(fileName), parent) {
+        m_queryTimer = std::make_unique<QTimer>(this);
+        m_queryTimer->setSingleShot(true);
+        connect(m_queryTimer.get(), &QTimer::timeout, this, &ModelBook::doSearchVersesByText);
     }
 
     void ModelBook::updateObjects() {
@@ -43,21 +48,26 @@ namespace modules {
         endResetModel();
     }
 
-    void ModelBook::searchVersesByText(const QString &searchVerseText) {
-        if(*m_searchQueryInVerseText == searchVerseText || searchVerseText.length() < MIN_LENGTH_SEARCH_QUERY) {
+    void ModelBook::searchVersesByText(const QString &searchVerseText)
+    {
+        if (*m_searchQueryInVerseText == searchVerseText || searchVerseText.length() < MIN_LENGTH_SEARCH_QUERY) {
             return;
         }
-
         m_searchQueryInVerseText = std::make_shared<QString>(searchVerseText);
+        m_queryTimer->start(m_waitingTimeBeforeHitDb);
+    }
 
+    void ModelBook::doSearchVersesByText() {
         try {
             // Reset the model
             beginResetModel();
             objectsCount = 0;
             // Query the database to get all books with matching verses
             m_objects = m_db->storage->get_all_pointer<Book>(
-                inner_join<Verse>(on(c(&Book::m_bookNumber) == &Verse::m_bookNumber)),
-                where(like(&Verse::m_text, "%" + *m_searchQueryInVerseText + "%")),
+                where(exists(select(columns(&Verse::m_bookNumber),from<Verse>(),
+                                    where(like(&Verse::m_text, "%" + *m_searchQueryInVerseText + "%") and
+                                        is_equal(&Book::m_bookNumber, &Verse::m_bookNumber)),
+                                        limit(1)))),
                 group_by(&Book::m_bookNumber),
                 order_by(&Book::m_bookNumber));
             // End resetting the model

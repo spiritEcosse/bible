@@ -8,6 +8,7 @@
 #include "modelupdate.h"
 #include <QObject>
 #include <memory>
+#include <QTimer>
 
 namespace modules {
 
@@ -29,16 +30,21 @@ namespace modules {
             FoundVerses = 7
         };
 
-        explicit ModelBook(QString &&fileName = "", bool lazy = false, QObject *parent = nullptr);
+        explicit ModelBook(QString &&fileName = "", QObject *parent = nullptr);
+        explicit ModelBook(bool search, QString &&fileName = "", QObject *parent = nullptr);
         virtual QHash<int, QByteArray> roleNames() const override;
         virtual QVariant data(const QModelIndex &index, int role) const override;
         Q_INVOKABLE virtual void searchVersesByText(const QString &searchVerseText);
+        std::unique_ptr<QTimer> m_queryTimer = nullptr;
 
       private:
         friend tests::tst_ModelBook;
+        int m_waitingTimeBeforeHitDb = 500;
 
         std::shared_ptr<QString> m_searchQueryInVerseText = std::make_shared<QString>("");
         void updateObjects();
+    private slots:
+        virtual void doSearchVersesByText();
     };
 
 }  // namespace modules

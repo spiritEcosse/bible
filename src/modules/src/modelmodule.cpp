@@ -342,7 +342,7 @@ namespace modules {
                 break;
             case FoundBooks:
                 if(modules->m_foundBooks == nullptr) {
-                    modules->m_foundBooks = std::make_shared<ModelBook>(modules->getFullPathDb(), true);
+                    modules->m_foundBooks = std::make_shared<ModelBook>(true, modules->getFullPathDb());
                 }
 #ifdef Qt6_FOUND
                 data = QVariant::fromValue(modules->m_foundBooks.get());
