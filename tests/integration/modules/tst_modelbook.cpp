@@ -77,21 +77,31 @@ namespace modules {
             QTest::addColumn<QString>("searchQueryInVerseText");
             QTest::addColumn<int>("count");
             QTest::addColumn<int>("startPosition");
-            QTest::newRow("empty searchQueryInVerseText") << "" << 0 << 0;
-            QTest::newRow("not empty searchQueryInVerseText") << "text.1" << 1 << 1;
-            QTest::newRow("several results") << "text" << static_cast<int>(vectorSize) << 0;
+            QTest::addColumn<bool>("hitDb");
+            QTest::newRow("empty searchQueryInVerseText") << "" << 0 << 0 << false;
+            QTest::newRow("not empty searchQueryInVerseText") << "text.1" << 1 << 1 << true;
+            QTest::newRow("several results") << "text" << static_cast<int>(vectorSize) << 0 << true;
         }
 
         void tst_ModelBook::testSearchVersesByText() {
             QFETCH(QString, searchQueryInVerseText);
             QFETCH(int, count);
             QFETCH(int, startPosition);
+            QFETCH(bool, hitDb);
 
             tst_ModelVerse::helperSaveStatic();
             auto &&objects = helperSaveUnique();
 
             ModelBook model("", true);
+            QSignalSpy spy(model.m_queryTimer.get(), &QTimer::timeout);
+            model.m_waitingTimeBeforeHitDb = 0;
+
             model.searchVersesByText(searchQueryInVerseText);
+            if (hitDb) {
+                QVERIFY(spy.wait());
+                QCOMPARE(spy.count(), 1);
+            }
+
             QCOMPARE(int(model.m_objects.size()), count);
             QCOMPARE(std::equal(dereference_iterator(model.m_objects.begin()),
                                 dereference_iterator(model.m_objects.end()),

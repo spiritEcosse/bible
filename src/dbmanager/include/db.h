@@ -38,6 +38,8 @@ namespace db {
     inline auto translationStorageFunc(const QString &name) {
 
         return make_storage(name.toStdString(),
+                            make_index("idx_verses_text", &Verse::m_text),
+                            make_index("idx_verses_book_number", &Verse::m_bookNumber),
                             make_table("books_all",
                                        make_column("book_number", &Book::m_bookNumber),
                                        make_column("short_name", &Book::m_shortName),
