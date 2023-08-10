@@ -12,16 +12,15 @@ int MIN_LENGTH_SEARCH_QUERY = 2;
 
 namespace modules {
 
-    ModelBook::ModelBook(QString &&fileName, QObject *parent) :
+    ModelBook::ModelBook(QString &&fileName, [[maybe_unused]] bool search, QObject *parent) :
         ListModel<Book, db::TranslationStorage>(std::move(fileName), parent) {
-        updateObjects();
-    }
-
-    ModelBook::ModelBook([[maybe_unused]] bool search, QString &&fileName, QObject *parent) :
-        ListModel<Book, db::TranslationStorage>(std::move(fileName), parent) {
-        m_queryTimer = std::make_unique<QTimer>(this);
-        m_queryTimer->setSingleShot(true);
-        connect(m_queryTimer.get(), &QTimer::timeout, this, &ModelBook::doSearchVersesByText);
+        if (search) {
+            m_queryTimer = std::make_unique<QTimer>(this);
+            m_queryTimer->setSingleShot(true);
+            connect(m_queryTimer.get(), &QTimer::timeout, this, &ModelBook::doSearchVersesByText);
+        } else {
+            updateObjects();
+        }
     }
 
     void ModelBook::updateObjects() {

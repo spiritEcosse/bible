@@ -30,8 +30,7 @@ namespace modules {
             FoundVerses = 7
         };
 
-        explicit ModelBook(QString &&fileName = "", QObject *parent = nullptr);
-        explicit ModelBook(bool search, QString &&fileName = "", QObject *parent = nullptr);
+        explicit ModelBook(QString &&fileName = "", bool search = false, QObject *parent = nullptr);
         virtual QHash<int, QByteArray> roleNames() const override;
         virtual QVariant data(const QModelIndex &index, int role) const override;
         Q_INVOKABLE virtual void searchVersesByText(const QString &searchVerseText);

@@ -92,7 +92,7 @@ namespace modules {
             tst_ModelVerse::helperSaveStatic();
             auto &&objects = helperSaveUnique();
 
-            ModelBook model(true, "");
+            ModelBook model("", true);
             QSignalSpy spy(model.m_queryTimer.get(), &QTimer::timeout);
             model.m_waitingTimeBeforeHitDb = 0;
 
