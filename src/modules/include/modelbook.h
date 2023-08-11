@@ -42,7 +42,7 @@ namespace modules {
 
         std::shared_ptr<QString> m_searchQueryInVerseText = std::make_shared<QString>("");
         void updateObjects();
-    private slots:
+      private slots:
         virtual void doSearchVersesByText();
     };
 

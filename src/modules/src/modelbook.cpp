@@ -14,7 +14,7 @@ namespace modules {
 
     ModelBook::ModelBook(QString &&fileName, [[maybe_unused]] bool search, QObject *parent) :
         ListModel<Book, db::TranslationStorage>(std::move(fileName), parent) {
-        if (search) {
+        if(search) {
             m_queryTimer = std::make_unique<QTimer>(this);
             m_queryTimer->setSingleShot(true);
             connect(m_queryTimer.get(), &QTimer::timeout, this, &ModelBook::doSearchVersesByText);
@@ -47,9 +47,8 @@ namespace modules {
         endResetModel();
     }
 
-    void ModelBook::searchVersesByText(const QString &searchVerseText)
-    {
-        if (*m_searchQueryInVerseText == searchVerseText || searchVerseText.length() < MIN_LENGTH_SEARCH_QUERY) {
+    void ModelBook::searchVersesByText(const QString &searchVerseText) {
+        if(*m_searchQueryInVerseText == searchVerseText || searchVerseText.length() < MIN_LENGTH_SEARCH_QUERY) {
             return;
         }
         m_searchQueryInVerseText = std::make_shared<QString>(searchVerseText);
@@ -63,10 +62,11 @@ namespace modules {
             objectsCount = 0;
             // Query the database to get all books with matching verses
             m_objects = m_db->storage->get_all_pointer<Book>(
-                where(exists(select(columns(&Verse::m_bookNumber),from<Verse>(),
+                where(exists(select(columns(&Verse::m_bookNumber),
+                                    from<Verse>(),
                                     where(like(&Verse::m_text, "%" + *m_searchQueryInVerseText + "%") and
-                                        is_equal(&Book::m_bookNumber, &Verse::m_bookNumber)),
-                                        limit(1)))),
+                                          is_equal(&Book::m_bookNumber, &Verse::m_bookNumber)),
+                                    limit(1)))),
                 group_by(&Book::m_bookNumber),
                 order_by(&Book::m_bookNumber));
             // End resetting the model
