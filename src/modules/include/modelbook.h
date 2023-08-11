@@ -19,6 +19,12 @@ namespace modules {
     class ModelBook : public ListModel<Book, db::TranslationStorage> {
         Q_OBJECT
     public:
+        explicit ModelBook(QString &&fileName = "", bool search = false, QObject *parent = nullptr);
+        virtual QHash<int, QByteArray> roleNames() const override;
+        virtual QVariant data(const QModelIndex &index, int role) const override;
+        Q_INVOKABLE virtual void searchVersesByText(const QString &searchVerseText);
+        std::unique_ptr<QTimer> m_queryTimer = nullptr;
+
         enum BookRoles {
             BookNumber = 0,
             ShortName = 1,
@@ -29,12 +35,6 @@ namespace modules {
             NumberChapters = 6,
             FoundVerses = 7
         };
-
-        explicit ModelBook(QString &&fileName = "", bool search = false, QObject *parent = nullptr);
-        virtual QHash<int, QByteArray> roleNames() const override;
-        virtual QVariant data(const QModelIndex &index, int role) const override;
-        Q_INVOKABLE virtual void searchVersesByText(const QString &searchVerseText);
-        std::unique_ptr<QTimer> m_queryTimer = nullptr;
 
     private:
         friend tests::tst_ModelBook;

@@ -46,12 +46,12 @@ namespace modules {
     class ModelHost : public ModelUpdate<Host> {
         Q_OBJECT
     public:
+        ModelHost();
+        ~ModelHost();
+
         enum HostRoles {
             PathRole = 0,
         };
-
-        ModelHost();
-        ~ModelHost();
 
         virtual QVariant data(const QModelIndex &index = {}, int role = Qt::DisplayRole) const override;
         virtual QHash<int, QByteArray> roleNames() const override;
