@@ -11,11 +11,11 @@ namespace modules {
         class tst_ManagerRegistry : public ::tests::ModelJsonTest<Registry, ModelRegistry> {
             Q_OBJECT
 
-          public:
+        public:
             tst_ManagerRegistry();
             ~tst_ManagerRegistry();
 
-          private:
+        private:
             void createFileRegistryInfo();
             void createFileRegistry(const QJsonDocument &document = QJsonDocument{},
                                     const QString &fileNameRegistry = "registry.json");
@@ -27,7 +27,7 @@ namespace modules {
             std::vector<RegistryShared> helperGetObjects() const override;
             std::vector<RegistryUnique> helperGetObjectsUnique() const override;
 
-          private slots:
+        private slots:
             void initTestCase() override;
             void cleanupTestCase() override;
             void contructor();
@@ -59,7 +59,7 @@ namespace modules {
             void tryOther_data();
             void tryOther();
         };
-    }
+    }  // namespace tests
 }  // namespace modules
 
 #endif  // TST_MANAGERREGISTRY_H

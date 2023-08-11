@@ -23,11 +23,11 @@ namespace modules {
 
     class Worker : public QObject, public BaseModel<Module> {
         Q_OBJECT
-      public:
+    public:
         Worker(QObject *parent = nullptr);
         ~Worker();
 
-      private:
+    private:
         friend class tests::tst_ModelModule;
 
         std::unique_ptr<CurlMulti> m_multi;
@@ -37,13 +37,13 @@ namespace modules {
         virtual std::vector<QString> makeUrls(const Downloaded &downloaded) const;
         virtual bool bulkUpdateDownloaded(const Downloaded &downloaded, bool value = true);
         virtual bool unarchiveModules(const Downloaded &downloaded);
-      public slots:
+    public slots:
         virtual void deleteFiles(const Downloaded &downloaded);
         virtual bool startDownloadModules(const Downloaded &downloaded);
-      private slots:
+    private slots:
         virtual void updateSuccessfullyDownloaded();
         virtual void retryFailedDownloaded();
-      signals:
+    signals:
         void deleteCompleted();
         bool downloadCompleted();
     };
@@ -55,7 +55,7 @@ namespace modules {
         Q_PROPERTY(QVariantList selected READ getSelected NOTIFY changeSelected)
         Q_PROPERTY(bool deleteCompleted READ getDeleteCompleted NOTIFY changeDeleteCompleted)
         Q_PROPERTY(bool downloadCompleted READ getDownloadCompleted NOTIFY changeDownloadCompleted)
-      private:
+    private:
         friend class tests::tst_ModelModule;
         friend class tests::tst_ModelGroupModules;
 
@@ -102,7 +102,7 @@ namespace modules {
             m_db->storage->update_all(set(assign(columnAssign, valueAssign)), where(c(columnC) == value));
         }
 
-      public:
+    public:
         enum ModuleRoles {
             Name = 0,
             Description = 1,
@@ -138,13 +138,13 @@ namespace modules {
         Q_INVOKABLE virtual void updateObjectsActive();
         void search();
         virtual QString getNameJson() override;
-      public slots:
+    public slots:
         void getExtraFieldsFromDb();
-      private slots:
+    private slots:
         virtual void saveExtraFieldsToDb();
         virtual void postDeleteFiles();
         virtual void postDownloaded();
-      signals:
+    signals:
         void changeDownloaded();
         void changeSelected();
         void changeDeleteCompleted();

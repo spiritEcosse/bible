@@ -16,7 +16,7 @@ namespace netmanager {
         set(CURLOPT_URL, m_url);
         set(CURLOPT_FOLLOWLOCATION, 1L);  // Follow redirects
         set(CURLOPT_FAILONERROR, 1L);  // Do not return CURL_OK in case valid server
-            // responses reporting errors.
+        // responses reporting errors.
         set(CURLOPT_NOPROGRESS, progress ? 0L : 1L);
         set(CURLOPT_VERBOSE, 1L);
         //        set(CURLOPT_FORBID_REUSE, 1L);

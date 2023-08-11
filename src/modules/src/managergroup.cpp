@@ -49,4 +49,4 @@ namespace modules {
         m_objects.clear();
     }
 
-}
+}  // namespace modules

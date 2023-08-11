@@ -13,7 +13,7 @@ class QJsonObject;
 namespace modules {
 
     class Registry {
-      public:
+    public:
         Registry();
         Registry(const QJsonObject &registryJson);
         Registry(const QByteArray &url, const QByteArray &infoUrl, const short &priority = 0, const bool &test = false);

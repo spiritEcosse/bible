@@ -13,7 +13,7 @@ namespace modules {
     class ModelComment;
 
     class Verse {
-      public:
+    public:
         Verse() = default;
         explicit Verse(int bookNumber, int chapter, int numberVerses, int verse);
         Verse(int bookNumber, int chapter, int verse, QString &&text);

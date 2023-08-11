@@ -512,7 +512,7 @@ namespace modules {
 
             QCOMPARE(spy.count(), 1);
         }
-    }
+    }  // namespace tests
 }  // namespace modules
 
 #include "tst_managerregistry.moc"

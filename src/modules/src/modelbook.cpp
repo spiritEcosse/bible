@@ -5,8 +5,8 @@
 #include "modelbook.h"
 #include "modelchapter.h"
 #include "modelverse.h"
-#include <memory>
 #include <iostream>
+#include <memory>
 
 int MIN_LENGTH_SEARCH_QUERY = 2;
 

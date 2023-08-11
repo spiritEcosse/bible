@@ -246,7 +246,7 @@ namespace modules {
             QCOMPARE(modelGroupModules.m_entitySearch, entitySearch);
             QCOMPARE(modelGroupModules.m_needle, m_needle);
         }
-    }
+    }  // namespace tests
 }  // namespace modules
 
 #include "tst_modelgroupmodules.moc"

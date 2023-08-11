@@ -12,7 +12,7 @@ namespace modules {
 
     class ModelComment : public ListModel<Comment, db::TranslationCommentStorage> {
         Q_OBJECT
-      public:
+    public:
         enum VerseNamesRoles { Text = 0, Marker = 1, VerseNumberFrom = 2 };
 
         explicit ModelComment(QString &&fileName = "", QObject *parent = nullptr);
@@ -24,7 +24,7 @@ namespace modules {
         virtual QHash<int, QByteArray> roleNames() const override;
         virtual QVariant data(const QModelIndex &index, int role) const override;
 
-      private:
+    private:
         int m_chapterNumber{};
         int m_bookNumber{};
         int m_verseNumber{};

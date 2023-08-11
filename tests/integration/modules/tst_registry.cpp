@@ -44,7 +44,7 @@ namespace modules {
             const Registry &registry = helperGetObject();
             QCOMPARE(registry.infoUrlToQUrl(), QUrl("link11"));
         }
-    }
+    }  // namespace tests
 }  // namespace modules
 
 #include "tst_registry.moc"

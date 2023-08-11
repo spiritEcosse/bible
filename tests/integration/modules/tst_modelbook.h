@@ -14,13 +14,13 @@ namespace modules {
 
         class tst_ModelBook : public ::tests::BaseTest<Book, ModelBook, db::TranslationStorage> {
             Q_OBJECT
-          public:
+        public:
             static void helperSaveStatic();
 
-          protected:
+        protected:
             [[nodiscard]] std::vector<BookUnique> helperGetObjectsUnique() const override;
 
-          private slots:
+        private slots:
             void initTestCase() override;
             void cleanupTestCase() override;
             void constructor();
@@ -28,7 +28,7 @@ namespace modules {
             void testSearchVersesByText_data();
             void testSearchVersesByText();
         };
-    }
-}
+    }  // namespace tests
+}  // namespace modules
 
 #endif  // TST_MODELBOOK_H

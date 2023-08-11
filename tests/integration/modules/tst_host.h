@@ -11,19 +11,19 @@ namespace modules {
         class tst_Host : public ::tests::EntityBase<Host> {
             Q_OBJECT
 
-          public:
+        public:
             tst_Host();
             ~tst_Host();
 
-          private:
+        private:
             Host helperGetObject();
 
-          private slots:
+        private slots:
             void constructor_data();
             void constructor() override;
             void pathToQUrl();
         };
-    }
+    }  // namespace tests
 }  // namespace modules
 
 #endif  // TST_HOST_H

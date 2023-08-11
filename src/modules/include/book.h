@@ -13,7 +13,7 @@ namespace modules {
     class ModelVerse;
 
     class Book {
-      public:
+    public:
         Book() = default;
         Book(int bookNumber,
              QString &&shortName,

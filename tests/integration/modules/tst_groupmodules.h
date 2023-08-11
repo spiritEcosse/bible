@@ -8,11 +8,11 @@ namespace modules {
         class tst_GroupModules : public QObject {
             Q_OBJECT
 
-          public:
+        public:
             tst_GroupModules();
             ~tst_GroupModules();
 
-          private slots:
+        private slots:
             void m_name();
             void m_name_data();
             void language();
@@ -25,7 +25,7 @@ namespace modules {
             void setLanguageName();
             void testFunction();
         };
-    }
+    }  // namespace tests
 }  // namespace modules
 
 #endif  // TST_GROUPMODULES_H

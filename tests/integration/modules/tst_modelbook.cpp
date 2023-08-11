@@ -109,7 +109,7 @@ namespace modules {
                      true);
             QCOMPARE(model.objectsCount, 0);
         }
-    }
-}
+    }  // namespace tests
+}  // namespace modules
 
 #include "tst_modelbook.moc"

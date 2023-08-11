@@ -11,15 +11,15 @@ namespace modules {
         class tst_ModelHost : public ::tests::ModelJsonTest<Host, ModelHost> {
             Q_OBJECT
 
-          private:
+        private:
             std::vector<HostShared> helperGetObjects() const override;
             std::vector<HostUnique> helperGetObjectsUnique() const override;
 
-          public:
+        public:
             tst_ModelHost();
             ~tst_ModelHost();
 
-          private slots:
+        private slots:
             void initTestCase() override;
             void cleanupTestCase() override;
             void update() override;
@@ -27,7 +27,7 @@ namespace modules {
             void transform() override;
             void populateStaticObjects();
         };
-    }
+    }  // namespace tests
 }  // namespace modules
 
 #endif  // TST_MODELHOST_H

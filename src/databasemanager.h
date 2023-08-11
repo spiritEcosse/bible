@@ -11,7 +11,7 @@
 
 class DatabaseManager : public QObject {
     Q_OBJECT
-  public:
+public:
     DatabaseManager(QObject *parent);
     ~DatabaseManager();
     bool isOpen() const;
@@ -20,13 +20,13 @@ class DatabaseManager : public QObject {
     void setDictionaryId(const QString &dictionaryId);
     void stopSearch();
 
-  signals:
+signals:
     void searchCompleted(const QString &queryString);
 
-  public slots:
+public slots:
     void handleSearchCompleted(const QString &queryString);
 
-  private:
+private:
     QSqlDatabase database;
     QList<HeinzelnisseElement *> *resultList;
     DictionarySearchWorker *searchWorker;

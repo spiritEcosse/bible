@@ -10,14 +10,14 @@ namespace modules {
 
         class tst_Module : public ::tests::EntityBase<Module> {
             Q_OBJECT
-          public:
+        public:
             tst_Module();
             ~tst_Module();
 
-          private:
+        private:
             Module helperGetModule();
 
-          private slots:
+        private slots:
             void constructor_data();
             void constructor() override;
             void convertSize_data();
@@ -29,7 +29,7 @@ namespace modules {
             //            void getFullPathDbComment_data();
             //            void getFullPathDbComment();
         };
-    }
+    }  // namespace tests
 }  // namespace modules
 
 #endif  // TST_MODULE_H

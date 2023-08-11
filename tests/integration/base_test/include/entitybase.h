@@ -7,11 +7,11 @@ namespace tests {
 
     template<class T>
     class EntityBase : public QObject {
-      public:
+    public:
         EntityBase();
         ~EntityBase();
 
-      protected:
+    protected:
         virtual void constructor();
     };
 

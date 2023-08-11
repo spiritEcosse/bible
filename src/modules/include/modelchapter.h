@@ -17,7 +17,7 @@ namespace modules {
 
     class ModelChapter : public ListModel<Verse, db::TranslationStorage> {
         Q_OBJECT
-      public:
+    public:
         enum ChapterRoles { BookNumber = 0, Chapter = 1, NumberVerses = 2, Verses = 3 };
 
         explicit ModelChapter(QString &&fileName = "", QObject *parent = nullptr);
@@ -25,7 +25,7 @@ namespace modules {
         virtual QHash<int, QByteArray> roleNames() const override;
         virtual QVariant data(const QModelIndex &index, int role) const override;
 
-      private:
+    private:
         friend tests::tst_ModelChapter;
         void updateObjects();
         int m_bookNumber{};

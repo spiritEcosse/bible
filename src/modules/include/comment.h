@@ -11,7 +11,7 @@
 namespace modules {
 
     class Comment {
-      public:
+    public:
         Comment() = default;
         Comment(int bookNumber,
                 int chapterNumberFrom,
@@ -33,8 +33,9 @@ namespace modules {
         friend QDebug operator<<(QDebug debug, const Comment &verse);
 #endif
     };
+
     using CommentShared = decltype(std::shared_ptr<Comment>());
     using CommentUnique = decltype(std::unique_ptr<Comment>());
-}
+}  // namespace modules
 
 #endif  //COMMENT_H

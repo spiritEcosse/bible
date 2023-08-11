@@ -1,19 +1,19 @@
 #ifndef DB_H
 #define DB_H
 
-#include <QString>
-#include "record.h"
 #include "binding.h"
 #include "book.h"
+#include "comment.h"
 #include "groupmodules.h"
 #include "host.h"
 #include "info.h"
 #include "module.h"
-#include "comment.h"
+#include "record.h"
 #include "registry.h"
 #include "sqlite_orm.h"
 #include "verse.h"
 #include <QDebug>
+#include <QString>
 #include <memory>
 #include <mutex>
 #include <unordered_map>
@@ -117,7 +117,7 @@ namespace db {
     using TranslationCommentStorage = decltype(translationCommentStorageFunc(""));
 
     class MySingleton {
-      public:
+    public:
         MySingleton(const MySingleton &) = delete;
         MySingleton &operator=(const MySingleton &) = delete;
 
@@ -125,18 +125,20 @@ namespace db {
             static MySingleton instance(fileName);
             return instance;
         }
+
         std::shared_ptr<Storage> storage;
 
-      private:
+    private:
         explicit MySingleton(const QString &fileName) {
             storage = std::make_shared<Storage>(userStorage(fileName));
             storage->sync_schema();
         }
+
         ~MySingleton() = default;
     };
 
     class TranslationStorageSingleton {
-      public:
+    public:
         TranslationStorageSingleton &operator=(const TranslationStorageSingleton &) = delete;
         TranslationStorageSingleton(const TranslationStorageSingleton &) = delete;
 
@@ -144,18 +146,20 @@ namespace db {
             static TranslationStorageSingleton instance;
             return reinterpret_cast<TranslationStorageSingleton &>(instance);
         }
+
         std::shared_ptr<TranslationStorage> storage;
 
-      private:
+    private:
         explicit TranslationStorageSingleton() {
             storage = std::make_shared<TranslationStorage>(translationStorageFunc(""));
             storage->sync_schema();
         }
+
         ~TranslationStorageSingleton() = default;
     };
 
     class TranslationCommentStorageSingleton {
-      public:
+    public:
         TranslationCommentStorageSingleton &operator=(const TranslationCommentStorageSingleton &) = delete;
         TranslationCommentStorageSingleton(const TranslationCommentStorageSingleton &) = delete;
 
@@ -163,20 +167,22 @@ namespace db {
             static TranslationCommentStorageSingleton instance;
             return reinterpret_cast<TranslationCommentStorageSingleton &>(instance);
         }
+
         std::shared_ptr<TranslationCommentStorage> storage;
 
-      private:
+    private:
         explicit TranslationCommentStorageSingleton() {
             storage = std::make_shared<TranslationCommentStorage>(translationCommentStorageFunc(""));
             storage->sync_schema();
         }
+
         ~TranslationCommentStorageSingleton() = default;
     };
 
     template<class T, typename S = Storage>
     class Db {
 
-      public:
+    public:
         explicit Db(QString &&fileName = "");
         using vector_unique_iterator = typename std::vector<std::unique_ptr<T>>::const_iterator;
         using vector_shared_iterator = typename std::vector<std::shared_ptr<T>>::const_iterator;
@@ -193,7 +199,7 @@ namespace db {
         void save(const MapValueIterator &begin, const MapValueIterator &end);
         void save(const vector_iterator &begin, const vector_iterator &end);
 
-      private:
+    private:
         QString m_fileName;
     };
 

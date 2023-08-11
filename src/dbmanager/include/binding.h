@@ -1,8 +1,8 @@
 #ifndef BINDING_H
 #define BINDING_H
 
-#include "locallanguage.h"
 #include "global.h"
+#include "locallanguage.h"
 #include "sqlite_orm.h"
 #include <QByteArray>
 #include <QDate>

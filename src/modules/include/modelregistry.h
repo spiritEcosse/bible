@@ -13,7 +13,7 @@ namespace modules {
 
     class ModelRegistry : public ModelUpdate<Registry> {
         Q_OBJECT
-      public:
+    public:
         enum RegistryRoles { UrlRole = 0, PriorityRole = 1, InfoUrlRole = 2 };
 
         ModelRegistry();
@@ -22,11 +22,12 @@ namespace modules {
         virtual QHash<int, QByteArray> roleNames() const override;
         virtual QUrl data(int index, int role) const;
         bool setRegistries();
+
         inline QString getNameJson() override {
             return QString("registries");
         };
 
-      private:
+    private:
         friend class tests::tst_ManagerRegistry;
         friend class tests::tst_ManagerGroup;
         friend class tests::tst_ModelRegistry;

@@ -29,7 +29,7 @@ namespace netmanager {
 
         Q_PROPERTY(bool ready READ ready NOTIFY readyChanged)
 
-      public:
+    public:
         explicit QuickDownloadMaster(QObject *parent = 0);
         ~QuickDownloadMaster();
 
@@ -42,10 +42,10 @@ namespace netmanager {
         QNetworkAccessManager *networkAccessManager();
         void setNetworkAccessManager(QNetworkAccessManager *networkAccessManager);
 
-      signals:
+    signals:
         void readyChanged();
 
-      private:
+    private:
         static QuickDownloadMaster *self;
         Q_DISABLE_COPY(QuickDownloadMaster)
 
@@ -69,7 +69,7 @@ namespace netmanager {
         Q_PROPERTY(bool overwrite READ overwrite WRITE setOverwrite NOTIFY overwriteChanged)
         Q_PROPERTY(QString moduleName READ moduleName WRITE setModuleName NOTIFY moduleNameChanged)
 
-      public:
+    public:
         enum Error { ErrorUnknown, ErrorUrl, ErrorDestination, ErrorNetwork };
         Q_ENUM(Error)
 
@@ -97,9 +97,10 @@ namespace netmanager {
         void setOverwrite(bool overwrite);
 
         void classBegin() {}
+
         void componentComplete();
 
-      signals:
+    signals:
         void urlChanged();
         void moduleNameChanged();
         void cancelChanged();
@@ -116,17 +117,17 @@ namespace netmanager {
         void error(int errorCode, QString errorString);
         void networkAccessManagerChanged();
 
-      public slots:
+    public slots:
         void start(QUrl url);
         void start();
         void stop();
 
-      private slots:
+    private slots:
         void onReadyRead();
         void onFinished();
         void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
 
-      private:
+    private:
         friend class tests::tst_QuickDownload;
 
         void setProgress(qreal progress);

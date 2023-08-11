@@ -10,11 +10,11 @@ namespace tests {
 
     template<class T, class O, class S = db::Storage>
     class BaseTest : public QObject {
-      public:
+    public:
         BaseTest();
         ~BaseTest();
 
-      protected:
+    protected:
         const size_t vectorSize = 3;
         const int version = 10;
         const QString strUrl{"file://"};

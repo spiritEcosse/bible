@@ -11,7 +11,7 @@
 
 namespace modules {
     class Record {
-      public:
+    public:
         Record() = default;
         Record(QString &&bookShortName,
                int bookIndex,
@@ -30,7 +30,8 @@ namespace modules {
         friend QDebug operator<<(QDebug debug, const Record &verse);
 #endif
     };
+
     using RecordShared = decltype(std::shared_ptr<Record>());
     using RecordUnique = decltype(std::unique_ptr<Record>());
-}
+}  // namespace modules
 #endif  //RECORD_H

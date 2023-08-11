@@ -7,11 +7,11 @@ namespace tests {
     class tst_DownloadManager : public QObject {
         Q_OBJECT
 
-      public:
+    public:
         tst_DownloadManager();
         ~tst_DownloadManager();
 
-      private slots:
+    private slots:
     };
 
     tst_DownloadManager::tst_DownloadManager() {}

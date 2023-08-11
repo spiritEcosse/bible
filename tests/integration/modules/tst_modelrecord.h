@@ -14,13 +14,13 @@ namespace modules {
 
         class tst_ModelRecord : public ::tests::BaseTest<Record, ModelRecord> {
             Q_OBJECT
-          public:
+        public:
             static void helperSaveStatic();
 
-          protected:
+        protected:
             [[nodiscard]] std::vector<RecordUnique> helperGetObjectsUnique() const override;
 
-          private slots:
+        private slots:
             void cleanup() override;
             void initTestCase() override;
             void cleanupTestCase() override;
@@ -29,7 +29,7 @@ namespace modules {
             void createRecord();
             void roleNames();
         };
-    }
+    }  // namespace tests
 }  // namespace modules
 
 #endif  //TST_MODELRECORD_H

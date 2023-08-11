@@ -7,10 +7,10 @@ namespace core {
 
     class InvalidData : virtual public std::exception {
 
-      protected:
+    protected:
         std::string error_message;  ///< Error message
 
-      public:
+    public:
         /** Constructor (C++ STL string, int, int).
      *  @param msg The error message
      *  @param err_num Error number

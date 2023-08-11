@@ -5,7 +5,7 @@
 
 template<class BaseIterator>
 class DereferenceIterator : public BaseIterator {
-  public:
+public:
     using value_type = typename BaseIterator::value_type::element_type;
     using pointer = value_type *;
     using reference = value_type &;
@@ -15,9 +15,11 @@ class DereferenceIterator : public BaseIterator {
     reference operator*() const {
         return *(this->BaseIterator::operator*());
     }
+
     pointer operator->() const {
         return this->BaseIterator::operator*().get();
     }
+
     reference operator[](size_t n) const {
         return *(this->BaseIterator::operator[](n));
     }

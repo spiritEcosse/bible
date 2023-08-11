@@ -1,9 +1,9 @@
 #include "modelupdate.h"
 #include "invaliddata.h"
+#include <QDir>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QDir>
 
 namespace modules {
 

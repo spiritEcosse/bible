@@ -22,18 +22,20 @@ namespace modules {
     using HostUnique = decltype(std::unique_ptr<Host>());
 
     class SingletonModelHost : public ModelUpdate<Host> {
-      public:
+    public:
         static SingletonModelHost &getInstance() {
             static SingletonModelHost instance;
             return instance;
         }
+
         virtual QVariant data(const QModelIndex &index = {}, int role = Qt::DisplayRole) const override;
         virtual QHash<int, QByteArray> roleNames() const override;
+
         inline QString getNameJson() override {
             return {};
         };
 
-      private:
+    private:
         SingletonModelHost();
         ~SingletonModelHost() = default;
         SingletonModelHost(const SingletonModelHost &) = delete;
@@ -43,7 +45,7 @@ namespace modules {
 
     class ModelHost : public ModelUpdate<Host> {
         Q_OBJECT
-      public:
+    public:
         enum HostRoles {
             PathRole = 0,
         };
@@ -55,12 +57,14 @@ namespace modules {
         virtual QHash<int, QByteArray> roleNames() const override;
         virtual QString getUrl(int index) const;
         virtual bool existsIndex(int index) const;
+
         inline QString getNameJson() override {
             return QString("hosts");
         };
+
         static HostUnique baseHost();
 
-      private:
+    private:
         friend class tests::tst_ModelHost;
         friend class tests::tst_ModelModule;
         friend class netmanager::tests::tst_QuickDownload;

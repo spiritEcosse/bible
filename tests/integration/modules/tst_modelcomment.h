@@ -14,21 +14,21 @@ namespace modules {
 
         class tst_ModelComment : public ::tests::BaseTest<Comment, ModelComment, db::TranslationCommentStorage> {
             Q_OBJECT
-          public:
+        public:
             ~tst_ModelComment() override = default;
             static void helperSaveStatic();
 
-          protected:
+        protected:
             [[nodiscard]] std::vector<CommentUnique> helperGetObjectsUnique() const override;
 
-          private slots:
+        private slots:
             void cleanup() override;
             void initTestCase() override;
             void cleanupTestCase() override;
             void updateObjects();
             static void roleNames();
         };
-    }
-}
+    }  // namespace tests
+}  // namespace modules
 
 #endif  //TST_MODELCOMMENT_H
