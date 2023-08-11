@@ -27,4 +27,4 @@ namespace modules {
     }
 #endif
 
-}
+}  // namespace modules

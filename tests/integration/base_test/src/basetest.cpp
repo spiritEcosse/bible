@@ -1,13 +1,13 @@
 ﻿#include "basetest.h"
+#include "dereferenceiterator.h"
 #include "modelbook.h"
+#include "modelcomment.h"
 #include "modelgroupmodules.h"
 #include "modelhost.h"
 #include "modelmodule.h"
+#include "modelrecord.h"
 #include "modelregistry.h"
 #include "modelverse.h"
-#include "modelcomment.h"
-#include "modelrecord.h"
-#include "dereferenceiterator.h"
 #include <JlCompress.h>
 
 namespace tests {

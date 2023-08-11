@@ -223,7 +223,7 @@ namespace modules {
         //            }
         //            QCOMPARE(module.getFullPathDbComment(), fullPathFile);
         //        }
-    }
+    }  // namespace tests
 }  // namespace modules
 
 #include "tst_module.moc"

@@ -9,12 +9,14 @@
 #include <memory>
 
 #include "textprogressbar.h"
+
 // #include "gtest/gtest_prod.h"
 
 class DownloadManager : public QObject {
     Q_OBJECT
-  public:
+public:
     explicit DownloadManager(QObject *parent = nullptr);
+
     virtual ~DownloadManager() {}
 
     virtual void append(const QUrl &url);
@@ -22,17 +24,17 @@ class DownloadManager : public QObject {
     virtual QString saveFileName(const QUrl &url);
     QStringList *fileNames = new QStringList();
 
-  signals:
+signals:
     void finished();
     void successfully();
 
-  private slots:
+private slots:
     virtual void startNextDownload();
     virtual void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
     virtual void downloadFinished();
     virtual void downloadReadyRead();
 
-  private:
+private:
     virtual bool isHttpRedirect() const;
     virtual void reportRedirect();
     QTimer *timer;

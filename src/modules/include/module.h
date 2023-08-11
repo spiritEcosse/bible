@@ -18,7 +18,7 @@ namespace modules {
     class ModelVerse;
 
     class Module {
-      public:
+    public:
         Module() = default;
         Module(const QString &name,
                const QString &description = "",

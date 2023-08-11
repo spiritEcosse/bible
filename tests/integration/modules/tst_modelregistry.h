@@ -11,16 +11,16 @@ namespace modules {
         class tst_ModelRegistry : public ::tests::ModelJsonTest<Registry, ModelRegistry> {
             Q_OBJECT
 
-          private:
+        private:
             std::vector<RegistryShared> helperGetObjects() const override;
             std::vector<RegistryShared> helperGetBaseRegistries() const;
             std::vector<RegistryUnique> helperGetObjectsUnique() const override;
 
-          public:
+        public:
             tst_ModelRegistry();
             ~tst_ModelRegistry();
 
-          private slots:
+        private slots:
             void initTestCase() override;
             void cleanupTestCase() override;
             void update() override;
@@ -30,7 +30,7 @@ namespace modules {
             void setRegistries();
             void constructor();
         };
-    }
+    }  // namespace tests
 }  // namespace modules
 
 #endif  // TST_MODELREGISTRY_H

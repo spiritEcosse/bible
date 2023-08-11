@@ -16,7 +16,7 @@ namespace modules {
         Q_OBJECT
         Q_PROPERTY(bool updateCompleted READ updateCompleted NOTIFY changeUpdateCompleted)
         Q_PROPERTY(QString needle READ needle NOTIFY changeNeedle)
-      public:
+    public:
         enum GroupModulesRoles {
             TitleRole = 0,
             RegionRole = 1,
@@ -25,7 +25,9 @@ namespace modules {
             IdRole = 4,
             GroupIdRole = 5
         };
+
         enum EntitySearch { GroupSearch = 0, ModuleSearch = 1 };
+
         ModelGroupModules();
         virtual ~ModelGroupModules();
         Q_INVOKABLE void init();
@@ -39,7 +41,7 @@ namespace modules {
         Q_INVOKABLE bool searchByGroups() const;
         QString getNameJson() override;
 
-      private:
+    private:
         friend class tests::tst_ModelGroupModules;
         bool updateCompleted() const;
         QString needle() const;
@@ -54,10 +56,10 @@ namespace modules {
         virtual void setFieldSearch(const QString &needle);
         virtual void doSearchByModules();
         virtual void doSearchByGroups();
-      signals:
+    signals:
         void changeUpdateCompleted();
         void changeNeedle();
-      private slots:
+    private slots:
         void setUpdateCompleted();
         void updateObjects();
     };

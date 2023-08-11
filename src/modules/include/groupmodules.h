@@ -15,7 +15,7 @@ namespace modules {
     class ModelModule;
 
     class GroupModules {
-      public:
+    public:
         GroupModules();
         GroupModules(const QJsonObject &qJsonModule);
         GroupModules(const QString &language, const QString &name, const QString &region = "", int groupId = 0);
@@ -27,7 +27,9 @@ namespace modules {
         QString region() const;
         std::string regionToStdString() const;
         QString languageCode() const;
+
         inline void setLanguageName(const QString &) {}
+
         QString getLanguageName() const;
         QString titleGroup() const;
         std::string languageCodeToStdString() const;
@@ -51,7 +53,7 @@ namespace modules {
 
         std::shared_ptr<ModelModule> m_modules;
 
-      private:
+    private:
         friend class tests::tst_GroupModules;
 
         void cleanName();
@@ -85,7 +87,7 @@ namespace modules {
     using MapIterator = decltype(std::unordered_map<MGKey, GroupModulesUnique, MGKeyHash, MGKeyEqual>::iterator());
 
     class MapValueIterator : public MapIterator {
-      public:
+    public:
         using value_type = GroupModules;
         using pointer = value_type *;
         using reference = value_type &;
@@ -95,6 +97,7 @@ namespace modules {
         pointer operator->() {
             return (GroupModules *const)&(*(MapIterator::operator->()->second));
         }
+
         reference operator*() {
             return *(MapIterator::operator*().second);
         }

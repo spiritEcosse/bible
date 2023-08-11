@@ -12,22 +12,22 @@ namespace modules {
         class tst_ManagerGroup : public ::tests::ModelJsonTest<Registry, ModelRegistry> {
             Q_OBJECT
 
-          public:
+        public:
             tst_ManagerGroup();
             ~tst_ManagerGroup();
 
-          private:
+        private:
             QJsonDocument helperGetInvalidDocument() const;
             std::vector<RegistryUnique> helperGetObjectsUnique() const;
             std::vector<RegistryShared> helperGetObjects() const;
 
-          private slots:
+        private slots:
             void initTestCase();
             void cleanupTestCase();
             void makeCollections_data();
             void makeCollections();
         };
-    }
+    }  // namespace tests
 }  // namespace modules
 
 #endif  // TST_MANAGERGROUP_H

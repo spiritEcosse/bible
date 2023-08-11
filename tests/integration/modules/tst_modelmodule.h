@@ -11,14 +11,14 @@ namespace modules {
         class tst_ModelModule : public ::tests::ModelJsonTest<Module, ModelModule> {
             Q_OBJECT
 
-          public:
+        public:
             tst_ModelModule();
             ~tst_ModelModule();
 
             static void helperSaveStaticAndSetExtraFieldsTrue();
             static void helperCheckAllData(const std::vector<ModelShared> &modules);
 
-          private:
+        private:
             std::vector<ModuleShared> helperGetObjects() const override;
             std::vector<ModuleUnique> helperGetObjectsUnique() const override;
             std::vector<HostUnique> helperGetHostsUnique();
@@ -28,7 +28,7 @@ namespace modules {
 
             int m_idGroupModules = 0;
             bool m_downloaded = false;
-          private slots:
+        private slots:
             void initTestCase() override;
             void cleanupTestCase() override;
             void update() override;
@@ -49,7 +49,7 @@ namespace modules {
             void retrieveDownloaded();
             void retrieveSelected();
         };
-    }
+    }  // namespace tests
 }  // namespace modules
 
 #endif  // TST_MODELMODULE_H

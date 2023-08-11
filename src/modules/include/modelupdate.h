@@ -11,7 +11,7 @@ namespace modules {
 
     template<class T, typename S = db::Storage>
     class BaseModel {
-      public:
+    public:
         explicit BaseModel();
         explicit BaseModel(QString &&fileName);
         ~BaseModel() = default;
@@ -28,16 +28,17 @@ namespace modules {
 
     class QJsonListModel : public QAbstractListModel {
         Q_OBJECT
-      public:
+    public:
         explicit QJsonListModel(QObject *parent = nullptr);
-      protected slots:
+    protected slots:
+
         virtual inline void updateObjectsFromJson() {
             updateWrapper();
         }
 
-      protected:
+    protected:
         virtual void updateWrapper(){};
-      signals:
+    signals:
         void error(const QString &error);
         void updateDone();
         void transformSuccess();
@@ -45,14 +46,14 @@ namespace modules {
 
     template<class T, typename S = db::Storage>
     class ListModel : public QJsonListModel, public BaseModel<T, S> {
-      public:
+    public:
         explicit ListModel(QString &&fileName = "", QObject *parent = nullptr);
         std::vector<std::unique_ptr<T>> m_objects;
         virtual int rowCount(const QModelIndex &parent) const override;
         virtual int rowCount() const;
         int objectsCount = 0;
 
-      protected:
+    protected:
         Q_INVOKABLE bool canFetchMore([[maybe_unused]] const QModelIndex &parent) const override;
         Q_INVOKABLE bool canFetchMore() const;
         Q_INVOKABLE void fetchMore([[maybe_unused]] const QModelIndex &parent) override;
@@ -60,7 +61,7 @@ namespace modules {
 
     template<class T, typename S = db::Storage>
     class ModelUpdate : public ListModel<T, S> {
-      public:
+    public:
         explicit ModelUpdate(QString &&fileName = "", QObject *parent = nullptr);
         virtual void update(const std::vector<T> &container);
         virtual void updateUnique(const std::vector<std::unique_ptr<T>> &container);
@@ -72,9 +73,10 @@ namespace modules {
         using QJsonListModel::transformSuccess;
         using QJsonListModel::updateDone;
 
-      protected:
+    protected:
         void updateWrapper() override;
         const QString nameJson;
+
         virtual QString getNameJson() {
             return {};
         };

@@ -8,11 +8,11 @@ namespace tests {
 
     template<class T, class O>
     class ModelJsonTest : public BaseTest<T, O> {
-      public:
+    public:
         ModelJsonTest();
         ~ModelJsonTest();
 
-      protected:
+    protected:
         void initTestCase() override;
         void cleanupTestCase() override;
         virtual std::vector<std::shared_ptr<T>> helperGetObjects() const override = 0;

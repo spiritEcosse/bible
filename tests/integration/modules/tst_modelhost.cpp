@@ -61,7 +61,7 @@ namespace modules {
         void tst_ModelHost::transform() {
             ModelJsonTest<Host, ModelHost>::transform();
         }
-    }
+    }  // namespace tests
 }  // namespace modules
 
 #include "tst_modelhost.moc"

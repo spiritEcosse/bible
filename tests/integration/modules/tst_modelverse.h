@@ -14,20 +14,20 @@ namespace modules {
 
         class tst_ModelVerse : public ::tests::BaseTest<Verse, ModelVerse, db::TranslationStorage> {
             Q_OBJECT
-          public:
+        public:
             static void helperSaveStatic();
 
-          protected:
+        protected:
             [[nodiscard]] std::vector<VerseUnique> helperGetObjectsUnique() const override;
 
-          private slots:
+        private slots:
             void initTestCase() override;
             void cleanupTestCase() override;
             void updateObjects();
             void roleNames();
             void searchVersesByText();
         };
-    }
+    }  // namespace tests
 }  // namespace modules
 
 #endif  // TST_MODELVERSE_H

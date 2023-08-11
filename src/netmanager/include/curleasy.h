@@ -23,7 +23,7 @@ namespace netmanager {
 
     class CurlEasy : public QObject {
         Q_OBJECT
-      private:
+    private:
         std::unique_ptr<QSaveFile> downloadFile;
         QUrl m_url;
         void createEasyHandle();
@@ -31,7 +31,7 @@ namespace netmanager {
         void setSaveFile();
         void onTransferDone();
 
-      public:
+    public:
         using DataFunction = std::function<size_t(char *buffer, size_t size)>;
         using SeekFunction = std::function<int(qint64 offset, int origin)>;
 
@@ -45,9 +45,11 @@ namespace netmanager {
         QString getFileName();
         void perform();
         void abort();
+
         static bool isRunning() {
             return false;
         }
+
         CURLcode result() {
             return lastResult_;
         }
@@ -58,6 +60,7 @@ namespace netmanager {
         bool set(CURLoption option, T parameter) {
             return curl_easy_setopt(m_handle, option, parameter) == CURLE_OK;
         }
+
         bool set(CURLoption option,
                  const QString &parameter);  // Convenience override for const char* parameters
         bool set(CURLoption option,
@@ -72,6 +75,7 @@ namespace netmanager {
         bool get(CURLINFO info, T *pointer) {
             return curl_easy_getinfo(m_handle, info, pointer) == CURLE_OK;
         }
+
         template<typename T>
         T get(CURLINFO info);
 
@@ -86,6 +90,7 @@ namespace netmanager {
         CURL *handle() {
             return m_handle;
         }
+
         //        void setPreferredMulti(CurlMulti *multi) { preferredMulti_ = multi;
         //        }
 
@@ -94,12 +99,12 @@ namespace netmanager {
         // removal.
         Q_SLOT void deleteLater();
 
-      signals:
+    signals:
         void aborted();
         void progress(qint64 downloadTotal, qint64 downloadNow, qint64 uploadTotal, qint64 uploadNow);
         void done(CURLcode result);
 
-      protected:
+    protected:
         void removeFromMulti();
         void onCurlMessage(CURLMsg *message);
         void rebuildCurlHttpHeaders();

@@ -171,6 +171,19 @@ SilicaFlickable {
                                                 ContextMenu {
                                                     id: contextMenu
                                                     MenuItem {
+                                                        text: qsTr("Go to");
+                                                        onClicked: {
+                                                            console.log(short_name);
+                                                            modelRecord.createRecord(
+                                                                       short_name,
+                                                                       book_number / 10 - 1,
+                                                                       chapter - 1,
+                                                                       verse -1
+                                                                       );
+                                                            slideshow.currentIndex = 0;
+                                                        }
+                                                    }
+                                                    MenuItem {
                                                         text: qsTr("Copy text");
                                                         onClicked: Clipboard.text = model.text
                                                     }

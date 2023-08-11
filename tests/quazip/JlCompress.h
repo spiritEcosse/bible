@@ -8,7 +8,7 @@
 #include <QString>
 
 class JlCompress {
-  private:
+private:
     static QStringList extractDir(QuaZip &zip, const QString &dir);
     static QStringList getFileList(QuaZip *zip);
     static QString extractFile(QuaZip &zip, QString fileName, QString fileDest);
@@ -48,7 +48,7 @@ class JlCompress {
       */
     static bool removeFile(QStringList listFile);
 
-  public:
+public:
     /// Compress a single file.
     /**
       \param fileCompressed The name of the archive.
@@ -93,7 +93,7 @@ class JlCompress {
      */
     static bool compressDir(QString fileCompressed, QString dir, bool recursive, QDir::Filters filters);
 
-  public:
+public:
     static QString extractFile(QString fileCompressed, QString fileName, QString fileDest = QString());
     static QStringList extractFiles(QString fileCompressed, QStringList files, QString dir = QString());
     static QStringList extractDir(QString fileCompressed, QString dir = QString());

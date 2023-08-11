@@ -12,7 +12,7 @@ namespace modules {
 
     class ModelVerse : public ListModel<Verse, db::TranslationStorage> {
         Q_OBJECT
-      public:
+    public:
         enum VerseNamesRoles { BookNumber = 0, Chapter = 1, NumberVerse = 2, Text = 3, Comments = 4 };
 
         explicit ModelVerse(std::shared_ptr<QString> searchText,
@@ -24,7 +24,7 @@ namespace modules {
         virtual QHash<int, QByteArray> roleNames() const override;
         virtual QVariant data(const QModelIndex &index, int role) const override;
 
-      private:
+    private:
         int m_chapterNumber{};
         int m_bookNumber{};
         void updateObjects();

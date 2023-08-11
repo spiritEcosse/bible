@@ -36,7 +36,7 @@ namespace modules {
             const Host &host = helperGetObject();
             QCOMPARE(host.pathToQUrl(), QUrl("link11"));
         }
-    }
+    }  // namespace tests
 }  // namespace modules
 
 #include "tst_host.moc"

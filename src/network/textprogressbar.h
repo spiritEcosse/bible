@@ -5,14 +5,15 @@
 #include <QString>
 
 class TextProgressBar {
-  public:
+public:
     virtual ~TextProgressBar() {}
+
     virtual void clear();
     virtual void update();
     virtual void setMessage(const QString &message);
     virtual void setStatus(qint64 value, qint64 maximum);
 
-  private:
+private:
     QString message;
     qint64 value = 0;
     qint64 maximum = -1;

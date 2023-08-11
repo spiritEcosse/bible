@@ -159,7 +159,7 @@ namespace modules {
                 QCOMPARE(arguments[0].toString(), QString("An error occured, please try in time."));
             }
         }
-    }
+    }  // namespace tests
 }  // namespace modules
 
 #include "tst_managergroup.moc"

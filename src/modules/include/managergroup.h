@@ -15,15 +15,17 @@ namespace modules {
 
     class ManagerGroup : public QObject {
         Q_OBJECT
-      public:
+    public:
         ManagerGroup(QObject *parent = nullptr);
+
         virtual ~ManagerGroup() {}
-      signals:
+
+    signals:
         void makeModulesSuccess(const std::vector<Module> &modules);
         void error(const QString &error);
         void makeGroupModulesSuccess();
 
-      private:
+    private:
         friend class tests::tst_ManagerGroup;
         friend class tests::tst_ModelGroupModules;
         friend class ModelGroupModules;
@@ -31,7 +33,7 @@ namespace modules {
 
         void addToCollection(const QJsonArray &object);
         virtual const QJsonArray getDownloads(const QJsonDocument &document) const;
-      private slots:
+    private slots:
         void makeCollections(const QJsonDocument &document);
         void clearObjects();
     };

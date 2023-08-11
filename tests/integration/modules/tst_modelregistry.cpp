@@ -89,7 +89,7 @@ namespace modules {
         void tst_ModelRegistry::transform() {
             ModelJsonTest<Registry, ModelRegistry>::transform();
         }
-    }
+    }  // namespace tests
 }  // namespace modules
 
 #include "tst_modelregistry.moc"

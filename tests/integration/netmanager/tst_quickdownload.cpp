@@ -8,15 +8,15 @@ namespace netmanager {
         class tst_QuickDownload : public QObject {
             Q_OBJECT
 
-          public:
+        public:
             tst_QuickDownload();
             ~tst_QuickDownload();
 
-          private:
+        private:
             const size_t vectorSize = 3;
             virtual std::vector<modules::HostUnique> helperGetHostsUnique() const;
 
-          private slots:
+        private slots:
             void initTestCase();
             void cleanupTestCase();
             void makeUrl();

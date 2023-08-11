@@ -24,17 +24,19 @@ namespace modules {
         Q_PROPERTY(bool newVersionAvailable READ newVersionAvailable WRITE setNewVersionAvailable NOTIFY
                        changeNewVersionAvailable)
         Q_PROPERTY(bool checkVersionCompleted READ checkVersionCompleted NOTIFY changeCheckVersionCompleted)
-      public:
+    public:
         ManagerRegistry(QObject *parent = nullptr);
+
         virtual ~ManagerRegistry() {}
+
         Q_INVOKABLE virtual void checkNewVesion();
         void setNewVersionAvailable(bool newVersionAvailable);
 
-      public slots:
+    public slots:
         virtual void download();
         static void registerMe();
 
-      private:
+    private:
         friend class tests::tst_ManagerRegistry;
         friend class tests::tst_ManagerGroup;
         friend class tests::tst_ModelGroupModules;
@@ -64,7 +66,7 @@ namespace modules {
         void setNewVersionAvailable();
         bool checkVersionCompleted() const;
 
-      signals:
+    signals:
         void changeNewVersionAvailable();
         void changeCheckVersionCompleted();
         void newRegistryAvailable(bool available, int version);
@@ -72,7 +74,7 @@ namespace modules {
         void removeRegistrySuccess();
         void removeInfoSuccess();
         void getDocumentSuccess(const QJsonDocument &document);
-      private slots:
+    private slots:
         virtual void retrieveData(const QJsonDocument &document);
         virtual void retrieveDataInfo(const QJsonDocument &document);
         virtual void extractRegistry(const QString &fileName);

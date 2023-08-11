@@ -16,7 +16,7 @@ namespace netmanager {
 
     class CurlMulti : public QObject {
         Q_OBJECT
-      public:
+    public:
         explicit CurlMulti(std::vector<QString> &&urls, QObject *parent = nullptr);
         virtual ~CurlMulti();
 
@@ -26,15 +26,15 @@ namespace netmanager {
         virtual Downloaded getSuccessfullyDownloaded();
         virtual Downloaded getFailedDownloaded();
 
-      private:
+    private:
         CURLM *m_handle = nullptr;
         std::vector<std::unique_ptr<CurlEasy>> transfers_;
         void removeTransfers();
         void multiLoop();
         void createMultiHandle();
-      private slots:
+    private slots:
         void onTransferDone();
-      signals:
+    signals:
         void done();
         void downloaded();
     };
@@ -83,6 +83,6 @@ namespace netmanager {
     //    private slots:
     //        void setUrl();
     //    };
-}
+}  // namespace netmanager
 
 #endif  // DOWNLOADER_H

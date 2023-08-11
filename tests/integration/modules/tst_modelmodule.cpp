@@ -354,7 +354,7 @@ namespace modules {
             ModelModule model;
             model.retrieveSelecteded();
         }
-    }
+    }  // namespace tests
 }  // namespace modules
 
 #include "tst_modelmodule.moc"

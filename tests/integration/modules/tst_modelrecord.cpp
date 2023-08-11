@@ -96,7 +96,7 @@ namespace modules {
 
             QCOMPARE(model.roleNames(), data);
         }
-    }
+    }  // namespace tests
 }  // namespace modules
 
 #include "tst_modelrecord.moc"

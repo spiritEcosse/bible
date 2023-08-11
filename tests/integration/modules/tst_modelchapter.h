@@ -14,15 +14,15 @@ namespace modules {
 
         class tst_ModelChapter : public ::tests::BaseTest<Verse, ModelChapter, db::TranslationStorage> {
             Q_OBJECT
-          protected:
+        protected:
             [[nodiscard]] std::vector<VerseUnique> helperGetObjectsUnique() const override;
-          private slots:
+        private slots:
             void initTestCase() override;
             void cleanupTestCase() override;
             void updateObjects();
             void roleNames();
         };
-    }
-}
+    }  // namespace tests
+}  // namespace modules
 
 #endif  // TST_MODELCHAPTER_H

@@ -10,7 +10,7 @@ class QJsonObject;
 namespace modules {
 
     class Host {
-      public:
+    public:
         Host();
         Host(const QJsonObject &json);
         Host(const QString &alias, const QByteArray &path, int priority = 0, int weight = 0);

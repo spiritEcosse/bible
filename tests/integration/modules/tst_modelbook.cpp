@@ -97,7 +97,7 @@ namespace modules {
             model.m_waitingTimeBeforeHitDb = 0;
 
             model.searchVersesByText(searchQueryInVerseText);
-            if (hitDb) {
+            if(hitDb) {
                 QVERIFY(spy.wait());
                 QCOMPARE(spy.count(), 1);
             }
@@ -109,7 +109,7 @@ namespace modules {
                      true);
             QCOMPARE(model.objectsCount, 0);
         }
-    }
-}
+    }  // namespace tests
+}  // namespace modules
 
 #include "tst_modelbook.moc"

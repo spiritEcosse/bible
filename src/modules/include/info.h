@@ -10,7 +10,7 @@
 namespace modules {
 
     class Info {
-      public:
+    public:
         explicit Info(const QString &name, const QString &value);
 
         QString m_name;

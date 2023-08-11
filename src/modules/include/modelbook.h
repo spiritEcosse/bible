@@ -7,8 +7,8 @@
 
 #include "modelupdate.h"
 #include <QObject>
-#include <memory>
 #include <QTimer>
+#include <memory>
 
 namespace modules {
 
@@ -18,7 +18,13 @@ namespace modules {
 
     class ModelBook : public ListModel<Book, db::TranslationStorage> {
         Q_OBJECT
-      public:
+    public:
+        explicit ModelBook(QString &&fileName = "", bool search = false, QObject *parent = nullptr);
+        virtual QHash<int, QByteArray> roleNames() const override;
+        virtual QVariant data(const QModelIndex &index, int role) const override;
+        Q_INVOKABLE virtual void searchVersesByText(const QString &searchVerseText);
+        std::unique_ptr<QTimer> m_queryTimer = nullptr;
+
         enum BookRoles {
             BookNumber = 0,
             ShortName = 1,
@@ -30,13 +36,7 @@ namespace modules {
             FoundVerses = 7
         };
 
-        explicit ModelBook(QString &&fileName = "", bool search = false, QObject *parent = nullptr);
-        virtual QHash<int, QByteArray> roleNames() const override;
-        virtual QVariant data(const QModelIndex &index, int role) const override;
-        Q_INVOKABLE virtual void searchVersesByText(const QString &searchVerseText);
-        std::unique_ptr<QTimer> m_queryTimer = nullptr;
-
-      private:
+    private:
         friend tests::tst_ModelBook;
         int m_waitingTimeBeforeHitDb = 500;
 

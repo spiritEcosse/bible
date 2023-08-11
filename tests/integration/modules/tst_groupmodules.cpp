@@ -1,6 +1,6 @@
+#include "tst_groupmodules.h"
 #include "groupmodules.h"
 #include "locallanguage.h"
-#include "tst_groupmodules.h"
 
 namespace modules {
     namespace tests {
@@ -384,7 +384,7 @@ namespace modules {
         void tst_GroupModules::testFunction() {
             QCOMPARE(true, true);
         }
-    }
+    }  // namespace tests
 }  // namespace modules
 
 #include "tst_groupmodules.moc"

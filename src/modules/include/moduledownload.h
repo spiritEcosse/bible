@@ -9,7 +9,7 @@ namespace modules {
 
     class ModuleDownload : public QObject {
         Q_OBJECT
-      public:
+    public:
         ModuleDownload() = default;
         ModuleDownload(const QString &abbreviation,
                        bool selecting = false,
