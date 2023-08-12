@@ -1,5 +1,6 @@
 #include "quickdownload.h"
 #include <mutex>
+#include <JlCompress.h>
 
 #if defined(QUICKDOWNLOAD_AUTO_REGISTER)
 #include "register_quickdownload.h"
@@ -284,7 +285,9 @@ namespace netmanager {
                 shutdownSaveFile();
                 setProgress(1.0);
                 setRunning(false);
-                qDebug() << "finished";
+                const QString dir = QDir::currentPath() + "/modules/";
+                JlCompress::extractDir(dir + _moduleName + ".zip", dir + "/" + _moduleName);
+                QFile::remove(dir + _moduleName + ".zip");
                 emit finished();
             } else {
                 if(_saveFile)
