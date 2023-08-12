@@ -36,6 +36,7 @@ if(Qt6_FOUND)
             crypto
             curl
             ZLIB::ZLIB
+            QuaZip
             nghttp2
             dl)
 else()
@@ -54,6 +55,7 @@ else()
             ssl
             crypto
             curl
+            QuaZip
             ZLIB::ZLIB
             nghttp2
             dl)
