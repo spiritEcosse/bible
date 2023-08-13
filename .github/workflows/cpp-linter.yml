@@ -5,7 +5,7 @@ on:
         branches: []
     pull_request:
         branches: []
-        
+
 jobs:
     cpp-linter:
         name: cpp-linter
