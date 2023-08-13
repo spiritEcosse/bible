@@ -16,6 +16,7 @@
 #include "managerregistry.h"
 #include "modelgroupmodules.h"
 #include "modelrecord.h"
+#include "modelbook.h"
 #include "quickdownload.h"
 
 void createAppDir() {
@@ -49,6 +50,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     qmlRegisterType<netmanager::QuickDownload>("bible.QuickDownload", 1, 0, "QuickDownload");
     modules::ModelModule::registerMe();
     modules::ModelRecord::registerMe();
+    modules::ModelBook::registerMe();
 
     //    ModuleProxyModel moduleProxyModel;
     //    ModuleModel ModuleModel;
