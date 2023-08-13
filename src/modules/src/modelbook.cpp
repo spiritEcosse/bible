@@ -7,6 +7,7 @@
 #include "modelverse.h"
 #include <iostream>
 #include <memory>
+#include <QtQuick>
 
 int MIN_LENGTH_SEARCH_QUERY = 2;
 
@@ -78,6 +79,24 @@ namespace modules {
         } catch(...) {
             throw;
         }
+    }
+
+    QVariant ModelBook::getShortName(int bookNumber) {
+        try {
+            return std::get<0>(
+                m_db->storage->select(columns(&Book::m_shortName), where(c(&Book::m_bookNumber) == bookNumber))[0]);
+        } catch(const std::system_error &e) {
+            // Log the error and emit an error signal
+            qCritical() << "Error searching bookNumber in ModelBook: " << e.what();
+            emit error("An error occurred.");
+        } catch(...) {
+            throw;
+        }
+        return "";
+    }
+
+    void ModelBook::registerMe() {
+        qmlRegisterType<ModelBook>("bible.ModelBook", 1, 0, "ModelBook");
     }
 
     // Override

@@ -572,7 +572,8 @@ SilicaFlickable {
                                                                                                             {
                                                                                                                 "textComment": textComment,
                                                                                                                 "modelRecord": modelRecord,
-                                                                                                                "expandingSectionBook": expandingSectionBook
+                                                                                                                "expandingSectionBook": expandingSectionBook,
+                                                                                                                "modelBook": listBooks.model
                                                                                                             })
                                                                                             }
                                                                                         }
