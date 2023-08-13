@@ -2,15 +2,19 @@ name: cpp-linter
 
 on:
     push:
-        branches: [master, develop]
+        branches: []
     pull_request:
-        branches: [master, develop]
+        branches: []
+
 jobs:
     cpp-linter:
         name: cpp-linter
         runs-on: ubuntu-latest
         steps:
-          - name: cpp-linter
-            uses: shenxianpeng/cpp-linter-action@master
-        env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          - uses: actions/checkout@v3
+          - uses: cpp-linter/cpp-linter-action@v2
+            id: linter
+            env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            with:
+              style: file
