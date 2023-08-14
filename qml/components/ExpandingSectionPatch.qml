@@ -100,7 +100,6 @@ Item {
 
         onClicked: {
             expanded = !expanded;
-            console.log(expanded, index);
 //            console.log("onClicked: " + index);
 //            if (_group) {
 //                var sectionIndex = _group.indexOfSection(root)
