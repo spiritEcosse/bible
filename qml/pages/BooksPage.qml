@@ -272,13 +272,11 @@ SilicaFlickable {
                                                     property int recordBookIndex: modelRecord.bookIndex
                                                     property bool sameBook: index === modelRecord.bookIndex
                                                     onSameBookChanged: {
-                                                        console.log(index);
                                                         if (sameBook) {
 //                                                            console.log(expanded, sameBook, index, recordBookIndex);
                                                             expanded = sameBook;
                                                             if (expanded) {
                                                                 listBooks.currentIndex = index;
-                                                                console.log(index);
                                                             }
                                                         }
                                                     }
@@ -417,13 +415,10 @@ SilicaFlickable {
                                                                             highlightRangeMode: ListView.StrictlyEnforceRange
 
                                                                             Component.onCompleted: {
-                                                                                console.log(expandingSectionBook.sameBook, chapterExpandingSection.sameChapter,
-                                                                                            "modelRecord.verseIndex: " + modelRecord.verseIndex, listVerses.model.rowCount());
                                                                                 if (expandingSectionBook.sameBook && chapterExpandingSection.sameChapter &&
                                                                                         modelRecord.verseIndex !== -1 &&
                                                                                         listVerses.model.rowCount() < modelRecord.verseIndex &&
                                                                                         listVerses.model.canFetchMore(listVerses.model.index(0, 0))) {
-                                                                                    console.log("verses onCompleted");
                                                                                     var index = 1;
 //                                                                                    console.log(listVerses.model.rowCount(), modelRecord.verseIndex, listVerses.model.canFetchMore(listVerses.model.index(0, 0)));
                                                                                     while (listVerses.model.rowCount() < modelRecord.verseIndex && listVerses.model.canFetchMore(listVerses.model.index(0, 0))) {
@@ -438,10 +433,7 @@ SilicaFlickable {
                                                                                     listVerses.currentIndex = modelRecord.verseIndex !== -1 ? modelRecord.verseIndex : 0
                                                                                 }
 
-//                                                                                console.log(modelRecord.verseIndex);
-
                                                                                 timerOnExpandedVerse.restart();
-//                                                                                currentIndex = historyModel.verseIndex >= 1 ? historyModel.verseIndex - 1 : 0
                                                                             }
                                                                             onMovementEnded: {
                                                                                 create_record();
@@ -466,18 +458,9 @@ SilicaFlickable {
                                                                                 interval: 100
                                                                                 repeat: false
                                                                                 onTriggered: {
-//                                                                                    console.log(listItem.recordIndex, index);
-//                                                                                    listVerses.currentIndex = index;
                                                                                     listVerses.create_record();
-                        //                                                            modelRecord.createRecord(short_name, index);
-                        //                                                            historyModel.bookIndex = index;
-                        //                                                            historyModel.bookShortName = short_name;
                                                                                 }
                                                                             }
-
-//                                                                            onMovementEnded: historyModel.verseIndex = currentIndex + 1
-//                                                                            onMovementEnded: modelRecord.createRecord(short_name, chapterIndex, index);
-//                                                                            currentIndex: historyModel.verseIndex >= 1 ? historyModel.verseIndex - 1 : 0
 
                                                                             delegate: ListItem {
                                                                                 id: listItem

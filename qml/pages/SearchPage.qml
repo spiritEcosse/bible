@@ -57,6 +57,7 @@ SilicaFlickable {
                 ExpandingSectionPatch {
                     id: modulesActive
                     title: abbreviation + ": " + description;
+                    property int moduleId: model.id
                     clip: true
                     width: parent.width
                     onExpandedChanged: {
@@ -173,13 +174,14 @@ SilicaFlickable {
                                                     MenuItem {
                                                         text: qsTr("Go to");
                                                         onClicked: {
-                                                            console.log(short_name);
                                                             modelRecord.createRecord(
                                                                        short_name,
                                                                        book_number / 10 - 1,
                                                                        chapter - 1,
                                                                        verse -1
                                                                        );
+                                                            modelModulesActive.activateModule(modulesActive.moduleId);
+                                                            modelModulesActive.updateObjectsActive();
                                                             slideshow.currentIndex = 0;
                                                         }
                                                     }
