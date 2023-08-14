@@ -417,10 +417,13 @@ SilicaFlickable {
                                                                             highlightRangeMode: ListView.StrictlyEnforceRange
 
                                                                             Component.onCompleted: {
+                                                                                console.log(expandingSectionBook.sameBook, chapterExpandingSection.sameChapter,
+                                                                                            "modelRecord.verseIndex: " + modelRecord.verseIndex, listVerses.model.rowCount());
                                                                                 if (expandingSectionBook.sameBook && chapterExpandingSection.sameChapter &&
                                                                                         modelRecord.verseIndex !== -1 &&
                                                                                         listVerses.model.rowCount() < modelRecord.verseIndex &&
                                                                                         listVerses.model.canFetchMore(listVerses.model.index(0, 0))) {
+                                                                                    console.log("verses onCompleted");
                                                                                     var index = 1;
 //                                                                                    console.log(listVerses.model.rowCount(), modelRecord.verseIndex, listVerses.model.canFetchMore(listVerses.model.index(0, 0)));
                                                                                     while (listVerses.model.rowCount() < modelRecord.verseIndex && listVerses.model.canFetchMore(listVerses.model.index(0, 0))) {
@@ -431,7 +434,10 @@ SilicaFlickable {
                                                                                         }
                                                                                     }
                                                                                     listVerses.currentIndex = modelRecord.verseIndex;
+                                                                                } else {
+                                                                                    listVerses.currentIndex = modelRecord.verseIndex !== -1 ? modelRecord.verseIndex : 0
                                                                                 }
+
 //                                                                                console.log(modelRecord.verseIndex);
 
                                                                                 timerOnExpandedVerse.restart();
