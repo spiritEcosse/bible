@@ -174,13 +174,13 @@ SilicaFlickable {
                                                     MenuItem {
                                                         text: qsTr("Go to");
                                                         onClicked: {
+                                                            modelModulesActive.activateModule(modulesActive.moduleId);
                                                             modelRecord.createRecord(
-                                                                       short_name,
+                                                                       book_number,
                                                                        book_number / 10 - 1,
                                                                        chapter - 1,
                                                                        verse -1
                                                                        );
-                                                            modelModulesActive.activateModule(modulesActive.moduleId);
                                                             modelModulesActive.updateObjectsActive();
                                                             slideshow.currentIndex = 0;
                                                         }

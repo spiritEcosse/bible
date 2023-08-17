@@ -106,7 +106,7 @@ namespace db {
                        make_column("active", &Module::m_active, default_value(false))),
             make_table("record",
                        make_column("timestamp", &Record::m_timestamp),
-                       make_column("book_short_name", &Record::m_bookShortName),
+                       make_column("book_number", &Record::m_bookNumber),
                        make_column("book_index", &Record::m_bookIndex),
                        make_column("chapter_index", &Record::m_chapterIndex),
                        make_column("verse_index", &Record::m_verseIndex)));
@@ -142,16 +142,16 @@ namespace db {
         TranslationStorageSingleton &operator=(const TranslationStorageSingleton &) = delete;
         TranslationStorageSingleton(const TranslationStorageSingleton &) = delete;
 
-        static TranslationStorageSingleton &getInstance() {
-            static TranslationStorageSingleton instance;
+        static TranslationStorageSingleton &getInstance(const QString &fileName) {
+            static TranslationStorageSingleton instance(fileName);
             return reinterpret_cast<TranslationStorageSingleton &>(instance);
         }
 
         std::shared_ptr<TranslationStorage> storage;
 
     private:
-        explicit TranslationStorageSingleton() {
-            storage = std::make_shared<TranslationStorage>(translationStorageFunc(""));
+        explicit TranslationStorageSingleton(const QString &fileName) {
+            storage = std::make_shared<TranslationStorage>(translationStorageFunc(fileName));
             storage->sync_schema();
         }
 

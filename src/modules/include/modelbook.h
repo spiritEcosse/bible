@@ -25,7 +25,6 @@ namespace modules {
         Q_INVOKABLE virtual void searchVersesByText(const QString &searchVerseText);
         std::unique_ptr<QTimer> m_queryTimer = nullptr;
         static void registerMe();
-        Q_INVOKABLE QVariant getShortName(int bookNumber);
 
         enum BookRoles {
             BookNumber = 0,

@@ -138,6 +138,7 @@ namespace modules {
         Q_INVOKABLE virtual void updateObjectsActive();
         void search();
         virtual QString getNameJson() override;
+        QString getPathDbActiveModule();
     public slots:
         void getExtraFieldsFromDb();
     private slots:

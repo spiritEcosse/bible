@@ -129,6 +129,11 @@ namespace modules {
         return m_db->storage->count<Module>(where(c(&Module::m_hidden) == false));
     }
 
+    QString ModelModule::getPathDbActiveModule() {
+        m_objects = m_db->storage->get_all_pointer<Module>(where(c(&Module::m_active) == true));
+        return std::move(m_objects[0]->getFullPathDb());
+    }
+
     void ModelModule::updateObjects() {
         if(m_needle.isEmpty()) {
             beginResetModel();

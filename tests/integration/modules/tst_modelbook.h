@@ -19,6 +19,7 @@ namespace modules {
 
         protected:
             [[nodiscard]] std::vector<BookUnique> helperGetObjectsUnique() const override;
+            void initDb() override;
 
         private slots:
             void initTestCase() override;

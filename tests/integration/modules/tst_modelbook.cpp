@@ -5,6 +5,7 @@
 #include "tst_modelbook.h"
 #include "dereferenceiterator.h"
 #include "tst_modelverse.h"
+#include "tst_modelmodule.h"
 
 namespace modules {
     namespace tests {
@@ -17,11 +18,21 @@ namespace modules {
             BaseTest<Book, ModelBook, db::TranslationStorage>::cleanupTestCase();
         }
 
+        // I have to override this method because I need to attach databases user.sqlite and '/<module>/.SQLite3'
+        // and read data in ModelRecord::updateObjects.
+        // TODO: remove it and attach databases in memory
+        void tst_ModelBook::initDb() {
+            tst_ModelModule::helperCreateDbDir();
+            QString fullPathFile(QDir::currentPath() + "/modules/name.0/.SQLite3");
+            m_db = std::make_unique<db::Db<Book, db::TranslationStorage>>(fullPathFile.toLocal8Bit().data());
+            cleanTable();
+        }
+
         // helpers
         void tst_ModelBook::helperSaveStatic() {
             tst_ModelBook tst_modelBook;
             tst_modelBook.initDb();
-            tst_modelBook.helperSave();
+            tst_modelBook.helperSaveUnique();
         }
 
         std::vector<BookUnique> tst_ModelBook::helperGetObjectsUnique() const {

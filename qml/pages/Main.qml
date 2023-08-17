@@ -61,6 +61,7 @@ Pages {
 
         Component.onCompleted: {
             modelModulesActive.updateObjectsActive();
+            modelRecord.updateObjects();
             flagUpdateObjectsActive = true;
         }
     }
@@ -123,6 +124,7 @@ Pages {
                     initPageModules = true;
                 } else if (slideshow.currentIndex === 0 && !flagUpdateObjectsActive) {
                     modelModulesActive.updateObjectsActive();
+                    modelRecord.updateObjects();
                     flagUpdateObjectsActive = true;
                 }
             }

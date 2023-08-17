@@ -12,8 +12,8 @@ namespace db {
             }
             storage = MySingleton::getInstance(m_fileName).storage;
         } else if constexpr(std::is_same_v<TranslationStorage, S>) {
-            if(m_fileName == ":memory:" || m_fileName.isEmpty()) {
-                storage = TranslationStorageSingleton::getInstance().storage;
+            if(m_fileName == ":memory:" || m_fileName.isEmpty() || m_fileName.contains("modules/name.0/.SQLite3")) {
+                storage = TranslationStorageSingleton::getInstance(m_fileName).storage;
             } else {
                 storage.reset(new TranslationStorage(translationStorageFunc(m_fileName)));
             }

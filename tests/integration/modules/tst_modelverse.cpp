@@ -62,7 +62,6 @@ namespace modules {
 
         void tst_ModelVerse::searchVersesByText() {
             cleanTable();
-            tst_ModelBook::helperSaveStatic();
             auto &&objects = helperSaveUnique();
 
             ModelVerse model(std::make_shared<QString>("text.1"), 1);
