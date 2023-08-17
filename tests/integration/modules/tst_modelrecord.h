@@ -19,7 +19,7 @@ namespace modules {
 
         protected:
             [[nodiscard]] std::vector<RecordUnique> helperGetObjectsUnique() const override;
-            virtual void initDb() override;
+            void initDb() override;
 
         private slots:
             void cleanup() override;
