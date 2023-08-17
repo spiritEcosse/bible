@@ -175,13 +175,13 @@ SilicaFlickable {
                                                         text: qsTr("Go to");
                                                         onClicked: {
                                                             modelModulesActive.activateModule(modulesActive.moduleId);
-                                                            modelModulesActive.updateObjectsActive();
                                                             modelRecord.createRecord(
                                                                        book_number,
                                                                        book_number / 10 - 1,
                                                                        chapter - 1,
                                                                        verse -1
                                                                        );
+                                                            modelModulesActive.updateObjectsActive();
                                                             slideshow.currentIndex = 0;
                                                         }
                                                     }
