@@ -59,6 +59,7 @@ SilicaFlickable {
                         remorseAction("Activating " + abbreviation, function() {
                             modelModuleBooks.activateModule(model.id);
                             modelModulesActive.updateObjectsActive();
+                            modelRecord.updateObjects();
                         })
                     }
 
@@ -268,6 +269,7 @@ SilicaFlickable {
                                                     id: expandingSectionBook
                                                     title: long_name.trim() + index
                                                     width: parent.width
+                                                    property int bookNumber: book_number
                                                     property int bookIndex: index
                                                     property int recordBookIndex: modelRecord.bookIndex
                                                     property bool sameBook: index === modelRecord.bookIndex
@@ -447,7 +449,7 @@ SilicaFlickable {
 //                                                                                modelRecord.firstBookIndex = expandingSectionBook.bookIndex;
 //                                                                                modelRecord.firstChapterIndex = chapterExpandingSection.chapterIndex;
                                                                                 modelRecord.createRecord(
-                                                                                            expandingSectionBook.bookShortName,
+                                                                                            expandingSectionBook.bookNumber,
                                                                                             expandingSectionBook.bookIndex,
                                                                                             chapterExpandingSection.chapterIndex,
                                                                                             index
@@ -682,7 +684,7 @@ SilicaFlickable {
                     onClicked: {
                         sourcePanelHistory.currentIndex = 0;
                         modelRecord.createRecord(
-                                    book_short_name,
+                                    book_number,
                                     book_index,
                                     chapter_index,
                                     verse_index

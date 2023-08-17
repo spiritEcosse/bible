@@ -44,7 +44,7 @@ Pages {
                         var firstBookIndex = link_data[1] / 10 - 1;
                         var firstChapterIndex = link_data[2] - 1;
                         modelRecord.createRecord(
-                                    short_name_book,
+                                    link_data[1],
                                     firstBookIndex,
                                     firstChapterIndex,
                                     link_data[3] - 1

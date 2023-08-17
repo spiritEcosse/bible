@@ -4,6 +4,9 @@
 
 #include "tst_modelrecord.h"
 #include <algorithm>
+#include <memory>
+#include "tst_modelmodule.h"
+#include "tst_modelbook.h"
 
 #include "dereferenceiterator.h"
 
@@ -11,6 +14,14 @@ Q_DECLARE_METATYPE(std::vector<modules::RecordShared>)
 
 namespace modules {
     namespace tests {
+
+        // I have to override this method because I need to attach databases user.sqlite and '/<module>/.SQLite3'
+        // and read data in ModelRecord::updateObjects.
+        // TODO: remove it and attach databases in memory
+        void tst_ModelRecord::initDb() {
+            m_db = std::make_unique<db::Db<Record>>("");  // fileName "" will take user.sqlite
+            cleanTable();
+        }
 
         void tst_ModelRecord::cleanup() {
             BaseTest<Record, ModelRecord>::cleanup();
@@ -33,7 +44,12 @@ namespace modules {
         std::vector<RecordUnique> tst_ModelRecord::helperGetObjectsUnique() const {
             std::vector<RecordUnique> objects;
             for(size_t in = 0; in < vectorSize; in++) {
-                objects.push_back(std::make_unique<Record>("", in, in, in, QDateTime::currentDateTime()));
+                objects.push_back(std::make_unique<Record>(in,
+                                                           in,
+                                                           in,
+                                                           in,
+                                                           QDateTime::currentDateTime(),
+                                                           QString("shortName.%1").arg(in)));
             }
             return objects;
         }
@@ -41,9 +57,18 @@ namespace modules {
         // tests
 
         void tst_ModelRecord::updateObjects() {
+            tst_ModelModule::helperSaveStaticAndSetExtraFieldsTrue();
+            tst_ModelBook::helperSaveStatic();
             auto &&objects = helperSaveUnique();
 
             ModelRecord model;
+            QSignalSpy spyChangeBookIndex(&model, &ModelRecord::changeBookIndex);
+            QSignalSpy spyChangeChapterIndex(&model, &ModelRecord::changeChapterIndex);
+            QSignalSpy spyChangeVerseIndex(&model, &ModelRecord::changeVerseIndex);
+            model.updateObjects();
+            QCOMPARE(spyChangeBookIndex.count(), 1);
+            QCOMPARE(spyChangeChapterIndex.count(), 1);
+            QCOMPARE(spyChangeVerseIndex.count(), 1);
             QCOMPARE(model.m_objects.size(), vectorSize);
             std::sort(objects.begin(), objects.end(), [](const auto &x, const auto &y) {
                 return (x->m_timestamp > y->m_timestamp);
@@ -57,10 +82,16 @@ namespace modules {
 
         void tst_ModelRecord::createRecord_data() {
             QTest::addColumn<std::vector<RecordShared>>("objects");
-            std::vector<RecordShared> records{std::make_shared<Record>("", 1, 1, 1, QDateTime::currentDateTime())};
+            int index = 1;
+            std::vector<RecordShared> records{std::make_shared<Record>(index,
+                                                                       index,
+                                                                       index,
+                                                                       index,
+                                                                       QDateTime::currentDateTime(),
+                                                                       QString("shortName.%1").arg(index))};
 
             QTest::newRow("success make insert") << records;
-            records.push_back(std::make_shared<Record>("", 1, 1, 1, QDateTime::currentDateTime()));
+            records.push_back(std::make_shared<Record>(index, index, index, index, QDateTime::currentDateTime()));
             QTest::newRow("not success make insert, cause duplicate") << records;
         }
 
@@ -71,7 +102,7 @@ namespace modules {
 
             QCOMPARE(model.m_objects.size(), static_cast<size_t>(0));
             std::for_each(objects.begin(), objects.end(), [&model](const auto &object) {
-                model.createRecord(object->m_bookShortName,
+                model.createRecord(object->m_bookNumber,
                                    object->m_bookIndex,
                                    object->m_chapterIndex,
                                    object->m_verseIndex,
@@ -89,6 +120,7 @@ namespace modules {
         void tst_ModelRecord::roleNames() {
             ModelRecord model;
             QHash<int, QByteArray> data{{ModelRecord::Timestamp, "timestamp"},
+                                        {ModelRecord::BookNumber, "book_number"},
                                         {ModelRecord::BookShortName, "book_short_name"},
                                         {ModelRecord::BookIndex, "book_index"},
                                         {ModelRecord::ChapterIndex, "chapter_index"},

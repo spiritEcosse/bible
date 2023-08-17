@@ -38,7 +38,9 @@ namespace modules {
                                                            QDate(2017, 03, 31),
                                                            false,
                                                            false,
-                                                           m_downloaded));
+                                                           m_downloaded,
+                                                           false,
+                                                           true));
             }
             return objects;
         }
@@ -58,7 +60,9 @@ namespace modules {
                                                            QDate(2017, 03, 31),
                                                            false,
                                                            false,
-                                                           m_downloaded));
+                                                           m_downloaded,
+                                                           false,
+                                                           true));
             }
             return objects;
         }
@@ -83,12 +87,21 @@ namespace modules {
             return objects;
         }
 
+        void tst_ModelModule::helperCreateDbDir() {
+            // I have to override this method because I need to attach databases user.sqlite and '/<module>/.SQLite3'
+            // and read data in ModelRecord::updateObjects.
+            // TODO: remove it and attach databases in memory
+            const QDir moduleDir = QDir::currentPath() + "/modules/name.0/";
+            moduleDir.mkpath(".");
+        }
+
         void tst_ModelModule::helperSaveStaticAndSetExtraFieldsTrue() {
             tst_ModelModule tst_model;
             tst_model.initDb();
             tst_model.helperSave();
             tst_model.m_db->storage->update_all(set(assign(&Module::m_downloaded, true)));
             tst_model.m_db->storage->update_all(set(assign(&Module::m_selected, true)));
+            helperCreateDbDir();
         }
 
         void tst_ModelModule::helperCheckAllData(const std::vector<ModelShared> &modules) {

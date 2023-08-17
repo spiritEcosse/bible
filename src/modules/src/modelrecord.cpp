@@ -4,35 +4,93 @@
 
 #include "modelrecord.h"
 #include <QtQuick>
+#include <sqlite3.h>
+#include "modelmodule.h"
 
 namespace modules {
 
-    ModelRecord::ModelRecord() : ListModel<Record>() {
-        updateObjects();
+    ModelRecord::ModelRecord() : ListModel<Record>(), m_modelModule(new ModelModule()) {
+        int rc = sqlite3_open(m_db->getFileName().toLocal8Bit().data(), &db);
+
+        if(rc) {
+            fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+        } else {
+            qDebug() << m_db->getFileName().toLocal8Bit().data() << "Opened database successfully";
+        }
+    }
+
+    ModelRecord::~ModelRecord() noexcept {
+        sqlite3_close(db);
     }
 
     void ModelRecord::updateObjects() {
-        beginResetModel();
-        objectsCount = 0;
-        m_objects = m_db->storage->get_all_pointer<Record>(order_by(&Record::m_timestamp).desc());
+        int rc;
+        // Attach another database
+        QString dbModule = std::move(m_modelModule->getPathDbActiveModule());
+        rc = sqlite3_exec(db,
+                          QString("ATTACH DATABASE '%1' AS attached").arg(dbModule).toLocal8Bit().data(),
+                          nullptr,
+                          nullptr,
+                          nullptr);
+        if(rc != SQLITE_OK) {
+            qCritical() << "Cannot attach database: " << sqlite3_errmsg(db);
+        } else {
+            qDebug() << "Database is attached";
 
-        if(!m_objects.empty()) {
-            m_bookIndex = m_objects[0]->m_bookIndex;
-            m_chapterIndex = m_objects[0]->m_chapterIndex;
-            m_verseIndex = m_objects[0]->m_verseIndex;
+            const char *sql = "SELECT atb.short_name, mr.* FROM record AS mr INNER JOIN books_all AS atb ON "
+                              "(mr.book_number==atb.book_number) ORDER BY mr.timestamp DESC";
 
-            emit changeBookIndex();
-            emit changeChapterIndex();
-            emit changeVerseIndex();
+            sqlite3_stmt *stmt;
+            rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+            if(rc != SQLITE_OK) {
+                qCritical() << "SELECT failed: " << sqlite3_errmsg(db);
+            } else {
+                beginResetModel();
+                objectsCount = 0;
+                m_objects.clear();
+
+                while((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
+                    const char *bookShortName = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 0));
+                    const char *timestamp = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 1));
+                    const int bookNumber = reinterpret_cast<const int>(sqlite3_column_int(stmt, 2));
+                    const int bookIndex = reinterpret_cast<const int>(sqlite3_column_int(stmt, 3));
+                    int chapterIndex = reinterpret_cast<const int>(sqlite3_column_int(stmt, 4));
+                    int verseIndex = reinterpret_cast<const int>(sqlite3_column_int(stmt, 5));
+                    m_objects.push_back(std::make_unique<Record>(bookNumber,
+                                                                 bookIndex,
+                                                                 chapterIndex,
+                                                                 verseIndex,
+                                                                 QDateTime::fromString(timestamp, ISODateTimeFormat),
+                                                                 bookShortName));
+                }
+
+                if(rc != SQLITE_DONE) {
+                    qCritical() << "SELECT failed: " << sqlite3_errmsg(db);
+                }
+
+                if(!m_objects.empty()) {
+                    m_bookIndex = m_objects[0]->m_bookIndex;
+                    m_chapterIndex = m_objects[0]->m_chapterIndex;
+                    m_verseIndex = m_objects[0]->m_verseIndex;
+
+                    emit changeBookIndex();
+                    emit changeChapterIndex();
+                    emit changeVerseIndex();
+                }
+                endResetModel();
+            }
+            sqlite3_finalize(stmt);
         }
-        endResetModel();
+
+        // Detach the attached database
+        rc = sqlite3_exec(db, "DETACH DATABASE attached;", nullptr, nullptr, nullptr);
+        if(rc != SQLITE_OK) {
+            qCritical() << "Cannot detach database: " << sqlite3_errmsg(db);
+        }
     }
 
-    void ModelRecord::createRecord(QString bookShortName,
-                                   int bookIndex,
-                                   int chapterIndex,
-                                   int verseIndex,
-                                   QDateTime timestamp) {
+    void
+    ModelRecord::createRecord(int bookNumber, int bookIndex, int chapterIndex, int verseIndex, QDateTime timestamp) {
         if(!m_objects.empty()) {
             const auto &object = m_objects[0];
 
@@ -41,8 +99,7 @@ namespace modules {
                 return;
             }
         }
-        m_db->storage->insert(
-            Record(std::move(bookShortName), bookIndex, chapterIndex, verseIndex, std::move(timestamp)));
+        m_db->storage->insert(Record(bookNumber, bookIndex, chapterIndex, verseIndex, std::move(timestamp)));
         updateObjects();
     }
 
@@ -98,6 +155,7 @@ namespace modules {
     // Override
     QHash<int, QByteArray> ModelRecord::roleNames() const {
         return {{Timestamp, "timestamp"},
+                {BookNumber, "book_number"},
                 {BookShortName, "book_short_name"},
                 {BookIndex, "book_index"},
                 {ChapterIndex, "chapter_index"},
@@ -116,6 +174,9 @@ namespace modules {
         switch(role) {
             case Timestamp:
                 data = object->m_timestamp;
+                break;
+            case BookNumber:
+                data = object->m_bookNumber;
                 break;
             case BookShortName:
                 data = object->m_bookShortName;

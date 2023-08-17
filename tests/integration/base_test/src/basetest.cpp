@@ -70,7 +70,7 @@ namespace tests {
 
     template<class T, class O, class S>
     void BaseTest<T, O, S>::initDb() {
-        m_db.reset(new db::Db<T, S>(":memory:"));
+        m_db = std::make_unique<db::Db<T, S>>(":memory:");
         cleanTable();
     }
 

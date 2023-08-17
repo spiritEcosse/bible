@@ -16,6 +16,7 @@ namespace modules {
             ~tst_ModelModule();
 
             static void helperSaveStaticAndSetExtraFieldsTrue();
+            static void helperCreateDbDir();
             static void helperCheckAllData(const std::vector<ModelShared> &modules);
 
         private:

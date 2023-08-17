@@ -13,16 +13,18 @@ namespace modules {
     class Record {
     public:
         Record() = default;
-        Record(QString &&bookShortName,
+        Record(int bookNumber,
                int bookIndex,
                int chapterIndex,
                int verseIndex,
-               QDateTime &&timestamp = QDateTime::currentDateTime());
-        QDateTime m_timestamp;
-        QString m_bookShortName;
+               QDateTime &&timestamp = QDateTime::currentDateTime(),
+               QString &&bookShortName = "");
+        int m_bookNumber;
         int m_bookIndex{};
         int m_chapterIndex{};
         int m_verseIndex{};
+        QDateTime m_timestamp;
+        QString m_bookShortName;
 
         bool operator==(const Record &other) const;
 
