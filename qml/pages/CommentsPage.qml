@@ -40,8 +40,7 @@ Pages {
                     onLinkActivated: {
                         var regExp = /^[A-Z]:(\d+)\s(\d+):(\d+).*$/;
                         var link_data = link.match(regExp);
-                        var short_name_book = modelBook.getShortName(link_data[1]);
-                        var firstBookIndex = link_data[1] / 10 - 1;
+                        var firstBookIndex = modelBook.getBookId(link_data[1]) - 1;
                         var firstChapterIndex = link_data[2] - 1;
                         modelRecord.createRecord(
                                     link_data[1],

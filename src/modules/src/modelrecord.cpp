@@ -24,68 +24,72 @@ namespace modules {
     }
 
     void ModelRecord::updateObjects() {
-        int rc;
-        // Attach another database
         QString dbModule = std::move(m_modelModule->getPathDbActiveModule());
-        rc = sqlite3_exec(db,
-                          QString("ATTACH DATABASE '%1' AS attached").arg(dbModule).toLocal8Bit().data(),
-                          nullptr,
-                          nullptr,
-                          nullptr);
-        if(rc != SQLITE_OK) {
-            qCritical() << "Cannot attach database: " << sqlite3_errmsg(db);
-        } else {
-            qDebug() << "Database is attached";
 
-            const char *sql = "SELECT atb.short_name, mr.* FROM record AS mr INNER JOIN books_all AS atb ON "
-                              "(mr.book_number==atb.book_number) ORDER BY mr.timestamp DESC";
-
-            sqlite3_stmt *stmt;
-            rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+        if(!dbModule.isEmpty()) {
+            int rc;
+            // Attach another database
+            rc = sqlite3_exec(db,
+                              QString("ATTACH DATABASE '%1' AS attached").arg(dbModule).toLocal8Bit().data(),
+                              nullptr,
+                              nullptr,
+                              nullptr);
             if(rc != SQLITE_OK) {
-                qCritical() << "SELECT failed: " << sqlite3_errmsg(db);
+                qCritical() << "Cannot attach database: " << sqlite3_errmsg(db);
             } else {
-                beginResetModel();
-                objectsCount = 0;
-                m_objects.clear();
+                qDebug() << "Database is attached";
 
-                while((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
-                    const char *bookShortName = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 0));
-                    const char *timestamp = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 1));
-                    const int bookNumber = reinterpret_cast<const int>(sqlite3_column_int(stmt, 2));
-                    const int bookIndex = reinterpret_cast<const int>(sqlite3_column_int(stmt, 3));
-                    int chapterIndex = reinterpret_cast<const int>(sqlite3_column_int(stmt, 4));
-                    int verseIndex = reinterpret_cast<const int>(sqlite3_column_int(stmt, 5));
-                    m_objects.push_back(std::make_unique<Record>(bookNumber,
-                                                                 bookIndex,
-                                                                 chapterIndex,
-                                                                 verseIndex,
-                                                                 QDateTime::fromString(timestamp, ISODateTimeFormat),
-                                                                 bookShortName));
-                }
+                const char *sql = "SELECT atb.short_name, mr.* FROM record AS mr INNER JOIN books_all AS atb ON "
+                                  "(mr.book_number==atb.book_number) ORDER BY mr.timestamp DESC";
 
-                if(rc != SQLITE_DONE) {
+                sqlite3_stmt *stmt;
+                rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+                if(rc != SQLITE_OK) {
                     qCritical() << "SELECT failed: " << sqlite3_errmsg(db);
-                }
+                } else {
+                    beginResetModel();
+                    objectsCount = 0;
+                    m_objects.clear();
 
-                if(!m_objects.empty()) {
-                    m_bookIndex = m_objects[0]->m_bookIndex;
-                    m_chapterIndex = m_objects[0]->m_chapterIndex;
-                    m_verseIndex = m_objects[0]->m_verseIndex;
+                    while((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
+                        const char *bookShortName = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 0));
+                        const char *timestamp = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 1));
+                        const int bookNumber = reinterpret_cast<const int>(sqlite3_column_int(stmt, 2));
+                        const int bookIndex = reinterpret_cast<const int>(sqlite3_column_int(stmt, 3));
+                        int chapterIndex = reinterpret_cast<const int>(sqlite3_column_int(stmt, 4));
+                        int verseIndex = reinterpret_cast<const int>(sqlite3_column_int(stmt, 5));
+                        m_objects.push_back(
+                            std::make_unique<Record>(bookNumber,
+                                                     bookIndex,
+                                                     chapterIndex,
+                                                     verseIndex,
+                                                     QDateTime::fromString(timestamp, ISODateTimeFormat),
+                                                     bookShortName));
+                    }
 
-                    emit changeBookIndex();
-                    emit changeChapterIndex();
-                    emit changeVerseIndex();
+                    if(rc != SQLITE_DONE) {
+                        qCritical() << "SELECT failed: " << sqlite3_errmsg(db);
+                    }
+
+                    if(!m_objects.empty()) {
+                        m_bookIndex = m_objects[0]->m_bookIndex;
+                        m_chapterIndex = m_objects[0]->m_chapterIndex;
+                        m_verseIndex = m_objects[0]->m_verseIndex;
+
+                        emit changeBookIndex();
+                        emit changeChapterIndex();
+                        emit changeVerseIndex();
+                    }
+                    endResetModel();
                 }
-                endResetModel();
+                sqlite3_finalize(stmt);
             }
-            sqlite3_finalize(stmt);
-        }
 
-        // Detach the attached database
-        rc = sqlite3_exec(db, "DETACH DATABASE attached;", nullptr, nullptr, nullptr);
-        if(rc != SQLITE_OK) {
-            qCritical() << "Cannot detach database: " << sqlite3_errmsg(db);
+            // Detach the attached database
+            rc = sqlite3_exec(db, "DETACH DATABASE attached;", nullptr, nullptr, nullptr);
+            if(rc != SQLITE_OK) {
+                qCritical() << "Cannot detach database: " << sqlite3_errmsg(db);
+            }
         }
     }
 

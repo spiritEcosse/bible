@@ -43,7 +43,8 @@ namespace modules {
                                                          QString("longName.%1").arg(in),
                                                          QString("bookColor.%1").arg(in),
                                                          false,
-                                                         in));
+                                                         in,
+                                                         in + 1));
             }
             return objects;
         }
@@ -79,7 +80,8 @@ namespace modules {
                                         {ModelBook::IsPresent, "is_present"},
                                         {ModelBook::Chapters, "chapters"},
                                         {ModelBook::NumberChapters, "number_chapters"},
-                                        {ModelBook::FoundVerses, "foundVerses"}};
+                                        {ModelBook::FoundVerses, "foundVerses"},
+                                        {ModelBook::BookId, "bookId"}};
 
             QCOMPARE(model.roleNames(), data);
         }
@@ -119,6 +121,23 @@ namespace modules {
                                 dereference_iterator(objects.begin() + startPosition)),
                      true);
             QCOMPARE(model.objectsCount, 0);
+        }
+
+        void tst_ModelBook::testGetBookId_data() {
+            QTest::addColumn<int>("bookNumber");
+            QTest::addColumn<int>("bookId");
+            QTest::newRow("bookNumber : 1, bookId: 2") << 1 << 2;
+            QTest::newRow("bookNumber : 100 (doesn't exist), bookId: ''") << 100 << -1;
+        }
+
+        void tst_ModelBook::testGetBookId() {
+            QFETCH(int, bookNumber);
+            QFETCH(int, bookId);
+
+            auto &&objects = helperSaveUnique();
+
+            ModelBook model("", true);
+            QCOMPARE(model.getBookId(bookNumber), bookId);
         }
     }  // namespace tests
 }  // namespace modules

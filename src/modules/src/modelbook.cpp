@@ -27,7 +27,8 @@ namespace modules {
     void ModelBook::updateObjects() {
         beginResetModel();
         objectsCount = 0;
-        auto &&data = m_db->storage->select(columns(&Book::m_bookNumber,
+        auto &&data = m_db->storage->select(columns(rowid<Book>(),
+                                                    &Book::m_bookNumber,
                                                     &Book::m_shortName,
                                                     &Book::m_longName,
                                                     &Book::m_bookColor,
@@ -38,12 +39,13 @@ namespace modules {
                                             order_by(&Book::m_bookNumber));
 
         for(auto &&book: data) {
-            m_objects.push_back(std::make_unique<Book>(std::get<0>(book),
-                                                       std::move(std::get<1>(book)),
+            m_objects.push_back(std::make_unique<Book>(std::get<1>(book),
                                                        std::move(std::get<2>(book)),
                                                        std::move(std::get<3>(book)),
-                                                       std::get<4>(book),
-                                                       *std::get<5>(book).get()));
+                                                       std::move(std::get<4>(book)),
+                                                       std::get<5>(book),
+                                                       *std::get<6>(book).get(),
+                                                       std::get<0>(book)));
         }
         endResetModel();
     }
@@ -62,7 +64,14 @@ namespace modules {
             beginResetModel();
             objectsCount = 0;
             // Query the database to get all books with matching verses
-            m_objects = m_db->storage->get_all_pointer<Book>(
+            auto &&data = m_db->storage->select(
+                columns(rowid<Book>(),
+                        &Book::m_bookNumber,
+                        &Book::m_shortName,
+                        &Book::m_longName,
+                        &Book::m_bookColor,
+                        &Book::m_isPresent,
+                        sqlite_orm::max(&Verse::m_chapter)),
                 where(exists(select(columns(&Verse::m_bookNumber),
                                     from<Verse>(),
                                     where(like(&Verse::m_text, "%" + *m_searchQueryInVerseText + "%") and
@@ -70,6 +79,16 @@ namespace modules {
                                     limit(1)))),
                 group_by(&Book::m_bookNumber),
                 order_by(&Book::m_bookNumber));
+
+            for(auto &&book: data) {
+                m_objects.push_back(std::make_unique<Book>(std::get<1>(book),
+                                                           std::move(std::get<2>(book)),
+                                                           std::move(std::get<3>(book)),
+                                                           std::move(std::get<4>(book)),
+                                                           std::get<5>(book),
+                                                           *std::get<6>(book).get(),
+                                                           std::get<0>(book)));
+            }
             // End resetting the model
             endResetModel();
         } catch(const std::system_error &e) {
@@ -85,6 +104,20 @@ namespace modules {
         qmlRegisterType<ModelBook>("bible.ModelBook", 1, 0, "ModelBook");
     }
 
+    int ModelBook::getBookId(int bookNumber) {
+        try {
+            auto &&data = m_db->storage->select(columns(rowid<Book>()), where(c(&Book::m_bookNumber) == bookNumber));
+            return data.empty() ? -1 : static_cast<int>(std::get<0>(data[0]));
+        } catch(const std::system_error &e) {
+            // Log the error and emit an error signal
+            qCritical() << "Error searching bookNumber in ModelBook: " << e.what();
+            emit error("An error occurred.");
+        } catch(...) {
+            throw;
+        }
+        return -1;
+    }
+
     // Override
     QHash<int, QByteArray> ModelBook::roleNames() const {
         return {
@@ -96,6 +129,7 @@ namespace modules {
             {Chapters, "chapters"},
             {NumberChapters, "number_chapters"},
             {FoundVerses, "foundVerses"},
+            {BookId, "bookId"},
         };
     }
 
@@ -109,6 +143,9 @@ namespace modules {
         const auto &object = m_objects.at(index.row());
 
         switch(role) {
+            case BookId:
+                data = object->m_id;
+                break;
             case BookNumber:
                 data = object->m_bookNumber;
                 break;

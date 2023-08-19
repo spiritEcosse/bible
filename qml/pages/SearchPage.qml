@@ -97,7 +97,7 @@ SilicaFlickable {
 
                                 ExpandingSectionPatch {
                                     id: expandingSectionBook
-                                    title: long_name.trim()
+                                    title: long_name.trim() + bookId + ", book_number: " + book_number
                                     width: parent.width
                                     onExpandedChanged: {
                                         if (expanded) {
@@ -175,9 +175,10 @@ SilicaFlickable {
                                                         text: qsTr("Go to");
                                                         onClicked: {
                                                             modelModulesActive.activateModule(modulesActive.moduleId);
+                                                            console.log(book_number);
                                                             modelRecord.createRecord(
                                                                        book_number,
-                                                                       book_number / 10 - 1,
+                                                                       bookId - 1,
                                                                        chapter - 1,
                                                                        verse -1
                                                                        );

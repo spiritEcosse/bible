@@ -131,7 +131,7 @@ namespace modules {
 
     QString ModelModule::getPathDbActiveModule() {
         m_objects = m_db->storage->get_all_pointer<Module>(where(c(&Module::m_active) == true));
-        return std::move(m_objects[0]->getFullPathDb());
+        return m_objects.empty() ? "" : std::move(m_objects[0]->getFullPathDb());
     }
 
     void ModelModule::updateObjects() {

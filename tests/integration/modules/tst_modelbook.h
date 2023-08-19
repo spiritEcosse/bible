@@ -28,6 +28,8 @@ namespace modules {
             void roleNames();
             void testSearchVersesByText_data();
             void testSearchVersesByText();
+            void testGetBookId();
+            void testGetBookId_data();
         };
     }  // namespace tests
 }  // namespace modules
