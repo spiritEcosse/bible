@@ -20,12 +20,14 @@ namespace modules {
              QString &&longName,
              QString &&bookColor,
              bool isPresent,
-             int numberChapters);
+             int numberChapters,
+             int id);
 
         int m_bookNumber{};
         QString m_shortName;
         QString m_longName;
         QString m_bookColor;
+        int m_id;
         bool m_isPresent{};
         int m_numberChapters{};
         std::shared_ptr<ModelChapter> m_chapters;

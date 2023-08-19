@@ -25,6 +25,7 @@ namespace modules {
         Q_INVOKABLE virtual void searchVersesByText(const QString &searchVerseText);
         std::unique_ptr<QTimer> m_queryTimer = nullptr;
         static void registerMe();
+        Q_INVOKABLE virtual int getBookId(int bookNumber);
 
         enum BookRoles {
             BookNumber = 0,
@@ -34,7 +35,8 @@ namespace modules {
             IsPresent = 4,
             Chapters = 5,
             NumberChapters = 6,
-            FoundVerses = 7
+            FoundVerses = 7,
+            BookId = 8
         };
 
     private:

@@ -267,7 +267,7 @@ SilicaFlickable {
                                                 ExpandingSectionPatch {
                                                     _group: listBooks
                                                     id: expandingSectionBook
-                                                    title: long_name.trim() + index
+                                                    title: long_name.trim() + index + ", book_number: " + book_number
                                                     width: parent.width
                                                     property int bookNumber: book_number
                                                     property int bookIndex: index
