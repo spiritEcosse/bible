@@ -30,7 +30,7 @@ namespace modules {
             int rc;
             // Attach another database
             rc = sqlite3_exec(db,
-                              QString("ATTACH DATABASE '%1' AS attached").arg(dbModule).toLocal8Bit().data(),
+                              QString("ATTACH DATABASE \"%1\" AS attached").arg(dbModule).toLocal8Bit().data(),
                               nullptr,
                               nullptr,
                               nullptr);
