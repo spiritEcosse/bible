@@ -23,7 +23,8 @@ namespace modules {
             ModulesRole = 2,
             CountModulesRole = 3,
             IdRole = 4,
-            GroupIdRole = 5
+            GroupIdRole = 5,
+            Hidden = 6,
         };
 
         enum EntitySearch { GroupSearch = 0, ModuleSearch = 1 };

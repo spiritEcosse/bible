@@ -174,6 +174,9 @@ namespace modules {
             case RegionRole:
                 data = groupModules->region();
                 break;
+            case Hidden:
+                data = groupModules->m_name != "Translations";
+                break;
             case ModulesRole:
                 if(groupModules->m_modules == nullptr) {
                     groupModules->m_modules =
@@ -209,6 +212,7 @@ namespace modules {
             {CountModulesRole, "count_modules"},
             {IdRole, "id"},
             {GroupIdRole, "group_id"},
+            {Hidden, "groupHidden"},
         };
     }
 

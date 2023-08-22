@@ -193,7 +193,7 @@ SilicaFlickable {
                                 y : Theme.paddingLarge
                                 RemorseItem { id: remorse }
                                 onClicked: {
-                                    if (!hid && isSelecting) {
+                                    if (!hid && !groupHidden && isSelecting) {
                                         appendOrRemoveModuleSelection({"abbreviation": abbreviation, "selecting": !isSelected, "moduleId": model.id, "groupId": group.groupId, "module": myModule})
                                     } else if (!isSelecting) {
                                         listModules.currentIndex = index
@@ -223,7 +223,7 @@ SilicaFlickable {
                                 Item {
                                     id: child
                                     width: parent.width - 2 * moduleNumber.width
-                                    opacity: hid ? 0.5 : 1
+                                    opacity: hid || groupHidden ? 0.5 : 1
                                     height: childrenRect.height
                                     anchors.left: moduleNumber.right
                                     anchors.right: parent.right
@@ -407,12 +407,12 @@ SilicaFlickable {
                                     }
                                     MenuItem {
                                         text: qsTr("Download")
-                                        enabled: !hid
+                                        enabled: !hid && !groupHidden
                                         onClicked: downloadRemorse()
                                     }
                                     MenuItem {
                                         text: qsTr("Select Modules")
-                                        enabled: !hid && !isSelecting
+                                        enabled: !hid && !groupHidden && !isSelecting
                                         onClicked: {
                                             appendOrRemoveModuleSelection({"abbreviation": abbreviation, "selecting": !listItem.isSelected, "moduleId": model.id, "groupId": group.groupId, "module": myModule})
                                         }
