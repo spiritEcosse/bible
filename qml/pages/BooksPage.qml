@@ -676,6 +676,10 @@ SilicaFlickable {
                     }
                 }
 
+                Component.onCompleted: {
+                    sourcePanelHistory.currentIndex = 0;
+                }
+
                 delegate: ListItem {
                     width: listText.contentWidth
                     height: parent.height
