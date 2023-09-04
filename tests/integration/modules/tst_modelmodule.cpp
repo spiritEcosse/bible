@@ -10,9 +10,9 @@ namespace modules {
 
         using namespace sqlite_orm;
 
-        tst_ModelModule::tst_ModelModule() {}
+        tst_ModelModule::tst_ModelModule() = default;
 
-        tst_ModelModule::~tst_ModelModule() {}
+        tst_ModelModule::~tst_ModelModule() = default;
 
         void tst_ModelModule::initTestCase() {
             ModelJsonTest<Module, ModelModule>::initTestCase();
@@ -81,7 +81,7 @@ namespace modules {
             return std::make_unique<modules::Host>("alias", QString(strUrl + urlMask).toUtf8().toBase64(), 1, 2);
         }
 
-        std::vector<modules::HostUnique> tst_ModelModule::helperGetHostsUnique() {
+        std::vector<modules::HostUnique> tst_ModelModule::helperGetHostsUnique() const {
             std::vector<modules::HostUnique> objects;
             objects.push_back(helperGetHostUnique());
             return objects;
@@ -121,7 +121,7 @@ namespace modules {
             ModelJsonTest<Module, ModelModule>::update();
         }
 
-        void tst_ModelModule::init_model() {
+        void tst_ModelModule::init_model() const {
             ModelModule model;
             QSignalSpy spySelected(&model, &ModelModule::changeSelected);
             QSignalSpy spyDownloaded(&model, &ModelModule::changeDownloaded);
@@ -141,13 +141,13 @@ namespace modules {
 
             const auto &objects = helperGetObjectsUnique();
 
-            ModelModule modelModule(m_idGroupModules);
-            QCOMPARE(modelModule.m_objects.size(), objects.size());
-            QCOMPARE(std::equal(dereference_iterator(modelModule.m_objects.begin()),
-                                dereference_iterator(modelModule.m_objects.end()),
+            ModelModule model(m_idGroupModules);
+            QCOMPARE(model.m_objects.size(), objects.size());
+            QCOMPARE(std::equal(dereference_iterator(model.m_objects.begin()),
+                                dereference_iterator(model.m_objects.end()),
                                 dereference_iterator(objects.begin())),
                      true);
-            QCOMPARE(modelModule.objectsCount, 0);
+            QCOMPARE(model.objectsCount, 0);
         }
 
         void tst_ModelModule::updateObjectsDownloaded() {
@@ -159,17 +159,34 @@ namespace modules {
 
             const auto &objects = helperGetObjectsUnique();
 
-            ModelModule modelModule;
-            modelModule.updateObjectsDownloaded();
-            QCOMPARE(modelModule.m_objects.size(), objects.size());
-            QCOMPARE(std::equal(dereference_iterator(modelModule.m_objects.begin()),
-                                dereference_iterator(modelModule.m_objects.end()),
+            ModelModule model;
+            model.updateObjectsDownloaded();
+            QCOMPARE(model.m_objects.size(), objects.size());
+            QCOMPARE(std::equal(dereference_iterator(model.m_objects.begin()),
+                                dereference_iterator(model.m_objects.end()),
                                 dereference_iterator(objects.begin())),
                      true);
-            QCOMPARE(modelModule.objectsCount, 0);
+            QCOMPARE(model.objectsCount, 0);
         }
 
-        void tst_ModelModule::updateSelected_data() {
+        void tst_ModelModule::updateObjects() {
+            m_idGroupModules = 0;
+            cleanTable();
+            helperSave();
+
+            const auto &objects = helperGetObjectsUnique();
+
+            ModelModule model(2);
+            model.updateObjects();
+            QCOMPARE(model.m_objects.size(), static_cast<size_t>(1));
+            QCOMPARE(std::equal(dereference_iterator(model.m_objects.begin()),
+                                dereference_iterator(model.m_objects.end()),
+                                dereference_iterator(objects.begin() + 1)),
+                     true);
+            QCOMPARE(model.objectsCount, 0);
+        }
+
+        void tst_ModelModule::updateSelected_data() const {
             QTest::addColumn<bool>("value");
 
             QTest::newRow("m_selecting is true") << true;
@@ -189,7 +206,7 @@ namespace modules {
             QCOMPARE(object->m_selected, value);
         }
 
-        void tst_ModelModule::updateDownloaded_data() {
+        void tst_ModelModule::updateDownloaded_data() const {
             QTest::addColumn<bool>("value");
 
             QTest::newRow("m_downloaded is true") << true;
@@ -230,11 +247,11 @@ namespace modules {
             helperSave();
 
             ModelModule model;
-            model.m_downloadedBackup.push_back(std::make_tuple("name.0"));
-            model.m_downloadedBackup.push_back(std::make_tuple("name.2"));
+            model.m_downloadedBackup.emplace_back("name.0");
+            model.m_downloadedBackup.emplace_back("name.2");
 
-            model.m_selectedBackup.push_back(std::make_tuple("name.0"));
-            model.m_selectedBackup.push_back(std::make_tuple("name.2"));
+            model.m_selectedBackup.emplace_back("name.0");
+            model.m_selectedBackup.emplace_back("name.2");
 
             model.saveExtraFieldsToDb();
 
@@ -304,8 +321,9 @@ namespace modules {
             std::unique_ptr<db::Db<modules::Host>> m_dbHost;
             m_dbHost.reset(new db::Db<modules::Host>());
             m_dbHost->removeAll();
+            cleanTable();
+            helperSave();
 
-            //            auto start = std::chrono::system_clock::now();
             ModelModule model;
             SingletonModelHost::getInstance().m_objects.clear();
             model.m_worker->m_modelHost->m_objects.clear();
@@ -367,6 +385,32 @@ namespace modules {
             ModelModule model;
             model.retrieveSelecteded();
         }
+
+        void tst_ModelModule::downloadDefaultModules() {
+            cleanTable();
+            helperSaveUnique();
+            tst_ModelGroupModules::helperSaveStatic();
+
+            createFileModule();
+
+            auto _where = where(
+                in(&Module::m_name, {"name.0"}) and c(&Module::m_languageShow) == "en");
+            m_db->storage->update_all(set(assign(&Module::m_defaultDownload, true)), _where);
+
+            ModelModule model;
+            model.m_worker->m_modelHost->m_objects = helperGetHostsUnique();
+            model.downloadModules();
+            QCOMPARE(model.m_downloadCompleted, false);
+            QSignalSpy spy(&model, &ModelModule::changeDownloaded);
+            QSignalSpy spyChangeDownloadCompleted(&model, &ModelModule::changeDownloadCompleted);
+            QVERIFY(spy.wait());
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spyChangeDownloadCompleted.count(), 1);
+            QVERIFY(m_db->storage->get<Module>(1).m_downloaded);
+            QVERIFY(folderModuleInModules.exists());
+            QVERIFY(!QFile::exists(getModuleFilePath(fileModuleArchiveInModules)));
+        }
+
     }  // namespace tests
 }  // namespace modules
 

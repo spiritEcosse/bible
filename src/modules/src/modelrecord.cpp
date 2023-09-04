@@ -39,7 +39,7 @@ namespace modules {
             } else {
                 qDebug() << "Database is attached";
 
-                const char *sql = "SELECT atb.short_name, mr.* FROM record AS mr INNER JOIN books_all AS atb ON "
+                const char *sql = "SELECT atb.short_name, mr.* FROM record AS mr INNER JOIN books AS atb ON "
                                   "(mr.book_number==atb.book_number) ORDER BY mr.timestamp DESC";
 
                 sqlite3_stmt *stmt;

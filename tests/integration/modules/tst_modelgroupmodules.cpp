@@ -155,7 +155,7 @@ namespace modules {
             QCOMPARE(spyModulesUpdateCompleted.count(), 1);
             QCOMPARE(spy.count(), 1);
             QCOMPARE(modelGroupModules.m_updateCompleted, true);
-            QCOMPARE(spyChangeUpdateCompleted.count(), 2);
+            QCOMPARE(spyChangeUpdateCompleted.count(), 1);
             QCOMPARE(modelGroupModules.m_objects.size(), static_cast<size_t>(3));
             QCOMPARE(modelGroupModules.m_modelModule->m_objects.size(), static_cast<size_t>(0));
             QCOMPARE(modelGroupModules.m_managerGroup->m_objects.size(), static_cast<size_t>(0));

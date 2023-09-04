@@ -27,12 +27,12 @@ namespace modules {
     void ModelBook::updateObjects() {
         beginResetModel();
         objectsCount = 0;
+        m_objects.clear();
         auto &&data = m_db->storage->select(columns(rowid<Book>(),
                                                     &Book::m_bookNumber,
                                                     &Book::m_shortName,
                                                     &Book::m_longName,
                                                     &Book::m_bookColor,
-                                                    &Book::m_isPresent,
                                                     sqlite_orm::max(&Verse::m_chapter)),
                                             inner_join<Verse>(on(c(&Book::m_bookNumber) == &Verse::m_bookNumber)),
                                             group_by(&Book::m_bookNumber),
@@ -43,8 +43,7 @@ namespace modules {
                                                        std::move(std::get<2>(book)),
                                                        std::move(std::get<3>(book)),
                                                        std::move(std::get<4>(book)),
-                                                       std::get<5>(book),
-                                                       *std::get<6>(book).get(),
+                                                       *std::get<5>(book).get(),
                                                        std::get<0>(book)));
         }
         endResetModel();
@@ -58,20 +57,21 @@ namespace modules {
         m_queryTimer->start(m_waitingTimeBeforeHitDb);
     }
 
+    // Remove search by books, because it very heavy search
     void ModelBook::doSearchVersesByText() {
         try {
             // Reset the model
             beginResetModel();
             objectsCount = 0;
+            m_objects.clear();
+
             // Query the database to get all books with matching verses
             auto &&data = m_db->storage->select(
                 columns(rowid<Book>(),
                         &Book::m_bookNumber,
                         &Book::m_shortName,
                         &Book::m_longName,
-                        &Book::m_bookColor,
-                        &Book::m_isPresent,
-                        sqlite_orm::max(&Verse::m_chapter)),
+                        &Book::m_bookColor),
                 where(exists(select(columns(&Verse::m_bookNumber),
                                     from<Verse>(),
                                     where(like(&Verse::m_text, "%" + *m_searchQueryInVerseText + "%") and
@@ -85,8 +85,7 @@ namespace modules {
                                                            std::move(std::get<2>(book)),
                                                            std::move(std::get<3>(book)),
                                                            std::move(std::get<4>(book)),
-                                                           std::get<5>(book),
-                                                           *std::get<6>(book).get(),
+                                                           0,
                                                            std::get<0>(book)));
             }
             // End resetting the model
@@ -125,7 +124,6 @@ namespace modules {
             {ShortName, "short_name"},
             {LongName, "long_name"},
             {BookColor, "book_color"},
-            {IsPresent, "is_present"},
             {Chapters, "chapters"},
             {NumberChapters, "number_chapters"},
             {FoundVerses, "foundVerses"},
@@ -157,9 +155,6 @@ namespace modules {
                 break;
             case BookColor:
                 data = object->m_bookColor;
-                break;
-            case IsPresent:
-                data = object->m_isPresent;
                 break;
             case Chapters:
                 if(object->m_chapters == nullptr) {

@@ -11,7 +11,6 @@
 namespace modules {
 
     using namespace netmanager;
-    using namespace sqlite_orm;
 
     namespace tests {
         class tst_ModelModule;
@@ -19,7 +18,7 @@ namespace modules {
     }  // namespace tests
 
     using Selected = decltype(std::vector<std::tuple<QString>>());
-    using Downloaded = decltype(std::vector<std::tuple<QString>>());
+    using Downloaded = decltype(std::vector<std::tuple<QString>>()); // TODO: replace on std::vector<QString>() because for startDownloadModules need only one column : name of module &Module::m_name
 
     class Worker : public QObject, public BaseModel<Module> {
         Q_OBJECT
@@ -48,7 +47,7 @@ namespace modules {
         bool downloadCompleted();
     };
 
-    class ModelModule : public ModelUpdate<Module> {
+    class ModelModule : public ModelUpdate<Module, db::Storage> {
         Q_OBJECT
         QThread workerThread;
         Q_PROPERTY(QVariantList downloaded READ getDownloaded NOTIFY changeDownloaded)
@@ -126,9 +125,11 @@ namespace modules {
         Q_INVOKABLE int countActive();
         Q_INVOKABLE void init();
         Q_INVOKABLE void activateModule(int id) const;
+        Q_INVOKABLE void activateModule() const;
         Q_INVOKABLE void updateSelected(int id, bool value) const;
         Q_INVOKABLE void updateSelectedBulk(const QVariantList &ids) const;
         Q_INVOKABLE virtual void downloadModules(const QVariantList &downloaded);
+        Q_INVOKABLE virtual void downloadModules();
         Q_INVOKABLE virtual void deleteModules(const QVariantList &downloaded);
         Q_INVOKABLE void updateDownloaded(int id, bool value) const;
         virtual QVariant data(const QModelIndex &index, int role) const override;
@@ -136,9 +137,9 @@ namespace modules {
         void updateObjects();
         Q_INVOKABLE virtual void updateObjectsDownloaded();
         Q_INVOKABLE virtual void updateObjectsActive();
-        void search();
         virtual QString getNameJson() override;
         QString getPathDbActiveModule();
+
     public slots:
         void getExtraFieldsFromDb();
     private slots:
@@ -152,7 +153,7 @@ namespace modules {
         void changeDownloadCompleted();
         void bulkUpdatedDownloaded();
         bool startDeleteFiles(const Downloaded &downloaded);
-        bool startDownloadModules(const Downloaded &downloaded);
+        bool startDownloadModules(const Downloaded &downloaded); // Replace on &&
     };
 
 }  // namespace modules
