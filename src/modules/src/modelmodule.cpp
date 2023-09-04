@@ -277,6 +277,7 @@ namespace modules {
             inner_join<GroupModules>(on(c(&GroupModules::m_groupId) == &Module::m_idGroupModules)),
             where(c(&Module::m_defaultDownload) == true and c(&GroupModules::m_language) == languageCode and
                   c(&GroupModules::m_name) == "Translations"));
+        qDebug() << data.size();
         !data.empty() &&
             emit startDownloadModules(data);  // TODO: Merge with the same logic from downloadDefaultModules
     }
