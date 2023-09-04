@@ -272,6 +272,8 @@ namespace modules {
     void ModelModule::downloadModules() {
         m_downloadCompleted = false;
         QString languageCode = std::move(QLocale::system().name().split("_")[0]);
+        if (languageCode == "C")
+            languageCode = "en";
         const Downloaded &data = m_db->storage->select(
             columns(&Module::m_name),
             inner_join<GroupModules>(on(c(&GroupModules::m_groupId) == &Module::m_idGroupModules)),
