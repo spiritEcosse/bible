@@ -42,7 +42,6 @@ namespace modules {
                                                          QString("shortName.%1").arg(in),
                                                          QString("longName.%1").arg(in),
                                                          QString("bookColor.%1").arg(in),
-                                                         false,
                                                          in,
                                                          in + 1));
             }
@@ -77,7 +76,6 @@ namespace modules {
                                         {ModelBook::ShortName, "short_name"},
                                         {ModelBook::LongName, "long_name"},
                                         {ModelBook::BookColor, "book_color"},
-                                        {ModelBook::IsPresent, "is_present"},
                                         {ModelBook::Chapters, "chapters"},
                                         {ModelBook::NumberChapters, "number_chapters"},
                                         {ModelBook::FoundVerses, "foundVerses"},

@@ -83,6 +83,16 @@ Pages {
             modelModuleBooks.updateObjectsDownloaded();
             flagUpdateObjectsDownloaded = true;
         }
+
+        onDownloadCompletedChanged: {
+            if (downloadCompleted) {
+                downloadedModules = modelModule.downloaded;
+                modelModuleBooks.updateObjectsDownloaded();
+                flagUpdateObjectsDownloaded = true;
+                modelModulesActive.updateObjectsActive();
+                flagUpdateObjectsActive = true;
+            }
+        }
         onChangeSelected: {
             selectedModules = modelModule.selected;
         }
@@ -92,6 +102,14 @@ Pages {
         id: groupModules
         property bool rowExists: groupModules.rowCount()
         onRowsInserted: rowExists = true
+        onPostEmptyModelCompletedChanged: {
+            if (postEmptyModelCompleted) {
+                modelModule.downloadModules();
+            }
+        }
+        Component.onCompleted: {
+            groupModules.postEmptyModel();
+        }
     }
 
     VisualItemModel {

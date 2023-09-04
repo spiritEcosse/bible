@@ -79,7 +79,7 @@ SilicaFlickable {
                             property bool expanded : modulesActive.expanded
                             property string search: searchField.text
                             function searchVersesByText() {
-                                if (expanded && search) {
+                                if (expanded && search && search.length >= 2) {
                                     model.searchVersesByText(search);
                                 }
                             }

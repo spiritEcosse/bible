@@ -8,6 +8,7 @@ Q_DECLARE_METATYPE(std::shared_ptr<modules::ModelModule>)
 namespace modules {
 
     static std::once_flag flagInitGroupModules;
+    static std::once_flag flagPostEmptyModel;
 
     using namespace sqlite_orm;
 
@@ -40,10 +41,6 @@ namespace modules {
         qmlRegisterType<ModelGroupModules>("bible.ModelGroupModules", 1, 0, "ModelGroupModules");
     }
 
-    bool ModelGroupModules::updateCompleted() const {
-        return m_updateCompleted;
-    }
-
     QString ModelGroupModules::needle() const {
         return m_needle;
     }
@@ -54,6 +51,7 @@ namespace modules {
 
             m_db->removeAll();
             int chunkSize = 2000;
+            qDebug() << "ModelGroupModules: update";
 
             auto start = MapValueIterator(m_managerGroup->m_objects.begin());
             auto end = MapValueIterator(m_managerGroup->m_objects.end());
@@ -69,6 +67,8 @@ namespace modules {
         } catch(const std::system_error &e) {
             qInfo() << e.what();
             emit error("An error occurred.");
+        } catch(...) {
+            throw;
         }
     }
 
@@ -118,9 +118,25 @@ namespace modules {
         }
     }
 
+    // m_updateCompleted
     void ModelGroupModules::setUpdateCompleted() {
         m_updateCompleted = true;
+        qDebug() << "setUpdateCompleted";
         emit changeUpdateCompleted();
+    }
+
+    bool ModelGroupModules::updateCompleted() const {
+        return m_updateCompleted;
+    }
+
+    //m_postEmptyModelCompleted
+    void ModelGroupModules::setPostEmptyModelCompleted() {
+        m_postEmptyModelCompleted = true;
+        emit changePostEmptyModelCompleted();
+    }
+
+    bool ModelGroupModules::postEmptyModelCompleted() const {
+        return m_postEmptyModelCompleted;
     }
 
     void ModelGroupModules::updateObjects() {
@@ -138,9 +154,20 @@ namespace modules {
         updateObjects();
     }
 
+    void ModelGroupModules::postEmptyModel() {
+        std::call_once(flagPostEmptyModel, [this]() {
+            if(m_db->count() == 0) {
+                connect(this,
+                        &ModelGroupModules::changeUpdateCompleted,
+                        &ModelGroupModules::setPostEmptyModelCompleted);
+                downloadRegistry();
+            }
+        });
+    }
+
     void ModelGroupModules::downloadRegistry() {
-        m_updateCompleted = false;
-        emit changeUpdateCompleted();
+        //        m_updateCompleted = false;
+        //        emit changeUpdateCompleted();
 
         QTimer::singleShot(0, m_managerRegistry.get(), &ManagerRegistry::download);
     }

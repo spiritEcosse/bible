@@ -7,6 +7,8 @@
 
 namespace modules {
 
+    using namespace sqlite_orm;
+
     QJsonListModel::QJsonListModel(QObject *parent) : QAbstractListModel(parent) {}
 
     template<class T, typename S>
@@ -56,6 +58,7 @@ namespace modules {
         endInsertRows();
     }
 
+    // ModelUpdate
     template<class T, typename S>
     void ModelUpdate<T, S>::updateWrapper() {
         update(m_objectsFromJson);
@@ -83,6 +86,8 @@ namespace modules {
         } catch(const std::system_error &e) {
             qInfo() << e.what();
             emit error("An error occured.");
+        } catch(...) {
+            throw;
         }
     }
 
@@ -108,6 +113,8 @@ namespace modules {
         } catch(const std::system_error &e) {
             qInfo() << e.what();
             emit error("An error occured.");
+        } catch(...) {
+            throw;
         }
     }
 

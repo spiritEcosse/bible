@@ -77,6 +77,8 @@ namespace modules {
 
             if(retrieveResult.error == QJsonParseError::NoError) {
                 emit getDocumentSuccess(document);
+            } else {
+                qCritical() << retrieveResult.error;
             }
         }
     }

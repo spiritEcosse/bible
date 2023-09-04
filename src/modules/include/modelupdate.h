@@ -67,6 +67,23 @@ namespace modules {
         virtual void updateUnique(const std::vector<std::unique_ptr<T>> &container);
         virtual void transform(const QJsonDocument &document);
 
+        template<class... Args>
+        void updateObjectsPrimary(Args &&...args) {
+            try {
+                QAbstractListModel::beginResetModel();
+                ListModel<T, S>::objectsCount = 0;
+
+                ListModel<T, S>::m_objects =
+                    m_db->storage->template get_all_pointer<Module>(std::forward<Args>(args)...);
+                QAbstractListModel::endResetModel();
+            } catch(std::system_error &e) {
+                qCritical() << "Error querying in ModelUpdate: " << e.what();
+                emit error("Error querying in ModelUpdate.");
+            } catch(...) {
+                throw;
+            }
+        }
+
         using BaseModel<T, S>::m_db;
         std::vector<T> m_objectsFromJson;
         using QJsonListModel::error;

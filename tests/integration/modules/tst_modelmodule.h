@@ -22,7 +22,7 @@ namespace modules {
         private:
             std::vector<ModuleShared> helperGetObjects() const override;
             std::vector<ModuleUnique> helperGetObjectsUnique() const override;
-            std::vector<HostUnique> helperGetHostsUnique();
+            std::vector<HostUnique> helperGetHostsUnique() const;
             HostUnique helperGetHostsUniqueNotExists() const;
             HostUnique helperGetHostUnique() const;
             QVariantList helperGetSelected() const;
@@ -33,12 +33,13 @@ namespace modules {
             void initTestCase() override;
             void cleanupTestCase() override;
             void update() override;
-            void init_model();
+            void init_model() const;
             void constructor_params();
+            void updateObjects();
             void updateObjectsDownloaded();
-            void updateSelected_data();
+            void updateSelected_data() const;
             void updateSelected();
-            void updateDownloaded_data();
+            void updateDownloaded_data() const;
             void updateDownloaded();
             void getExtraFieldsFromDb();
             void saveExtraFieldsToDb();
@@ -49,6 +50,7 @@ namespace modules {
             void deleteModules();
             void retrieveDownloaded();
             void retrieveSelected();
+            void downloadDefaultModules();
         };
     }  // namespace tests
 }  // namespace modules

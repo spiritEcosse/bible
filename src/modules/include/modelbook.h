@@ -32,16 +32,15 @@ namespace modules {
             ShortName = 1,
             LongName = 2,
             BookColor = 3,
-            IsPresent = 4,
-            Chapters = 5,
-            NumberChapters = 6,
-            FoundVerses = 7,
-            BookId = 8
+            Chapters = 4,
+            NumberChapters = 5,
+            FoundVerses = 6,
+            BookId = 7
         };
 
     private:
         friend tests::tst_ModelBook;
-        int m_waitingTimeBeforeHitDb = 500;
+        int m_waitingTimeBeforeHitDb = 600;
 
         std::shared_ptr<QString> m_searchQueryInVerseText = std::make_shared<QString>("");
         void updateObjects();
