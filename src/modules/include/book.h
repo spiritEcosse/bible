@@ -15,12 +15,7 @@ namespace modules {
     class Book {
     public:
         Book() = default;
-        Book(int bookNumber,
-             QString &&shortName,
-             QString &&longName,
-             QString &&bookColor,
-             int numberChapters,
-             int id);
+        Book(int bookNumber, QString &&shortName, QString &&longName, QString &&bookColor, int numberChapters, int id);
 
         int m_bookNumber{};
         QString m_shortName;

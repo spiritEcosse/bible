@@ -393,8 +393,7 @@ namespace modules {
 
             createFileModule();
 
-            auto _where = where(
-                in(&Module::m_name, {"name.0"}) and c(&Module::m_languageShow) == "en");
+            auto _where = where(in(&Module::m_name, {"name.0"}) and c(&Module::m_languageShow) == "en");
             m_db->storage->update_all(set(assign(&Module::m_defaultDownload, true)), _where);
 
             ModelModule model;

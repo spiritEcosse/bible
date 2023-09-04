@@ -43,10 +43,9 @@ namespace modules {
         return true;
     }
 
-    std::vector<QString> Worker::makeUrls(const Downloaded &downloaded) const { // Replace on &&
+    std::vector<QString> Worker::makeUrls(const Downloaded &downloaded) const {  // Replace on &&
         std::vector<QString> urls;
-        std::transform(downloaded.begin(), downloaded.end(), std::back_inserter(urls),
-                       [this](const auto &moduleName) {
+        std::transform(downloaded.begin(), downloaded.end(), std::back_inserter(urls), [this](const auto &moduleName) {
 #ifdef Qt6_FOUND
             return std::move(QString().asprintf(std::move(m_modelHost->getUrl(index).toLocal8Bit().data()),
                                                 std::move(std::get<0>(moduleName).toLocal8Bit().data())));
@@ -142,19 +141,16 @@ namespace modules {
         auto multi_order_by_ = multi_order_by(order_by(&Module::m_hidden), order_by(&Module::m_abbreviation));
         auto equal = c(&Module::m_idGroupModules) == m_idGroupModules;
         if(!m_needle.isEmpty()) {
-            updateObjectsPrimary(
-                where(equal and like(&Module::m_abbreviation, m_needle + "%")), multi_order_by_
-            );
+            updateObjectsPrimary(where(equal and like(&Module::m_abbreviation, m_needle + "%")), multi_order_by_);
         } else {
             updateObjectsPrimary(where(equal), multi_order_by_);
         }
     }
 
     void ModelModule::updateObjectsDownloaded() {
-        updateObjectsPrimary(
-            inner_join<GroupModules>(on(c(&GroupModules::m_groupId) == &Module::m_idGroupModules)),
-            where(c(&Module::m_downloaded) == true and c(&GroupModules::m_name) == "Translations"),
-            order_by(&Module::m_abbreviation));
+        updateObjectsPrimary(inner_join<GroupModules>(on(c(&GroupModules::m_groupId) == &Module::m_idGroupModules)),
+                             where(c(&Module::m_downloaded) == true and c(&GroupModules::m_name) == "Translations"),
+                             order_by(&Module::m_abbreviation));
     }
 
     void ModelModule::updateObjectsActive() {
@@ -178,7 +174,7 @@ namespace modules {
     void ModelModule::activateModule() const {
         updateAllC(&Module::m_active, false, &Module::m_active, true);
         auto objects = m_db->storage->get_all_pointer<Module>(where(c(&Module::m_downloaded) == true), limit(1));
-        if (!objects.empty()) {
+        if(!objects.empty()) {
             objects[0]->m_active = true;
             m_db->storage->update(*objects[0]);
         }
@@ -261,34 +257,35 @@ namespace modules {
 
     // download modules from list of moduleId
     void ModelModule::downloadModules(const QVariantList &downloaded) {
-        const auto &data = getActualDataByField(&Module::m_id,
-                                                transformFromQVariant(downloaded),
-                                                &Module::m_downloaded,
-                                                false,
-                                                &Module::m_name); // TODO: remove after passing names of modules to this function rather than ids of modules
-        !data.empty() && setDownloadCompleted(false) && emit startDownloadModules(data); // TODO: Merge with the same logic from downloadDefaultModules
+        const auto &data = getActualDataByField(
+            &Module::m_id,
+            transformFromQVariant(downloaded),
+            &Module::m_downloaded,
+            false,
+            &Module::
+                m_name);  // TODO: remove after passing names of modules to this function rather than ids of modules
+        !data.empty() && setDownloadCompleted(false) &&
+            emit startDownloadModules(data);  // TODO: Merge with the same logic from downloadDefaultModules
     }
 
     // download default modules
-    void ModelModule::downloadModules()
-    {
+    void ModelModule::downloadModules() {
         m_downloadCompleted = false;
         QString languageCode = std::move(QLocale::system().name().split("_")[0]);
         const Downloaded &data = m_db->storage->select(
             columns(&Module::m_name),
             inner_join<GroupModules>(on(c(&GroupModules::m_groupId) == &Module::m_idGroupModules)),
-            where(
-                c(&Module::m_defaultDownload) == true and
-                c(&GroupModules::m_language) == languageCode and
-                c(&GroupModules::m_name) == "Translations"));
-        !data.empty() && emit startDownloadModules(data); // TODO: Merge with the same logic from downloadDefaultModules
+            where(c(&Module::m_defaultDownload) == true and c(&GroupModules::m_language) == languageCode and
+                  c(&GroupModules::m_name) == "Translations"));
+        !data.empty() &&
+            emit startDownloadModules(data);  // TODO: Merge with the same logic from downloadDefaultModules
     }
 
     void ModelModule::postDownloaded() {
         retrieveDownloaded();
         activateModule();
         setDownloadCompleted(true);
-        getDataByFieldTrue(&Module::m_downloaded, &Module::m_name).size(); // TODO: do i need it ?
+        getDataByFieldTrue(&Module::m_downloaded, &Module::m_name).size();  // TODO: do i need it ?
     }
 
     // delete

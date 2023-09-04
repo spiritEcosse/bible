@@ -67,7 +67,7 @@ namespace modules {
         } catch(const std::system_error &e) {
             qInfo() << e.what();
             emit error("An error occurred.");
-        } catch (...) {
+        } catch(...) {
             throw;
         }
     }
@@ -156,16 +156,18 @@ namespace modules {
 
     void ModelGroupModules::postEmptyModel() {
         std::call_once(flagPostEmptyModel, [this]() {
-            if (m_db->count() == 0) {
-                connect(this, &ModelGroupModules::changeUpdateCompleted, &ModelGroupModules::setPostEmptyModelCompleted);
+            if(m_db->count() == 0) {
+                connect(this,
+                        &ModelGroupModules::changeUpdateCompleted,
+                        &ModelGroupModules::setPostEmptyModelCompleted);
                 downloadRegistry();
             }
         });
     }
 
     void ModelGroupModules::downloadRegistry() {
-//        m_updateCompleted = false;
-//        emit changeUpdateCompleted();
+        //        m_updateCompleted = false;
+        //        emit changeUpdateCompleted();
 
         QTimer::singleShot(0, m_managerRegistry.get(), &ManagerRegistry::download);
     }

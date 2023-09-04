@@ -18,7 +18,9 @@ namespace modules {
     }  // namespace tests
 
     using Selected = decltype(std::vector<std::tuple<QString>>());
-    using Downloaded = decltype(std::vector<std::tuple<QString>>()); // TODO: replace on std::vector<QString>() because for startDownloadModules need only one column : name of module &Module::m_name
+    using Downloaded =
+        decltype(std::vector<std::tuple<
+                     QString>>());  // TODO: replace on std::vector<QString>() because for startDownloadModules need only one column : name of module &Module::m_name
 
     class Worker : public QObject, public BaseModel<Module> {
         Q_OBJECT
@@ -153,7 +155,7 @@ namespace modules {
         void changeDownloadCompleted();
         void bulkUpdatedDownloaded();
         bool startDeleteFiles(const Downloaded &downloaded);
-        bool startDownloadModules(const Downloaded &downloaded); // Replace on &&
+        bool startDownloadModules(const Downloaded &downloaded);  // Replace on &&
     };
 
 }  // namespace modules
