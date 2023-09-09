@@ -40,7 +40,7 @@ namespace modules {
                                                            false,
                                                            m_downloaded,
                                                            false,
-                                                           true));
+                                                           false));
             }
             return objects;
         }
@@ -62,7 +62,7 @@ namespace modules {
                                                            false,
                                                            m_downloaded,
                                                            false,
-                                                           true));
+                                                           false));
             }
             return objects;
         }
@@ -101,6 +101,7 @@ namespace modules {
             tst_model.helperSave();
             tst_model.m_db->storage->update_all(set(assign(&Module::m_downloaded, true)));
             tst_model.m_db->storage->update_all(set(assign(&Module::m_selected, true)));
+            tst_model.m_db->storage->update_all(set(assign(&Module::m_active, true)));
             helperCreateDbDir();
         }
 
@@ -232,12 +233,14 @@ namespace modules {
 
             m_db->storage->update_all(set(assign(&Module::m_downloaded, true)));
             m_db->storage->update_all(set(assign(&Module::m_selected, true)));
+            m_db->storage->update_all(set(assign(&Module::m_active, true)));
 
             ModelModule model;
             model.getExtraFieldsFromDb();
 
             QCOMPARE(model.m_selectedBackup.size(), vectorSize);
             QCOMPARE(model.m_downloadedBackup.size(), vectorSize);
+            QCOMPARE(model.m_activeBackup.size(), vectorSize);
         }
 
         void tst_ModelModule::saveExtraFieldsToDb_data() {
@@ -253,27 +256,34 @@ namespace modules {
             model.m_selectedBackup.emplace_back("name.0");
             model.m_selectedBackup.emplace_back("name.2");
 
+            model.m_activeBackup.emplace_back("name.0");
+            model.m_activeBackup.emplace_back("name.2");
+
             model.saveExtraFieldsToDb();
 
             QTest::addColumn<int>("id");
             QTest::addColumn<bool>("selected");
             QTest::addColumn<bool>("downloaded");
+            QTest::addColumn<bool>("active");
 
-            QTest::newRow("name.0 m_downloaded and m_selected is true") << 1 << true << true;
-            QTest::newRow("name.1 m_downloaded and m_selected is false") << 2 << false << false;
-            QTest::newRow("name.2 m_downloaded and m_selected is true") << 3 << true << true;
+            QTest::newRow("name.0 m_downloaded and m_selected is true") << 1 << true << true << true;
+            QTest::newRow("name.1 m_downloaded and m_selected is false") << 2 << false << false << false;
+            QTest::newRow("name.2 m_downloaded and m_selected is true") << 3 << true << true << true;
             QCOMPARE(int(model.m_selectedBackup.size()), 0);
             QCOMPARE(int(model.m_downloadedBackup.size()), 0);
+            QCOMPARE(int(model.m_activeBackup.size()), 0);
         }
 
         void tst_ModelModule::saveExtraFieldsToDb() {
             QFETCH(int, id);
             QFETCH(bool, selected);
             QFETCH(bool, downloaded);
+            QFETCH(bool, active);
 
             const auto &object = m_db->storage->get_pointer<Module>(id);
             QCOMPARE(object->m_downloaded, downloaded);
             QCOMPARE(object->m_selected, selected);
+            QCOMPARE(object->m_active, active);
         }
 
         void tst_ModelModule::downloadModules_data() {

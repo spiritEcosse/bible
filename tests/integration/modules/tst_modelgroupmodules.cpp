@@ -100,7 +100,7 @@ namespace modules {
                                          false,
                                          3),
                 std::make_shared<
-                    Module>("name.0", "", "", 3, 0, "", "", "", "", QDate(), false, false, true, true, false, 4),
+                    Module>("name.0", "", "", 3, 0, "", "", "", "", QDate(), false, false, true, true, true, 4),
             };
             QTest::newRow("check modules") << modules;
 

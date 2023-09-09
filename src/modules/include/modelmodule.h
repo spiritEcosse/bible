@@ -21,6 +21,7 @@ namespace modules {
     using Downloaded =
         decltype(std::vector<std::tuple<
                      QString>>());  // TODO: replace on std::vector<QString>() because for startDownloadModules need only one column : name of module &Module::m_name
+    using Active = decltype(std::vector<std::tuple<QString>>());
 
     class Worker : public QObject, public BaseModel<Module> {
         Q_OBJECT
@@ -64,6 +65,7 @@ namespace modules {
         QString m_needle = "";
         Selected m_selectedBackup;
         Downloaded m_downloadedBackup;
+        Active m_activeBackup;
         QVariantList m_downloaded;
         QVariantList m_selected;
         bool m_deleteCompleted = true;

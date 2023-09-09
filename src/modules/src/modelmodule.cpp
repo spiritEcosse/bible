@@ -246,6 +246,7 @@ namespace modules {
     void ModelModule::getExtraFieldsFromDb() {
         m_selectedBackup = getDataByFieldTrue(&Module::m_selected, &Module::m_name);
         m_downloadedBackup = getDataByFieldTrue(&Module::m_downloaded, &Module::m_name);
+        m_activeBackup = getDataByFieldTrue(&Module::m_active, &Module::m_name);
     }
 
     void ModelModule::saveExtraFieldsToDb() {
@@ -253,6 +254,8 @@ namespace modules {
         m_downloadedBackup.clear();
         updateAllIn(&Module::m_selected, true, &Module::m_name, m_selectedBackup);
         m_selectedBackup.clear();
+        updateAllIn(&Module::m_active, true, &Module::m_name, m_activeBackup);
+        m_activeBackup.clear();
     }
 
     // download modules from list of moduleId
@@ -272,7 +275,7 @@ namespace modules {
     void ModelModule::downloadModules() {
         m_downloadCompleted = false;
         QString languageCode = std::move(QLocale::system().name().split("_")[0]);
-        if (languageCode == "C")
+        if(languageCode == "C")
             languageCode = "en";
         const Downloaded &data = m_db->storage->select(
             columns(&Module::m_name),
