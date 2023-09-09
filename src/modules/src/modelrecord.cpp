@@ -16,6 +16,7 @@ namespace modules {
             fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
         } else {
             qDebug() << m_db->getFileName().toLocal8Bit().data() << "Opened database successfully";
+            updateObjects();
         }
     }
 
