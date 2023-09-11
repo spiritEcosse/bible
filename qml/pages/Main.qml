@@ -148,11 +148,12 @@ Pages {
 
         PushUpMenu {
             id: pushUpMenu
+            visible: slideshow.currentIndex === 1
 
             MenuItem {
                 id: checkUpdates
                 text: qsTrId("Check for updates")
-                visible: slideshow.currentIndex == 1 && !managerRegistry.newVersionAvailable
+                visible: !managerRegistry.newVersionAvailable
 //                enabled: !managerRegistry.newVersionAvailable
 //                property bool newVersionAvailable:
                 property bool checkVersionCompleted: managerRegistry.checkVersionCompleted
@@ -168,7 +169,7 @@ Pages {
             MenuItem {
                 id: updateModules
                 text: qsTrId("Update modules")
-                visible: slideshow.currentIndex == 1 && !checkUpdates.visible
+                visible: !checkUpdates.visible
                 //enabled: !groupModules.updateCompleted
                 property bool updateСompleted: groupModules.updateCompleted
                 onUpdateСompletedChanged : {
@@ -179,11 +180,6 @@ Pages {
                     pushUpMenu.busy = true
                     groupModules.downloadRegistry()
                 }
-            }
-
-            MenuItem {
-                text: qsTrId("Some action")
-                visible: slideshow.currentIndex == 0
             }
         }
     }

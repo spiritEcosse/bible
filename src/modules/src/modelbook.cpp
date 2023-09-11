@@ -68,11 +68,8 @@ namespace modules {
             // Query the database to get all books with matching verses
             auto &&data = m_db->storage->select(
                 columns(rowid<Book>(), &Book::m_bookNumber, &Book::m_shortName, &Book::m_longName, &Book::m_bookColor),
-                where(exists(select(columns(&Verse::m_bookNumber),
-                                    from<Verse>(),
-                                    where(like(&Verse::m_text, "%" + *m_searchQueryInVerseText + "%") and
-                                          is_equal(&Book::m_bookNumber, &Verse::m_bookNumber)),
-                                    limit(1)))),
+                inner_join<Verse>(on(c(&Verse::m_bookNumber) == &Book::m_bookNumber)),
+                where(like(&Verse::m_text, "%" + *m_searchQueryInVerseText + "%")),
                 group_by(&Book::m_bookNumber),
                 order_by(&Book::m_bookNumber));
 
