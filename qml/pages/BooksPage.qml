@@ -172,14 +172,6 @@ SilicaFlickable {
                         title: qsTrId("Translations")
                         width: parent.width
 
-                        FlippingLabelPatch {
-                            id: headerAddTextBooks
-                            text: "Новый Русский Перевод (НРП)"
-                            width: parent.width
-                            fontSize: isPortrait ? Theme.fontSizeExtraSmall : Theme.fontSizeTiny
-                            fontFamily: Theme.fontFamilyHeading
-                            y: isPortrait ? Theme.itemSizeSmall : Theme.itemSizeExtraSmall
-                        }
                     }
 
                     Item {
@@ -256,7 +248,6 @@ SilicaFlickable {
                                                     }
                                                 }
                                                 listBooks.currentIndex = modelRecord.bookIndex;
-//                                                console.log("listBooks: " + modelRecord.bookIndex, listBooks.currentIndex);
                                             }
 
                                             delegate: ListItem {
@@ -267,7 +258,7 @@ SilicaFlickable {
                                                 ExpandingSectionPatch {
                                                     _group: listBooks
                                                     id: expandingSectionBook
-                                                    title: long_name.trim() + index + ", book_number: " + book_number
+                                                    title: long_name.trim()
                                                     width: parent.width
                                                     property int bookNumber: book_number
                                                     property int bookIndex: index
@@ -275,7 +266,6 @@ SilicaFlickable {
                                                     property bool sameBook: index === modelRecord.bookIndex
                                                     onSameBookChanged: {
                                                         if (sameBook) {
-//                                                            console.log(expanded, sameBook, index, recordBookIndex);
                                                             expanded = sameBook;
                                                             if (expanded) {
                                                                 listBooks.currentIndex = index;
@@ -283,36 +273,21 @@ SilicaFlickable {
                                                         }
                                                     }
                                                     expanded: {
-//                                                        console.log(sameBook, index, modelRecord.bookIndex);
                                                         return sameBook;
                                                     }
-//                                                    onFirstBookIndexChanged: {
-//                                                        console.log(modelRecord.firstBookIndex, index);
-//                                                        expanded = modelRecord.firstBookIndex === index;
-//                                                    }
                                                     property string bookShortName: short_name
                                                     Timer {
                                                         id: timerOnExpandedBookDelegate
                                                         interval: 100
                                                         repeat: false
                                                         onTriggered: {
-//                                                            console.log(expandingSectionBook.expanded, index, modelRecord.firstBookIndex, listBooks.currentIndex);
                                                             listBooks.currentIndex = index;
                                                             modelRecord.bookIndex = listBooks.currentIndex;
-//                                                            console.log(modelRecord.bookIndex, modelRecord.chapterIndex, modelRecord.verseIndex);
-//                                                            modelRecord.createRecord(short_name, index);
-//                                                            historyModel.bookIndex = index;
-//                                                            historyModel.bookShortName = short_name;
                                                         }
                                                     }
                                                     onExpandedChanged: {
-//                                                        console.log(index, expanded, listBooks.currentIndex);
                                                         if (expanded) {
-//                                                            console.log(modelRecord.firstBookIndex, index);
-//                                                             listBooks.model.currentBook = book_number;
                                                             timerOnExpandedBookDelegate.restart();
-//                                                            historyModel.bookIndex = index;
-//                                                            historyModel.bookShortName = short_name;
                                                         }
                                                     }
 
@@ -377,10 +352,6 @@ SilicaFlickable {
                                                                     }
 
                                                                     expanded: expandingSectionBook.sameBook && sameChapter
-//                                                                    onFirstChapterIndexChanged: {
-//                                                                        console.log(modelRecord.firstChapterIndex, index);
-//                                                                        expanded = modelRecord.firstChapterIndex === index && expandingSectionBook.bookIndex === modelRecord.firstBookIndex;
-//                                                                    }
                                                                     Timer {
                                                                         id: timerOnExpandedChapterDelegate
                                                                         interval: 100
@@ -388,16 +359,11 @@ SilicaFlickable {
                                                                         onTriggered: {
                                                                             listChapters.currentIndex = index;
                                                                             modelRecord.chapterIndex = listChapters.currentIndex;
-//                                                                            console.log(modelRecord.bookIndex, modelRecord.chapterIndex, modelRecord.verseIndex);
                                                                         }
                                                                     }
                                                                     onExpandedChanged: {
                                                                         if (expanded) {
-//                                                                            console.log(index, modelRecord.firstChapterIndex);
                                                                             timerOnExpandedChapterDelegate.restart();
-//                                                                            listChapters.currentIndex = index;
-//                                                                            listBooks.model.currentChapter = chapter;
-//                                                                            historyModel.chapterIndex = chapter;
                                                                         }
                                                                     }
 
@@ -422,7 +388,6 @@ SilicaFlickable {
                                                                                         listVerses.model.rowCount() < modelRecord.verseIndex &&
                                                                                         listVerses.model.canFetchMore(listVerses.model.index(0, 0))) {
                                                                                     var index = 1;
-//                                                                                    console.log(listVerses.model.rowCount(), modelRecord.verseIndex, listVerses.model.canFetchMore(listVerses.model.index(0, 0)));
                                                                                     while (listVerses.model.rowCount() < modelRecord.verseIndex && listVerses.model.canFetchMore(listVerses.model.index(0, 0))) {
                                                                                         listVerses.model.fetchMore(listVerses.model.index(0, 0));
                                                                                         index += 1;
@@ -445,9 +410,6 @@ SilicaFlickable {
                                                                                 if (index === -1) {
                                                                                     index = 0;
                                                                                 }
-//                                                                                console.log(expandingSectionBook.bookShortName, expandingSectionBook.bookIndex, chapterExpandingSection.chapterIndex, index, currentIndex);
-//                                                                                modelRecord.firstBookIndex = expandingSectionBook.bookIndex;
-//                                                                                modelRecord.firstChapterIndex = chapterExpandingSection.chapterIndex;
                                                                                 modelRecord.createRecord(
                                                                                             expandingSectionBook.bookNumber,
                                                                                             expandingSectionBook.bookIndex,
@@ -469,22 +431,16 @@ SilicaFlickable {
                                                                                 menu: contextMenu
                                                                                 property bool reached: modelRecord.verseIndex === index && expandingSectionBook.sameBook && chapterExpandingSection.sameChapter;
                                                                                 onReachedChanged: {
-//                                                                                    console.log(listVerses.currentIndex, index, modelRecord.bookIndex, modelRecord.chapterIndex, modelRecord.verseIndex, expandingSectionBook.sameBook, chapterExpandingSection.sameChapter);
-
                                                                                     if (reached) {
                                                                                         timerOnReachedVerse.restart();
-//                                                                                        console.log(index);
-//                                                                                        listVerses.currentIndex = index;
                                                                                     }
                                                                                 }
                                                                                 contentHeight: childVerse.height + separator.height + Theme.paddingMedium
                                                                                 y : Theme.paddingLarge
                                                                                 width: parent.width
                                                                                 onClicked: {
-//                                                                                    console.log(listVerses.currentIndex, index);
                                                                                     listVerses.currentIndex = index;
                                                                                     listVerses.create_record();
-//                                                                                    historyModel.verseIndex = index + 1
                                                                                 }
 
                                                                                 Timer {
@@ -492,12 +448,7 @@ SilicaFlickable {
                                                                                     interval: 100
                                                                                     repeat: false
                                                                                     onTriggered: {
-//                                                                                       if ( expandingSectionBook.sameBook && chapterExpandingSection.sameChapter) {
-//                                                                                        console.log(listVerses.currentIndex, index, modelRecord.bookIndex, modelRecord.chapterIndex, modelRecord.verseIndex, expandingSectionBook.sameBook, chapterExpandingSection.sameChapter);
                                                                                         listVerses.currentIndex = index;
-//                                                                                        console.log(index);
-//                                                                                        console.log(listVerses.model.rowCount(), listVerses.model.canFetchMore(listVerses.model.index(0, 0)), index, modelRecord.verseIndex);
-//                                                                                       }
                                                                                     }
                                                                                 }
                                                                                 Label {
@@ -520,7 +471,6 @@ SilicaFlickable {
                                                                                         left: verseNumber.right
                                                                                         right: parent.right
                                                                                         rightMargin: Theme.paddingMedium
-//                                                                                        bottomMargin: listItem.y
                                                                                     }
 
                                                                                     Text {
@@ -575,7 +525,6 @@ SilicaFlickable {
 
                                                                                 ContextMenu {
                                                                                     id: contextMenu
-//                                                                                    enabled: expandSectionChapter.enabled
 
                                                                                     MenuItem {
                                                                                         text: qsTr("Copy text");
@@ -604,27 +553,6 @@ SilicaFlickable {
                                                 }
                                             }
                                         }
-
-//                                        SilicaFlickable {
-//                                            id: detail
-//                                            x: Theme.paddingMedium
-//                                            anchors.top: listBooks.bottom
-//                                            width: parent.width - 2 * Theme.paddingMedium
-
-//                                            SectionHeader {
-//                                                id: detailHeader
-//                                                text: qsTrId("Detailed info")
-//                                            }
-
-//                                            Label {
-//                                                anchors.top: detailHeader.bottom
-//                                                width: parent.width
-//                                                text: "<p>Святая Библия, Новый Русский Перевод<br/> © Biblica, Inc.®, 2006, 2010, 2012, 2014<br/> Используется с разрешения. Все права защищены по всему миру.</p>"
-//                                                font.pixelSize: Theme.fontSizeSmall
-//                                                wrapMode: Text.WordWrap
-//                                                truncationMode: TruncationMode.Fade
-//                                            }
-//                                        }
                                     }
                                 }
                             }
@@ -693,14 +621,6 @@ SilicaFlickable {
                                     chapter_index,
                                     verse_index
                         );
-
-//                        if (book_index !== historyModel.bookIndex) {
-//                            historyModel.copyObject(testament_index, book_index, chapter_index, verse_index, book_short_name);
-//                        } else if (chapter_index !== historyModel.chapterIndex) {
-//                            historyModel.copyObject(testament_index, book_index, chapter_index, verse_index, book_short_name);
-//                        } else if (verse_index !== historyModel.verseIndex) {
-//                            historyModel.verseIndex = verse_index;
-//                        }
                     }
 
                     Text {
@@ -719,7 +639,7 @@ SilicaFlickable {
                         text: {
                             var real_chapter_index = chapter_index + 1;
                             var real_verse_index = verse_index + 1;
-                            return book_short_name + book_index + ":" + real_chapter_index + ":" + real_verse_index;
+                            return book_short_name + ":" + real_chapter_index + ":" + real_verse_index;
                         }
                         font.pixelSize: Theme.fontSizeLarge
                     }

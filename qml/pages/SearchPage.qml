@@ -17,15 +17,6 @@ SilicaFlickable {
             id: headerMainTextBooks
             title: qsTrId("Translation search")
             width: parent.width
-
-            FlippingLabelPatch {
-                id: headerAddTextBooks
-                text: "Новый Русский Перевод (НРП)"
-                width: parent.width
-                fontSize: isPortrait ? Theme.fontSizeExtraSmall : Theme.fontSizeTiny
-                fontFamily: Theme.fontFamilyHeading
-                y: isPortrait ? Theme.itemSizeSmall : Theme.itemSizeExtraSmall
-            }
         }
 
         Item {
@@ -97,7 +88,7 @@ SilicaFlickable {
 
                                 ExpandingSectionPatch {
                                     id: expandingSectionBook
-                                    title: long_name.trim() + bookId + ", book_number: " + book_number
+                                    title: long_name.trim()
                                     width: parent.width
                                     onExpandedChanged: {
                                         if (expanded) {

@@ -40,7 +40,7 @@ namespace modules {
 
     private:
         friend tests::tst_ModelBook;
-        int m_waitingTimeBeforeHitDb = 600;
+        int m_waitingTimeBeforeHitDb = 300;
 
         std::shared_ptr<QString> m_searchQueryInVerseText = std::make_shared<QString>("");
         void updateObjects();
