@@ -7,7 +7,7 @@ CoverBackground {
         id: label
         anchors.centerIn: parent
         text: {
-            qsTr("Bible")
+            "FreeBible"
         }
     }
 }
