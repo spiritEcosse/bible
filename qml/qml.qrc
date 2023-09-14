@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>bible.qml</file>
+        <file>harbour-freebible.qml</file>
         <file>cover/CoverPage.qml</file>
         <file>pages/BooksPage.qml</file>
         <file>pages/Main.qml</file>

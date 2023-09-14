@@ -1,16 +1,16 @@
 [Desktop Entry]
 Type=Application
-Icon=bible
-Exec=bible
-Name=bible
+Icon=harbour-freebible
+Exec=harbour-freebible
+Name=harbour-freebible
 # translation example:
 # your app name in German locale (de)
 #
 # Remember to comment out the following line, if you do not want to use
 # a different app name in German locale (de).
-Name[ru]=bible
+Name[ru]=harbour-freebible
 
 [X-Sailjail]
 Permissions=UserDirs;Internet
 OrganizationName=spirit
-ApplicationName=bible
+ApplicationName=harbour-freebible

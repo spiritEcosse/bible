@@ -1,7 +1,19 @@
 #execute_process(COMMAND bash -c "xcrun --show-sdk-path" RESULT_VARIABLE CMAKE_OSX_SYSROOT)
 cmake_minimum_required(VERSION 3.19)
 
-project(bible LANGUAGES CXX)
+execute_process(
+        COMMAND bash -c "awk -F= '$1==\"ID\" { print $2 ;}' /etc/os-release"
+        OUTPUT_VARIABLE PLATFORM)
+
+if("${PLATFORM}" MATCHES "sailfishos")
+  set(SAILFISH TRUE)
+endif()
+
+if(${SAILFISH})
+  project(harbour-freebible LANGUAGES CXX)
+else()
+  project(freebible LANGUAGES CXX)
+endif()
 
 # message("CMAKE_PROJECT_VERSION = ${CMAKE_PROJECT_VERSION}")
 message("CMAKE_CXX_COMPILER_VERSION : ${CMAKE_CXX_COMPILER_VERSION}")
@@ -56,14 +68,6 @@ if(Qt5_VERSION VERSION_GREATER_EQUAL QT_5_12_VERSION)
     Qt5
     COMPONENTS QuickCompiler
     REQUIRED)
-endif()
-
-execute_process(
-  COMMAND bash -c "awk -F= '$1==\"ID\" { print $2 ;}' /etc/os-release"
-  OUTPUT_VARIABLE PLATFORM)
-
-if("${PLATFORM}" MATCHES "sailfishos")
-  set(SAILFISH TRUE)
 endif()
 
 if(CMAKE_VS_WINCE_VERSION)
@@ -139,7 +143,7 @@ endif()
 #message("CMAKE_INTERPROCEDURAL_OPTIMIZATION : ${CMAKE_INTERPROCEDURAL_OPTIMIZATION}")
 
 set_property(SOURCE ${RESOURCES} PROPERTY SKIP_AUTOMOC ON)
-set(SOURCE src/${PROJECT_NAME}.cpp ${RESOURCES})
+set(SOURCE src/bible.cpp ${RESOURCES})
 
 if(Qt6_FOUND)
   qt_add_executable(${PROJECT_NAME} qml_multi_platform/qml.qrc qml/qml.qrc ${SOURCE})
