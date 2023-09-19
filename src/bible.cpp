@@ -41,7 +41,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     // To display the view, call "show()" (will show fullscreen on device).
 
     QCoreApplication::setOrganizationName("spirit");
-    QCoreApplication::setApplicationName("bible");
+    QCoreApplication::setApplicationName("FreeBible");
 
     createAppDir();
 

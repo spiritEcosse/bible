@@ -1,4 +1,4 @@
-name: Code coverage Sailfish OS
+name: Build status and tests
 
 on: [push]
 
