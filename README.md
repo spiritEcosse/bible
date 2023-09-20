@@ -3,23 +3,68 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/spiritecosse/bible/badge)](https://www.codefactor.io/repository/github/spiritecosse/bible)
 [![cpp-linter](https://github.com/spiritEcosse/bible/actions/workflows/cpp-linter.yml/badge.svg)](https://github.com/spiritEcosse/bible/actions/workflows/cpp-linter.yml)
 
+---
+
 # FreeBible
 
-### Application bible for learning and daily reading for everyone.
+### A FreeBible application for learning and daily reading, designed for everyone.
+
+---
+
+# About FreeBible
+
+## Meet the Developer
+
+Greetings, I'm Ihor Shevchenko 🌟
+
+I'm the driving force behind FreeBible, and I'm thrilled to share my vision for this app with you. My journey is one 
+fueled by a passion for making the Bible accessible to everyone, anytime, and anywhere.
+
+---
+
+# My Vision
+
+**FreeBible** was conceived from a dream to make the Bible readily available on any device, in multiple languages, 
+with diverse commentaries, all while being completely offline, free, and free from ads. This dream stemmed from my 
+desire to read the Bible on my Sailfish device and various other platforms, enabling easy sharing of thoughts and 
+fostering a deeper understanding of God's profound teachings.
+
+---
+
+# My Mission
+
+At FreeBible, my mission is inspired by **Matthew 28:18-20**:
+
+'And Jesus came and spake unto them, saying, All power is given unto me in heaven and in earth. Go ye therefore, and 
+teach all nations, baptizing them in the name of the Father, and of the Son, and of the Holy Ghost: Teaching them to 
+observe all things whatsoever I have commanded you: and, lo, I am with you always, even unto the end of the world. Amen.'
+
+---
+
+# What is FreeBible?
+
+**FreeBible** is an application designed to empower users with the ability to read the Bible effortlessly, offering 
+a multitude of features:
+
+- **Download Modules**: Access diverse translations with ease.
+- **Remove Modules**: Customize your Bible library as per your preferences.
+- **Read Offline**: Enjoy uninterrupted reading, even without an internet connection.
+- **Reading History**: Easily track your reading progress.
+- **Commentaries**: Gain insights with small commentaries linked to Bible verses.
+- **Search Functionality**: Seamlessly search for specific verses across translations.
+
+---
 
 # The application available on Operating Systems:
 
 ## [Sailfish OS](https://sailfishos.org/)
 
-# The application available on architectures:
-
-- armv7hl
-- aarch64
-
-
 ## Other Operating Systems
 
-Stay tuned for information on upcoming operating system releases. We will keep this section updated with details about new and exciting options for your device.
+Stay tuned for information on upcoming operating system releases. We will keep this section updated with details about 
+new and exciting options for your device.
+
+---
 
 # Application Overview
 
@@ -48,10 +93,14 @@ The application is designed with three main pages:
 
 This three-page design offers a comprehensive and user-friendly experience for accessing, searching, and managing translations and related content within the application.
 
-## 3. Screenshots
+---
+
+# Screenshots
 <img src="screenshots/sailfishos/sailfishos-harbour-freebible-1.jpeg" alt="sailfishos-harbour-freebible-1.jpeg" width="400" >
 <img src="screenshots/sailfishos/sailfishos-harbour-freebible-2.jpeg" alt="sailfishos-harbour-freebible-2.jpeg" width="400" >
 <img src="screenshots/sailfishos/sailfishos-harbour-freebible-3.jpeg" alt="sailfishos-harbour-freebible-3.jpeg" width="400" >
+
+---
 
 # Sailfish OS RPM Package Installation
 
@@ -122,14 +171,18 @@ This guide provides instructions on how to install RPM packages on Sailfish OS u
 
    Replace `/path/to/your/package/filename.rpm` with the actual path to your RPM package.
 
-Please ensure that you handle dependencies appropriately when using manual installation methods (`pkcon` and `zypper`), as these methods may require more manual management of dependencies compared to the Jolla Store.
+Please ensure that you handle dependencies appropriately when using manual installation methods (`pkcon` and `zypper`),
+as these methods may require more manual management of dependencies compared to the Jolla Store.
 
+---
 
-## Compatibility
+# Compatibility
 
 This project has been tested on the following versions of Sailfish OS:
 
 - 4.5.0.19
+
+---
 
 # Running tests
 
@@ -151,6 +204,8 @@ cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=ON -S ${FREEBIBLE_PATH_SRC} -B ${
 cmake --build ${FREEBIBLE_PATH_BUILD} -j "$((2 * $(getconf _NPROCESSORS_ONLN)))"
 ctest --output-on-failure
 ```
+
+---
 
 # TODO
 
@@ -191,17 +246,61 @@ ctest --output-on-failure
 
 ## Embrace all popular configurations architectures
 
+---
 
-# Participation
+# Contribute to FreeBible
 
-If you're interested in getting involved and contributing to the development and maintenance of this application, please don't hesitate to reach out. Your help would be greatly appreciated!
+If you have experience in UI design, programming skills, or simply carry a spark of inspiration for this app, we invite 
+you to become a part of my mission. Your involvement can significantly shape the future of FreeBible.
 
-## Contact
+Whether you're a design virtuoso, a coding maestro, or just someone bursting with creative ideas, we wholeheartedly 
+welcome your participation and support. Don't hesitate to reach out and join me in making FreeBible even better. 
+Your contributions are priceless!
+
+If you come across any problems or have any suggestions, please don't hesitate to share them with us on our GitHub page 
+at https://github.com/spiritEcosse/bible/issues.
+
+Alternatively, if you'd like, you can simply treat me to a coffee.
+
+<a href="https://www.buymeacoffee.com/shevchenkco" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
+
+---
+
+# Contact Me
 
 You can contact me via email at [shevchenkcoigor@gmail.com](mailto:shevchenkcoigor@gmail.com) for further information or inquiries.
+
+---
 
 # Licensing
 
 This project is released under the GNU General Public License v3.0 (GPL-3.0), a widely used open-source software license.
 
-<a href="https://www.buymeacoffee.com/shevchenkco" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
+---
+
+# Special Thanks
+
+I extend my heartfelt gratitude to those who have contributed to the FreeBible project:
+
+- **My God**: Because without His invisible cooperation it would be impossible, i guess.
+- **Team of MyBible**: For their agreement to grant me access to mybible modules.
+- **My wife Oksana Shevchenko**: For her assistance with the app's icon and constant inspiration.
+- **Contributors of sqlite_orm**: For their AGPL-licensed open-source project.
+- **Contributors of quazip**: For their valuable contributions.
+- **Contributors of llvm**: For their work on the LLVM project.
+- **Contributors of lcov**: For their contributions to the Linux Test Project.
+- **Contributors of openssl**: For their work on the OpenSSL project.
+- **Contributors of curl**: For their dedication to the curl project.
+- **Contributors of cmake-scripts**: For their invaluable contributions to the development process.
+
+Your support and collaboration have played a pivotal role in shaping FreeBible into what it is today.
+Your support has been instrumental in making FreeBible what it is today.
+I deeply appreciate your commitment to this project.
+
+Thank you for joining us on this enlightening journey.
+
+Warm regards,
+
+Ihor Shevchenko
+
+---
