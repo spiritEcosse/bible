@@ -19,5 +19,6 @@
         <file>components/PageEdgeTransition.qml</file>
         <file>components/FlippingLabelPatch.qml</file>
         <file>components/GlassItemLeft.qml</file>
+        <file>pages/AboutUsPage.qml</file>
     </qresource>
 </RCC>
