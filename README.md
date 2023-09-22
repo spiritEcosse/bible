@@ -7,7 +7,7 @@
 
 # FreeBible
 
-### A FreeBible application for learning and daily reading, designed for everyone.
+### The FreeBible application is completely free for learning and daily reading, and it is designed for everyone.
 
 ---
 
@@ -22,6 +22,12 @@ fueled by a passion for making the Bible accessible to everyone, anytime, and an
 
 ---
 
+## Who do I believe in?
+
+I am Christian, and I believe in the Triune God: Father, Son, and Holy Spirit.
+
+---
+
 # My Vision
 
 **FreeBible** was conceived from a dream to make the Bible readily available on any device, in multiple languages, 
@@ -33,11 +39,9 @@ fostering a deeper understanding of God's profound teachings.
 
 # My Mission
 
-At FreeBible, my mission is inspired by **Matthew 28:18-20**:
+At FreeBible, my mission is inspired by **JOSHUA 1:8**:
 
-'And Jesus came and spake unto them, saying, All power is given unto me in heaven and in earth. Go ye therefore, and 
-teach all nations, baptizing them in the name of the Father, and of the Son, and of the Holy Ghost: Teaching them to 
-observe all things whatsoever I have commanded you: and, lo, I am with you always, even unto the end of the world. Amen.'
+'This book of the law shall not depart out of thy mouth; but thou shalt meditate therein day and night, that thou mayest observe to do according to all that is written therein: for then thou shalt make thy way prosperous, and then thou shalt have good success.'
 
 ---
 
@@ -283,15 +287,15 @@ This project is released under the GNU General Public License v3.0 (GPL-3.0), a 
 I extend my heartfelt gratitude to those who have contributed to the FreeBible project:
 
 - **My God**: Because without His invisible cooperation it would be impossible, i guess.
-- **Team of MyBible**: For their agreement to grant me access to mybible modules.
 - **My wife Oksana Shevchenko**: For her assistance with the app's icon and constant inspiration.
-- **Contributors of sqlite_orm**: For their AGPL-licensed open-source project.
-- **Contributors of quazip**: For their valuable contributions.
-- **Contributors of llvm**: For their work on the LLVM project.
-- **Contributors of lcov**: For their contributions to the Linux Test Project.
-- **Contributors of openssl**: For their work on the OpenSSL project.
-- **Contributors of curl**: For their dedication to the curl project.
-- **Contributors of cmake-scripts**: For their invaluable contributions to the development process.
+- **Team of <a href="https://mybible.zone/en/">MyBible</a>**: For their agreement to grant me access to mybible modules.
+- **Contributors of <a href="https://github.com/fnc12/sqlite_orm" >sqlite_orm</a>**: For their AGPL-licensed open-source project.
+- **Contributors of <a href="https://github.com/stachenov/quazip">quazip</a>**: For their valuable contributions.
+- **Contributors of <a href="https://github.com/llvm/llvm-project">llvm</a>**: For their work on the LLVM project.
+- **Contributors of <a href="https://github.com/linux-test-project/lcov">lcov</a>**: For their contributions to the Linux Test Project.
+- **Contributors of <a href="https://github.com/openssl/openssl">openssl</a>**: For their work on the OpenSSL project.
+- **Contributors of <a href="https://curl.se/">curl</a>**: For their dedication to the curl project.
+- **Contributors of <a href="https://github.com/StableCoder/cmake-scripts">cmake-scripts</a>**: For their invaluable contributions to the development process.
 
 Your support and collaboration have played a pivotal role in shaping FreeBible into what it is today.
 Your support has been instrumental in making FreeBible what it is today.
