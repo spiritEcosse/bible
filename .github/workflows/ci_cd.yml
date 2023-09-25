@@ -1,0 +1,158 @@
+name: Build status and tests
+
+on: [ push ]
+
+env:
+    RELEASE: 4.4.0.64
+    REGISTRY: ghcr.io
+
+jobs:
+    build:
+        name: Build
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                arch: [ aarch64, armv7hl ]
+        env:
+            SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: "!contains(github.event.head_commit.message, 'ci skip')"
+
+        steps:
+            -   run: echo ARCH ${{ matrix.arch }}
+            -   uses: actions/checkout@v3
+
+            -   uses: act10ns/slack@v1
+                if: "! startsWith(github.ref, 'refs/tags/v')"
+                with:
+                    status: starting
+                    channel: '#sailfish-os-code-coverage'
+                    message: Starting Build and Tests and Push code coverage for arch "${{ matrix.arch }}"
+
+            -   name: Prepare release
+                if: startsWith(github.ref, 'refs/tags/v')
+                run: mkdir -p output
+
+            -   name: Log in to the Container registry
+                uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+                with:
+                    registry: ${{ env.REGISTRY }}
+                    username: ${{ github.actor }}
+                    password: ${{ secrets.GIT_HUB_TOKEN }}
+
+            -   name: Build and Tests and Push code coverage for arch "${{ matrix.arch }}"
+                if: "! startsWith(github.ref, 'refs/tags/v')"
+                run: >
+                    docker run --rm --privileged
+                    -e CODECOV_TOKEN="${{ secrets.CODECOV_TOKEN }}"
+                    -e IDENTITY_FILE="${{ secrets.IDENTITY_FILE }}"
+                    -e AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}"
+                    -e AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+                    -e AWS_REGION="${{ secrets.AWS_REGION }}"
+                    -e ARCH="${{ matrix.arch }}"
+                    -v $PWD:/share ghcr.io/spiritecosse/bible-sailfishos-${{ matrix.arch }}:$RELEASE /bin/bash -c "
+                      curl https://raw.githubusercontent.com/spiritEcosse/aws-sailfish-sdk/master/install.sh | bash -s -- --func=code_coverage
+                    "
+
+            -   name: Slack Notification
+                uses: act10ns/slack@v1
+                if: "! startsWith(github.ref, 'refs/tags/v')"
+                with:
+                    status: ${{ job.status }}
+                    steps: ${{ toJson(steps) }}
+                    message: Finished for arch "${{ matrix.arch }}"
+                    channel: '#sailfish-os-code-coverage'
+
+            -   name: Release for arch "${{ matrix.arch }}"
+                if: startsWith(github.ref, 'refs/tags/v')
+                run: >
+                    docker run --rm --privileged
+                    -e CODECOV_TOKEN="${{ secrets.CODECOV_TOKEN }}"
+                    -e IDENTITY_FILE="${{ secrets.IDENTITY_FILE }}"
+                    -e AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}"
+                    -e AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+                    -e AWS_REGION="${{ secrets.AWS_REGION }}"
+                    -e ARCH="${{ matrix.arch }}"
+                    -v $PWD:/share ghcr.io/spiritecosse/bible-sailfishos-${{ matrix.arch }}:$RELEASE /bin/bash -c "
+                      curl https://raw.githubusercontent.com/spiritEcosse/aws-sailfish-sdk/master/install.sh | bash -s -- --func=release
+                    "
+
+            -   name: Upload RPM "${{ matrix.arch }}"
+                if: startsWith(github.ref, 'refs/tags/v')
+                uses: actions/upload-artifact@v3
+                with:
+                    name: rpm-${{ matrix.arch }}
+                    path: output
+
+
+    release:
+        name: Release
+        continue-on-error: false
+        # The type of runner that the job will run on
+        runs-on: ubuntu-latest
+        if: startsWith(github.ref, 'refs/tags/v')
+        # this it runs after build
+        needs: build
+        env:
+            SLACK_WEBHOOK_URL: ${{ secrets.RELEASE_SLACK_WEBHOOK_URL }}
+
+        # Steps represent a sequence of tasks that will be executed as part of the job
+        steps:
+            -   uses: act10ns/slack@v1
+                with:
+                    status: Starting release
+                    channel: '#release'
+
+            -   name: Download armv7hl
+                uses: actions/download-artifact@v3
+                with:
+                    name: rpm-armv7hl
+
+            -   name: Download aarch64
+                uses: actions/download-artifact@v3
+                with:
+                    name: rpm-aarch64
+
+            -   name: Extract Version Number
+                id: version
+                uses: actions/github-script@v4
+                with:
+                    result-encoding: string
+                    script: |
+                        return context.payload.ref.replace(/refs\/tags\//, '');
+
+            - name: Install jira
+              run: |
+                  python -m pip install --upgrade pip
+                  pip install jira
+
+            - name: Generate notes from jira
+              id: generate_notes
+              env:
+                  JIRA_HOST: ${{ secrets.JIRA_HOST }}
+                  JIRA_USER: ${{ secrets.JIRA_USER }}
+                  JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
+                  VERSION: ${{ steps.version.outputs.result }}
+              run: |
+                  {
+                      echo 'NOTES<<EOF'
+                      curl https://spiritecosse.github.io/aws-sailfish-sdk/get_notes.py | python
+                      echo EOF
+                  } >> "$GITHUB_ENV"
+
+            -   name: Create a release
+                uses: softprops/action-gh-release@v1
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GIT_HUB_TOKEN }}
+                with:
+                    name: ${{ steps.version.outputs.result }}
+                    draft: false
+                    prerelease: false
+                    body: ${{ env.NOTES }}
+                    files: '*.rpm'
+
+            -   uses: act10ns/slack@v1
+                with:
+                    status: ${{ job.status }}
+                    channel: '#release'
+                    message: Release finished

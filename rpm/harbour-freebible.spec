@@ -8,8 +8,8 @@ Name:       harbour-freebible
 # >> macros
 # << macros
 
-Summary:    harbour-freebible
-Version:    0.1
+Summary:    Application bible for learning and daily reading for everyone.
+Version:    1.0.0
 Release:    1
 Group:      Qt/Qt
 License:    LICENSE
@@ -49,7 +49,8 @@ Short description of my Sailfish OS Application
 
 %build
 # >> build pre
-cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_TESTING=OFF -DCODE_COVERAGE=OFF
+export CMAKE_BUILD_TYPE=$(if [[ -z ${CMAKE_BUILD_TYPE+x} ]]; then echo "Debug"; else echo ${CMAKE_BUILD_TYPE}; fi;)
+cmake -DCMAKE_BUILD_TYPE="${CMAKE_BUILD_TYPE}" -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_TESTING=OFF -DCODE_COVERAGE=OFF
 make
 # << build pre
 
@@ -71,32 +72,14 @@ desktop-file-install --delete-original       \
 
 %files
 %defattr(-,root,root,-)
-%ifarch aarch64
-/usr/lib64/cmake/QuaZip-Qt5-1.3/QuaZip-Qt5Config.cmake
-/usr/lib64/cmake/QuaZip-Qt5-1.3/QuaZip-Qt5ConfigVersion.cmake
-/usr/lib64/cmake/QuaZip-Qt5-1.3/QuaZip-Qt5_SharedTargets-debug.cmake
-/usr/lib64/cmake/QuaZip-Qt5-1.3/QuaZip-Qt5_SharedTargets.cmake
-/usr/lib64/cmake/SqliteOrm/SqliteOrmConfig.cmake
-/usr/lib64/cmake/SqliteOrm/SqliteOrmConfigVersion.cmake
-/usr/lib64/cmake/SqliteOrm/SqliteOrmTargets.cmake
-/usr/lib64/libquazip1-qt5d.so
-/usr/lib64/libquazip1-qt5d.so.1.3.0
-/usr/lib64/libquazip1-qt5d.so.1.3
-/usr/lib64/pkgconfig/quazip1-qt5.pc
-%endif
-%ifarch armv7hl
-/usr/lib/cmake/QuaZip-Qt5-1.3/QuaZip-Qt5Config.cmake
-/usr/lib/cmake/QuaZip-Qt5-1.3/QuaZip-Qt5ConfigVersion.cmake
-/usr/lib/cmake/QuaZip-Qt5-1.3/QuaZip-Qt5_SharedTargets-debug.cmake
-/usr/lib/cmake/QuaZip-Qt5-1.3/QuaZip-Qt5_SharedTargets.cmake
-/usr/lib/cmake/SqliteOrm/SqliteOrmConfig.cmake
-/usr/lib/cmake/SqliteOrm/SqliteOrmConfigVersion.cmake
-/usr/lib/cmake/SqliteOrm/SqliteOrmTargets.cmake
-/usr/lib/libquazip1-qt5d.so
-/usr/lib/libquazip1-qt5d.so.1.3.0
-/usr/lib/libquazip1-qt5d.so.1.3
-/usr/lib/pkgconfig/quazip1-qt5.pc
-%endif
+%{_libdir}/cmake/QuaZip-Qt5-1.3/QuaZip-Qt5Config.cmake
+%{_libdir}/cmake/QuaZip-Qt5-1.3/QuaZip-Qt5ConfigVersion.cmake
+%{_libdir}/cmake/QuaZip-Qt5-1.3/QuaZip-Qt5_SharedTargets*
+%{_libdir}/cmake/SqliteOrm/SqliteOrmConfig.cmake
+%{_libdir}/cmake/SqliteOrm/SqliteOrmConfigVersion.cmake
+%{_libdir}/cmake/SqliteOrm/SqliteOrmTargets.cmake
+%{_libdir}/libquazip1-qt5*
+%{_libdir}/pkgconfig/quazip1-qt5.pc
 /usr/include/sqlite_orm/sqlite_orm.h
 /usr/include/QuaZip-Qt5-1.3/quazip/JlCompress.h
 /usr/include/QuaZip-Qt5-1.3/quazip/ioapi.h

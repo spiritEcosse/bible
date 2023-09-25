@@ -45,5 +45,7 @@ if(CMAKE_C_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 endif()
 
 set(ENV{PATH} "/usr/local/bin/:$ENV{PATH}")
-include(${LIB_LLVM})
 
+if (BUILD_LLVM OR (BUILD_TESTING AND CODE_COVERAGE))
+    include(${LIB_LLVM})
+endif()
