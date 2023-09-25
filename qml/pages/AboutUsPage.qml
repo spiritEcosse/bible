@@ -29,7 +29,7 @@ Pages {
 <body>
     <header>
         <h1>FreeBible</h1>
-        <h3>A FreeBible application for learning and daily reading, designed for everyone.</h3>
+        <h3>The FreeBible application is completely free for learning and daily reading, and it is designed for everyone.</h3>
     </header>
 
     <div id="about">
@@ -38,6 +38,8 @@ Pages {
         <p>Greetings, I\'m Ihor Shevchenko 🌟</p>
         <p>I\'m the driving force behind FreeBible, and I\'m thrilled to share my vision for this app with you. My journey is one
             fueled by a passion for making the Bible accessible to everyone, anytime, and anywhere.</p>
+        <h3>Who do I believe in?</h3>
+        <p>I am Christian, and I believe in the Triune God: Father, Son, and Holy Spirit.</p>
     </div>
 
     <div id="vision">
@@ -161,15 +163,15 @@ Pages {
  <p>I extend my heartfelt gratitude to those who have contributed to the FreeBible project:</p>
         <ul>
             <li><strong>My God</strong>: Because without His invisible cooperation it would be impossible, I guess.</li>
-            <li><strong>Team of MyBible</strong>: For their agreement to grant me access to mybible modules.</li>
             <li><strong>My wife Oksana Shevchenko</strong>: For her assistance with the app\'s icon and constant inspiration.</li>
-            <li><strong>Contributors of sqlite_orm</strong>: For their AGPL-licensed open-source project.</li>
-            <li><strong>Contributors of quazip</strong>: For their valuable contributions.</li>
-            <li><strong>Contributors of llvm</strong>: For their work on the LLVM project.</li>
-            <li><strong>Contributors of lcov</strong>: For their contributions to the Linux Test Project.</li>
-            <li><strong>Contributors of openssl</strong>: For their work on the OpenSSL project.</li>
-            <li><strong>Contributors of curl</strong>: For their dedication to the curl project.</li>
-            <li><strong>Contributors of cmake-scripts</strong>: For their invaluable contributions to the development process.</li>
+            <li><strong>Team of <a href="https://mybible.zone/en/">MyBible</a></strong>: For their agreement to grant me access to mybible modules.</li>
+            <li><strong>Contributors of <a href="https://github.com/fnc12/sqlite_orm" >sqlite_orm</a></strong>: For their AGPL-licensed open-source project.</li>
+            <li><strong>Contributors of <a href="https://github.com/stachenov/quazip">quazip</a></strong>: For their valuable contributions.</li>
+            <li><strong>Contributors of <a href="https://github.com/llvm/llvm-project">llvm</a></strong>: For their work on the LLVM project.</li>
+            <li><strong>Contributors of <a href="https://github.com/linux-test-project/lcov">lcov</a></strong>: For their contributions to the Linux Test Project.</li>
+            <li><strong>Contributors of <a href="https://github.com/openssl/openssl">openssl</a></strong>: For their work on the OpenSSL project.</li>
+            <li><strong>Contributors of <a href="https://curl.se/">curl</a></strong>: For their dedication to the curl project.</li>
+            <li><strong>Contributors of <a href="https://github.com/StableCoder/cmake-scripts">cmake-scripts</a></strong>: For their invaluable contributions to the development process.</li>
         </ul>
         <p>Your support and collaboration have played a pivotal role in shaping FreeBible into what it is today.</p>
         <p>Your support has been instrumental in making FreeBible what it is today.</p>

@@ -2,7 +2,7 @@
 Type=Application
 Icon=harbour-freebible
 Exec=harbour-freebible
-Name=harbour-freebible
+Name=FreeBible
 # translation example:
 # your app name in German locale (de)
 #
@@ -13,4 +13,4 @@ Name[ru]=harbour-freebible
 [X-Sailjail]
 Permissions=UserDirs;Internet
 OrganizationName=spirit
-ApplicationName=harbour-freebible
+ApplicationName=FreeBible
