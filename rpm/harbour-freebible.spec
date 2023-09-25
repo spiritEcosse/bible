@@ -12,7 +12,7 @@ Summary:    Application bible for learning and daily reading for everyone.
 Version:    1.0.0
 Release:    1
 Group:      Qt/Qt
-License:    LICENSE
+License:    GPL
 URL:        https://github.com/spiritEcosse/bible
 Source0:    %{name}-%{version}.tar.bz2
 Source100:  harbour-freebible.yaml
