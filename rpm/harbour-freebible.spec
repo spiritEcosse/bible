@@ -6,39 +6,36 @@
 Name:       harbour-freebible
 
 # >> macros
+%define __requires_exclude ^libquazip1.*$
 # << macros
 
-Summary:    Application bible for learning and daily reading for everyone.
+Summary:    Bible for offline learning
 Version:    1.0.0
 Release:    1
 Group:      Qt/Qt
 License:    GPL
 URL:        https://github.com/spiritEcosse/bible
 Source0:    %{name}-%{version}.tar.bz2
-Source100:  harbour-freebible.yaml
 Requires:   sailfishsilica-qt5 >= 0.10.9
-Requires:   perl-CPAN
-Requires:   perl-IPC-Cmd
-Requires:   perl-IO-Compress
-Requires:   sqlite
-Requires:   qt5-qttest
-Requires:   sdk-deploy-rpm
 BuildRequires:  pkgconfig(sailfishapp) >= 1.0.2
 BuildRequires:  pkgconfig(Qt5Core)
 BuildRequires:  pkgconfig(Qt5Qml)
 BuildRequires:  pkgconfig(Qt5Quick)
 BuildRequires:  pkgconfig(Qt5Test)
-BuildRequires:  pkgconfig(sqlite3)
-BuildRequires:  cmake >= 3.5
+BuildRequires:  cmake >= 3.19
 BuildRequires:  git
 BuildRequires:  qt5-qttest
-BuildRequires:  sqlite-devel
 BuildRequires:  desktop-file-utils
 BuildRequires:  perl-IO-Compress
 BuildRequires:  perl-Module-Load-Conditional
+BuildRequires:  perl-CPAN
+BuildRequires:  perl-IPC-Cmd
+BuildRequires:  perl-IO-Compress
+BuildRequires:  sdk-deploy-rpm
+BuildRequires:  expect
 
 %description
-Short description of my Sailfish OS Application
+The FreeBible application for learning and daily reading.
 
 
 %prep
@@ -78,8 +75,8 @@ desktop-file-install --delete-original       \
 %{_libdir}/cmake/SqliteOrm/SqliteOrmConfig.cmake
 %{_libdir}/cmake/SqliteOrm/SqliteOrmConfigVersion.cmake
 %{_libdir}/cmake/SqliteOrm/SqliteOrmTargets.cmake
+%exclude %{_libdir}/pkgconfig/quazip1-qt5.pc
 %{_libdir}/libquazip1-qt5*
-%{_libdir}/pkgconfig/quazip1-qt5.pc
 /usr/include/sqlite_orm/sqlite_orm.h
 /usr/include/QuaZip-Qt5-1.3/quazip/JlCompress.h
 /usr/include/QuaZip-Qt5-1.3/quazip/ioapi.h

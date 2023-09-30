@@ -3,6 +3,7 @@ Type=Application
 Icon=harbour-freebible
 Exec=harbour-freebible
 Name=FreeBible
+X-Nemo-Application-Type=silica-qt5
 # translation example:
 # your app name in German locale (de)
 #
