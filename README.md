@@ -1,4 +1,4 @@
-![Build status and tests](https://github.com/spiritEcosse/bible/actions/workflows/code_coverage.yml/badge.svg)
+![Build status and tests](https://github.com/spiritEcosse/bible/actions/workflows/ci_cd.yml/badge.svg)
 [![codecov](https://codecov.io/gh/spiritEcosse/bible/branch/master/graph/badge.svg)](https://codecov.io/gh/spiritEcosse/bible)
 [![CodeFactor](https://www.codefactor.io/repository/github/spiritecosse/bible/badge)](https://www.codefactor.io/repository/github/spiritecosse/bible)
 [![cpp-linter](https://github.com/spiritEcosse/bible/actions/workflows/cpp-linter.yml/badge.svg)](https://github.com/spiritEcosse/bible/actions/workflows/cpp-linter.yml)
@@ -10,8 +10,6 @@
 ### The FreeBible application is completely free for learning and daily reading, and it is designed for everyone.
 
 ---
-
-# About FreeBible
 
 ## Meet the Developer
 

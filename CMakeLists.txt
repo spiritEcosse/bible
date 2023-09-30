@@ -60,7 +60,6 @@ else()
     REQUIRED)
 endif()
 
-find_package(ZLIB)
 set(QT_5_12_VERSION 5.12.0)
 
 if(Qt5_VERSION VERSION_GREATER_EQUAL QT_5_12_VERSION)
@@ -175,7 +174,6 @@ if(${SAILFISH})
             ssl
             crypto
             curl
-            ZLIB::ZLIB
             nghttp2
             dl
             ${SAILFISH_LDFLAGS})
@@ -229,7 +227,6 @@ else()
               ssl
               crypto
               curl
-              ZLIB::ZLIB
               nghttp2
               dl)
   else()
@@ -246,7 +243,6 @@ else()
               ssl
               crypto
               curl
-              ZLIB::ZLIB
               nghttp2
               dl)
   endif()
