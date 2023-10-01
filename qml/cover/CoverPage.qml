@@ -10,7 +10,7 @@ CoverBackground {
             horizontalCenter: parent.horizontalCenter
             topMargin: Theme.paddingMedium * 5
         }
-        source: "harbour-freebible.png"
+        source: "/usr/share/icons/hicolor/172x172/apps/harbour-freebible.png"
     }
 
     Label {
