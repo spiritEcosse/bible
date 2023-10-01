@@ -2,7 +2,7 @@ ARG ARCH
 ARG RELEASE
 FROM coderus/sailfishos-platform-sdk-${ARCH}:${RELEASE}
 
-RUN sudo zypper -n install python3-pip openssl curl pigz openssh bc
+RUN sudo zypper -n install python3-pip openssl curl pigz openssh bc nano
 
 RUN sudo pip install awscli
 RUN mkdir -p ~/rpm/

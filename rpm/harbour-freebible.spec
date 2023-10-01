@@ -13,7 +13,7 @@ Summary:    Bible for offline learning
 Version:    1.0.0
 Release:    1
 Group:      Qt/Qt
-License:    GPL
+License:    GPLv3
 URL:        https://github.com/spiritEcosse/bible
 Source0:    %{name}-%{version}.tar.bz2
 Requires:   sailfishsilica-qt5 >= 0.10.9
@@ -35,8 +35,8 @@ BuildRequires:  sdk-deploy-rpm
 BuildRequires:  expect
 
 %description
-The FreeBible application for learning and daily reading.
-
+The FreeBible application is completely free for learning
+and daily reading, and it is designed for everyone.
 
 %prep
 %setup -q -n %{name}-%{version}
@@ -77,28 +77,34 @@ desktop-file-install --delete-original       \
 %{_libdir}/cmake/SqliteOrm/SqliteOrmTargets.cmake
 %exclude %{_libdir}/pkgconfig/quazip1-qt5.pc
 %{_libdir}/libquazip1-qt5*
-/usr/include/sqlite_orm/sqlite_orm.h
-/usr/include/QuaZip-Qt5-1.3/quazip/JlCompress.h
-/usr/include/QuaZip-Qt5-1.3/quazip/ioapi.h
-/usr/include/QuaZip-Qt5-1.3/quazip/minizip_crypt.h
-/usr/include/QuaZip-Qt5-1.3/quazip/quaadler32.h
-/usr/include/QuaZip-Qt5-1.3/quazip/quachecksum32.h
-/usr/include/QuaZip-Qt5-1.3/quazip/quacrc32.h
-/usr/include/QuaZip-Qt5-1.3/quazip/quagzipfile.h
-/usr/include/QuaZip-Qt5-1.3/quazip/quaziodevice.h
-/usr/include/QuaZip-Qt5-1.3/quazip/quazip.h
-/usr/include/QuaZip-Qt5-1.3/quazip/quazip_global.h
-/usr/include/QuaZip-Qt5-1.3/quazip/quazip_qt_compat.h
-/usr/include/QuaZip-Qt5-1.3/quazip/quazipdir.h
-/usr/include/QuaZip-Qt5-1.3/quazip/quazipfile.h
-/usr/include/QuaZip-Qt5-1.3/quazip/quazipfileinfo.h
-/usr/include/QuaZip-Qt5-1.3/quazip/quazipnewinfo.h
-/usr/include/QuaZip-Qt5-1.3/quazip/unzip.h
-/usr/include/QuaZip-Qt5-1.3/quazip/zip.h
-%{_bindir}
+%{_includedir}/sqlite_orm/sqlite_orm.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/JlCompress.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/ioapi.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/minizip_crypt.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/quaadler32.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/quachecksum32.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/quacrc32.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/quagzipfile.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/quaziodevice.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/quazip.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/quazip_global.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/quazip_qt_compat.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/quazipdir.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/quazipfile.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/quazipfileinfo.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/quazipnewinfo.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/unzip.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/zip.h
+
+%{_bindir}/*
 %{_datadir}/%{name}
 %{_datadir}/%{name}/translations/
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
 # >> files
 # << files
+
+
+%changelog
+* Sun Oct 01 2023 Ihor Shevchenko shevchenkcoigor@gmail.com - 1.0.0-1
+- Initial release

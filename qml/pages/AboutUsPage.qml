@@ -33,8 +33,7 @@ Pages {
     </header>
 
     <div id="about">
-        <h2>About FreeBible</h2>
-        <h3>Meet the Developer</h3>
+        <h2>Meet the Developer</h2>
         <p>Greetings, I\'m Ihor Shevchenko 🌟</p>
         <p>I\'m the driving force behind FreeBible, and I\'m thrilled to share my vision for this app with you. My journey is one
             fueled by a passion for making the Bible accessible to everyone, anytime, and anywhere.</p>
