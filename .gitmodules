@@ -22,3 +22,7 @@
 	path = 3rdparty/lcov
 	url = https://github.com/linux-test-project/lcov.git
     tag = v1.16
+[submodule "3rdparty/sqlite"]
+	path = 3rdparty/sqlite
+	url = https://github.com/sqlite/sqlite
+    tag = version-3.43.1

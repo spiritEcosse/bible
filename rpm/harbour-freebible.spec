@@ -6,40 +6,37 @@
 Name:       harbour-freebible
 
 # >> macros
+%define __requires_exclude ^libquazip1.*$
 # << macros
 
-Summary:    Application bible for learning and daily reading for everyone.
+Summary:    Bible for offline learning
 Version:    1.0.0
 Release:    1
 Group:      Qt/Qt
-License:    GPL
+License:    GPLv3
 URL:        https://github.com/spiritEcosse/bible
 Source0:    %{name}-%{version}.tar.bz2
-Source100:  harbour-freebible.yaml
 Requires:   sailfishsilica-qt5 >= 0.10.9
-Requires:   perl-CPAN
-Requires:   perl-IPC-Cmd
-Requires:   perl-IO-Compress
-Requires:   sqlite
-Requires:   qt5-qttest
-Requires:   sdk-deploy-rpm
 BuildRequires:  pkgconfig(sailfishapp) >= 1.0.2
 BuildRequires:  pkgconfig(Qt5Core)
 BuildRequires:  pkgconfig(Qt5Qml)
 BuildRequires:  pkgconfig(Qt5Quick)
 BuildRequires:  pkgconfig(Qt5Test)
-BuildRequires:  pkgconfig(sqlite3)
-BuildRequires:  cmake >= 3.5
+BuildRequires:  cmake >= 3.19
 BuildRequires:  git
 BuildRequires:  qt5-qttest
-BuildRequires:  sqlite-devel
 BuildRequires:  desktop-file-utils
 BuildRequires:  perl-IO-Compress
 BuildRequires:  perl-Module-Load-Conditional
+BuildRequires:  perl-CPAN
+BuildRequires:  perl-IPC-Cmd
+BuildRequires:  perl-IO-Compress
+BuildRequires:  sdk-deploy-rpm
+BuildRequires:  expect
 
 %description
-Short description of my Sailfish OS Application
-
+The FreeBible application is completely free for learning
+and daily reading, and it is designed for everyone.
 
 %prep
 %setup -q -n %{name}-%{version}
@@ -78,30 +75,36 @@ desktop-file-install --delete-original       \
 %{_libdir}/cmake/SqliteOrm/SqliteOrmConfig.cmake
 %{_libdir}/cmake/SqliteOrm/SqliteOrmConfigVersion.cmake
 %{_libdir}/cmake/SqliteOrm/SqliteOrmTargets.cmake
+%exclude %{_libdir}/pkgconfig/quazip1-qt5.pc
 %{_libdir}/libquazip1-qt5*
-%{_libdir}/pkgconfig/quazip1-qt5.pc
-/usr/include/sqlite_orm/sqlite_orm.h
-/usr/include/QuaZip-Qt5-1.3/quazip/JlCompress.h
-/usr/include/QuaZip-Qt5-1.3/quazip/ioapi.h
-/usr/include/QuaZip-Qt5-1.3/quazip/minizip_crypt.h
-/usr/include/QuaZip-Qt5-1.3/quazip/quaadler32.h
-/usr/include/QuaZip-Qt5-1.3/quazip/quachecksum32.h
-/usr/include/QuaZip-Qt5-1.3/quazip/quacrc32.h
-/usr/include/QuaZip-Qt5-1.3/quazip/quagzipfile.h
-/usr/include/QuaZip-Qt5-1.3/quazip/quaziodevice.h
-/usr/include/QuaZip-Qt5-1.3/quazip/quazip.h
-/usr/include/QuaZip-Qt5-1.3/quazip/quazip_global.h
-/usr/include/QuaZip-Qt5-1.3/quazip/quazip_qt_compat.h
-/usr/include/QuaZip-Qt5-1.3/quazip/quazipdir.h
-/usr/include/QuaZip-Qt5-1.3/quazip/quazipfile.h
-/usr/include/QuaZip-Qt5-1.3/quazip/quazipfileinfo.h
-/usr/include/QuaZip-Qt5-1.3/quazip/quazipnewinfo.h
-/usr/include/QuaZip-Qt5-1.3/quazip/unzip.h
-/usr/include/QuaZip-Qt5-1.3/quazip/zip.h
-%{_bindir}
+%{_includedir}/sqlite_orm/sqlite_orm.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/JlCompress.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/ioapi.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/minizip_crypt.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/quaadler32.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/quachecksum32.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/quacrc32.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/quagzipfile.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/quaziodevice.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/quazip.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/quazip_global.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/quazip_qt_compat.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/quazipdir.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/quazipfile.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/quazipfileinfo.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/quazipnewinfo.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/unzip.h
+%{_includedir}/QuaZip-Qt5-1.3/quazip/zip.h
+
+%{_bindir}/*
 %{_datadir}/%{name}
 %{_datadir}/%{name}/translations/
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
 # >> files
 # << files
+
+
+%changelog
+* Sun Oct 01 2023 Ihor Shevchenko shevchenkcoigor@gmail.com - 1.0.0-1
+- Initial release

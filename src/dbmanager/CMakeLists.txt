@@ -18,14 +18,7 @@ else()
   target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core sqlite_orm)
 endif()
 
-if(${SAILFISH})
-  include_directories(/usr/include)
-  link_directories(/usr/lib)
-  target_link_libraries(${PROJECT_NAME} PRIVATE sqlite3)
-else()
-  find_package(SQLite3)
-  target_link_libraries(${PROJECT_NAME} PRIVATE SQLite::SQLite3)
-endif()
+target_link_libraries(${PROJECT_NAME} PRIVATE sqlite3)
 
 target_include_directories(
   ${PROJECT_NAME}

@@ -33,7 +33,6 @@ foreach(TEST_FILE ${TEST_FILES})
               ssl
               crypto
               curl
-              ZLIB::ZLIB
               nghttp2
               dl)
   else()
@@ -49,7 +48,6 @@ foreach(TEST_FILE ${TEST_FILES})
               ssl
               crypto
               curl
-              ZLIB::ZLIB
               nghttp2
               dl)
   endif()
