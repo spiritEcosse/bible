@@ -73,6 +73,7 @@ jobs:
                     -e AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}"
                     -e AWS_REGION="${{ secrets.AWS_REGION }}"
                     -e ARCH="${{ matrix.arch }}"
+                    -e CMAKE_BUILD_TYPE="${{ secrets.CMAKE_BUILD_TYPE }}"
                     -v $PWD:/share ghcr.io/spiritecosse/bible-sailfishos-${{ matrix.arch }}:$RELEASE /bin/bash -c "
                       curl https://raw.githubusercontent.com/spiritEcosse/aws-sailfish-sdk/master/install.sh | bash -s -- --func=release
                     "
