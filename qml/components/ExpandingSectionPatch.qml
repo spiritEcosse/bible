@@ -42,9 +42,7 @@ Item {
 
     onExpandedChanged: {
 //        expandBehavior.enabled = _group && _group._initialized
-        if (expanded) {
-            loader.active = true
-        }
+        loader.active = expanded
     }
 
     // Dynamically animating the Loader height doesn't work consistently depending on how the
