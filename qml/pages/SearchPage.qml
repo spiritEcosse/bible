@@ -84,7 +84,7 @@ SilicaFlickable {
                             delegate: ListItem {
                                 id: columnBook
                                 width: parent.width
-                                contentHeight: expandingSectionBook.height + Theme.paddingMedium
+                                contentHeight: expandingSectionBook.height
 
                                 ExpandingSectionPatch {
                                     id: expandingSectionBook

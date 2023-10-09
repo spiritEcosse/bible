@@ -253,7 +253,7 @@ SilicaFlickable {
                                             delegate: ListItem {
                                                 id: columnBook
                                                 width: parent.width
-                                                contentHeight: expandingSectionBook.height + Theme.paddingMedium
+                                                contentHeight: expandingSectionBook.height
 
                                                 ExpandingSectionPatch {
                                                     _group: listBooks
@@ -294,7 +294,7 @@ SilicaFlickable {
                                                     content.sourceComponent: SilicaFlickable {
                                                         width: parent != null ? parent.width : 0
                                                         height: Screen.height - pageHeader.height - 3  * modulesActive.buttonHeight - panelImage.height
-
+                                                        
                                                         SilicaListView {
                                                             id: listChapters
                                                             model: chapters
