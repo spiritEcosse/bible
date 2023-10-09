@@ -149,7 +149,7 @@ SilicaFlickable {
 
                     content.sourceComponent: Column {
                         id: columnModules
-                        width: parent.width
+                        width: parent != null ? parent.width : 0
 
                         states: [
                             State {
