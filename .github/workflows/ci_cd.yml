@@ -157,4 +157,3 @@ jobs:
                     status: ${{ job.status }}
                     channel: '#release'
                     message: Release finished
-
