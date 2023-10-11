@@ -10,7 +10,7 @@ Name:       harbour-freebible
 # << macros
 
 Summary:    Bible for offline learning
-Version:    1.0.0
+Version:    1.0.1
 Release:    1
 Group:      Qt/Qt
 License:    GPLv3
@@ -106,5 +106,9 @@ desktop-file-install --delete-original       \
 
 
 %changelog
+* Wed Oct 11 2023 Ihor Shevchenko shevchenkcoigor@gmail.com - 1.0.1-1
+- Properly hide nested content when the list shrinks.
+- Took care of minor UI issues related to the nonstandard size of bottom blocks on the BooksPage.
+
 * Sun Oct 01 2023 Ihor Shevchenko shevchenkcoigor@gmail.com - 1.0.0-1
 - Initial release
