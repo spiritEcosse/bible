@@ -206,7 +206,7 @@ SilicaFlickable {
                                 expanded: true
 
                                 content.sourceComponent: SilicaFlickable {
-                                    width: parent.width
+                                    width: parent != null ? parent.width : 0
                                     height: Screen.height - pageHeader.height - modulesActive.buttonHeight - panelImage.height
 
                                     SilicaFlickable {
@@ -253,7 +253,7 @@ SilicaFlickable {
                                             delegate: ListItem {
                                                 id: columnBook
                                                 width: parent.width
-                                                contentHeight: expandingSectionBook.height + Theme.paddingMedium
+                                                contentHeight: expandingSectionBook.height
 
                                                 ExpandingSectionPatch {
                                                     _group: listBooks
@@ -292,9 +292,9 @@ SilicaFlickable {
                                                     }
 
                                                     content.sourceComponent: SilicaFlickable {
-                                                        width: parent.width
+                                                        width: parent != null ? parent.width : 0
                                                         height: Screen.height - pageHeader.height - 3  * modulesActive.buttonHeight - panelImage.height
-
+                                                        
                                                         SilicaListView {
                                                             id: listChapters
                                                             model: chapters
@@ -368,7 +368,7 @@ SilicaFlickable {
                                                                     }
 
                                                                     content.sourceComponent: SilicaFlickable {
-                                                                        width: parent.width
+                                                                        width: parent != null ? parent.width : 0
                                                                         height: Screen.height - pageHeader.height - 5  * modulesActive.buttonHeight - panelImage.height
 
                                                                         SilicaListView {
